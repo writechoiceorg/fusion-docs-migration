@@ -1,0 +1,48 @@
+{
+  "type": "object",
+  "title": "Download Blob",
+  "description": "Download and update Blob",
+  "required": [
+    "id",
+    "url",
+    "blobId",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "hidden": {
+      "type": "boolean",
+      "title": "Hidden",
+      "description": "Objects marked as hidden will only be returned in the API with hidden=true",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "title": "Url to download a Blob from"
+    },
+    "blobId": {
+      "type": "string",
+      "title": "Blob id"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "blob-download"
+      ],
+      "default": "blob-download",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1
+}

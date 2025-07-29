@@ -1,0 +1,104 @@
+{
+  "type": "object",
+  "title": "Rollup Aggregation",
+  "description": "Rollup stage to aggregate Solr results in the format of List<DocumentResult>",
+  "required": [
+    "key",
+    "resultKey",
+    "rollupField"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "key": {
+      "type": "string",
+      "title": "Key",
+      "description": "The key name to use from context to read Solr results."
+    },
+    "resultKey": {
+      "type": "string",
+      "title": "Result Key",
+      "description": "The key name to which the results should be saved."
+    },
+    "rollupField": {
+      "type": "string",
+      "title": "Rollup Field",
+      "description": "The field to rollup on."
+    },
+    "excludeResultsKey": {
+      "type": "string",
+      "title": "Results to Exclude",
+      "description": "The key containing a set of results to exclude from this rollup."
+    },
+    "weightField": {
+      "type": "string",
+      "title": "Weight Field",
+      "description": "The numerical field to consider as weight."
+    },
+    "weightFunction": {
+      "type": "string",
+      "title": "Weight Arithmetic Function",
+      "description": "The arithmetic function to use for weight fields on documents with same rollup field.",
+      "enum": [
+        "sum",
+        "mean",
+        "max",
+        "min",
+        "stddev",
+        "variance",
+        "geoMean",
+        "sumOfSquares",
+        "sumOfLogs"
+      ],
+      "default": "sum"
+    },
+    "maxRows": {
+      "type": "integer",
+      "title": "Max rows",
+      "description": "The maximum number of results to return",
+      "default": 10
+    },
+    "sort": {
+      "type": "boolean",
+      "title": "Sort results",
+      "description": "If enabled, the output is sorted based on weight field if it is not null",
+      "default": true
+    },
+    "weightExpression": {
+      "type": "string",
+      "title": "Final Boost Weight Expression",
+      "description": "Optional expression to compute the final boost weight using a combination of fields returned by Solr, such as score and weight_d",
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1
+}

@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "title": "Call Pipeline",
+  "description": "Call another Fusion query pipeline",
+  "required": [
+    "pipelineToRun"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "pipelineToRun": {
+      "type": "string",
+      "title": "Query Pipeline to Call",
+      "default": "default"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection to Query"
+    },
+    "solrHandler": {
+      "type": "string",
+      "title": "Solr Handler to Use"
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1
+}

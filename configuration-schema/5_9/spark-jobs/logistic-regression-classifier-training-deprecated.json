@@ -1,0 +1,536 @@
+{
+  "type": "object",
+  "title": "Logistic Regression Classifier Training (deprecated)",
+  "description": "Use this job when you have training data and you want to train a logistic regression model to classify text into groups. Deprecated as of Fusion 5.2.0 and will be removed in a future release; use the Classification job instead.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "trainingLabelField",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Field to Vectorize",
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "default": "solr",
+      "minLength": 1
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data if using Solr",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "sparkSQL": {
+      "type": "string",
+      "title": "Spark SQL filter query",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "default": "SELECT * from spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1.0,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1.0,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store model-labeled data to"
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "dataOutputFormat": {
+      "type": "string",
+      "title": "Data output format",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "partitionCols": {
+      "type": "string",
+      "title": "Partition fields",
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "advanced",
+        "code/json",
+        "lengthy"
+      ]
+    },
+    "withIdf": {
+      "type": "boolean",
+      "title": "IDF Weighting",
+      "description": "Weight vector components based on inverse document frequency",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vDimension": {
+      "type": "integer",
+      "title": "Word2Vec Dimension",
+      "description": "Word-vector dimensionality to represent text (choose > 0 to use)",
+      "default": 0,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "w2vWindowSize": {
+      "type": "integer",
+      "title": "Word2Vec Window Size",
+      "description": "The window size (context words from [-window, window]) for word2vec",
+      "default": 5,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 3,
+      "exclusiveMinimum": false
+    },
+    "w2vMaxSentenceLength": {
+      "type": "integer",
+      "title": "Max Word2Vec Sentence Length",
+      "description": "Sets the maximum length (in words) of each sentence in the input data. Any sentence longer than this threshold will be divided into chunks of up to `maxSentenceLength` size.",
+      "default": 1000,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 3,
+      "exclusiveMinimum": false
+    },
+    "w2vMaxIter": {
+      "type": "integer",
+      "title": "Max Word2Vec Iterations",
+      "description": "Maximum number of iterations of the word2vec training",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vStepSize": {
+      "type": "number",
+      "title": "Word2Vec Step Size",
+      "description": "Training parameter for word2vec convergence (change at your own peril)",
+      "default": 0.025,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0.005,
+      "exclusiveMinimum": false
+    },
+    "minDF": {
+      "type": "number",
+      "title": "Minimum Term Document Frequency",
+      "description": "To be kept, terms must occur in at least this number of documents (if > 1.0), or at least this fraction of documents (if <= 1.0)",
+      "default": 0.0,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "maxDF": {
+      "type": "number",
+      "title": "Max Term Document Frequency",
+      "description": "To be kept, terms must occur in no more than this number of documents (if > 1.0), or no more than this fraction of documents (if <= 1.0)",
+      "default": 1.0,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "norm": {
+      "type": "integer",
+      "title": "Vector normalization",
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "predictedLabelField": {
+      "type": "string",
+      "title": "Predicted Label Field",
+      "description": "Solr field which will contain labels when classifier is applied to documents",
+      "default": "labelPredictedByFusionModel",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "serializeAsMleap": {
+      "type": "boolean",
+      "title": "Serialize as Mleap Bundle",
+      "description": "Serialize the output model as Mleap Bundle",
+      "default": true,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "minSparkPartitions": {
+      "type": "integer",
+      "title": "Minimum Number of Spark Partitions",
+      "description": "Minimum number of Spark partitions for training job.",
+      "default": 200,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "overwriteExistingModel": {
+      "type": "boolean",
+      "title": "Overwrite existing model",
+      "description": "If a model exists in the model store, overwrite when this job runs",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingLabelField": {
+      "type": "string",
+      "title": "Label Field",
+      "description": "Solr field containing labels for training instances (should be single-valued strings)"
+    },
+    "gridSearch": {
+      "type": "boolean",
+      "title": "Grid Search with Cross Validation",
+      "description": "Perform grid search to optimize hyperparameters",
+      "default": false
+    },
+    "evaluationMetricType": {
+      "type": "string",
+      "title": "Evaluation Metric Type",
+      "description": "Optimize hyperparameter search over one of [binary, multiclass, regression] metrics, or 'none'",
+      "enum": [
+        "binary",
+        "multiclass",
+        "regression",
+        "none"
+      ],
+      "default": "none",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "autoBalanceClasses": {
+      "type": "boolean",
+      "title": "Auto-balance training classes",
+      "description": "Ensure that all classes of training data have the same size",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "minTrainingSamplesPerClass": {
+      "type": "integer",
+      "title": "Minimum Labeled Class Size",
+      "description": "Ensure that all classes of training data have at least this many examples",
+      "default": 100,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "makeOtherClass": {
+      "type": "boolean",
+      "title": "Make 'Other' Class",
+      "description": "Create a label class 'Other' which contains all examples not in a class large enough to train on",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "otherClassName": {
+      "type": "string",
+      "title": "'Other' class name",
+      "description": "Label class name for the catch-all 'Other' class",
+      "default": "Other",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "regularizationWeight": {
+      "type": "number",
+      "title": "Regularization weight",
+      "description": "Degree of regularization to use when training (L2 lambda parameter if elasticNetWeight = 0)",
+      "default": 0.01,
+      "maximum": 1.0,
+      "exclusiveMaximum": false,
+      "minimum": 0.0000010,
+      "exclusiveMinimum": false
+    },
+    "elasticNetWeight": {
+      "type": "number",
+      "title": "Elastic net weight",
+      "description": "Value between 0 and 1 to interpolate between ridge (0.0) and lasso (1.0) regression",
+      "default": 0.0,
+      "maximum": 1.0,
+      "exclusiveMaximum": false
+    },
+    "maxIters": {
+      "type": "integer",
+      "title": "Maximum number of iterations",
+      "description": "Maximum number of iterations to perform before halting, even if the convergence criterion has not been met.",
+      "default": 10
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "logistic_regression_classifier_trainer"
+      ],
+      "default": "logistic_regression_classifier_trainer",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "predictedLabelField",
+        "trainingLabelField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "w2vDimension",
+        "w2vWindowSize",
+        "w2vMaxIter",
+        "w2vMaxSentenceLength",
+        "w2vStepSize",
+        "withIdf",
+        "maxDF",
+        "minDF",
+        "norm",
+        "autoBalanceClasses",
+        "evaluationMetricType",
+        "minTrainingSamplesPerClass",
+        "otherClassName",
+        "makeOtherClass",
+        "gridSearch",
+        "elasticNetWeight",
+        "maxIters",
+        "regularizationWeight"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ]
+}

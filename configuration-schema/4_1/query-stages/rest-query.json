@@ -1,0 +1,170 @@
+{
+  "type": "object",
+  "title": "REST Query",
+  "description": "Add results of a REST (RPC) call to the context, request or response.",
+  "required": [
+    "params",
+    "resultsKey"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "params": {
+      "type": "object",
+      "title": "Call Parameters",
+      "required": [
+        "uri",
+        "method"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "title": "Endpoint URI"
+        },
+        "method": {
+          "type": "string",
+          "title": "Call method",
+          "description": "One of GET, POST, PUT, or DELETE",
+          "enum": [
+            "get",
+            "put",
+            "post",
+            "delete"
+          ]
+        },
+        "queryParams": {
+          "type": "object",
+          "title": "Query parameters",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "headers": {
+          "type": "object",
+          "title": "Request protocol headers",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "entity": {
+          "type": "string",
+          "title": "Request entity (as string)",
+          "hints": [
+            "code",
+            "lengthy"
+          ]
+        }
+      }
+    },
+    "debug": {
+      "type": "boolean",
+      "title": "Add Debugging Information",
+      "description": "Setting to true will add a number of properties to either the context (in the Query case) or the document (in the indexing case)",
+      "default": false
+    },
+    "hasNoSideEffects": {
+      "type": "boolean",
+      "title": "Run in simulation mode",
+      "description": "To run this stage in simulation mode, set to 'true'.",
+      "default": false
+    },
+    "mappingRules": {
+      "type": "array",
+      "title": "Mapping of Returned Values (as XPath Expressions) to Context, Request or Response Values",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "target"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "XPath Expression"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target Key"
+          },
+          "targetLocation": {
+            "type": "string",
+            "title": "Target Location",
+            "enum": [
+              "Request",
+              "Response",
+              "Context"
+            ],
+            "default": "Request"
+          },
+          "append": {
+            "type": "boolean",
+            "title": "Append to Existing Values in Target Location. Only Valid when the Target Location is 'Request'",
+            "default": false
+          },
+          "xml": {
+            "type": "boolean",
+            "title": "Add as an XML Fragment",
+            "default": false
+          }
+        }
+      }
+    },
+    "resultsLocation": {
+      "type": "string",
+      "title": "Results Location",
+      "description": "If As Response is chosen, then the result of the RPC call will be the one and only response.  In all other cases, the stage will put the response from the REST/RPC call into the target location using the resultsKey. ",
+      "enum": [
+        "Request",
+        "Response",
+        "Context",
+        "As Response"
+      ],
+      "default": "Request",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "resultsKey": {
+      "type": "string",
+      "title": "Results Key",
+      "description": "The name of the key to store the results object under.  See the documentation for the type of objects stored.",
+      "default": "queryRPC"
+    },
+    "useIncomingRequestEntity": {
+      "type": "boolean",
+      "title": "Use the Incoming Request Entity",
+      "description": "If an input entity is POSTed or PUT from the client, we can pass that along to the RPC target.",
+      "default": false
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 4
+}

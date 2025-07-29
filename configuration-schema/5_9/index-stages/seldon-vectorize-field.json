@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "title": "Seldon Vectorize Field",
+  "description": "Invokes a seldon machine learning model to encode a string field to a vector representation. Will be skipped if the field to encode doesn't exist or is null on the pipeline document.",
+  "required": [
+    "modelId",
+    "modelInputFieldName",
+    "modelOutputVectorFieldName",
+    "sourceFieldName",
+    "destinationFieldName"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Model ID of the model to use for encoding. Only models which accept a single string parameter and return a single dense vector value per input are supported."
+    },
+    "modelInputFieldName": {
+      "type": "string",
+      "title": "Model Input Field",
+      "description": "Name to specify for the input parameter when sending the text to encode to the chosen ML model",
+      "default": "text",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelOutputVectorFieldName": {
+      "type": "string",
+      "title": "Model Output Vector Field",
+      "description": "The name of the field in the ML model response that contains the vector encoding.",
+      "default": "vector",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    },
+    "sourceFieldName": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "Name of the string field whose value should be submitted to the ML model for encoding. If the field doesn't exist or is null in the pipeline document, this stage will be skipped."
+    },
+    "destinationFieldName": {
+      "type": "string",
+      "title": "Destination Field",
+      "description": "Name of the field into which the dense vector value from the ML model response will be saved."
+    }
+  },
+  "category": "AI",
+  "categoryPriority": 10,
+  "unsafe": false
+}

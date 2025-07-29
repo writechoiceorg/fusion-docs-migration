@@ -1,0 +1,370 @@
+{
+  "type" : "object",
+  "title" : "Solr Index",
+  "description" : "A connector that pulls selected documents from an external Solr instance or cluster.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Repository",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "A connector that pulls selected documents from an external Solr instance or cluster.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "properties" : {
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "solr_base_url" : {
+          "type" : "string",
+          "title" : "Standalone Solr server base URL",
+          "description" : "If using a single Solr instance, enter the base URL, e.g.,  http://solrhost.example.com:8983/solr/."
+        },
+        "zk_host_string" : {
+          "type" : "string",
+          "title" : "SolrCloud ZooKeeper host string",
+          "description" : "If using a SolrCloud instance, enter the ZooKeeper connect string, e.g., zkServerA:2181,zkServerB:2181,zkServerC:2181/solr."
+        },
+        "source_collection" : {
+          "type" : "string",
+          "title" : "Source collection",
+          "description" : "Collection or Core name in the source Solr instance/cluster. If not defined, the default core will be used."
+        },
+        "solr_query" : {
+          "type" : "string",
+          "title" : "Query to execute",
+          "description" : "Query to select documents from the source Solr instance/cluster. If not defined, the default query *:* will be used.",
+          "default" : "*:*",
+          "minLength" : 1
+        },
+        "solr_filter_queries" : {
+          "type" : "string",
+          "title" : "Filter queries to execute",
+          "description" : "Filter queries to select documents from the source Solr instance/cluster. Multiple filter queries should be separated with commas."
+        },
+        "solr_field_list" : {
+          "type" : "string",
+          "title" : "Stored fields to retrieve",
+          "description" : "Fields to fetch from the source Solr instance/cluster, which must be stored fields. Multiple field names should be separated with commas.",
+          "default" : "*",
+          "minLength" : 1
+        },
+        "solr_page_size" : {
+          "type" : "integer",
+          "title" : "Page size",
+          "description" : "Number of rows per request to Solr.",
+          "default" : 100
+        },
+        "solr_sort_spec" : {
+          "type" : "string",
+          "title" : "Sort specification",
+          "description" : "Sort order for the request. The uniqueKey field must be included as one of the sorted fields.",
+          "default" : "id asc",
+          "minLength" : 1
+        },
+        "solr_request_handler" : {
+          "type" : "string",
+          "title" : "Solr request handler",
+          "description" : "The request handler to use for the request to the Solr instance/cluster.",
+          "default" : "/select",
+          "minLength" : 1
+        },
+        "solr_query_parser" : {
+          "type" : "string",
+          "title" : "Query parser",
+          "description" : "The query parser to use for the request."
+        },
+        "commit_on_finish" : {
+          "type" : "boolean",
+          "title" : "Solr commit on finish",
+          "description" : "Set to true for a request to be sent to Solr after the last batch has been fetched to commit the documents to the index.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "verify_access" : {
+          "type" : "boolean",
+          "title" : "Validate access",
+          "description" : "Set to true to require successful connection to the filesystem before saving this datasource.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default" : [ {
+                "source" : "_version_",
+                "target" : "external_version_s",
+                "operation" : "move"
+              } ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              },
+              "default" : {
+                "keep" : true,
+                "delete" : false,
+                "fieldToMoveValuesTo" : "",
+                "fieldToCopyValuesTo" : "",
+                "valueToAddToUnmappedFields" : "",
+                "valueToSetOnUnmappedFields" : ""
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      }, {
+        "label" : "Limit Documents",
+        "properties" : [ "solr_filter_queries", "solr_field_list", "solr_page_size", "solr_sort_spec", "solr_request_handler", "solr_query_parser" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

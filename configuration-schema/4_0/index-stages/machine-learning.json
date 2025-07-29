@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "title": "Machine Learning",
+  "description": "Invokes a machine learning model to make a prediction on a document during indexing.",
+  "required": [
+    "modelId",
+    "predictionFieldName"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Machine Learning Model ID",
+      "description": "The ID of the ML model stored in the Fusion blob store."
+    },
+    "docFeatureFieldName": {
+      "type": "string",
+      "title": "Document Feature Field",
+      "description": "Name of the field to extract document features from (model input).",
+      "default": "body_t",
+      "minLength": 1
+    },
+    "predictionFieldName": {
+      "type": "string",
+      "title": "Prediction Field Name",
+      "description": "Name of the field to store the prediction (model output) in the document."
+    },
+    "defaultValue": {
+      "type": "string",
+      "title": "Default Value",
+      "description": "Value to provide if a prediction cannot be made for a document."
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    },
+    "storeInContext": {
+      "type": "boolean",
+      "title": "Store the Prediction in the Context",
+      "description": "Flag to indicate that the prediction should be set as a context property instead of setting a field on the document.",
+      "default": false
+    },
+    "includeRawPredictions": {
+      "type": "boolean",
+      "title": "Include Raw Predictions and Scores",
+      "description": "Flag to indicate that raw predictions and scores, in addition to the best prediction, should be set on the document.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 2
+}

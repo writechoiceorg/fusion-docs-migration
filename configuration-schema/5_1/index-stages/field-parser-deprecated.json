@@ -1,0 +1,81 @@
+{
+  "type": "object",
+  "title": "Field Parser",
+  "description": "Parse the contents of a field using a pre-defined parser",
+  "required": [
+    "parserId"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The ID of the parser to use, as defined by the Parsers API",
+      "default": "_system",
+      "reference": "parser"
+    },
+    "sourceField": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "The document field where the content should be read from.",
+      "default": "_raw_content_"
+    },
+    "sourceEncoding": {
+      "type": "string",
+      "title": "Source Field Encoding",
+      "description": "The content transport encoding of the data stored in the source field (per RFC1341).",
+      "enum": [
+        "binary",
+        "base64"
+      ],
+      "default": "binary"
+    },
+    "sourceContentType": {
+      "type": "string",
+      "title": "Source Content Type",
+      "description": "The Content-Type of the data stored in the source field."
+    },
+    "inheritFields": {
+      "type": "boolean",
+      "title": "Inherit Fields",
+      "description": "Should generated documents include the original document's fields.",
+      "default": true
+    },
+    "includeMetadata": {
+      "type": "boolean",
+      "title": "Include Metadata",
+      "description": "Include parser metadata as document fields.",
+      "default": true
+    }
+  },
+  "category": "Document Transformation",
+  "categoryPriority": 9,
+  "unsafe": false
+}

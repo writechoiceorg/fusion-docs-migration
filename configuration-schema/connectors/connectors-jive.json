@@ -1,0 +1,543 @@
+{
+  "type" : "object",
+  "title" : "Jive",
+  "description" : "Connector for a Jive instance, using Jive's REST API.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Social",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for a Jive instance, using Jive's REST API.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser",
+      "description" : "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "jive_instance_url", "contents_to_crawl" ],
+      "properties" : {
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "places_filter" : {
+          "type" : "array",
+          "title" : "Places Filter",
+          "description" : "Filter to control the indexation of contents under specific places. Cannot be set with places_to_crawl at the same time. To get object_type_id and object_id from the Jive UI, go to the Place, select Actions, and mouse over any option. A URL will display with parameters containerType (object_type_id) and ContainerId (object_id).",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "object",
+            "title" : "Hosts",
+            "properties" : {
+              "object_type_id" : {
+                "type" : "string",
+                "title" : "Object Type Id",
+                "description" : "A valid object type Id for places. For example, 14 for space, 700 for group, 600 for project, 37 for blog. Check the correct object type ids for your Jive instance"
+              },
+              "object_id" : {
+                "type" : "string",
+                "title" : "Object Id",
+                "description" : "The Object type of the place to indexed content from."
+              }
+            },
+            "category" : "Other",
+            "categoryPriority" : 1,
+            "unsafe" : false
+          }
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        },
+        "jive_instance_url" : {
+          "type" : "string",
+          "title" : "Jive instance URL",
+          "description" : "Address of your Jive instance.",
+          "minLength" : 1
+        },
+        "proxy_address" : {
+          "type" : "string",
+          "title" : "HTTP proxy address",
+          "description" : "Address of the HTTP proxy, if required. This should be entered in the format <scheme>://<host>:<port>",
+          "hints" : [ "advanced" ]
+        },
+        "jive_username" : {
+          "type" : "string",
+          "title" : "Jive username",
+          "description" : "Username to access the Jive instance. If this is provided and the Client ID is also provided, the Client ID will be preferred for OAuth-based auhtentication to Jive. The username and password are defined as a backup in case OAuth is not available.",
+          "minLength" : 1
+        },
+        "jive_password" : {
+          "type" : "string",
+          "title" : "Jive password",
+          "description" : "Password for the provided user.",
+          "hints" : [ "secret" ],
+          "minLength" : 1
+        },
+        "jive_client_id" : {
+          "type" : "string",
+          "title" : "Jive Add-on Client Id",
+          "description" : "Jive Client ID provided by the Jive Add-on. If the Add-on has been installed in your Jive instance, OAuth will be used to authenticate to the Jive instance. If this is not provided, the username and password will be used instead.",
+          "hints" : [ "secret" ]
+        },
+        "jive_client_secret" : {
+          "type" : "string",
+          "title" : "Jive Add-on Client Secret",
+          "description" : "Jive Secret Key for the provided Client ID.",
+          "hints" : [ "secret" ]
+        },
+        "kerberosEnabled" : {
+          "type" : "boolean",
+          "title" : "kerberosEnabled",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosLoginContextName" : {
+          "type" : "string",
+          "title" : "kerberosLoginContextName",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosSpn" : {
+          "type" : "string",
+          "title" : "kerberosSpn",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosPrincipal" : {
+          "type" : "string",
+          "title" : "kerberosPrincipal",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosKeytabFile" : {
+          "type" : "string",
+          "title" : "kerberosKeytabFile",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosKeytabBase64" : {
+          "type" : "string",
+          "title" : "kerberosKeytabBase64",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberosPassword" : {
+          "type" : "string",
+          "title" : "kerberosPassword",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "secret", "hidden" ]
+        },
+        "kerberos_sso_endpoint" : {
+          "type" : "string",
+          "title" : "Kerberos SSO Endpoint URL",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "kerberos_sso_cookie_ttl" : {
+          "type" : "integer",
+          "title" : "Kerberos SSO Cookie TTL (ms)",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "contents_to_crawl" : {
+          "type" : "string",
+          "title" : "Contents to crawl",
+          "description" : "List of content types to crawl, separated by commas and no spaces (lowercase). The connector can only retrieve objects from Jive's Content entity, as described in https://developers.jivesoftware.com/api/v3/cloud/rest/ContentEntity.html.",
+          "default" : "All",
+          "minLength" : 1
+        },
+        "enable_security_trimming" : {
+          "type" : "boolean",
+          "title" : "Enable Security Trimming",
+          "description" : "Security trimming restricts query results to records the user is allowed to access by indexing user access information with other document metadata. Enable this option to index user access metadata.",
+          "default" : false
+        },
+        "places_to_crawl" : {
+          "type" : "string",
+          "title" : "Places to crawl",
+          "description" : "List of places to crawl, separated by commas and no spaces (lowercase). The connector can only retrieve Places from Jive's Place entity, as described in https://developers.jivesoftware.com/api/v3/cloud/rest/PlaceEntity.html.",
+          "default" : "space,group"
+        },
+        "fetch_announcements" : {
+          "type" : "boolean",
+          "title" : "Fetch Announcements",
+          "description" : "When enabled system and place announcements are fetched",
+          "default" : true
+        },
+        "max_file_size" : {
+          "type" : "integer",
+          "title" : "Maximum file size (bytes)",
+          "description" : "Maximum size (in bytes) of documents to fetch or -1 for unlimited file size. Files with size greater than this value will not be downloaded but metadata will be added.",
+          "default" : 10485760
+        },
+        "default_content_encoding" : {
+          "type" : "string",
+          "title" : "Default content encoding",
+          "description" : "The default encoding to use when parsing Jive content. Can be left blank to have fusion make an educated guess before parsing instead.",
+          "default" : "UTF-8"
+        },
+        "excluded_content_types" : {
+          "type" : "array",
+          "title" : "Excluded content types",
+          "description" : "Content MIME types to exclude from fetching. Files with a content type contained in this list will not be downloaded but available metadata will be added to the index. By default, this list includes many content types Apache Tika is not able to process.",
+          "default" : [ "video/x-ms-wm", "text/csv", "application/postscript", "video/x-ms-wmv", "image/vnd.dwg", "image/tiff", "audio/x-aiff", "audio/x-ms-wma", "application/mac-binhex40", "application/winhlp", "application/x-font-ttf", "video/x-ms-asf", "application/illustrator", "chemical/x-pdb", "application/x-iso9660-image", "application/x-msdownload", "audio/x-pn-realaudio", "application/x-ms-installer", "image/gif", "video/x-msvideo", "application/vnd.visio", "audio/mpeg", "application/x-emf", "image/vnd.dxf", "application/x-dosexec", "application/x-shockwave-flash", "audio/midi", "image/vnd.adobe.photoshop", "application/octet-stream", "application/x-java-jnilib", "image/x-ms-bmp", "image/jpeg", "application/x-msaccess", "video/mp4", "text/plain", "video/quicktime", "application/x-dtbresource+xml", "text/x-expect", "application/vnd.ms-htmlhelp", "audio/basic", "video/mpeg", "application/x-quattro-pro", "application/vnd.rn-realmedia", "audio/x-wav", "application/vnd.ms-cab-compressed", "audio/ogg", "video/ogg", "application/ogg", "audio/vorbis", "audio/x-oggflac", "audio/x-oggpcm", "audio/opus", "audio/speex", "video/daala", "video/theora", "video/x-dirac", "video/x-ogm", "video/x-ogguvs", "video/x-oggyuv", "video/x-oggrgb", "audio/x-flac", "application/x-msmetafile", "application/x-roxio-toast", "application/mp4", "audio/mp4", "audio/mp4a-latm", "video/mp4v-es", "video/x-m4v", "audio/mpeg4-generic", "audio/vnd.sealedmedia.softseal.mpeg", "audio/x-mpegurl", "video/bmpeg", "video/mpeg4-generic", "application/x-msdownload;format=pe", "application/x-dosexec", "application/x-msdownload;format=pe32", "application/x-msdownload;format=pe64", "application/x-msdownload;format=pe-itanium", "application/x-msdownload;format=pe-armLE", "application/x-msdownload;format=pe-arm7", "application/x-tika-msoffice" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "batch_size" : {
+          "type" : "integer",
+          "title" : "Batch Size",
+          "description" : "Number of items to fetch in each batch request. The Jive API limit is 100. If you are having problems with Jive timing out on requests, decreasing the batch size might help the crawl continue, but will extend the overall time the crawl takes.",
+          "default" : 95,
+          "hints" : [ "advanced" ]
+        },
+        "requests_timeout" : {
+          "type" : "integer",
+          "title" : "Connection timeout (ms)",
+          "description" : "Time in milliseconds to wait for server response.",
+          "default" : 60000,
+          "hints" : [ "advanced" ]
+        },
+        "diagnostic_mode" : {
+          "type" : "boolean",
+          "title" : "Diagnostic Mode",
+          "description" : "Enable to print more detailed information to the logs about each request.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "request_delay" : {
+          "type" : "integer",
+          "title" : "Request delay (ms)",
+          "description" : "The amount of time, in milliseconds, to wait before perform each request.",
+          "default" : 0,
+          "hints" : [ "advanced" ]
+        },
+        "retry_delay" : {
+          "type" : "integer",
+          "title" : "Retry delay (ms)",
+          "description" : "The number of milliseconds to wait before retrying a failed request.",
+          "default" : 15000,
+          "hints" : [ "advanced" ]
+        },
+        "max_retries" : {
+          "type" : "integer",
+          "title" : "Maximum number of retries.",
+          "description" : "The maximum number of retries for a failed request.",
+          "default" : 5,
+          "hints" : [ "advanced" ]
+        },
+        "fetch_users" : {
+          "type" : "boolean",
+          "title" : "Fetch Jive users",
+          "description" : "If enabled, users from Jive will be fetched",
+          "default" : false
+        },
+        "fetch_deactivated_users" : {
+          "type" : "boolean",
+          "title" : "Fetch deactivated Jive users",
+          "description" : "If enabled, deactivated users from Jive will be fetched",
+          "default" : false
+        },
+        "fetch_personal_blogs" : {
+          "type" : "boolean",
+          "title" : "Fetch personal blogs",
+          "description" : "If enabled, all user's blogs from Jive will be fetched",
+          "default" : false
+        },
+        "fetch_threads" : {
+          "type" : "integer",
+          "title" : "Fetch threads",
+          "description" : "The number of threads to use during fetching",
+          "default" : 10,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "queue_capacity" : {
+          "type" : "integer",
+          "title" : "Fetch queue capacity",
+          "description" : "The capacity for the fetch queue",
+          "default" : 10,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "producer_threads" : {
+          "type" : "integer",
+          "title" : "Producer threads",
+          "description" : "The number of threads to use during production",
+          "default" : 2,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "allowCircularRedirects" : {
+          "type" : "boolean",
+          "title" : "Allow circular redirects",
+          "description" : "If true, a request can be redirected to the same URL multiple times",
+          "default" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Crawl Performance",
+        "properties" : [ "batch_size", "requests_timeout", "retry_delay", "max_retries", "fetch_threads", "producer_threads", "queue_capacity", "allowCircularRedirects" ]
+      }, {
+        "label" : "Limit Documents",
+        "properties" : [ "contents_to_crawl", "fetch_users", "fetch_deactivated_users", "fetch_personal_blogs", "max_file_size", "excluded_content_types", "places_filter" ]
+      }, {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

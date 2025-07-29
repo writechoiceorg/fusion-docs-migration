@@ -1,0 +1,387 @@
+{
+  "type": "object",
+  "title": "Head/Tail Analysis",
+  "description": "Use this job when you want to compare the head and tail of your queries to find common misspellings and rewritings. See the insights analytics pane for a review of the results of the job.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "countField",
+    "mainType",
+    "signalTypeField",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Input Collection",
+      "description": "Signals collection containing queries and event counts. Raw signals or aggregation collection can be used. If aggregation collection is being used, update the filter query in advanced options",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Query Field Name",
+      "description": "Field containing the queries",
+      "default": "query",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Signals data filter query",
+      "description": "Solr query to use when loading click signals data",
+      "default": "type:click OR type:response",
+      "hints": [
+        "dummy"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr collection to store head tail analytics results. Defaults to aggr collection"
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "analyzerConfigQuery": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [ { \"name\": \"StdTokLowerStem\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"englishminimalstem\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStem\" } ]}",
+      "hints": [
+        "lengthy",
+        "advanced",
+        "javascript"
+      ],
+      "minLength": 1
+    },
+    "countField": {
+      "type": "string",
+      "title": "Event Count Field Name",
+      "description": "Field containing the number of times an event (like a click) occurs for a particular query; count_i in the raw signal collection or aggr_count_i in the aggregated signal collection.",
+      "default": "count_i",
+      "minLength": 1
+    },
+    "mainType": {
+      "type": "string",
+      "title": "Main Event Type",
+      "description": "The main signal event type (e.g. click) that head tail analysis is based on. E.g., if main type is click, then head and tail queries are defined by the number of clicks.",
+      "default": "click",
+      "minLength": 1
+    },
+    "filterType": {
+      "type": "string",
+      "title": "Filtering Event Type",
+      "description": "The secondary event type (e.g. response) that can be used for filtering out rare searches. Note: In order to use the `response` default value, please make sure you have type:response in the input collection. If there is no need to filter on number of searches, please leave this parameter blank.",
+      "default": "response"
+    },
+    "signalTypeField": {
+      "type": "string",
+      "title": "Field Name of Signal Type",
+      "description": "The field name of signal type in the input collection.",
+      "default": "type"
+    },
+    "minCountMain": {
+      "type": "integer",
+      "title": "Minimum Main Event Count",
+      "description": "Minimum number of main events (e.g. clicks after aggregation) necessary for the query to be considered. The job will only analyze queries with clicks greater or equal to this number.",
+      "default": 1
+    },
+    "minCountFilter": {
+      "type": "integer",
+      "title": "Minimum Filtering Event Count",
+      "description": "Minimum number of filtering events (e.g. searches after aggregation) necessary for the query to be considered. The job will only analyze queries that were issued greater or equal to this number of times.",
+      "default": 20
+    },
+    "queryLenThreshold": {
+      "type": "integer",
+      "title": "Minimum Query Length ",
+      "description": "Minimum length of a query to be included for analysis. The job will only analyze queries with length greater than or equal to this value.",
+      "default": 2
+    },
+    "userHead": {
+      "type": "number",
+      "title": "Head Count Threshold",
+      "description": "User defined threshold for head definition. value=-1.0 will allow the program to pick the number automatically. value<1.0 denotes a percentage (e.g 0.1 means put the top 10% of queries into the head), value=1.0 denotes 100% (e.g 1 means put all queries into the head), value>1.0 denotes the exact number of queries to put in the head (e.g 100 means the top 100 queries constitute the head)",
+      "default": -1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "userTail": {
+      "type": "number",
+      "title": "Tail Count Threshold",
+      "description": "User defined threshold for tail definition. value=-1.0 will allow the program to pick the number automatically. value<1.0 denotes a percentage, (e.g 0.1 means put the bottom 10% of queries into the tail) value=1.0 denotes 100% (e.g 1 means put all queries into the tail), value>1.0 denotes the exact number of queries to put into the tail (e.g 100 means the bottom 100 queries constitute the tail).",
+      "default": -1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "topQ": {
+      "type": "array",
+      "title": "Top X% Head Query Event Count",
+      "description": "Compute how many total events come from the top X head queries (Either a number greater than or equal to 1.0 or a percentage of the total number of unique queries)",
+      "default": [
+        100,
+        0.01
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "trafficPerc": {
+      "type": "array",
+      "title": "Number of Queries that Constitute X% of Total Events",
+      "description": "Compute how many queries constitute each of the specified event portions(E.g., 0.25, 0.50)",
+      "default": [
+        0.25,
+        0.5,
+        0.75
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "lastTraffic": {
+      "type": "array",
+      "title": "Bottom X% Tail Query Event Count",
+      "description": "Compute the total number of queries that are spread over each of the specified tail event portions (E.g., 0.01)",
+      "default": [
+        0.01
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "trafficCount": {
+      "type": "array",
+      "title": "Event Count Computation Threshold",
+      "description": "Compute how many queries have events less than each value specified (E.g., a value of 5.0 would return the number of queries that have less than 5 associated events)",
+      "default": [
+        5
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "number"
+      }
+    },
+    "keywordsBlobName": {
+      "type": "string",
+      "title": "Keywords blob name",
+      "description": "Name of the keywords blob resource. Typically, this should be a csv file uploaded to blob store in a specific format. Check documentation for more details on format and uploading to blob store ",
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "file:spark"
+    },
+    "lenScale": {
+      "type": "integer",
+      "title": "Edit Distance vs String Length Scale",
+      "description": "A scaling factor used to normalize the length of the query string. This filters head and tail string match based on if edit_dist <= string_length/length_scale. A large value for this factor leads to a shorter spelling list. A smaller value leads to a longer spelling list but may add lower quality corrections.",
+      "default": 6,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "overlapThreshold": {
+      "type": "integer",
+      "title": "Head and tail Overlap threshold",
+      "description": "The threshold for the number of overlapping tokens between the head and tail. When a head string and tail string share more tokens than this threshold, they are considered a good match.",
+      "default": 4,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "overlapNumBoost": {
+      "type": "number",
+      "title": "Token Overlap Number Boost",
+      "description": "When there are multiple possible head matches for a tail, we rank heads based on: overlapNumBoost * overlapNum + headQueryCountBoost * log(headQueryCount). A big number puts more weight on how many tokens match between the head and tail query strings instead of the number of times a head query appears.",
+      "default": 10,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "headQueryCntBoost": {
+      "type": "number",
+      "title": "Head query count boost",
+      "description": "When there are multiple possible head matches for tail, we rank heads based on: overlapNumBoost * overlapNum + headQueryCountBoost * log(headQueryCount). A big number puts more weight on the count head query instead of the number of tokens shared between the head and tail query strings",
+      "default": 1,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "tailRewrite": {
+      "type": "boolean",
+      "title": "Generate tail rewrite table",
+      "description": "If true, also generate tail rewrite table, o.w., only get distributions. May need to set it to false in the very first run to help customize head and tail positions.",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "headTailAnalysis"
+      ],
+      "default": "headTailAnalysis",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "signalTypeField",
+        "mainType",
+        "filterType",
+        "countField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "minCountMain",
+        "minCountFilter",
+        "tailRewrite",
+        "userHead",
+        "userTail",
+        "lenScale",
+        "overlapThreshold",
+        "topQ",
+        "trafficCount",
+        "trafficPerc",
+        "lastTraffic"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfigQuery",
+        "queryLenThreshold"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "keywordsBlobName"
+      ]
+    }
+  ]
+}

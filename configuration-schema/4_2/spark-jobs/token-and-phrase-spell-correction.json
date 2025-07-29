@@ -1,0 +1,413 @@
+{
+  "type": "object",
+  "title": "Token and Phrase Spell Correction",
+  "description": "Use this job to compute token and phrase level spell correction which you can use in your synonym list.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Input Collection",
+      "description": "Collection containing search strings and event counts. Should ideally be the signals collection.If an aggregation collection is being used, update the filter query in the advanced options",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Input Field",
+      "description": "Field containing search strings.",
+      "default": "query",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Data filter query",
+      "description": "Solr query to additionally filter the search strings. Please let it be empty if 'type' field is unavailable in the input collection.",
+      "default": "type:click OR type:response",
+      "hints": [
+        "dummy"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Collection to store misspelling and correction pairs. Defaults to the query_rewrite_staging collection for the application.",
+      "hints": [
+        "dummy"
+      ]
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "stopwordsBlobName": {
+      "type": "string",
+      "title": "Stopwords blob (Deprecated)",
+      "description": "Name of stopwords blob resource (.txt or .rtf file uploaded to the blob store). This field is marked for deprecation. Going forward, please specify the stopwords blob name as a luceneSchema property.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "file:spark"
+    },
+    "dictionaryCollection": {
+      "type": "string",
+      "title": "Dictionary Collection",
+      "description": "Solr Collection containing dictionary with correct spellings. E.g., product catalog."
+    },
+    "dictionaryField": {
+      "type": "string",
+      "title": "Dictionary Field",
+      "description": "Solr field containing dictionary text. Multiple fields can be specified using the format: field1,field2 etc."
+    },
+    "countField": {
+      "type": "string",
+      "title": "Count Field",
+      "description": "Solr field containing query count",
+      "default": "count_i"
+    },
+    "mainType": {
+      "type": "string",
+      "title": "Main Event Type",
+      "description": "The main signal event type (e.g. click) that the job is based on if input is signal data. E.g., if main type is click, then head and tail tokens/phrases are defined by the number of clicks.",
+      "default": "click"
+    },
+    "filterType": {
+      "type": "string",
+      "title": "Filtering Event Type",
+      "description": "The secondary event type (e.g. response) that can be used for filtering out rare searches.Note: In order to use this `response` default value, please make sure you have type:response in the input collection.If there is no need to filter on number of searches, please leave this parameter blank.",
+      "default": "response"
+    },
+    "signalTypeField": {
+      "type": "string",
+      "title": "Field Name of Signal Type",
+      "description": "The field name of signal type in the input collection.",
+      "default": "type",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "minCountMain": {
+      "type": "integer",
+      "title": "Minimum Main Event Count",
+      "description": "Minimum number of main events (e.g. clicks after aggregation) necessary for the query to be considered. The job will only analyze queries with clicks greater or equal to this number.",
+      "default": 1
+    },
+    "minCountFilter": {
+      "type": "integer",
+      "title": "Minimum Filtering Event Count",
+      "description": "Minimum number of filtering events (e.g. searches after aggregation) necessary for the query to be considered. The job will only analyze queries that were issued greater or equal to this number of times.",
+      "default": 10
+    },
+    "dictionaryDataFilterQuery": {
+      "type": "string",
+      "title": "Dictionary Data Filter Query",
+      "description": "Solr query to use when loading dictionary data",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "minPrefix": {
+      "type": "integer",
+      "title": "Minimum Prefix Match",
+      "description": "The minimum number of matches on starting characters. Note: Setting it to 0 may largely increase running time. ",
+      "default": 1,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "minMispellingLen": {
+      "type": "integer",
+      "title": "Minimum Length of Misspelling",
+      "description": "The minimum length of misspelling to check. Smaller number may lead to problematic corrections. E.g., It is hard to find the right correction for a two or three character string. ",
+      "default": 5,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "maxDistance": {
+      "type": "integer",
+      "title": "Maximum Edit Distance",
+      "description": "The maximum edit distance between related token/phrases you are interested in. Large number leads to longer correction list but may add lower quality corrections. ",
+      "default": 2,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "lastCharMatchBoost": {
+      "type": "number",
+      "title": "Last Character Match Boost",
+      "description": "When there are multiple possible corrections, we rank corrections based on: editDistBoost / editDist + correctionCountBoost * log(correctionCount) + lastCharMatchBoost * lastCharMatch + soundMatchBoost * soundexMatch. Big number puts more weight on last character match between misspelling and correction strings",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "soundMatchBoost": {
+      "type": "number",
+      "title": "Sound Match Boost",
+      "description": "When there are multiple possible corrections, we rank corrections based on: editDistBoost / editDist + correctionCountBoost * log(correctionCount) + lastCharMatchBoost * lastCharMatch + soundMatchBoost * soundexMatch. Big number puts more weight on soundex match between misspelling and correction strings",
+      "default": 3,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "correctCntBoost": {
+      "type": "number",
+      "title": "Correction Count Boost",
+      "description": "When there are multiple possible corrections, we rank corrections based on: editDistBoost / editDist + correctionCountBoost * log(correctionCount) + lastCharMatchBoost * lastCharMatch + soundMatchBoost * soundexMatch. Big number puts more weight on count of correction string occurrences.",
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "editDistBoost": {
+      "type": "number",
+      "title": "Edit Distance Boost",
+      "description": "When there are multiple possible corrections, we rank corrections based on: editDistBoost / editDist + correctionCountBoost * log(correctionCount) + lastCharMatchBoost * lastCharMatch + soundMatchBoost * soundexMatch. Big number puts more weight on shorter edit distance.",
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "signalDataIndicator": {
+      "type": "boolean",
+      "title": "Input is Signal Data",
+      "description": "The input dataset that the spell checker based on is signal data. If the input data is content document rather than signal, please uncheck.",
+      "default": true
+    },
+    "analyzerConfigQuery": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema for Processing Queries",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [ { \"name\": \"LetterTokLowerStem\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"letter\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"LetterTokLowerStem\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "minLength": 1
+    },
+    "analyzerConfigDictionary": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema for Processing Dictionary",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [ { \"name\": \"LetterTokLowerStem\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"letter\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"LetterTokLowerStem\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "minLength": 1
+    },
+    "correctionThreshold": {
+      "type": "number",
+      "title": "Correct Spelling Threshold",
+      "description": "The count of occurrence ABOVE which the token/phrases are likely to be corrected spellings. Note that this number can be either fraction (<1.0) to denote a quantile based on count number distribution (shown in the log) or a number (>1.0) to denote the absolute count. A big number may cause performance issues.",
+      "default": 0.8,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "misspellingThreshold": {
+      "type": "number",
+      "title": "Misspelling Threshold",
+      "description": "The count of occurrence BELOW which the token/phrases are likely to be misspellings. Note that this number can be either fraction (<1.0) to denote a quantile based on count number distribution (shown in the log) or a number (>1.0) to denote the absolute count.",
+      "default": 0.8,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "lenScale": {
+      "type": "integer",
+      "title": "Edit Dist vs String Length Scale",
+      "description": "A scaling factor used to normalize the length of query string to compare against edit distances. The filtering is based on if edit_dist <= string_length/length_scale. A large value for this factor leads to a shorter correction list. A small value leads to a longer correction list but may add lower quality corrections.",
+      "default": 5,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "corMisRatio": {
+      "type": "number",
+      "title": "Correction and Misspelling Count Ratio",
+      "description": "Ratio between correction occurrence count and misspelling occurrence count. Pairs with ratio less than or equal to this number will be filtered. Big number leads to shorter correction list and may have higher quality corrections.",
+      "default": 3,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "enableAutoPublish": {
+      "type": "boolean",
+      "title": "Enable auto-publishing",
+      "description": "If true, automatically publishes rewrites for rules. Default is false to allow for initial human-aided reviewing",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "tokenPhraseSpellCorrection"
+      ],
+      "default": "tokenPhraseSpellCorrection",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed",
+        "signalDataIndicator"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "signalTypeField",
+        "mainType",
+        "filterType",
+        "countField"
+      ]
+    },
+    {
+      "label": "Boost Parameters",
+      "properties": [
+        "lastCharMatchBoost",
+        "soundMatchBoost",
+        "correctCntBoost",
+        "editDistBoost"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "minCountMain",
+        "minCountFilter",
+        "correctionThreshold",
+        "misspellingThreshold",
+        "lenScale",
+        "corMisRatio",
+        "maxDistance",
+        "minMispellingLen",
+        "minPrefix"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfigQuery"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "stopwordsBlobName",
+        "dictionaryCollection",
+        "dictionaryField",
+        "dictionaryDataFilterQuery",
+        "analyzerConfigDictionary"
+      ]
+    }
+  ]
+}

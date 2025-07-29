@@ -1,0 +1,185 @@
+{
+  "type": "object",
+  "title": "HTML",
+  "description": "Parse html content",
+  "required": [
+    "charset",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "89e42a69-f761-4ae6-94f4-11809956d8a5"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types for this Parser Stage",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "use default media types for this Parser Stage",
+      "description": "Indicates if parser stage should use the default media types.  Unchecking this box means that ONLY the manually configured media types will be parsed by the parser and you then MUST provide at least one media type.",
+      "default": true
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "charset": {
+      "type": "string",
+      "title": "Character Set",
+      "description": "Example: \"UTF-8\"",
+      "default": "detect"
+    },
+    "recordSelector": {
+      "type": "string",
+      "title": "Record Selector"
+    },
+    "keepParent": {
+      "type": "boolean",
+      "title": "Keep Parent Document?",
+      "description": "Keep or discard parent document with selected records. Has no effect if Record Selector is not specified.",
+      "default": true
+    },
+    "mappings": {
+      "type": "array",
+      "title": "HTML Mappings",
+      "items": {
+        "type": "object",
+        "required": [
+          "selectRule",
+          "field"
+        ],
+        "properties": {
+          "selectRule": {
+            "type": "string",
+            "title": "Select Rule"
+          },
+          "attribute": {
+            "type": "string",
+            "title": "Attribute"
+          },
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "multivalued": {
+            "type": "boolean",
+            "title": "Multi Valued",
+            "default": false
+          }
+        }
+      }
+    },
+    "extractHtmlLinks": {
+      "type": "boolean",
+      "title": "Extract HTML links",
+      "description": "Collect links explicitly declared in HTML document",
+      "default": false
+    },
+    "extractBodyText": {
+      "type": "boolean",
+      "title": "Extract body as a text",
+      "description": "Extract body as a text",
+      "default": true
+    },
+    "contentExtractionConfig": {
+      "type": "object",
+      "title": "Content extraction",
+      "description": "Extract rich formatted content and metadata",
+      "properties": {
+        "extractContent": {
+          "type": "boolean",
+          "title": "Extract page content",
+          "default": true
+        },
+        "extractMetadata": {
+          "type": "boolean",
+          "title": "Extract metadata",
+          "default": true
+        },
+        "preserveContentFormat": {
+          "type": "boolean",
+          "title": "Store readable html version of body content (experimental)",
+          "default": false
+        },
+        "metadataPrefix": {
+          "type": "string",
+          "title": "Optional prefix for rich content and extracted metadata"
+        }
+      }
+    },
+    "metatagsPrefix": {
+      "type": "string",
+      "title": "Optional prefix for metatags captured html document",
+      "description": "Optional prefix to add to metatags (except id and charset) captured from an html document to used as a fields as-is (id and charset get prefix) from document",
+      "default": "false"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "html"
+      ],
+      "default": "html"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1
+}

@@ -1,0 +1,100 @@
+{
+  "type": "object",
+  "title": "TensorFlow Deep Encoding",
+  "description": "Use a deep learning model to encode and clusterize queries into fixed dense vector space",
+  "required": [
+    "modelId",
+    "documentFeatureField",
+    "vectorField",
+    "clustersField",
+    "distancesField",
+    "numClusters"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "TensorFlow Deep Learning Encoder Model ID",
+      "description": "The ID of the DL encoder model bundled to the MLeap format and stored in the Fusion blob store.",
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "model:ml-model"
+    },
+    "documentFeatureField": {
+      "type": "string",
+      "title": "Document Feature Field",
+      "description": "Name of the document field to feed into the encoder.",
+      "default": "body_t",
+      "minLength": 1
+    },
+    "vectorField": {
+      "type": "string",
+      "title": "Vector Field",
+      "description": "Name of the field to store the encoded vector in the document. \"_ds\" suffix will be added if not already present",
+      "default": "document_vector_ds",
+      "minLength": 1
+    },
+    "clustersField": {
+      "type": "string",
+      "title": "Clusters Field",
+      "description": "Name of the field to store document extracted clusters. \"_ss\" suffix will be added if not already present",
+      "default": "document_clusters_ss",
+      "minLength": 1
+    },
+    "distancesField": {
+      "type": "string",
+      "title": "Distances Field",
+      "description": "Name of the field to store document extracted distances to the clusters. \"_ds\" suffix will be added if not already present",
+      "default": "document_distances_ds",
+      "minLength": 1
+    },
+    "numClusters": {
+      "type": "integer",
+      "title": "Number of clusters",
+      "description": "Number of document clusters to be stored in clusters field. Should be less or equal to the amount of clusters from the encoder model.",
+      "default": 1
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    },
+    "storeInContext": {
+      "type": "boolean",
+      "title": "Store predictions in the context",
+      "description": "Flag to indicate that the encoded document vector and clusters should be stored in the Context instead of the documents fields.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 2,
+  "unsafe": false
+}

@@ -1,0 +1,549 @@
+{
+  "type" : "object",
+  "title" : "LDAP and Azure Acls Connector (v2)",
+  "description" : "The LDAP acls connector can crawl Active Directory, Azure Active Directory and OpenLDAP.",
+  "required" : [ "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline.",
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default" : 20,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "The LDAP acls connector can crawl Active Directory, Azure Active Directory and OpenLDAP.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "security", "ldapPort", "ldaps" ],
+      "properties" : {
+        "ldapHost" : {
+          "type" : "string",
+          "title" : "LDAP host",
+          "description" : "LDAP host."
+        },
+        "ldapPort" : {
+          "type" : "number",
+          "title" : "LDAP port",
+          "description" : "LDAP port.",
+          "default" : 389,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : -2147483648,
+          "exclusiveMinimum" : false,
+          "multipleOf" : 1.0
+        },
+        "ldaps" : {
+          "type" : "boolean",
+          "title" : "Enable SSL (LDAPS)",
+          "description" : "Use LDAPS to secure communication to the LDAP server.",
+          "default" : false
+        },
+        "loginUserPrincipal" : {
+          "type" : "string",
+          "title" : "Login User Principal",
+          "description" : "The Crawl account user principal name of which to authenticate to LDAP."
+        },
+        "loginPassword" : {
+          "type" : "string",
+          "title" : "Login Password",
+          "description" : "The Crawl account user password of which to authenticate to LDAP.",
+          "hints" : [ "secret" ]
+        },
+        "baseDn" : {
+          "type" : "string",
+          "title" : "Base DN",
+          "description" : "Base DN."
+        },
+        "userSearchBaseDn" : {
+          "type" : "string",
+          "title" : "User Search Base DN",
+          "description" : "User Search Base DN."
+        },
+        "groupSearchBaseDn" : {
+          "type" : "string",
+          "title" : "Group Search Base DN",
+          "description" : "Group Search Base DN."
+        },
+        "userSearchFilter" : {
+          "type" : "string",
+          "title" : "User Search Filter",
+          "description" : "User Search Filter.",
+          "default" : "(&(objectclass=user)(sAMAccountName=*))"
+        },
+        "groupSearchFilter" : {
+          "type" : "string",
+          "title" : "Group Search Filter",
+          "description" : "Group Search Filter.",
+          "default" : "(&(objectclass=group))"
+        },
+        "adNetbiosDomain" : {
+          "type" : "string",
+          "title" : "AD Netbios Domain",
+          "description" : "AD Netbios domain name."
+        },
+        "security" : {
+          "type" : "object",
+          "title" : "Graph security filtering configuration",
+          "required" : [ ],
+          "properties" : {
+            "enabled" : {
+              "type" : "boolean",
+              "title" : "Enable security trimming",
+              "description" : "Enable query-time security-trimming",
+              "default" : true
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties" ]
+        },
+        "additionalAttributes" : {
+          "type" : "array",
+          "title" : "Additional LDAP Attributes",
+          "description" : "When fetching LDAP users, you can request additional attributes to be indexed as fields such as manager, mail, phonenumber, etc.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "azureProperties" : {
+          "type" : "object",
+          "title" : "Azure AD Properties",
+          "description" : "Properties that should be set when want to crawl Azure AD instances for additional group definitions",
+          "required" : [ ],
+          "properties" : {
+            "tenantId" : {
+              "type" : "string",
+              "title" : "Azure AD Tenant ID",
+              "description" : "If crawling Azure AD instances, supply Azure Tenant ID. This is required when listing Azure Groups from Microsoft Graph API."
+            },
+            "clientId" : {
+              "type" : "string",
+              "title" : "Azure AD Client ID",
+              "description" : "If crawling Azure AD instances, supply the Azure Application's Client ID. This is required when listing Azure Groups from Microsoft Graph API."
+            },
+            "clientSecret" : {
+              "type" : "string",
+              "title" : "Azure AD Client Secret",
+              "description" : "If crawling Azure AD instances, supply the Azure Application's Client secret. This is required when listing Azure Groups from Microsoft Graph API.",
+              "hints" : [ "secret" ]
+            },
+            "ignoreSSLValidation" : {
+              "type" : "boolean",
+              "title" : "Ignore SSL Validation",
+              "description" : "When crawling the Azure AD groups and users, ignore SSL validation.",
+              "default" : true
+            },
+            "proxyUrl" : {
+              "type" : "string",
+              "title" : "Proxy URL",
+              "description" : "If crawling Azure AD instances, if you need to communicate through a proxy, specify the proxy url here. Format: host:port"
+            },
+            "proxyUsername" : {
+              "type" : "string",
+              "title" : "Proxy Username",
+              "description" : "If crawling Azure AD instances, if you need to communicate through a proxy, specify the proxy username here"
+            },
+            "proxyPassword" : {
+              "type" : "string",
+              "title" : "Proxy Password",
+              "description" : "If crawling Azure AD instances, if you need to communicate through a proxy, specify the proxy password here",
+              "hints" : [ "secret" ]
+            },
+            "onPremisesDomainMappings" : {
+              "type" : "array",
+              "title" : "On Premises Domain Mappings",
+              "description" : "The onPremisesDomainName element used in the \"id\" of the azure-onprem-user by default will be a fqdn domain such as \"engineering.lucidworks.com\". Here you can specify a mapping to some other domain representation such as \"eng\". You should use this when the ACLs on your docs are in the form ShortDomain\\Username",
+              "items" : {
+                "type" : "object",
+                "required" : [ ],
+                "properties" : {
+                  "onPremisesDomainName" : {
+                    "type" : "string",
+                    "title" : "On premises domain name",
+                    "description" : "The full onPremisesDomainName as returned from MS Graph API. Will look something like: \"northwest.lucidworks.com\"",
+                    "minLength" : 1
+                  },
+                  "mapToDomainName" : {
+                    "type" : "string",
+                    "title" : "Map to domain name",
+                    "description" : "What to replace this domain name with. For example, in your setup you have \"northwest.lucidworks.com\" but you want to use the netbios-style domain \"nw\". So in that case you would specify \"nw\" in this field.",
+                    "minLength" : 1
+                  }
+                },
+                "interfaces" : [ "com.lucidworks.connector.plugins.ldapacls.config.OnPremisesDomainMapping" ]
+              }
+            },
+            "userBatchSize" : {
+              "type" : "number",
+              "title" : "User Batch Size",
+              "description" : "This is the $top parameter sent ot the MS users endpoint, which is the number of users returned in each api call.",
+              "default" : 999,
+              "maximum" : 999,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "groupBatchSize" : {
+              "type" : "number",
+              "title" : "Group Batch Size",
+              "description" : "This is the $top parameter sent ot the MS groups endpoint, which is the number of groups returned in each api call.",
+              "default" : 999,
+              "maximum" : 999,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "bearerTokenExpiryMs" : {
+              "type" : "number",
+              "title" : "Bearer Token Expiry (ms)",
+              "description" : "In milliseconds, how long to re-use an authentication bearer token before obtaining a new one.",
+              "default" : 3600000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "httpConnectionRequestTimeout" : {
+              "type" : "number",
+              "title" : "HTTP Connection Pool Request Timeout (ms)",
+              "description" : "In milliseconds, time to wait for getting a connection from the connection manager/pool. (HttpClient maintains a connection pool to manage the connections. Similar to database connection pool).",
+              "default" : 60000,
+              "hints" : [ "advanced" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "httpSocketTimeout" : {
+              "type" : "number",
+              "title" : "HTTP Socket Timeout (ms)",
+              "description" : "In milliseconds, max time gap between two consecutive data packets while transferring data from server to client.",
+              "default" : 60000,
+              "hints" : [ "advanced" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "httpConnectTimeout" : {
+              "type" : "number",
+              "title" : "HTTP Connect Timeout (ms)",
+              "description" : "In milliseconds, max time to establish a connection with remote host/server.",
+              "default" : 30000,
+              "hints" : [ "advanced" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.ldapacls.config.AzureAuthenticationConfig" ]
+        },
+        "aclZkHosts" : {
+          "type" : "string",
+          "title" : "ACL zk hosts string",
+          "description" : "ACL colleciton solr zk hosts string.",
+          "hints" : [ "advanced" ]
+        },
+        "aclZkChroot" : {
+          "type" : "string",
+          "title" : "ACL zk chroot string",
+          "description" : "ACL colleciton solr zk hosts chroot string.",
+          "hints" : [ "advanced" ]
+        },
+        "fetchRetryProperties" : {
+          "type" : "object",
+          "title" : "Retry Options",
+          "description" : "A set of options for configuring retry behavior.",
+          "required" : [ "delayMs", "maxDelayTimeMs", "delayFactor" ],
+          "properties" : {
+            "maxRetries" : {
+              "type" : "number",
+              "title" : "Maximum Retries",
+              "description" : "The retryer will retry failed operations in the case that they might succeed if attempted again. This parameter states the number of attempts to retry until giving up. This parameter, if specified, will override the \"Stop retrying after time (milliseconds)\" parameter.",
+              "default" : 3,
+              "maximum" : 100,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "delayFactor" : {
+              "type" : "number",
+              "title" : "Delay Factor",
+              "description" : "The retryer will retry failed operations in the case that they might succeed if attempted again. The retryer will sleep an exponential amount of time after the first failed attempt and retry in exponentially incrementing amounts after each failed attempt up to the maximumTime. nextWaitTime = exponentialIncrement * multiplier.",
+              "default" : 2.0,
+              "maximum" : 9999.0,
+              "exclusiveMaximum" : false,
+              "minimum" : 1.0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "delayMs" : {
+              "type" : "number",
+              "title" : "Retry Delay",
+              "description" : "Sets the delay between retries, exponentially backing off to the maxDelayTimeMs and multiplying successive delays by the delayFactor",
+              "default" : 1000,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "maxDelayTimeMs" : {
+              "type" : "number",
+              "title" : "Maximum Delay Time",
+              "description" : "The maximum time wait time between successive retries.",
+              "default" : 300000,
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "maxTimeLimitMs" : {
+              "type" : "number",
+              "title" : "Maximum Time Limit",
+              "description" : "This setting is used to limit the maximum amount of time spent on retries. Note: this will be ignored if \"Maximum Retries\" is specified.",
+              "default" : 600000,
+              "maximum" : 28800000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "errorExclusions" : {
+              "type" : "array",
+              "title" : "Error Exclusions",
+              "description" : "Optional regex list that will be matched against failed attempts exception class and message. If any regex matches, do not retry this request. This is needed to prevent the retryer from retrying non-recoverable errors that were not already ignored by the connector implementation.",
+              "items" : {
+                "type" : "string",
+                "maxLength" : 256,
+                "minLength" : 1
+              }
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig$Properties" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.ldapacls.config.LdapAclsConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "The LDAP acls connector can crawl Active Directory, Azure Active Directory and OpenLDAP.",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "LDAP",
+  "categoryPriority" : 1
+}

@@ -1,0 +1,155 @@
+{
+  "type": "object",
+  "title": "Legacy Item Recommender",
+  "description": "Use this job when you want to compute user recommendations based on pre-computed item similarities.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "itemSimCollection",
+    "outputRecsCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Preference Collection",
+      "description": "User/Item preference collection (often a signals collection or signals aggregation collection)"
+    },
+    "itemSimCollection": {
+      "type": "string",
+      "title": "Item Similarity Collection",
+      "description": "Collection containing item-to-item similarity values (computed by any means)"
+    },
+    "outputRecsCollection": {
+      "type": "string",
+      "title": "Output Recommendations Collection",
+      "description": "Collection containing item-to-item similarity-based recommendations "
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Preference Collection Filter Query",
+      "description": "Solr query to filter user preferences",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "prefUserIdField": {
+      "type": "string",
+      "title": "Preference Collection User Id Field",
+      "description": "Solr field name containing stored user ids in the preference collection",
+      "default": "user_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "prefItemIdField": {
+      "type": "string",
+      "title": "Preference Collection Item Id Field",
+      "description": "Solr field name containing stored item ids in the preference collection",
+      "default": "item_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "prefWeightField": {
+      "type": "string",
+      "title": "Preference Collection Preference Weight Field",
+      "description": "Solr field name containing preference weight in the preferences collection",
+      "default": "weight_d",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemSimQuery": {
+      "type": "string",
+      "title": "Item Similarity Collection Filter Query",
+      "description": "Solr query to filter item similarities (e.g. to filter by similarity type, or algorithm id)",
+      "default": "*:*"
+    },
+    "simItemIdField": {
+      "type": "string",
+      "title": "Item-Similarity Collection Item Id Field",
+      "description": "Solr field name containing stored item ids in the item-similarity collection",
+      "default": "item_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "simOtherItemIdField": {
+      "type": "string",
+      "title": "Item-Similarity Collection Other Item Id Field",
+      "description": "Solr field name containing the ids for the *other* item similar to the main item",
+      "default": "other_item_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "simSimField": {
+      "type": "string",
+      "title": "Item-Similarity Collection Similarity Field",
+      "description": "Solr field name containing item-item similarity value in the item-similarity collection",
+      "default": "sim_d",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numRecsPerUser": {
+      "type": "integer",
+      "title": "Number of Recommendations / User",
+      "description": "Limit on the maximum number of recommendations to compute per user",
+      "default": 10
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "item_similarity_recs"
+      ],
+      "default": "item_similarity_recs",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingDataFilterQuery",
+        "itemSimCollection",
+        "itemSimQuery",
+        "outputRecsCollection"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "prefUserIdField",
+        "prefItemIdField",
+        "prefWeightField",
+        "simItemIdField",
+        "simOtherItemIdField",
+        "simSimField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "numRecsPerUser"
+      ]
+    }
+  ]
+}

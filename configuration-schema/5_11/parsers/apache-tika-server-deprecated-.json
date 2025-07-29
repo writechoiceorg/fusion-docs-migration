@@ -1,0 +1,207 @@
+{
+  "type": "object",
+  "title": "Apache Tika Server (Deprecated) ",
+  "description": "A simplified Apache Tika parser more geared towards an Enterprise Search crawl where all documents are parsed by sending them to a Tika Server. Files will be sent to the tika-server service for parsing, which greatly lessens the amount of memory needed on Connector pods. Use async-parsing instead. This stage is deprecated.",
+  "required": [
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "a212ef81-cb28-4cc7-8c1d-72925086b539"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types to match",
+      "description": "Documents with a media type on this list will be matched by this parser stage. See inheritMediaTypes / use default media types for more.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "Match default media types in this Parser Stage",
+      "description": "Each parser stage has a built-in list of media types it handles by default. If this setting is true, that list will be used along with any optional additional types provided in the mediaTypes list. If this setting is false, this stage will only be selected for media types in the mediaTypes list, and the mediaTypes list becomes a mandatory property which must have at least one valid media type.",
+      "default": true
+    },
+    "ignoredMediaTypes": {
+      "type": "array",
+      "title": "Media Types to ignore",
+      "description": "Documents with a media type on this list will be not be processed by this parser stage.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "customTikaServerEndpoints": {
+      "type": "array",
+      "title": "Custom tika server endpoints",
+      "description": "Optional - If you do not want to use the Fusion's default http://tikaserver service, you can instead specify one or more alternative tika server URLs.",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "excludeContentTypes": {
+      "type": "array",
+      "title": "Content types to exclude",
+      "description": "List of content types to exclude from parsing",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "addOriginalContent": {
+      "type": "boolean",
+      "title": "Add original document content (raw bytes)",
+      "default": false
+    },
+    "addFailedDocs": {
+      "type": "boolean",
+      "title": "Add failed documents",
+      "default": false
+    },
+    "includeImages": {
+      "type": "boolean",
+      "title": "Include images",
+      "default": false
+    },
+    "contentEncoding": {
+      "type": "string",
+      "title": "Content transport encoding of the content (per RFC1341)",
+      "enum": [
+        "binary",
+        "base64"
+      ],
+      "default": "binary"
+    },
+    "maxBytesReturned": {
+      "type": "integer",
+      "title": "Max bytes returned",
+      "description": "Sets the maximum amount of bytes that can be returned from the parser.",
+      "default": 100000000
+    },
+    "maxMetadataFieldBytes": {
+      "type": "integer",
+      "title": "Max metadata field bytes",
+      "description": "Sets the maximum amount of bytes that can be stored in each field.",
+      "default": 30000
+    },
+    "maxEmbeddedDocuments": {
+      "type": "integer",
+      "title": "Max embedded documents",
+      "description": "The maximum number of embedded documents to parse. Any additional embedded documents past this number will be ignored. If set to -1, it will parse an unlimited. If parse is set to 1, no embedded docs will be parsed. If set to 0, the parser will parse nothing.",
+      "default": -1
+    },
+    "parseTimeoutMs": {
+      "type": "integer",
+      "title": "Parse timeout (ms)",
+      "description": "The maximum amount of time in milliseconds that a single parse can take.",
+      "default": 15000
+    },
+    "cleanNonAsciiText": {
+      "type": "boolean",
+      "title": "Remove all non-ascii text",
+      "default": false
+    },
+    "tikaServerClientMaxRetries": {
+      "type": "integer",
+      "title": "Tika server client max retries",
+      "description": "Sets the max number of retries to perform. -1 indicates to retry forever",
+      "default": 2
+    },
+    "tikaServerClientBackOffDelayMs": {
+      "type": "integer",
+      "title": "Tika server client backoff delay (ms)",
+      "description": "Sets the delay between retries, exponentially backing off to the max delay and multiplying\n successive delays by the delay factor",
+      "default": 1000
+    },
+    "tikaServerClientBackOffMaxDelayMs": {
+      "type": "integer",
+      "title": "Tika server client max backoff delay (ms)",
+      "description": "Sets maximum delay that can be reached while backing off during retries",
+      "default": 60000
+    },
+    "tikaServerClientBackOffDelayFactor": {
+      "type": "number",
+      "title": "Tika server client max backoff delay factor",
+      "description": "Successive delays are multiplied by this factor while retrying",
+      "default": 2
+    },
+    "tikaServerClientRetryMaxDurationMs": {
+      "type": "integer",
+      "title": "Tika server client retry max duration (ms)",
+      "description": "Sets the max duration to perform retries for, else the execution will be failed",
+      "default": 120000
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "tikaserver"
+      ],
+      "default": "tikaserver"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

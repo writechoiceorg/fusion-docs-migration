@@ -1,0 +1,220 @@
+{
+  "additionalProperties": true,
+  "type": "object",
+  "category": "Other",
+  "categoryPriority": 1,
+  "title": "Lucidworks AI Custom Embedding Configuration",
+  "description": "The configuration parameters for training a Custom Embedding Model through Lucidworks AI.",
+  "required": [
+    "dataset_config",
+    "trainer_config"
+  ],
+  "properties": {
+    "dataset_config": {
+      "additionalProperties": true,
+      "config":"dataset_config",
+      "description": "This field is a parent config that sets defaults for what can be used for training and evaluation and dataset specific parameters: where it's located, fields that should be used, monitor metric, etc.",
+      "minLength": 1,
+      "title": "dataset_config",
+      "type": "string",
+      "default": "eCommerce='mlp_ecommerce_rnn', general='mlp_ecommerce_rnn'",
+      "enum":["mlp_ecommerce_rnn","mlp_general_rnn"],
+      "properties":{"dataset_config.pkid_col_name":{
+          "description": "This field allows the pkid (primary key ID) column to be mapped to another column name if `pkid` is not present in the columns.\nThe pkid is a unique value for each document. Entries with a duplicate pkid are filtered out. Since not every pkid entry is associated with a query, there may be entries in the catalog index file that are not associated with a query file entry. It is required if not the default",
+          "title": "dataset_config.pkid_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "pkid",
+          "enum":["any string","null"]
+        },
+        "dataset_config.index_title_col_name":{
+          "description": "This field allows title to be mapped to another column name if `title` is not present in the columns.\nIf title and desc (description) are both provided in your config, they will need to be concatenated into a single text field at indexing.This is because title+desc are concatenated into a single text during model training. If only one is provided, then it doesn’t matter which field is used.",
+          "title": "dataset_config.index_title_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "eCommerce='name', general=null",
+          "enum":["any string","null"]
+        },
+        "dataset_config.index_desc_col_name":{
+          "description":"This field allows desc (description) to be mapped to another column name if `desc` is not present in the columns.\nIf title and desc (description) are both provided in your config, they will need to be concatenated into a single text field at indexing.This is because title+desc are concatenated into a single text during model training. If only one is provided, then it doesn’t matter which field is used.",
+          "title": "dataset_config.index_desc_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "eCommerce=null, general='text'",
+          "enum":["any string","null"]
+        },
+        "dataset_config.index_body_col_name":{
+          "description":"This field allows body to be mapped to another column name if `body` is not present in the columns.\nThe body field is used purely for vocabulary creation and custom token embeddings training. If there is a lengthy text field that doesn’t make sense to use for training, it still might be helpful to use it to improve vocabulary coverage and tokenization.",
+          "title": "dataset_config.index_body_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "null",
+          "enum":["any string","null"]
+        },
+        "dataset_config.query_col_name":{
+          "description":"This field allows query to be mapped to another column name if `query` is not present in the columns. It is required if not the default.",
+          "title": "dataset_config.query_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "query",
+          "enum":["any string","null"]
+  
+        },
+        "dataset_config.weight_col_name":{
+          "description":"This field allows weight to be mapped to another column name if weight is not present in the columns. It is required if not the default. ",
+          "title": "dataset_config.weight_col_name",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "eCommerce='aggr_count', general=null",
+          "enum":["any string","null"]
+        },
+        "dataset_config.monitor_metric":{
+          "description":"This field determines the monitor metric. The main metric at k that should be monitored to decide when to stop training. Possible main metrics are: hit, map, mrr, ndcg, & recall. It’s mainly used in deciding when the early stopping should happen. Specifically, when there is no increase in the dataset_config.monitor_metric value for a particular number of epochs (controlled by trainer_config.monitor_patience parameter), the training stops.",
+          "title": "dataset_config.monitor_metric",
+          "type": "string",
+          "hints": [
+              "advanced"
+            ],
+          "default": "eCommerce='ndcg@5', general='mrr@3'",
+          "pattern": "\b(?:hit|map|mrr|ndcg|recall)@(?:1|3|5|10)\b",
+          "enum":["hit@1", "hit@3", "hit@5", "hit@10",
+          "map@1", "map@3", "map@5", "map@10",
+          "mrr@1", "mrr@3", "mrr@5", "mrr@10",
+          "ndcg@1", "ndcg@3", "ndcg@5", "ndcg@10",
+          "recall@1", "recall@3", "recall@5", "recall@10"]
+        }}
+    },
+    "trainer_config":{
+      "additionalProperties": true,
+      "config":"trainer_config",
+      "description":"This field is a parent config that sets defaults for: what kind of text processing should be applied to the data, which encoder architecture to use, which loss function and its parameters to use, which optimizer and its parameters to use, which learning rate scheduler and its parameters to use, specifies metric names and range at which they should.",
+      "title": "trainer_config",
+      "type": "string",
+      "default": "eCommerce='mlp_ecommerce_rnn', general='mlp_ecommerce_rnn'",
+      "enum":["mlp_ecommerce_rnn","mlp_general_rnn"],
+      "properties":{
+          "trainer_config/text_processor_config":{
+            "description":"This field determines which type of tokenization and embedding is used as the base for the recurrent neural network (RNN) model. This field only displays for custom models with a TRAINING_FAILED status. For more information, see Lucidworks AI Models API text processors. From that topic, select View API specification for detailed API information.",
+            "title": "trainer_config/text_processor_config",
+            "type": "string",
+            "hints": [
+                "advanced"
+              ],
+            "default": "word_en",
+            "enum":[
+                "word_en",
+                "bpe_en_small",
+                "bpe_en_large",
+                "bpe_multi", 
+                "bpe_bg_small",
+                "bpe_bg_large", 
+                "bpe_de_small", 
+                "bpe_de_large", 
+                "bpe_es_small", 
+                "bpe_es_large", 
+                "bpe_fr_small", 
+                "bpe_fr_large", 
+                "bpe_it_small", 
+                "bpe_it_large", 
+                "bpe_ja_small", 
+                "bpe_ja_large", 
+                "bpe_ko_small", 
+                "bpe_ko_large", 
+                "bpe_nl_small", 
+                "bpe_nl_large", 
+                "bpe_ro_small", 
+                "bpe_ro_large", 
+                "bpe_zh_small", 
+                "bpe_zh_large", 
+                "word_custom", 
+                "bpe_custom"
+            ]
+          },
+          "trainer_config.encoder_config.emb_trainable":{
+            "description":"This field determines if fine-tuning of the token embeddings is enabled. Examples of token embedding are word or byte pair encoding (BPE) token vectors. If set, it can improve the quality of the model if the query contains less natural language that negatively impacts training. Because the embeddings layer is the largest layer in the network, the process to improve the model requires enough training data to prevent overfitting.",
+            "title": "trainer_config.encoder_config.emb_trainable",
+            "type": "boolean",
+            "hints": [
+                "advanced"
+              ],
+            "default": "eCommerce=true, general=false",
+            "enum":[true,false]
+          },
+          "trainer_config.encoder_config.emb_spdp":{
+            "description":"This field provides a regularization effect, which is the process to simplify result answers. The regularization is applied between the token embeddings layer and the first recurrent neural network (RNN) layer.\nIt is rare for this parameter field to a require change from the default.",
+            "title": "trainer_config.encoder_config.emb_spdp",
+            "type": "float",
+            "minimum"  : 0.0,
+            "maximum"  : 1.0,
+            "hints": [
+                "advanced"
+              ],
+            "default": 0.3,
+            "enum":[0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0]
+          },
+          "trainer_config.encoder_config.rnn_names_list":{
+            "description":"This field determines which bi-directional recurrent neural network (RNN) layers are used. The length of this list must be matched to the list length on the trainer_config.encoder_config.rnn_names_list",
+            "title": "trainer_config.encoder_config.rnn_names_list",
+            "type": "List <string>",
+            "hints": [
+                "advanced"
+              ],
+            "default": "[ 'gru' ]",
+            "enum":["gru","lstm"]
+          },
+          "trainer_config.encoder_config.rnn_units_list":{
+            "description":"The number of units for each recurrent neural network (RNN) layer.\nBecause this is a bi-directional RNN, the encoder’s vector size is two times larger than the number of units in the last layer. For example, if one layer is 128 units, the output vector size is 256.",
+            "title": "trainer_config.encoder_config.rnn_units_list",
+            "type": "List <integer>",
+            "hints": [
+                "advanced"
+              ],
+            "default": "[ 128 ]",
+            "enum":[16, 32, 64, 128, 256, 512]
+          },
+          "trainer_config.num_epochs":{
+            "description":"The number of epochs the training data must complete. An epoch is a full cycle where training data passes through the designated algorithms. During one epoch, the model processes all the training data examples (queries and index documents) at least one time.",
+            "title": "trainer_config.num_epochs",
+            "type": "integer",
+            "hints": [
+                "advanced"
+              ],
+            "default": 64,
+            "minimum": 1
+          },
+          "trainer_config.monitor_patience":{
+            "description":"The number of epochs the training passes before it stops if there is no validation metric improvement during the epochs. The best model state based on the monitor validation metric is used as the final model.\nMonitor patience and monitor metric are interdependent.",
+            "title": "trainer_config.monitor_patience",
+            "type": "integer",
+            "hints": [
+                "advanced"
+              ],
+            "minimum": 1,
+            "default": "eCommerce=16, general=8"
+          },
+          "trainer_config.trn_batch_size":{
+            "description":"The batch size to be used for a single model training update. By default, an appropriate batch size is automatically determined based on the dataset size. If the field is set to `null`, the batch size is also automatically determined based on the dataset size.",
+            "title": "trainer_config.trn_batch_size",
+            "type": "integer",
+            "hints": [
+                "advanced"
+              ],
+            "minimum": 1,
+            "default": "null"
+          }
+      }
+    }
+  }
+}

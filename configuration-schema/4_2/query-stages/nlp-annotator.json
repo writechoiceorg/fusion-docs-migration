@@ -1,0 +1,131 @@
+{
+  "type": "object",
+  "title": "NLP Annotator",
+  "description": "Annotate a query using NLP",
+  "required": [
+    "annotatorType"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "annotatorType": {
+      "type": "string",
+      "title": "Annotator Type",
+      "enum": [
+        "sparknlp",
+        "opennlp"
+      ],
+      "default": "sparknlp"
+    },
+    "sparknlpNERModel": {
+      "type": "string",
+      "title": "Spark NLP NER Model",
+      "description": "If Spark NLP annotator is used, specify the blobstore location of the NER model",
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "model:spark-nlp"
+    },
+    "sparknlpPOSModel": {
+      "type": "string",
+      "title": "Spark NLP POS Model",
+      "description": "If Spark NLP annotator is used, specify the blobstore location of the POS model",
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "model:spark-nlp"
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    },
+    "config": {
+      "type": "string",
+      "title": "Model Configuration",
+      "description": "Advanced configuration for NLP implementations",
+      "default": "{\n  \"opennlp\": {\n    \"posModelLocation\": \"nlp/models/en-pos-maxent.bin\",\n    \"chunkerModelLocation\": \"nlp/models/en-chunker.bin\",\n    \"tokenizerModelLocation\": \"nlp/models/en-token.bin\",\n    \"sentenceModelLocation\": \"nlp/models/en-sent.bin\",\n    \"tokenNameFinderModelLocations\": {\n        \"MONEY\": \"nlp/models/en-ner-money.bin\",\n        \"PERCENT\": \"nlp/models/en-ner-percentage.bin\",\n        \"PERSON\": \"nlp/models/en-ner-person.bin\",\n        \"LOCATION\": \"nlp/models/en-ner-location.bin\",\n        \"TIME\": \"nlp/models/en-ner-time.bin\",\n        \"DATE\": \"nlp/models/en-ner-date.bin\",\n        \"ORG\": \"nlp/models/en-ner-organization.bin\"\n    }\n  }\n}\n",
+      "hints": [
+        "code",
+        "hidden"
+      ]
+    },
+    "inputParam": {
+      "type": "string",
+      "title": "Input parameter to annotate",
+      "description": "Name of the request parameter to annotate using NLP",
+      "default": "q",
+      "minLength": 1
+    },
+    "extractorRules": {
+      "type": "array",
+      "title": "Extractor Rules",
+      "description": "Define rules to extract annotated text into separate parameters",
+      "items": {
+        "type": "object",
+        "required": [
+          "extractedAnnotationType",
+          "labelPattern",
+          "targetParamName"
+        ],
+        "properties": {
+          "extractedAnnotationType": {
+            "type": "string",
+            "title": "Annotation Type to Extract",
+            "enum": [
+              "sentence",
+              "named_entity",
+              "part_of_speech",
+              "noun_chunk"
+            ],
+            "default": "named_entity"
+          },
+          "labelPattern": {
+            "type": "string",
+            "title": "Label Pattern",
+            "description": "Extract all annotations with labels that match this regular expression",
+            "default": ".*",
+            "format": "regex"
+          },
+          "targetParamName": {
+            "type": "string",
+            "title": "Target Parameter Name"
+          },
+          "flattenList": {
+            "type": "boolean",
+            "title": "Flatten Multiple",
+            "description": "Flatten multiple values into a single value by joining on space"
+          }
+        }
+      }
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 2,
+  "unsafe": false
+}

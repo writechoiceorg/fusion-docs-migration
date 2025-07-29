@@ -1,0 +1,621 @@
+{
+  "type" : "object",
+  "title" : "Box (v2)",
+  "description" : "Connector for Box.com. This connector can work in one of two ways: 1) It can crawl a single user's files (and files shared with that user) using OAuth, or 2) It  supports a JWT Service account method that will crawl all users in an enterprise using Box.com's \"As-User\" header to simulate each user. For large distributed accounts, JWT Service Account is recommended. Otherwise you need to explicitly provide a single user access to every file you want to crawl.",
+  "required" : [ "parserId", "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            },
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default" : 20,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Connector for Box.com. This connector can work in one of two ways: 1) It can crawl a single user's files (and files shared with that user) using OAuth, or 2) It  supports a JWT Service account method that will crawl all users in an enterprise using Box.com's \"As-User\" header to simulate each user. For large distributed accounts, JWT Service Account is recommended. Otherwise you need to explicitly provide a single user access to every file you want to crawl.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Box properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "authenticationProperties", "application" ],
+      "properties" : {
+        "application" : {
+          "type" : "object",
+          "title" : "Box application",
+          "description" : "Box application to crawl.",
+          "required" : [ ],
+          "properties" : {
+            "boxItems" : {
+              "type" : "array",
+              "title" : "Box Items",
+              "description" : "Enter the IDs of the folders you want to crawl. For instance, if your folder URL is https://app.box.com/folder/12345, you should enter 12345. Leave this property empty in order to crawl the entire Box Account.",
+              "default" : [ ],
+              "items" : {
+                "type" : "string",
+                "minLength" : 1
+              }
+            },
+            "includedFileExtensions" : {
+              "type" : "array",
+              "title" : "Included file extensions",
+              "description" : "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "default" : [ ],
+              "items" : {
+                "type" : "string",
+                "minLength" : 1
+              }
+            },
+            "excludedFileExtensions" : {
+              "type" : "array",
+              "title" : "Excluded file extensions",
+              "description" : "A set of all file extensions to be skipped from the fetch.",
+              "default" : [ ],
+              "items" : {
+                "type" : "string",
+                "minLength" : 1
+              }
+            },
+            "inclusiveRegexes" : {
+              "type" : "array",
+              "title" : "Inclusive regexes",
+              "description" : "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "default" : [ ],
+              "items" : {
+                "type" : "string",
+                "minLength" : 1
+              }
+            },
+            "exclusiveRegexes" : {
+              "type" : "array",
+              "title" : "Exclusive regexes",
+              "description" : "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "default" : [ ],
+              "items" : {
+                "type" : "string",
+                "minLength" : 1
+              }
+            },
+            "indexFolderMetadata" : {
+              "type" : "boolean",
+              "title" : "Index Folder Metadata",
+              "description" : "Enable indexing of folder metadata. Each folder will be represented by a document in the collection.",
+              "default" : false
+            },
+            "regexCacheSize" : {
+              "type" : "number",
+              "title" : "",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxApplicationProperties", "com.lucidworks.fusion.connector.checker.config.RegexConfig$Properties", "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties", "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig" ]
+        },
+        "authenticationProperties" : {
+          "type" : "object",
+          "title" : "Authentication settings",
+          "required" : [ "apiKey", "apiSecret" ],
+          "properties" : {
+            "jwtProperties" : {
+              "type" : "object",
+              "title" : "JWT Authentication settings",
+              "required" : [ ],
+              "properties" : {
+                "appEntityId" : {
+                  "type" : "string",
+                  "title" : "App Entity ID",
+                  "description" : "The JWT App User ID or JWT App Enterprise ID with access to crawl."
+                },
+                "publicKeyId" : {
+                  "type" : "string",
+                  "title" : "Public Key Id",
+                  "description" : "The public key prefix from the box.com public keys"
+                },
+                "privateKeyBase64" : {
+                  "type" : "string",
+                  "title" : "Private Key (Base64)",
+                  "description" : "Content of the private key. To get this value, open your key file and convert its content (including first and last line) to base64 string.",
+                  "hints" : [ "secret" ]
+                },
+                "privateKeyPassword" : {
+                  "type" : "string",
+                  "title" : "Private Key Password",
+                  "description" : "The password you entered for the private key file.",
+                  "hints" : [ "secret" ]
+                },
+                "encryptionAlgorithm" : {
+                  "type" : "string",
+                  "title" : "Encryption Algorithm",
+                  "description" : "Encryption Algorithm.",
+                  "enum" : [ "RSA_SHA_256", "RSA_SHA_384", "RSA_SHA_512" ],
+                  "default" : "RSA_SHA_256"
+                },
+                "accountType" : {
+                  "type" : "string",
+                  "title" : "Account type",
+                  "description" : "App account type.",
+                  "enum" : [ "USER", "ENTERPRISE" ],
+                  "default" : "USER"
+                },
+                "tokenCacheEntries" : {
+                  "type" : "number",
+                  "title" : "Max Token Cache Entries",
+                  "description" : "Max Token Cache Entries",
+                  "default" : 512,
+                  "maximum" : 2147483647,
+                  "exclusiveMaximum" : false,
+                  "minimum" : -2147483648,
+                  "exclusiveMinimum" : false,
+                  "multipleOf" : 1.0
+                }
+              },
+              "interfaces" : [ "com.lucidworks.connector.plugins.box.config.auth.BoxJwtAuthProperties" ]
+            },
+            "oAuthProperties" : {
+              "type" : "object",
+              "title" : "OAuth Authentication settings",
+              "required" : [ ],
+              "properties" : {
+                "refreshToken" : {
+                  "type" : "string",
+                  "title" : "OAuth Refresh Token",
+                  "description" : "OAuth Refresh token"
+                }
+              },
+              "interfaces" : [ "com.lucidworks.connector.plugins.box.config.auth.BoxOAuthProperties" ]
+            },
+            "apiKey" : {
+              "type" : "string",
+              "title" : "API Key",
+              "description" : "The box API Key"
+            },
+            "apiSecret" : {
+              "type" : "string",
+              "title" : "API Secret",
+              "description" : "The Box API Secret",
+              "hints" : [ "secret" ]
+            },
+            "userCacheSize" : {
+              "type" : "number",
+              "title" : "User cache size",
+              "description" : "Size of the user cache to save connection for impersonation",
+              "default" : 2000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "userCacheExpirationTime" : {
+              "type" : "number",
+              "title" : "User cache expiration time",
+              "description" : "Time (minutes) before removing an item from the cache since it was last accessed by a read or a write",
+              "default" : 5,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxAuthenticationProperties", "com.lucidworks.connector.plugins.box.config.auth.BoxUserCacheProperties" ]
+        },
+        "proxyProperties" : {
+          "type" : "object",
+          "title" : "Proxy settings",
+          "required" : [ ],
+          "properties" : {
+            "proxyType" : {
+              "type" : "string",
+              "title" : "Proxy type",
+              "description" : "Type of proxy to use.",
+              "enum" : [ "HTTP", "SOCKS" ]
+            },
+            "proxyHost" : {
+              "type" : "string",
+              "title" : "Proxy host",
+              "description" : "The address to use when connecting through the proxy."
+            },
+            "proxyPort" : {
+              "type" : "number",
+              "title" : "Proxy port",
+              "description" : "The port to use when connecting through the proxy.",
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxProxyProperties" ],
+          "hints" : [ "advanced" ]
+        },
+        "connectionsConfig" : {
+          "type" : "object",
+          "title" : "Connection settings",
+          "required" : [ ],
+          "properties" : {
+            "readTimeout" : {
+              "type" : "number",
+              "title" : "API Read Timeout (ms)",
+              "description" : "The box api read timeout in milliseconds.",
+              "default" : 120000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "connectTimeout" : {
+              "type" : "number",
+              "title" : "API Connection Timeout (ms)",
+              "description" : "The box api connection timeout in milliseconds.",
+              "default" : 120000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pageSize" : {
+              "type" : "number",
+              "title" : "Request page size",
+              "description" : "Maximum number of items per paginated request",
+              "default" : 1000,
+              "maximum" : 1000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxConnectionProperties" ],
+          "hints" : [ "advanced" ]
+        },
+        "incrementalCrawlingConfig" : {
+          "type" : "object",
+          "title" : "Incremental crawling settings",
+          "required" : [ ],
+          "properties" : {
+            "cacheSize" : {
+              "type" : "number",
+              "title" : "Folder collaborations cache size",
+              "description" : "Size of the folder collaborations cache",
+              "default" : 1000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "cacheExpirationTime" : {
+              "type" : "number",
+              "title" : "Folder collaborations cache expiration time",
+              "description" : "Time in minutes before removing a folder collaboration set",
+              "default" : 5,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxIncrementalCrawlingConfig" ],
+          "hints" : [ "advanced" ]
+        },
+        "maximumItemLimitConfig" : {
+          "type" : "object",
+          "title" : "Item Count Limit",
+          "required" : [ ],
+          "properties" : {
+            "maxItems" : {
+              "type" : "number",
+              "title" : "Maximum Output Limit",
+              "description" : "Limits the number of items emitted to the configured IndexPipeline. The default is no limit (-1).",
+              "default" : -1,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "sizeLimitProperties" : {
+          "type" : "object",
+          "title" : "Item Size Limits",
+          "description" : "Options for including or excluding items based on size, in bytes.",
+          "required" : [ ],
+          "properties" : {
+            "maxSizeBytes" : {
+              "type" : "number",
+              "title" : "Maximum",
+              "description" : "Used for excluding items when the item size is larger than the configured value.",
+              "default" : -1,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "minSizeBytes" : {
+              "type" : "number",
+              "title" : "Minimum",
+              "description" : "Used for excluding items when the item size is smaller than the configured value.",
+              "default" : 1,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "itemRetryProperties" : {
+          "type" : "object",
+          "title" : "Item retry settings",
+          "description" : "Options to configure the retry operation for items.",
+          "required" : [ ],
+          "properties" : {
+            "maxRetries" : {
+              "type" : "number",
+              "title" : "Max retry attempts",
+              "description" : "The maximum number of attempts for a failed item",
+              "default" : 3,
+              "maximum" : 20,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "retryDelayInSeconds" : {
+              "type" : "number",
+              "title" : "Retry delay",
+              "description" : "The amount of time, in seconds, before process again a failed item",
+              "default" : 30,
+              "maximum" : 600,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connectors.components.config.ItemRetryConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "security" : {
+          "type" : "object",
+          "title" : "Graph security filtering configuration",
+          "required" : [ ],
+          "properties" : {
+            "enabled" : {
+              "type" : "boolean",
+              "title" : "Enable security trimming",
+              "description" : "Enable query-time security-trimming",
+              "default" : true
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.box.config.BoxConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.connectors.components.config.ItemRetryConfig", "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig", "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for Box.com. This connector can work in one of two ways: 1) It can crawl a single user's files (and files shared with that user) using OAuth, or 2) It  supports a JWT Service account method that will crawl all users in an enterprise using Box.com's \"As-User\" header to simulate each user. For large distributed accounts, JWT Service Account is recommended. Otherwise you need to explicitly provide a single user access to every file you want to crawl.",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "FileSystem",
+  "categoryPriority" : 1
+}

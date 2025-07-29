@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "title": "Hybrid Query",
+  "description": "Hybrid of Vector and Lexical Search. Will be skipped if query string is blank or wildcard (* or *:*).  Note this will not work well if the incoming q parameter is a Solr query parser string (e.g. field_t:foo) rather than a raw user query string.  Note: The resulting query will ALWAYS be written to <request.params.q>. ",
+  "required": [
+    "lexicalQuery",
+    "lexicalWeight",
+    "lexicalDepth",
+    "vectorQueryField",
+    "vectorContextVariable",
+    "vectorWeight",
+    "vectorDepth"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": ["advanced"]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": ["advanced"],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": ["code", "code/javascript", "advanced"]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": ["readonly", "hidden"]
+    },
+    "lexicalQuery": {
+      "type": "string",
+      "title": "Lexical Query",
+      "description": "Lexical query to use as input to the hybrid search.",
+      "default": "<request.params.q>"
+    },
+    "lexicalWeight": {
+      "type": "number",
+      "title": "Lexical Query Weight",
+      "description": "Relative weight of the lexical query.",
+      "default": 0.3,
+      "maximum": 10.0,
+      "exclusiveMaximum": false,
+      "minimum": 0.001,
+      "exclusiveMinimum": false
+    },
+    "lexicalDepth": {
+      "type": "integer",
+      "title": "Number of Lexical Results",
+      "description": "The number of lexical search results to include in re-ranking.",
+      "default": 1000
+    },
+    "vectorQueryField": {
+      "type": "string",
+      "title": "Vector Query Field",
+      "description": "The name of the Solr field for knn vector search.",
+      "default": "title_v"
+    },
+    "vectorContextVariable": {
+      "type": "string",
+      "title": "Vector Context Variable",
+      "description": "Context variable which contains the vector resulting from a previous stage, such as the Vectorize Query via Lucidworks AI stage.",
+      "default": "<ctx.vector_query>"
+    },
+    "vectorWeight": {
+      "type": "number",
+      "title": "Vector Query Weight",
+      "description": "Relative weight of the vector query.",
+      "default": 0.7,
+      "maximum": 10.0,
+      "exclusiveMaximum": false,
+      "minimum": 0.001,
+      "exclusiveMinimum": false
+    },
+    "vectorDepth": {
+      "type": "integer",
+      "title": "Number of Vector Results",
+      "description": "The number of vector search results to include in re-ranking.  Also known as topK.",
+      "default": 1000
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

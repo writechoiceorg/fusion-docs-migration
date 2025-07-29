@@ -1,0 +1,44 @@
+{
+  "type": "object",
+  "title": "Rewrite Pagination Parameters for Reranking",
+  "description": "Rewrite \"start\" and \"rows\" parameters to request constant number of documents from Solr and apply \"start\" and \"rows\" pagination to response at the end of the pipeline. Used in conjunction with Fusion stages that rerank documents",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "rowsFromSolrToRerank": {
+      "type": "integer",
+      "title": "Number of Results",
+      "description": "Number of results to request from Solr, to be reranked by downstream stages.",
+      "default": 500
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 2,
+  "unsafe": false
+}

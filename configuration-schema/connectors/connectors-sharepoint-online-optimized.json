@@ -1,0 +1,1324 @@
+{
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "A crawler for Sharepoint online - Using sharepoint Rest",
+  "properties": {
+    "category": {
+      "default": "Repository",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description for this datasource.",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Datasource ID",
+      "type": "string"
+    },
+    "parserId": {
+      "description": "Parser used when parsing raw content. Retry parsing setting is available under crawl performance (advance setting)",
+      "title": "Parser",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1,
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Datasource configuration properties",
+      "properties": {
+        "bulkImportCsvFormat": {
+          "default": [
+            "type",
+            "mapdbIndex"
+          ],
+          "description": "Specified only for bulk import connectors. A list of the bulk import csv headers which will be saved into the signature. Must have at least 2 headers.The first value will be the fetch item ID, the second item is the parent ID. Each item will be stored in the signature.",
+          "hints": [
+            "hidden"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Bulk Import CSV Format",
+          "type": "array"
+        },
+        "chunkSize": {
+          "default": 1,
+          "description": "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch batch size",
+          "type": "integer"
+        },
+        "collection": {
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Collection",
+          "type": "string"
+        },
+        "commitAfterItems": {
+          "default": 10000,
+          "description": "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Commit After This Many Items",
+          "type": "integer"
+        },
+        "crawlDBType": {
+          "default": "on-disk",
+          "description": "The type of crawl database to use, in-memory or on-disk.",
+          "enum": [
+            "on-disk",
+            "in-memory"
+          ],
+          "hints": [
+            "advanced"
+          ],
+          "title": "Crawl database type",
+          "type": "string"
+        },
+        "db": {
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "properties": {
+            "aliases": {
+              "default": false,
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "title": "Process Aliases?",
+              "type": "boolean"
+            },
+            "inlinks": {
+              "default": false,
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "title": "Process Inlinks?",
+              "type": "boolean"
+            },
+            "inv_aliases": {
+              "default": false,
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "title": "Process Inverted Aliases?",
+              "type": "boolean"
+            },
+            "type": {
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "minLength": 1,
+              "title": "Implementation Class Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "Connector DB",
+          "type": "object"
+        },
+        "dedupe": {
+          "default": false,
+          "description": "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Dedupe documents",
+          "type": "boolean"
+        },
+        "dedupeField": {
+          "description": "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Dedupe field",
+          "type": "string"
+        },
+        "dedupeSaveSignature": {
+          "default": false,
+          "description": "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Save dedupe signature",
+          "type": "boolean"
+        },
+        "dedupeScript": {
+          "description": "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "Dedupe script",
+          "type": "string"
+        },
+        "delete": {
+          "default": true,
+          "description": "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "title": "Delete dead URIs",
+          "type": "boolean"
+        },
+        "deleteErrorsAfter": {
+          "default": -1,
+          "description": "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "title": "Fetch failure allowance",
+          "type": "integer"
+        },
+        "depth": {
+          "default": -1,
+          "description": "Number of levels in a directory or site tree to descend for documents.",
+          "title": "Max crawl depth",
+          "type": "integer"
+        },
+        "diagnosticMode": {
+          "default": false,
+          "description": "Enable to print more detailed information to the logs about each request.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Diagnostic mode",
+          "type": "boolean"
+        },
+        "emitThreads": {
+          "default": 5,
+          "description": "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "title": "Emit threads",
+          "type": "integer"
+        },
+        "enable_security_trimming": {
+          "properties": {
+            "f.cache_expiration_time": {
+              "default": 7200,
+              "description": "Time in seconds before the security filter cache expires.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "Security cache expiration time",
+              "type": "integer"
+            },
+            "f.cache_max_size": {
+              "default": 1000,
+              "description": "Maximum number of items to hold in the security filter cache.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "Security cache max size",
+              "type": "integer"
+            },
+            "f.enable_sharepoint_security_trimming": {
+              "default": true,
+              "description": "Enable indexing and query-time security-trimming of Sharepoint users/groups (i.e. in addition to users/groups in Active Directory)",
+              "hints": [
+                "hidden"
+              ],
+              "title": "Enable security trimming",
+              "type": "boolean"
+            },
+            "f.global_security_filter_cache": {
+              "default": false,
+              "description": "Enable shared cacheing of access-control filters across datasources.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "Enable global security-filter cache",
+              "type": "boolean"
+            },
+            "f.ldap_follow_referrals": {
+              "default": true,
+              "description": "Indicates whether or not to follow LDAP referrals. Select this checkbox to \"follow\" referrals and un-select it to \"ignore\" referrals.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP referral",
+              "type": "boolean"
+            },
+            "f.ldap_group_base": {
+              "description": "If you do not want to use the base DN for group group searches you can specify a specific base DN for group group searches here.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP group base",
+              "type": "string"
+            },
+            "f.ldap_host": {
+              "description": "Hostname of the LDAP or AD server where user information is stored.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP server host",
+              "type": "string"
+            },
+            "f.ldap_port": {
+              "default": 389,
+              "description": "Port for the LDAP or AD server.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP server port",
+              "type": "integer"
+            },
+            "f.ldap_read_groups_type": {
+              "default": "TOKEN_GROUPS",
+              "description": "Mode for reading groups from LDAP or AD.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP read groups type",
+              "type": "string"
+            },
+            "f.ldap_search_base": {
+              "description": "Base DN to connect to for Active Directory.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP search base",
+              "type": "string"
+            },
+            "f.ldap_use_ssl": {
+              "default": false,
+              "description": "Enable to use SSL when connecting to the LDAP or AD server.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP server use ssl",
+              "type": "boolean"
+            },
+            "f.ldap_user_base": {
+              "description": "If you do not want to use the base DN for user group searches you can specify a specific base DN for user group searches here.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "LDAP user base",
+              "type": "string"
+            },
+            "f.security_filter_cache": {
+              "default": false,
+              "description": "Cache of document access control rules.",
+              "hints": [
+                "advanced",
+                "hidden"
+              ],
+              "title": "Enable security filter cache",
+              "type": "boolean"
+            },
+            "f.user_group_cache_collection_name": {
+              "default": "acl",
+              "description": "The name of the sidecar ACLs collection used in security trimming.",
+              "title": "ACL Collection Name",
+              "type": "string"
+            }
+          },
+          "title": "Enable Security Trimming",
+          "type": "object"
+        },
+        "excludeExtensions": {
+          "description": "File extensions that should not to be fetched. This will limit this datasource to all extensions except this list.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Excluded file extensions",
+          "type": "array"
+        },
+        "excludeRegexes": {
+          "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclusive regexes",
+          "type": "array"
+        },
+        "f.acl_commit_after": {
+          "default": 1800000,
+          "description": "The ACL collection's auto commit value (-1 for never auto commit)",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "ACL collection auto commit (ms)",
+          "type": "integer"
+        },
+        "f.adPassword": {
+          "description": "The active directory account password.",
+          "hints": [
+            "secret",
+            "advanced",
+            "hidden"
+          ],
+          "title": "Active Directory Password",
+          "type": "string"
+        },
+        "f.adUsername": {
+          "description": "The active directory account username.",
+          "hints": [
+            "advanced",
+            "hidden"
+          ],
+          "title": "Active Directory Username",
+          "type": "string"
+        },
+        "f.adfsStsIssuerURI": {
+          "description": "The IssuerURI is used to by the authentication platform to locate the namespace that the token is designated for.",
+          "title": "ADFS STS Issuer URI",
+          "type": "string"
+        },
+        "f.app_auth_azure_login_endpoint": {
+          "default": "https://login.windows.net",
+          "description": "The azure login endpoint to use.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "App Auth Azure Login Endpoint",
+          "type": "string"
+        },
+        "f.app_auth_client_id": {
+          "description": "When you want to use app authentication, this is the client ID of your application.",
+          "title": "App Auth Client ID",
+          "type": "string"
+        },
+        "f.app_auth_client_secret": {
+          "description": "Applicable to SharePoint Online OAuth App-Auth only. The Azure client ID of your application.",
+          "hints": [
+            "secret"
+          ],
+          "title": "Azure AD Client Secret",
+          "type": "string"
+        },
+        "f.app_auth_pfx": {
+          "description": "The base64 encoded value of your X509 PFX certificate file. -- To get this in Linux (bash): base64 cert.pfx | tr -d '\\n' -- To get this in Windows (powershell): [Convert]::ToBase64String([IO.File]::ReadAllBytes('cert.pfx'))",
+          "hints": [
+            "secret"
+          ],
+          "title": "App Base64 Encoded x509 PFX Certificate",
+          "type": "string"
+        },
+        "f.app_auth_pfx_password": {
+          "description": "The password of the x509 pfx certificate.",
+          "hints": [
+            "secret"
+          ],
+          "title": "App X509 Certificate Password",
+          "type": "string"
+        },
+        "f.app_auth_refresh_token": {
+          "description": "Applicable to SharePoint Online OAuth App-Auth only. This is a refresh token which is reusable for up to 12 hours. You must obtain a new tokenusing the OAuth login process if the token becomes expired.",
+          "title": "App auth refresh token",
+          "type": "string"
+        },
+        "f.app_auth_tenant": {
+          "description": "The Office365 tenant of the app. E.g. exampleapp.onmicrosoft.com",
+          "title": "App Auth Tenant",
+          "type": "string"
+        },
+        "f.avoid_ssl_hostname_verification": {
+          "default": true,
+          "description": "Enable this in cases when the CN on the SSL certificate does not match the host name of the server.",
+          "title": " Avoid SSL hostname verification ",
+          "type": "boolean"
+        },
+        "f.connect_timeout": {
+          "default": 5000,
+          "description": "The async http connection timeout.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Connect Timeout",
+          "type": "integer"
+        },
+        "f.content_commit_after": {
+          "default": 1800000,
+          "description": "The content collection's auto commit value (-1 for never auto commit)",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Content collection auto commit (ms)",
+          "type": "integer"
+        },
+        "f.dnsSuffix": {
+          "description": "The DNS suffix of the network. Example: lucidworks.com",
+          "hints": [
+            "hidden"
+          ],
+          "title": "Domain DNS suffix",
+          "type": "string"
+        },
+        "f.domain": {
+          "description": "The NETBIOS domain for the network. Example: LUCIDWORKS",
+          "title": "NetBIOS domain",
+          "type": "string"
+        },
+        "f.enable_http_headers_debugging": {
+          "default": false,
+          "description": "Prints DEBUG level information to the logs.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Enable HTTP headers debugging",
+          "type": "boolean"
+        },
+        "f.excludeContentsExtensions": {
+          "description": "File extensions of files that will not have their contents downloaded when indexing this item. The list item metadata will still be indexed but the file contents will not. The comparison is not case sensitive, and you do not have to specify the '.' but it still work if you do. For example \"zip\" and \".zip\" are both acceptable. The whitespace will also be trimmed.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclude file contents for file extensions",
+          "type": "array"
+        },
+        "f.fetch_all_site_collections": {
+          "default": true,
+          "description": "When this is selected, obtain all site collections from the SharePoint web application and add them to the start links automatically.",
+          "title": "Fetch all site collections",
+          "type": "boolean"
+        },
+        "f.fetch_taxonomies": {
+          "default": false,
+          "description": "Expand the taxonomy path of each list item with a taxonomy field.",
+          "title": "Fetch taxonomies",
+          "type": "boolean"
+        },
+        "f.includeContentsExtensions": {
+          "description": "File extensions of files that will not have their contents downloaded when indexing this item. The list item metadata will still be indexed but the file contents will not. The comparison is not case sensitive, and you do not have to specify the '.' but it still work if you do. For example \"zip\" and \".zip\" are both acceptable. The whitespace will also be trimmed.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Include file contents for file extensions",
+          "type": "array"
+        },
+        "f.list_view_threshold": {
+          "default": 5000,
+          "description": "Set this to your SharePoint farm's list item view threshold. This threshold sets the max amount of list item metadata elements you can fetch at one time. The typical default is 5000 but your SP administrators can set it to a different value. If you see the error \"The attempted operation is prohibited because it exceeds the list view threshold enforced by the administrator\", check with your SP admins to get the correct value.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "List view threshold",
+          "type": "integer"
+        },
+        "f.log_sharepoint_xml": {
+          "default": false,
+          "description": "When analyzing Sharepoint crawls, it can be helpful to log the Soap XML messages between Fusion and Sharepoint. By selecting this, Sharepoint will log the xml of all messages to the connectors log.",
+          "hints": [
+            "advanced",
+            "hidden"
+          ],
+          "title": "Log Sharepoint Soap XML",
+          "type": "boolean"
+        },
+        "f.loginCookieRefreshRateMs": {
+          "default": 10800000,
+          "description": "The amount of time in milliseconds to re-use a SharePoint online cookie until fetching a new one. Ideally this will be set to a small bit less than the max of the Cookies.",
+          "title": "SharePoint Online Cookie Refresh Rate (ms)",
+          "type": "integer"
+        },
+        "f.maxSizeBytes": {
+          "default": 4194304,
+          "description": "Maximum size, in bytes, of a document to crawl.",
+          "title": "Maximum file size (bytes)",
+          "type": "integer"
+        },
+        "f.max_connections": {
+          "default": -1,
+          "description": "Number of max async http connections.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max Connections",
+          "type": "integer"
+        },
+        "f.max_connections_per_host": {
+          "default": -1,
+          "description": "The number of max connections per host.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max Connections Per Host",
+          "type": "integer"
+        },
+        "f.max_list_items_per_site_collection": {
+          "default": -1,
+          "description": "Setting this will cause the fetcher onlyfetch this many list items per site collection when crawling. Set to -1 for unlimited.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max number of list items per site collection",
+          "type": "integer"
+        },
+        "f.max_prefetch_parallel_jobs": {
+          "default": 10,
+          "description": "This is the max number of prefetch jobs that can be run in parallel. If you are crawling small site collections, then you want to use a bigger number here such as 10 or 20. But if you are crawling large site collections, a smaller number is fine here because most of the work will be done within a each prefetch job.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Max prefetch parallel jobs",
+          "type": "integer"
+        },
+        "f.max_site_collections": {
+          "default": -1,
+          "description": "When the \"Fetch all site collections\" is checked, this will limit the number of site collections we fetch. If set to -1, all site collections will be fetched.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 99999999,
+          "minimum": -1,
+          "title": "Maximium number of site collections",
+          "type": "integer"
+        },
+        "f.max_sites_per_site_collection": {
+          "default": -1,
+          "description": "Setting this will cause the fetcher onlyfetch this many sites per site collection when crawling. Set to -1 for unlimited.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max number of sites per site collection",
+          "type": "integer"
+        },
+        "f.minSizeBytes": {
+          "default": 0,
+          "description": "Minimum size, in bytes, of a document to crawl.",
+          "title": "Minimum file size (bytes)",
+          "type": "integer"
+        },
+        "f.password": {
+          "description": "Password for the Sharepoint user.",
+          "hints": [
+            "secret"
+          ],
+          "title": "Sharepoint password",
+          "type": "string"
+        },
+        "f.pooled_connection_idle_timeout": {
+          "default": 600000,
+          "description": "The timeout for getting a connection from the pool.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Pooled Connection Idle Timeout",
+          "type": "integer"
+        },
+        "f.pooled_connection_ttl": {
+          "default": 360000,
+          "description": "The time to live of a connection in the pool.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Pooled Connection TTL",
+          "type": "integer"
+        },
+        "f.prefetch_file_download_timeout_secs": {
+          "default": 100,
+          "description": "When should a file download timeout during the pre-fetch exporter (seconds).",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 999999,
+          "minimum": 1,
+          "title": "Pre-Fetch file download timeout (seconds)",
+          "type": "integer"
+        },
+        "f.prefetch_num_threads": {
+          "default": 5,
+          "description": "How many threads to use when building the pre-fetch index. When crawling small site collections, you want to have a small number of prefetch threads such as 1 or 2 because the cost of allocating the prefetch threads will outweigh their benefit. But if you are crawling a very large site collection, you will want many threads like 25 - 50 because more work can be done faster with large number of fetch threads in that situation.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 1000,
+          "minimum": 1,
+          "title": "Number of pre-fetch threads",
+          "type": "integer"
+        },
+        "f.proxyHost": {
+          "description": "The address to use when connecting through the proxy.",
+          "title": "Proxy host",
+          "type": "string"
+        },
+        "f.proxyPort": {
+          "description": "The port to use when connecting through the proxy. (HTTP or SOCKS)",
+          "title": "Proxy port",
+          "type": "integer"
+        },
+        "f.proxyType": {
+          "default": "HTTP",
+          "description": "Type of proxy to use, if any. Allowed values are 'HTTP' and 'SOCKS'. Leave empty for no proxy.",
+          "hints": [
+            "hidden"
+          ],
+          "title": "Proxy type",
+          "type": "string"
+        },
+        "f.remove_prepended_ids": {
+          "default": true,
+          "description": "If fields have been defined to include PrependIds, this option will remove those IDs before indexing.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Remove prepended IDs",
+          "type": "boolean"
+        },
+        "f.replace_invalid_xml_entities": {
+          "default": false,
+          "description": "Replace invalid xml entities to avoid the error: \\\"Unmarshalling Error: Illegal character entity: expansion character ...\\\"",
+          "hints": [
+            "advanced",
+            "hidden"
+          ],
+          "title": "Replace invalid xml entities",
+          "type": "boolean"
+        },
+        "f.request_timeout": {
+          "default": 300000,
+          "description": "The async http request timeout.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Request Timeout",
+          "type": "integer"
+        },
+        "f.retry_attempts": {
+          "default": 4,
+          "description": "How many times should we fail retryable errors before giving up and throwing an error. Set this to 1 for no retries.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 99999,
+          "minimum": 1,
+          "title": "Retry Attempts",
+          "type": "integer"
+        },
+        "f.retry_backoff_delay_factor": {
+          "default": 1.2,
+          "description": "The multiplicative factor in the backoff algorithm.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 9999,
+          "minimum": 1,
+          "title": "Retryer Backoff Factor",
+          "type": "number"
+        },
+        "f.retry_backoff_delay_ms": {
+          "default": 1000,
+          "description": "The number of milliseconds in the backoff retry algorithm.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 9999999999,
+          "minimum": 0,
+          "title": "Retryer backoff delay (ms)",
+          "type": "integer"
+        },
+        "f.retry_backoff_max_delay_ms": {
+          "default": 15000,
+          "description": "The maximum backoff time allowed in the backoff algorithm.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 9999999999,
+          "minimum": 0,
+          "title": "Retryer backoff max delay (ms)",
+          "type": "integer"
+        },
+        "f.retry_max_wait_ms": {
+          "default": 600000,
+          "description": "The maximum amount of milliseconds to wait for retries to finish before giving up and stopping any more retries.",
+          "exclusiveMaximum": false,
+          "exclusiveMinimum": false,
+          "maximum": 99999999,
+          "minimum": 0,
+          "title": "Retry maximum wait",
+          "type": "integer"
+        },
+        "f.sharepoint_online": {
+          "default": true,
+          "hints": [
+            "hidden"
+          ],
+          "title": "Sharepoint Online",
+          "type": "boolean"
+        },
+        "f.sharepoint_services_timeout": {
+          "default": 600000,
+          "description": "Time in milliseconds to wait for a server response.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Sharepoint services timeout",
+          "type": "integer"
+        },
+        "f.user_agent": {
+          "default": "ISV|Lucidworks|Fusion/4.2",
+          "description": "The user agent header decorates the http traffic. This is important for preventing hard rate limiting by SharePoint Online.",
+          "title": "User agent",
+          "type": "string"
+        },
+        "f.username": {
+          "description": "Name of a Sharepoint user who has the required permissions to access Sharepoint via the REST API. This user must be registered with the Sharepoint Online authentication server; it is not necessarily the same as the user in Active Directory or LDAP.",
+          "title": "Sharepoint username",
+          "type": "string"
+        },
+        "f.validate_on_save": {
+          "default": true,
+          "description": "Validate when you save the datasource.",
+          "title": "Validate on Save",
+          "type": "boolean"
+        },
+        "failFastOnStartLinkFailure": {
+          "default": true,
+          "description": "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fail crawl if start links are invalid",
+          "type": "boolean"
+        },
+        "fetchDelayMS": {
+          "default": 0,
+          "description": "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch delay",
+          "type": "integer"
+        },
+        "fetchThreads": {
+          "default": 5,
+          "description": "The number of threads to use during fetching. The default is 5.",
+          "title": "Fetch threads",
+          "type": "integer"
+        },
+        "forceRefresh": {
+          "default": false,
+          "description": "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Force recrawl",
+          "type": "boolean"
+        },
+        "forceRefreshClearSignatures": {
+          "default": true,
+          "description": "If true, signatures will be cleared if force recrawl is enabled.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Clear signatures",
+          "type": "boolean"
+        },
+        "includeExtensions": {
+          "description": "File extensions to be fetched. This will limit this datasource to only these file extensions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Included file extensions",
+          "type": "array"
+        },
+        "includeRegexes": {
+          "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Inclusive regexes",
+          "type": "array"
+        },
+        "indexCrawlDBToSolr": {
+          "default": false,
+          "description": "EXPERIMENTAL: Set to true to index the crawl-database into a 'crawldb_<datasource-ID>' collection in Solr.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Index crawl database to Solr",
+          "type": "boolean"
+        },
+        "initial_mapping": {
+          "category": "Field Transformation",
+          "categoryPriority": 6,
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "hints": [
+            "advanced"
+          ],
+          "properties": {
+            "condition": {
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ],
+              "title": "Condition",
+              "type": "string"
+            },
+            "label": {
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255,
+              "title": "Label",
+              "type": "string"
+            },
+            "mappings": {
+              "default": [
+                {
+                  "operation": "move",
+                  "source": "charSet",
+                  "target": "charSet_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "fetchedDate",
+                  "target": "fetchedDate_dt"
+                },
+                {
+                  "operation": "move",
+                  "source": "lastModified",
+                  "target": "lastModified_dt"
+                },
+                {
+                  "operation": "move",
+                  "source": "signature",
+                  "target": "dedupeSignature_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "length",
+                  "target": "length_l"
+                },
+                {
+                  "operation": "move",
+                  "source": "mimeType",
+                  "target": "mimeType_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "parent",
+                  "target": "parent_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "owner",
+                  "target": "owner_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "group",
+                  "target": "group_s"
+                }
+              ],
+              "description": "List of mapping rules",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "properties": {
+                  "operation": {
+                    "default": "copy",
+                    "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                    "enum": [
+                      "copy",
+                      "move",
+                      "delete",
+                      "set",
+                      "add",
+                      "keep"
+                    ],
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Operation",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "The name of the field to be mapped.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Source Field",
+                    "type": "string"
+                  },
+                  "target": {
+                    "description": "The name of the field to be mapped to.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Target Field",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "type": "object"
+              },
+              "title": "Field Mappings",
+              "type": "array"
+            },
+            "reservedFieldsMappingAllowed": {
+              "default": false,
+              "hints": [
+                "advanced"
+              ],
+              "title": "Allow System Fields Mapping?",
+              "type": "boolean"
+            },
+            "skip": {
+              "default": false,
+              "description": "Set to true to skip this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "title": "Skip This Stage",
+              "type": "boolean"
+            },
+            "unmapped": {
+              "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+              "hints": [
+                "advanced"
+              ],
+              "properties": {
+                "operation": {
+                  "default": "copy",
+                  "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                  "enum": [
+                    "copy",
+                    "move",
+                    "delete",
+                    "set",
+                    "add",
+                    "keep"
+                  ],
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Operation",
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The name of the field to be mapped.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Source Field",
+                  "type": "string"
+                },
+                "target": {
+                  "description": "The name of the field to be mapped to.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Target Field",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source"
+              ],
+              "title": "Unmapped Fields",
+              "type": "object"
+            }
+          },
+          "title": "Initial field mapping",
+          "type": "object",
+          "unsafe": false
+        },
+        "maxItems": {
+          "default": -1,
+          "description": "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "title": "Max items",
+          "type": "integer"
+        },
+        "multiTableCrawlDB": {
+          "default": true,
+          "description": "Use the multi-table crawlDB implementation.",
+          "hints": [
+            "hidden"
+          ],
+          "title": "Multi Table CrawlDB",
+          "type": "boolean"
+        },
+        "parserRetryCount": {
+          "default": 0,
+          "description": "The maximum number of times the configured parser will try getting content before giving up",
+          "exclusiveMaximum": true,
+          "exclusiveMinimum": false,
+          "maximum": 99,
+          "minimum": 0,
+          "title": "Max Parser Retries",
+          "type": "integer"
+        },
+        "refreshAll": {
+          "default": true,
+          "description": "Set to true to always recrawl all items found in the crawldb.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl all items",
+          "type": "boolean"
+        },
+        "refreshErrors": {
+          "default": false,
+          "description": "Set to true to recrawl items that failed during the last crawl.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl errors",
+          "type": "boolean"
+        },
+        "refreshIDPrefixes": {
+          "description": "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Recrawl ID prefixes",
+          "type": "array"
+        },
+        "refreshIDRegexes": {
+          "description": "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Recrawl ID regexes",
+          "type": "array"
+        },
+        "refreshOlderThan": {
+          "default": -1,
+          "description": "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl age",
+          "type": "integer"
+        },
+        "refreshScript": {
+          "description": "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "Recrawl script",
+          "type": "string"
+        },
+        "refreshStartLinks": {
+          "default": false,
+          "description": "Set to true to recrawl items specified in the list of start links.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl start links",
+          "type": "boolean"
+        },
+        "retryEmit": {
+          "default": true,
+          "description": "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Retry emits",
+          "type": "boolean"
+        },
+        "rewriteLinkScript": {
+          "description": "A Javascript function 'rewriteLink(link) { }' to modify links to documents before they are fetched.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "URI rewrite script",
+          "type": "string"
+        },
+        "startLinks": {
+          "description": "Sharepoint Site Collections and Sites are allowed.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Start Links",
+          "type": "array"
+        },
+        "trackEmbeddedIDs": {
+          "default": true,
+          "description": "Track IDs produced by splitters to enable dedupe and deletion of embedded content?",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Track embedded IDs?",
+          "type": "boolean"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Authentication",
+          "properties": [
+            "f.username",
+            "f.password",
+            "f.adUsername",
+            "f.adPassword",
+            "f.domain",
+            "f.dnsSuffix",
+            "f.adfsStsIssuerURI",
+            "f.app_auth_client_id",
+            "f.app_auth_pfx",
+            "f.app_auth_pfx_password",
+            "f.app_auth_client_secret",
+            "f.app_auth_refresh_token",
+            "f.app_auth_tenant",
+            "f.app_auth_azure_login_endpoint",
+            "f.loginCookieRefreshRateMs",
+            "f.avoid_ssl_hostname_verification",
+            "f.sharepoint_services_timeout",
+            "f.enable_http_headers_debugging",
+            "f.remove_prepended_ids",
+            "f.proxyType",
+            "f.proxyHost",
+            "f.proxyPort",
+            "f.validate_on_save"
+          ]
+        },
+        {
+          "label": "Security Trimming",
+          "properties": [
+            "enable_security_trimming"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "includeRegexes",
+            "excludeRegexes",
+            "includeExtensions",
+            "excludeExtensions",
+            "f.excludeContentsExtensions",
+            "f.includeContentsExtensions",
+            "depth",
+            "maxItems",
+            "f.maxSizeBytes",
+            "f.minSizeBytes",
+            "f.fetch_all_site_collections",
+            "f.max_site_collections",
+            "f.max_list_items_per_site_collection",
+            "f.max_sites_per_site_collection",
+            "f.prefetch_file_download_timeout_secs",
+            "f.list_view_threshold",
+            "f.fetch_taxonomies",
+            "delete",
+            "deleteErrorsAfter"
+          ]
+        },
+        {
+          "label": "Dedupe",
+          "properties": [
+            "dedupe",
+            "dedupeSaveSignature",
+            "dedupeField",
+            "dedupeScript"
+          ]
+        },
+        {
+          "label": "Recrawl Rules",
+          "properties": [
+            "refreshAll",
+            "refreshStartLinks",
+            "refreshErrors",
+            "refreshOlderThan",
+            "refreshIDPrefixes",
+            "refreshIDRegexes",
+            "refreshScript",
+            "forceRefresh"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "chunkSize",
+            "fetchThreads",
+            "fetchDelayMS",
+            "emitThreads",
+            "retryEmit",
+            "failFastOnStartLinkFailure",
+            "parserRetryCount",
+            "f.prefetch_num_threads",
+            "f.max_prefetch_parallel_jobs",
+            "f.max_connections_per_host",
+            "f.max_connections",
+            "f.pooled_connection_idle_timeout",
+            "f.pooled_connection_ttl",
+            "f.connect_timeout",
+            "f.request_timeout",
+            "f.retry_attempts",
+            "f.retry_max_wait_ms",
+            "f.retry_backoff_delay_ms",
+            "f.retry_backoff_max_delay_ms",
+            "f.retry_backoff_delay_factor"
+          ]
+        },
+        {
+          "label": "Crawl History",
+          "properties": [
+            "crawlDBType",
+            "commitAfterItems",
+            "indexCrawlDBToSolr"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ],
+      "required": [
+        "startLinks",
+        "enable_security_trimming"
+      ],
+      "title": "Properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Datasource Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "A crawler for Sharepoint online - Using sharepoint Rest",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "title": "Sharepoint Online (v1 optimized)",
+  "type": "object",
+  "unsafe": false
+}

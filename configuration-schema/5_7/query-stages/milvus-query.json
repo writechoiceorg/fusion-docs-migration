@@ -1,0 +1,110 @@
+{
+  "type": "object",
+  "title": "Milvus Query",
+  "description": "Perform vectors similarity search in Milvus",
+  "required": [
+    "modelId",
+    "modelOutputVector",
+    "milvusResultsContextKey",
+    "milvusVectorsCollection",
+    "milvusNumResults"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "ID of Model used to encode the vector"
+    },
+    "modelOutputVector": {
+      "type": "string",
+      "title": "Encoder Output Vector",
+      "description": "The name of the model output vector that stores the encoded data.",
+      "default": "vector"
+    },
+    "milvusResultsContextKey": {
+      "type": "string",
+      "title": "Milvus Results Context Key",
+      "description": "Name of the context key that will be used to store results from Milvus.",
+      "default": "milvus_results",
+      "minLength": 1
+    },
+    "milvusVectorsCollection": {
+      "type": "string",
+      "title": "Milvus vectors collection to search",
+      "description": "Name of the vectors collection in Milvus that should be used to search for similar vectors.",
+      "minLength": 1
+    },
+    "milvusNumResults": {
+      "type": "integer",
+      "title": "Number of Results",
+      "description": "Number of results to request from Milvus",
+      "default": 10
+    },
+    "milvusSearchParams": {
+      "type": "array",
+      "title": "Search Parameters",
+      "description": "Parameters that should be used to search in Milvus. Specific to the chosen IndexType. For example, good starting values might be ef=200 for HNSW index or nprobe=128 for IVF indexes.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "param": {
+            "type": "string",
+            "title": "Milvus Search Param",
+            "description": "The name of the Milvus search param like ef for HNSW index or nprobe for IVF indexes."
+          },
+          "value": {
+            "type": "integer",
+            "title": "Value",
+            "description": "Search param value. For example it can be 200 for ef or 128 for nprobe."
+          }
+        }
+      }
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

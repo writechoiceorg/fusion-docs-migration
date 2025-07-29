@@ -1,0 +1,473 @@
+{
+  "type" : "object",
+  "title" : "Slack (v2)",
+  "description" : "Connector for Slack",
+  "required" : [ "parserId", "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 1. Slack REST API calls are throttled, and going above this number may harm performance more than it helps.",
+              "default" : 1,
+              "hints" : [ "hidden" ],
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            },
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackConfig$SlackCoreConfig$SlackFetchSystemSettings", "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackConfig$SlackCoreConfig", "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Connector for Slack",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Slack properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "slackAppToken" ],
+      "properties" : {
+        "slackAppToken" : {
+          "type" : "string",
+          "title" : "Slack App access token",
+          "description" : "The Slack application access token, this token is provided after installing the application in the workspace",
+          "hints" : [ "secret" ]
+        },
+        "profilesConfig" : {
+          "type" : "object",
+          "title" : "Profiles settings",
+          "description" : "Settings to control the indexation of Slack profiles",
+          "required" : [ "indexProfiles" ],
+          "properties" : {
+            "indexProfiles" : {
+              "type" : "boolean",
+              "title" : "Index profiles",
+              "description" : "Should profiles be indexed",
+              "default" : true
+            },
+            "indexGuestProfiles" : {
+              "type" : "boolean",
+              "title" : "Index guest profiles",
+              "description" : "If indexing profiles, include profiles of guest users",
+              "default" : true
+            },
+            "indexInactiveProfiles" : {
+              "type" : "boolean",
+              "title" : "Index inactive profiles",
+              "description" : "If indexing profiles, include profiles of inactive users",
+              "default" : false
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.ProfilesConfig" ]
+        },
+        "channelsConfig" : {
+          "type" : "object",
+          "title" : "Channels and messages settings",
+          "description" : "Settings to control the indexation of Slack channels and messages",
+          "required" : [ ],
+          "properties" : {
+            "indexChannels" : {
+              "type" : "boolean",
+              "title" : "Index channels",
+              "description" : "Generate a document in the index for each channel",
+              "default" : true
+            },
+            "indexMessages" : {
+              "type" : "boolean",
+              "title" : "Index messages",
+              "description" : "Should individual messages be indexed",
+              "default" : true
+            },
+            "indexFromArchivedChannels" : {
+              "type" : "boolean",
+              "title" : "Index archived channels",
+              "description" : "If indexing messages or channel data, include data from archived channels",
+              "default" : false
+            },
+            "indexFromPublicChannels" : {
+              "type" : "boolean",
+              "title" : "Index from public channels",
+              "description" : "If indexing messages or channel data, include data from public channels",
+              "default" : true
+            },
+            "indexPrivateChannels" : {
+              "type" : "boolean",
+              "title" : "Index from private channels",
+              "description" : "If indexing messages or channel data, include data from private channels",
+              "default" : false
+            },
+            "indexDirectMessages" : {
+              "type" : "boolean",
+              "title" : "Index from direct messages",
+              "description" : "If indexing messages, include private messages",
+              "default" : false
+            },
+            "indexBotMessages" : {
+              "type" : "boolean",
+              "title" : "Index bot messages",
+              "description" : "If indexing messages, include messages that came from bots",
+              "default" : false
+            },
+            "indexThreadReplies" : {
+              "type" : "boolean",
+              "title" : "Index thread replies",
+              "description" : "If indexing messages, include messages that are replies to threads. Note: Each thread found will result in it's own API call, and is subject to rate limiting. Using this can significantly slow down indexing.",
+              "default" : false
+            },
+            "channelFilter" : {
+              "type" : "array",
+              "title" : "Channels to include",
+              "description" : "If indexing messages or channel data, include data only from channels with names matching the specified regular expressions",
+              "items" : {
+                "type" : "string"
+              }
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.ChannelsConfig" ]
+        },
+        "requests" : {
+          "type" : "object",
+          "title" : "Requests settings",
+          "required" : [ "pageSize" ],
+          "properties" : {
+            "pageSize" : {
+              "type" : "number",
+              "title" : "Page size",
+              "description" : "The number of objects requested per page from Slack",
+              "default" : 200,
+              "maximum" : 1000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackRequestsConfig" ],
+          "hints" : [ "advanced" ]
+        },
+        "itemRetryProperties" : {
+          "type" : "object",
+          "title" : "Item retry settings",
+          "description" : "Options to configure the retry operation for items.",
+          "required" : [ ],
+          "properties" : {
+            "maxRetries" : {
+              "type" : "number",
+              "title" : "Max retry attempts",
+              "description" : "The maximum number of attempts for a failed item",
+              "default" : 3,
+              "maximum" : 20,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "retryDelayInSeconds" : {
+              "type" : "number",
+              "title" : "Retry delay",
+              "description" : "The amount of time, in seconds, before process again a failed item",
+              "default" : 30,
+              "maximum" : 600,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connectors.components.config.ItemRetryConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "connectionsProperties" : {
+          "type" : "object",
+          "title" : "Connections Settings",
+          "description" : "A set of options for configuring the HTTP client.",
+          "required" : [ "maxConnections" ],
+          "properties" : {
+            "maxConnections" : {
+              "type" : "number",
+              "title" : "Max connections",
+              "description" : "The maximum number of connections",
+              "default" : 20,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "maxPerRoute" : {
+              "type" : "number",
+              "title" : "Max per route",
+              "description" : "Defines a connection limit per one HTTP route. In simple cases you can understand this as a per target host limit. Under the hood things are a bit more interesting: HttpClient maintains a couple of HttpRoute objects, which represent a chain of hosts each, like proxy1 -> proxy2 -> targetHost. Connections are pooled on per-route basis. In simple cases, when you're using default route-building mechanism and provide no proxy suport, your routes are likely to include target host only, so per-route connection pool limit effectively becomes per-host limit.",
+              "default" : 20,
+              "hints" : [ "hidden", "readonly" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "ignoreSSLValidationExceptions" : {
+              "type" : "boolean",
+              "title" : "Ignore SSL Validation Exceptions",
+              "description" : "Do not attempt to do an SSL Handshake and do not verify the hostname of SSL certificates. Use this when accessing an https url with a self-signed or enterprise certificate authority that you do not want to put in the Java keystore.",
+              "default" : false,
+              "hints" : [ "hidden", "readonly" ]
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackConnectionsConfig$Properties", "com.lucidworks.connector.components.httpclient.config.ConnectionsConfig$Properties" ]
+        },
+        "timeouts" : {
+          "type" : "object",
+          "title" : "Timeout Settings",
+          "description" : "A set of options for configuring the HTTP client.",
+          "required" : [ ],
+          "properties" : {
+            "readTimeoutMs" : {
+              "type" : "number",
+              "title" : "",
+              "default" : 300000,
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "connectTimeoutMs" : {
+              "type" : "number",
+              "title" : "",
+              "default" : 60000,
+              "maximum" : 300000,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackTimeoutsConfig$Properties", "com.lucidworks.connector.components.httpclient.config.TimeoutsConfig$Properties" ]
+        },
+        "security" : {
+          "type" : "object",
+          "title" : "Security filtering configuration",
+          "required" : [ ],
+          "properties" : {
+            "enabled" : {
+              "type" : "boolean",
+              "title" : "Enable security trimming",
+              "description" : "Enable query-time security-trimming",
+              "default" : true
+            },
+            "collectionId" : {
+              "type" : "string",
+              "title" : "ACL collection id",
+              "description" : "Id of the collection to be used for storing ACL records. If not specified, ACL collection name will be generated automatically using pattern '<datasource_id>_access_control_hierarchy'."
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties", "com.lucidworks.fusion.connector.plugin.api.config.security.AccessControlConfig$Properties" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.slack.config.SlackConfig$Properties", "com.lucidworks.connector.plugins.slack.config.SlackTimeoutsConfig", "com.lucidworks.connector.plugins.slack.config.SlackConnectionsConfig", "com.lucidworks.connector.components.httpclient.config.ConnectionsConfig", "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig", "com.lucidworks.connector.components.httpclient.config.TimeoutsConfig", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.connectors.components.config.ItemRetryConfig" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for Slack",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "Web",
+  "categoryPriority" : 1
+}

@@ -1,0 +1,96 @@
+{
+  "type": "object",
+  "title": "Analytics Catalog Query",
+  "description": "Query objects in the Fusion Analytics Catalog using SQL, Solr Streaming Expressions, or Solr queries. The Fusion Analytics Catalog allows you to define views of data stored in Fusion Collections. You must start the Fusion sql service before using this stage.",
+  "required": [
+    "catalogProjectId",
+    "queryText"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "queryType": {
+      "type": "string",
+      "title": "Query Type",
+      "description": "Query type: solr, sql, or streaming_expression",
+      "enum": [
+        "solr",
+        "sql",
+        "streaming_expression"
+      ],
+      "default": "sql"
+    },
+    "catalogProjectId": {
+      "type": "string",
+      "title": "Catalog Project ID",
+      "description": "Analytics catalog project ID.",
+      "default": "fusion"
+    },
+    "queryText": {
+      "type": "string",
+      "title": "Query",
+      "description": "Query to execute; accepts any valid Solr query, SQL, or Solr streaming expression. Replaceable parameters will be applied before query execution using values pulled from request parameters and the pipeline context.",
+      "hints": [
+        "lengthy"
+      ]
+    },
+    "requestHandler": {
+      "type": "string",
+      "title": "Solr Request Handler.",
+      "description": "The Solr request handler to send a query to; only applies if query type is 'solr' or 'streaming_expression'. Defaults to /select for solr queries and /stream for streaming expressions."
+    },
+    "contextKey": {
+      "type": "string",
+      "title": "Context Key",
+      "description": "The key used to bind query results into the pipeline context; if not set, the query results are returned to the client."
+    },
+    "params": {
+      "type": "array",
+      "title": "Additional Params to be Included in the Solr Query Request. Only Applies if the Query Type is 'solr'.",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1
+}

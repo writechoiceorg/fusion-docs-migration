@@ -1,0 +1,262 @@
+{
+    "category": "Generator",
+    "categoryPriority": 1,
+    "description": "A connector that generates random documents.",
+    "properties": {
+        "category": {
+            "default": "A connector that generates random documents.",
+            "hints": [
+                "hidden",
+                "readonly"
+            ],
+            "title": "Category",
+            "type": "string"
+        },
+        "collection": {
+            "description": "The associated content Collection.",
+            "hints": [
+                "readonly",
+                "hidden"
+            ],
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Collection ID",
+            "type": "string"
+        },
+        "connector": {
+            "description": "Connector type.",
+            "hints": [
+                "hidden"
+            ],
+            "minLength": 1,
+            "title": "Connector Type",
+            "type": "string"
+        },
+        "coreProperties": {
+            "description": "Common behavior and performance settings.",
+            "hints": [
+                "advanced"
+            ],
+            "interfaces": [
+                "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+            ],
+            "properties": {
+                "fetchSettings": {
+                    "description": "System level settings for controlling fetch behavior and performance.",
+                    "interfaces": [
+                        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+                    ],
+                    "properties": {
+                        "fetchItemQueueSize": {
+                            "default": 10000,
+                            "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 500000,
+                            "minimum": 1,
+                            "multipleOf": 1,
+                            "title": "Fetch Item Queue Size",
+                            "type": "number"
+                        },
+                        "fetchRequestCheckInterval": {
+                            "default": 15000,
+                            "description": "The amount of time to wait before check if a request is done",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 500000,
+                            "minimum": 1000,
+                            "multipleOf": 1,
+                            "title": "Fetch request check interval(ms)",
+                            "type": "number"
+                        },
+                        "fetchResponseCompletedTimeout": {
+                            "default": 300000,
+                            "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 600000,
+                            "minimum": 1,
+                            "multipleOf": 1,
+                            "title": "Fetch response completion timeout(ms)",
+                            "type": "number"
+                        },
+                        "fetchResponseScheduledTimeout": {
+                            "default": 300000,
+                            "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 500000,
+                            "minimum": 1000,
+                            "multipleOf": 1,
+                            "title": "Fetch response scheduled timeout(ms)",
+                            "type": "number"
+                        },
+                        "indexContentFields": {
+                            "default": false,
+                            "description": "When enabled, content fields will be indexed to the crawl-db collection",
+                            "title": "Index content fields",
+                            "type": "boolean"
+                        },
+                        "indexMetadata": {
+                            "default": false,
+                            "description": "When enabled the metadata of skipped items will be indexed to the content collection",
+                            "title": "Index metadata",
+                            "type": "boolean"
+                        },
+                        "numFetchThreads": {
+                            "default": 20,
+                            "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 500,
+                            "minimum": 1,
+                            "multipleOf": 1,
+                            "title": "Fetch Threads",
+                            "type": "number"
+                        }
+                    },
+                    "required": [],
+                    "title": "Fetch Settings",
+                    "type": "object"
+                }
+            },
+            "required": [],
+            "title": "Core Properties",
+            "type": "object"
+        },
+        "created": {
+            "description": "The date at which this Configuration was created.",
+            "hints": [
+                "readonly",
+                "hidden"
+            ],
+            "title": "Date Created",
+            "type": "string"
+        },
+        "description": {
+            "description": "Optional description",
+            "hints": [
+                "lengthy"
+            ],
+            "maxLength": 125,
+            "title": "Description",
+            "type": "string"
+        },
+        "diagnosticLogging": {
+            "default": false,
+            "description": "Enable diagnostic logging; disabled by default",
+            "title": "Diagnostic Logging",
+            "type": "boolean"
+        },
+        "id": {
+            "description": "A unique identifier for this Configuration.",
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Configuration ID",
+            "type": "string"
+        },
+        "modified": {
+            "description": "The date at which this Configuration was last modified.",
+            "hints": [
+                "readonly",
+                "hidden"
+            ],
+            "title": "Date Modified",
+            "type": "string"
+        },
+        "parserId": {
+            "description": "The Parser to use in the associated IndexPipeline.",
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Parser ID",
+            "type": "string"
+        },
+        "pipeline": {
+            "description": "Name of the IndexPipeline used for processing output.",
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$",
+            "title": "Pipeline ID",
+            "type": "string"
+        },
+        "properties": {
+            "description": "Plugin specific properties.",
+            "interfaces": [
+                "com.lucidworks.connectors.plugins.random.config.RandomContentConfig$Properties",
+                "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties"
+            ],
+            "properties": {
+                "getRandomContentProperties": {
+                    "description": "Random Content properties",
+                    "interfaces": [
+                        "com.lucidworks.connectors.components.generator.config.RandomContentProperties"
+                    ],
+                    "properties": {
+                        "maximumNumberSentences": {
+                            "default": 255,
+                            "description": "The connector Generates Maximum number of Sentences. (255 by default)",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "multipleOf": 1,
+                            "title": "Maximum number of Sentences",
+                            "type": "number"
+                        },
+                        "minimumNumberSentences": {
+                            "default": 10,
+                            "description": "The connector Generates a Minimum number of Sentences. (10 by default)",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "multipleOf": 1,
+                            "title": "Minimum number of Sentences",
+                            "type": "number"
+                        },
+                        "totalNumDocs": {
+                            "default": 1000,
+                            "description": "Total number of docs to generate",
+                            "exclusiveMaximum": false,
+                            "exclusiveMinimum": false,
+                            "maximum": 2147483647,
+                            "minimum": -2147483648,
+                            "multipleOf": 1,
+                            "title": "Total",
+                            "type": "number"
+                        }
+                    },
+                    "required": [],
+                    "title": "Random Content properties",
+                    "type": "object"
+                }
+            },
+            "required": [],
+            "title": "Properties",
+            "type": "object"
+        },
+        "type": {
+            "description": "A type ID for this connector.",
+            "hints": [
+                "readonly",
+                "hidden"
+            ],
+            "title": "Type",
+            "type": "string"
+        },
+        "type_description": {
+            "default": "A connector that generates random documents.",
+            "hints": [
+                "hidden",
+                "readonly"
+            ],
+            "title": "Type Description",
+            "type": "string"
+        }
+    },
+    "required": [
+        "id",
+        "properties",
+        "pipeline"
+    ],
+    "title": "Random Content Generator (v2)",
+    "type": "object"
+}

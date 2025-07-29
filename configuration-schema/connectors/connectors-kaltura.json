@@ -1,0 +1,348 @@
+{
+  "type" : "object",
+  "title" : "Kaltura (v2)",
+  "description" : "Kaltura connector",
+  "required" : [ "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline.",
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            },
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default" : 20,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Kaltura connector",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "authenticationProperties" ],
+      "properties" : {
+        "authenticationProperties" : {
+          "type" : "object",
+          "title" : "Authentication",
+          "required" : [ "userSecret", "endpoint", "partnerId", "userId" ],
+          "properties" : {
+            "endpoint" : {
+              "type" : "string",
+              "title" : "Kaltura endpoint",
+              "description" : "Kaltura endpoint",
+              "default" : "https://www.kaltura.com/",
+              "minLength" : 1
+            },
+            "userId" : {
+              "type" : "string",
+              "title" : "User ID",
+              "description" : "User ID",
+              "minLength" : 1
+            },
+            "userSecret" : {
+              "type" : "string",
+              "title" : "User Secret",
+              "description" : "User Secret",
+              "hints" : [ "secret" ],
+              "minLength" : 1
+            },
+            "partnerId" : {
+              "type" : "number",
+              "title" : "Partner ID",
+              "description" : "Partner ID",
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.kaltura.config.AuthenticationProperties" ]
+        },
+        "proxyProperties" : {
+          "type" : "object",
+          "title" : "Proxy",
+          "required" : [ ],
+          "properties" : {
+            "proxy" : {
+              "type" : "string",
+              "title" : "Proxy",
+              "description" : "Proxy"
+            },
+            "proxyPort" : {
+              "type" : "number",
+              "title" : "Proxy port",
+              "description" : "Proxy port",
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.kaltura.config.ProxyProperties" ]
+        },
+        "applicationProperties" : {
+          "type" : "object",
+          "title" : "Application",
+          "required" : [ ],
+          "properties" : {
+            "filteredName" : {
+              "type" : "string",
+              "title" : "Filtered name",
+              "description" : "Media name must contain this string to be indexed"
+            },
+            "excludedIds" : {
+              "type" : "array",
+              "title" : "Excluded ids",
+              "description" : "List of media ids that will not be indexed",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "pageSize" : {
+              "type" : "number",
+              "title" : "Page Size",
+              "description" : "Number of objects fetched per request during item discovery",
+              "default" : 100,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.kaltura.config.ApplicationProperties" ]
+        },
+        "security" : {
+          "type" : "object",
+          "title" : "Security filtering configuration",
+          "required" : [ ],
+          "properties" : {
+            "enabled" : {
+              "type" : "boolean",
+              "title" : "Enable security trimming",
+              "description" : "Enable query-time security-trimming",
+              "default" : true
+            },
+            "collectionId" : {
+              "type" : "string",
+              "title" : "ACL collection id",
+              "description" : "Id of the collection to be used for storing ACL records. If not specified, ACL collection name will be generated automatically using pattern '<datasource_id>_access_control_hierarchy'."
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.AccessControlConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.kaltura.config.KalturaConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Kaltura connector",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "Repository",
+  "categoryPriority" : 1
+}

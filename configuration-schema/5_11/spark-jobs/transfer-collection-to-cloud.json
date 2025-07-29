@@ -1,0 +1,115 @@
+{
+  "type": "object",
+  "title": "Transfer Collection To Cloud",
+  "description": "Transfer Collection to Cloud Storage, for collections that need to be migrated or copied to cloud storage",
+  "required": [
+    "id",
+    "inputCollection",
+    "outputLocation",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "inputCollection": {
+      "type": "string",
+      "title": "Collection",
+      "description": "Solr collection to copy",
+      "minLength": 1
+    },
+    "outputLocation": {
+      "type": "string",
+      "title": "Output Location",
+      "description": "URI of output location (e.g. s3a://..., gs://..., wasb://...)",
+      "minLength": 1
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true
+    },
+    "outputFormat": {
+      "type": "string",
+      "title": "Output format",
+      "description": "Format for cloud output (e.g. parquet, json, csv)",
+      "default": "parquet"
+    },
+    "sparkPartitions": {
+      "type": "integer",
+      "title": "Set minimum Spark partitions for input",
+      "description": "Spark will re-partition the input to have this number of partitions. Increase for greater parallelism",
+      "default": 200,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "transfer"
+      ],
+      "default": "transfer",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

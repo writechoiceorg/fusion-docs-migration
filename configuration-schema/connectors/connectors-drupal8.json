@@ -1,0 +1,235 @@
+{
+    "category": "Other",
+    "categoryPriority": 1,
+    "description": "Drupal 8/9 connector to retrieve data from a Drupal instance. This connector requires installation of Drupal's Services module as described at https://www.drupal.org/project/services.",
+    "type": "object",
+    "title": "Drupal 8 - Java Connector",
+    "required": [
+        "id",
+        "properties",
+        "pipelineId",
+        "getUrl",
+        "getLogoutPath",
+        "getLoginPath",
+        "getDrupalContentEntryPath"
+    ],
+    "properties": {
+        "properties": {
+            "description": "Plugin specific properties.",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "title": "Description",
+                    "description": "Optional description",
+                    "hints": [
+                        "lengthy"
+                    ],
+                    "maxLength": 125
+                },
+                "getUrl": {
+                    "type": "string",
+                    "title": "Drupal URL",
+                    "description": "Page URL."
+                },
+                "getUsername": {
+                    "type": "string",
+                    "title": "Username for login",
+                    "description": "Username to login into drupal to be able to fetch content from it."
+                },
+                "getPassword": {
+                    "type": "string",
+                    "title": "Password for login",
+                    "description": "Password to login into drupal to be able to fetch content from it.",
+                    "hints": [
+                        "secret"
+                    ]
+                },
+                "getLoginPath": {
+                    "type": "string",
+                    "title": "Login path",
+                    "description": "Login path.",
+                    "default": "/user/login"
+                },
+                "getLogoutPath": {
+                    "type": "string",
+                    "title": "Logout path",
+                    "description": "Logout path.",
+                    "default": "/user/logout"
+                },
+                "getDrupalContentEntryPath": {
+                    "type": "string",
+                    "title": "Drupal Content entry path",
+                    "description": "Drupal Content entry path from where the crawling should start.",
+                    "default": "/en/fusion"
+                },
+                "indexMetadata": {
+                    "type": "boolean",
+                    "title": "Index metadata",
+                    "description": "When enabled the metadata of skipped items will be indexed to the content collection",
+                    "default": false
+                },
+                "numFetchThreads": {
+                    "type": "number",
+                    "title": "Fetch Threads",
+                    "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+                    "default": 20,
+                    "maximum": 500,
+                    "exclusiveMaximum": false,
+                    "minimum": 1,
+                    "exclusiveMinimum": false,
+                    "multipleOf": 1
+                },
+                "indexContentFields": {
+                    "type": "boolean",
+                    "title": "Index content fields",
+                    "description": "When enabled, content fields will be indexed to the crawl-db collection",
+                    "default": false
+                },
+                "fetchItemQueueSize": {
+                    "type": "number",
+                    "title": "Fetch Item Queue Size",
+                    "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+                    "default": 10000,
+                    "maximum": 500000,
+                    "exclusiveMaximum": false,
+                    "minimum": 1,
+                    "exclusiveMinimum": false,
+                    "multipleOf": 1
+                },
+                "fetchRequestCheckInterval": {
+                    "type": "number",
+                    "title": "Fetch request check interval(ms)",
+                    "description": "The amount of time to wait before check if a request is done",
+                    "default": 15000,
+                    "maximum": 500000,
+                    "exclusiveMaximum": false,
+                    "minimum": 1000,
+                    "exclusiveMinimum": false,
+                    "multipleOf": 1
+                },
+                "fetchResponseScheduledTimeout": {
+                    "type": "number",
+                    "title": "Fetch response scheduled timeout(ms)",
+                    "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+                    "default": 300000,
+                    "maximum": 500000,
+                    "exclusiveMaximum": false,
+                    "minimum": 1000,
+                    "exclusiveMinimum": false,
+                    "multipleOf": 1
+                },
+                "fetchResponseCompletedTimeout": {
+                    "type": "number",
+                    "title": "Fetch response completion timeout(ms)",
+                    "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+                    "default": 300000,
+                    "maximum": 600000,
+                    "exclusiveMaximum": false,
+                    "minimum": 1,
+                    "exclusiveMinimum": false,
+                    "multipleOf": 1
+                },
+                "id": {
+                    "type": "string",
+                    "title": "Configuration ID",
+                    "description": "A unique identifier for this Configuration.",
+                    "minLength": 1,
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                },
+                "created": {
+                    "type": "string",
+                    "title": "Date Created",
+                    "description": "The date at which this Configuration was created.",
+                    "hints": [
+                        "readonly",
+                        "hidden"
+                    ]
+                },
+                "type": {
+                    "type": "string",
+                    "title": "Type",
+                    "description": "A type ID for this connector.",
+                    "hints": [
+                        "readonly",
+                        "hidden"
+                    ]
+                },
+                "modified": {
+                    "type": "string",
+                    "title": "Date Modified",
+                    "description": "The date at which this Configuration was last modified.",
+                    "hints": [
+                        "readonly",
+                        "hidden"
+                    ]
+                },
+                "collectionId": {
+                    "type": "string",
+                    "title": "Collection ID",
+                    "description": "The associated content Collection.",
+                    "hints": [
+                        "readonly",
+                        "hidden"
+                    ],
+                    "minLength": 1,
+                    "pattern": "^[a-zA-Z0-9_-]+$"
+                },
+                "diagnosticLogging": {
+                    "type": "boolean",
+                    "title": "Diagnostic Logging",
+                    "description": "Enable diagnostic logging; disabled by default",
+                    "default": false,
+                    "interfaces": [
+                        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+                    ],
+                    "hints": [
+                        "advanced"
+                    ]
+                },
+                "interfaces": [
+                    "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings",
+                    "com.lucidworks.fusion.connector.config.ContentConfig$Properties",
+                    "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties"
+                ]
+            },
+            "propertyGroups": [{
+                "label": "Drupal properties",
+                "properties": [
+                    "description",
+                    "getUrl",
+                    "getUsername",
+                    "getPassword",
+                    "getLoginPath",
+                    "getLogoutPath",
+                    "getDrupalContentEntryPath",
+                    "indexMetadata",
+                    "numFetchThreads",
+                    "indexContentFields",
+                    "fetchItemQueueSize",
+                    "fetchRequestCheckInterval",
+                    "fetchResponseScheduledTimeout",
+                    "fetchResponseCompletedTimeout",
+                    "id",
+                    "created",
+                    "type",
+                    "modified",
+                    "collectionId",
+                    "diagnosticLogging"
+                ]
+            }]
+        },
+        "pipelineId": {
+            "type": "string",
+            "title": "Pipeline ID",
+            "description": "Name of the IndexPipeline used for processing output.",
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "parserId": {
+            "type": "string",
+            "title": "Parser ID",
+            "description": "The Parser to use in the associated IndexPipeline.",
+            "pattern": "^[a-zA-Z0-9_-]+$"
+        }
+    }
+}

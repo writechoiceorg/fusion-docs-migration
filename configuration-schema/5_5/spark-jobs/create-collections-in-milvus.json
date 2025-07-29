@@ -1,0 +1,159 @@
+{
+  "type": "object",
+  "title": "Create Collections in Milvus",
+  "description": "Creates collections with specified parameters in Milvus",
+  "required": [
+    "id",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "collections-list": {
+      "type": "array",
+      "title": "Collections",
+      "description": "List of the collections that should be created with corresponding params.",
+      "items": {
+        "type": "object",
+        "required": [
+          "milvusCollectionName",
+          "dimension",
+          "indexFileSize",
+          "metric"
+        ],
+        "properties": {
+          "milvusCollectionName": {
+            "type": "string",
+            "title": "Collection Name",
+            "description": "Name of the collection to create in Milvus",
+            "pattern": "^[a-zA-Z0-9_]+$"
+          },
+          "dimension": {
+            "type": "integer",
+            "title": "Dimension",
+            "description": "Dimension size of vectors to be stored in the collection"
+          },
+          "indexFileSize": {
+            "type": "integer",
+            "title": "Index File Size",
+            "description": "Files larger than this will trigger index building for raw data files",
+            "default": 1024,
+            "minimum": 1,
+            "exclusiveMinimum": false
+          },
+          "metric": {
+            "type": "string",
+            "title": "Metric",
+            "description": "Metric which should be used for vectors similarity",
+            "enum": [
+              "Euclidean",
+              "Inner Product",
+              "Hamming",
+              "Jaccard",
+              "Tanimoto",
+              "Substructure",
+              "Superstructure"
+            ],
+            "default": "Inner Product"
+          }
+        }
+      }
+    },
+    "allow-recreate": {
+      "type": "boolean",
+      "title": "Override collections",
+      "description": "If checked and there are existing collections with the same names, they will be dropped and recreated. If unchecked, the exception is thrown in such situation."
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-milvus-create-collections"
+      ],
+      "default": "argo-milvus-create-collections",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

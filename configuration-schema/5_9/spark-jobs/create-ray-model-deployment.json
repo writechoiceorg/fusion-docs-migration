@@ -1,0 +1,162 @@
+{
+  "type": "object",
+  "title": "Create Ray Model Deployment",
+  "description": "Deploys a Ray Model into the Fusion cluster",
+  "required": [
+    "id",
+    "deployModelName",
+    "modelCpuLimit",
+    "modelMemoryLimit",
+    "modelDockerRepo",
+    "modelDockerImage",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "deployModelName": {
+      "type": "string",
+      "title": "Model name",
+      "description": "The model name of the Ray deployment to deploy (must be a valid lowercased DNS subdomain with no underscores).",
+      "maxLength": 30,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    },
+    "modelMinReplicas": {
+      "type": "integer",
+      "title": "Model min replicas",
+      "description": "Minimum number of replicas of the model to be deployed",
+      "default": 1
+    },
+    "modelMaxReplicas": {
+      "type": "integer",
+      "title": "Model max replicas",
+      "description": "Maximum number of replicas of the model to be deployed",
+      "default": 1
+    },
+    "modelCpuLimit": {
+      "type": "number",
+      "title": "Model CPU limit",
+      "description": "Maximum number of CPUs that can be allocated to a single model replica",
+      "default": 1.0
+    },
+    "modelMemoryLimit": {
+      "type": "string",
+      "title": "Model memory limit",
+      "description": "Maximum amount of memory that can be allocated to a single model replica",
+      "default": "1Gi",
+      "pattern": "^([+-]?[0-9.]+)([eEinumkKMGTP]*[-+]?[0-9]*)$"
+    },
+    "modelImportPath": {
+      "type": "string",
+      "title": "Ray deployment import path",
+      "description": "The path to your top-level Ray Serve deployment (or the same path passed to `serve run`)",
+      "default": "deployment:app"
+    },
+    "modelDockerRepo": {
+      "type": "string",
+      "title": "Docker repository",
+      "description": "Defines the Docker repository where the model image is located."
+    },
+    "modelDockerImage": {
+      "type": "string",
+      "title": "Image name",
+      "description": "Name of the model's docker image"
+    },
+    "modelDockerSecret": {
+      "type": "string",
+      "title": "Kubernetes secret name for model repo",
+      "description": "Defines the Kubernetes secret to be used with the Docker repository"
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-deploy-ray-model"
+      ],
+      "default": "argo-deploy-ray-model",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

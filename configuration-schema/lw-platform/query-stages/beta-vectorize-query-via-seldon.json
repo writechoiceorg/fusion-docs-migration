@@ -1,0 +1,89 @@
+{
+  "type": "object",
+  "title": "[BETA] Vectorize Query via Seldon",
+  "description": "Generate a vector based on the current query string (q parameter).  Uses a machine learning model to encode the raw query string (q parameter) to a vector representation. Will be skipped if query string is blank or wildcard (* or *:*). Note this will not work well if the incoming q parameter is a Solr query parser string (e.g. field_t:foo) rather than a raw user query string.  Note that the Output Context Variable must  match the Hybrid Query stage Vector Context Variable.",
+  "required": [
+    "modelId",
+    "queryInput",
+    "modelInputFieldName",
+    "modelOutputVectorFieldName",
+    "vectorContextKey"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Model ID of the model to use for encoding. Only models which accept a single string parameter and return a single dense vector value per input are supported."
+    },
+    "queryInput": {
+      "type": "string",
+      "title": "Query Input",
+      "description": "The query itself is retrieved from here.  This field supports Template Expressions such as '<request.params.q>' to evaluate the original user query.",
+      "default": "<request.params.q>"
+    },
+    "modelInputFieldName": {
+      "type": "string",
+      "title": "Model Input Field",
+      "description": "Name to specify for the input parameter when sending the query string to encode to the chosen ML model",
+      "default": "text"
+    },
+    "modelOutputVectorFieldName": {
+      "type": "string",
+      "title": "Model Output Vector Field",
+      "description": "The name of the field in the ML model response that contains the vector encoding.",
+      "default": "vector"
+    },
+    "vectorContextKey": {
+      "type": "string",
+      "title": "Vector Context Key",
+      "description": "The key (string) in which to put the resulting vector as a string context variable.",
+      "default": "vector"
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating an encoding.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

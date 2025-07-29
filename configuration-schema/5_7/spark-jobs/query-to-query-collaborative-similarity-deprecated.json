@@ -1,0 +1,329 @@
+{
+  "type": "object",
+  "title": "Query-to-Query Collaborative Similarity (deprecated)",
+  "description": "Use this job to to batch compute query-query similarities using ALS. Deprecated as of Fusion 5.2.0 and will be removed in a future release; use the Query-to-Query Session Based Similarity job instead.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "outputQuerySimCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Recommender Model ID",
+      "description": "Identifier for the recommender model. Will be used as the unique key when storing the model in Solr.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelCollection": {
+      "type": "string",
+      "title": "Model Collection",
+      "description": "Collection to load and store the computed model (if absent, it won't be loaded or saved)",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "saveModel": {
+      "type": "boolean",
+      "title": "Save Model in Solr",
+      "description": "Whether we should save the computed ALS model in Solr",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Recommender Training Collection",
+      "description": "Item/Query preference collection (often a signals collection or signals aggregation collection)"
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr query to filter training data (e.g. downsampling or selecting based on min. pref values)",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "popularQueryMin": {
+      "type": "integer",
+      "title": "Training Data Filter By Popular Items",
+      "description": "Items must have at least this # of unique users interacting with it to go into the sample",
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingSampleFraction": {
+      "type": "number",
+      "title": "Training Data Sampling Fraction",
+      "description": "Downsample preferences for items (bounded to at least 2) by this fraction",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "outputQuerySimCollection": {
+      "type": "string",
+      "title": "Query-to-query Similarity Collection",
+      "description": "Collection to store batch-computed query/query similarities (if absent, none computed)"
+    },
+    "outputItemsForQueriesCollection": {
+      "type": "string",
+      "title": "Items-for-query Boosting Collection",
+      "description": "Collection to store batch-computed items-for-queries recommendations (if absent, none computed)"
+    },
+    "queryField": {
+      "type": "string",
+      "title": "Training Collection Query Field",
+      "description": "Solr field name containing stored queries",
+      "default": "query",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Training Collection Item Id Field",
+      "description": "Solr field name containing stored item ids",
+      "default": "item_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "weightField": {
+      "type": "string",
+      "title": "Training Collection Weight Field",
+      "description": "Solr field name containing stored weights (i.e. time decayed / position weighted counts) the item has for that query",
+      "default": "weight_d",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numSims": {
+      "type": "integer",
+      "title": "Number of Query Similarities to Compute",
+      "description": "Batch compute and store this many query similarities per query",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numItemsPerQuery": {
+      "type": "integer",
+      "title": "Number of Items per Query to Recommend",
+      "description": "Batch compute and store this many item recommendations per query",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialRank": {
+      "type": "integer",
+      "title": "Recommender Rank",
+      "description": "Number of user/item factors in the recommender decomposition (or starting guess for it, if doing parameter grid search)",
+      "default": 100,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialBlocks": {
+      "type": "integer",
+      "title": "Training Block Size",
+      "description": "Number of sub-matrix blocks to break the training data into (default: -1, for auto-sizing)",
+      "default": -1,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "maxTrainingIterations": {
+      "type": "integer",
+      "title": "Maximum Training Iterations",
+      "description": "Maximum number of iterations to use when learning the matrix decomposition",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialAlpha": {
+      "type": "number",
+      "title": "Implicit Preference Confidence",
+      "description": "Confidence weight (between 0 and 1) to give the implicit preferences (or starting guess, if doing parameter grid search)",
+      "default": 0.5,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialLambda": {
+      "type": "number",
+      "title": "Smoothing",
+      "description": "Smoothing parameter to avoid overfitting (or starting guess, if doing parameter grid search). Slightly larger value needed for small data sets",
+      "default": 0.01,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "gridSearchWidth": {
+      "type": "integer",
+      "title": "Grid Search Width",
+      "description": "Parameter grid search to be done centered around initial parameter guesses, exponential step size, this number of steps (if <= 0, no grid search)",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random Seed",
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "default": 13,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "implicitRatings": {
+      "type": "boolean",
+      "title": "Implicit Preferences",
+      "description": "Treat training preferences as implicit signals of interest (i.e. clicks or other actions) as opposed to explicit query ratings",
+      "default": true
+    },
+    "alwaysTrain": {
+      "type": "boolean",
+      "title": "Force model re-training",
+      "description": "Even if a model with this modelId exists, re-train if set true",
+      "default": true
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "query_similarity"
+      ],
+      "default": "query_similarity",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingDataFilterQuery",
+        "modelCollection",
+        "outputItemsForQueriesCollection",
+        "outputQuerySimCollection",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingSampleFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "queryField",
+        "itemIdField",
+        "weightField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "alwaysTrain",
+        "saveModel",
+        "gridSearchWidth",
+        "implicitRatings",
+        "initialAlpha",
+        "initialLambda",
+        "initialRank",
+        "maxTrainingIterations",
+        "numItemsPerQuery",
+        "numSims",
+        "popularQueryMin"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ]
+}

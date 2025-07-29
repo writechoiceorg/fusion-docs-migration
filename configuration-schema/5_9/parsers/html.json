@@ -1,0 +1,221 @@
+{
+  "type": "object",
+  "title": "HTML",
+  "description": "Parse html content",
+  "required": [
+    "charset",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "846d123a-592c-4aed-b5d9-0dcc44df362f"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types to match",
+      "description": "Documents with a media type on this list will be matched by this parser stage. See inheritMediaTypes / use default media types for more.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "Match default media types in this Parser Stage",
+      "description": "Each parser stage has a built-in list of media types it handles by default. If this setting is true, that list will be used along with any optional additional types provided in the mediaTypes list. If this setting is false, this stage will only be selected for media types in the mediaTypes list, and the mediaTypes list becomes a mandatory property which must have at least one valid media type.",
+      "default": true
+    },
+    "ignoredMediaTypes": {
+      "type": "array",
+      "title": "Media Types to ignore",
+      "description": "Documents with a media type on this list will be not be processed by this parser stage.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "charset": {
+      "type": "string",
+      "title": "Character Set",
+      "description": "Example: \"UTF-8\"",
+      "default": "detect"
+    },
+    "recordSelector": {
+      "type": "string",
+      "title": "Record Selector"
+    },
+    "keepParent": {
+      "type": "boolean",
+      "title": "Keep Parent Document?",
+      "description": "Keep or discard parent document with selected records. Has no effect if Record Selector is not specified.",
+      "default": true
+    },
+    "excludeFilters": {
+      "type": "array",
+      "title": "Exclude filters",
+      "description": "Jsoup-formatted selectors for elements to exclude from the HTML document.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "filterBeforeMapping": {
+      "type": "boolean",
+      "title": "Filter before mapping",
+      "description": "Apply exclude filters before performing HTML field mapping.",
+      "default": false
+    },
+    "filterBeforeExtractingLinks": {
+      "type": "boolean",
+      "title": "Filter before extracting links",
+      "description": "Apply exclude filters before performing link extraction.",
+      "default": false
+    },
+    "mappings": {
+      "type": "array",
+      "title": "HTML Element Mappings",
+      "items": {
+        "type": "object",
+        "required": [
+          "selectRule",
+          "field"
+        ],
+        "properties": {
+          "selectRule": {
+            "type": "string",
+            "title": "Select Rule",
+            "description": "A jsoup selection rule, for example 'div#foo' to select '<div id=\"foo\">...</div>'"
+          },
+          "attribute": {
+            "type": "string",
+            "title": "Attribute to map",
+            "description": "What attribute of the selected element to map. For example 'href' to get the link URL from an '<a>' tag. Special values are '.outerText', '.html', '.outerHtml' and '.data'. If left blank, the text within this element will be mapped."
+          },
+          "field": {
+            "type": "string",
+            "title": "Target Field",
+            "description": "The field in which to save the mapped element"
+          },
+          "multivalued": {
+            "type": "boolean",
+            "title": "Multi-valued",
+            "description": "Set to true to map multiple elements if there is more than one match for the select rule",
+            "default": false
+          }
+        }
+      }
+    },
+    "extractHtmlLinks": {
+      "type": "boolean",
+      "title": "Extract HTML links",
+      "description": "Collect links explicitly declared in HTML document",
+      "default": false
+    },
+    "extractBodyText": {
+      "type": "boolean",
+      "title": "Extract body as a text",
+      "description": "Extract body as a text",
+      "default": true
+    },
+    "contentExtractionConfig": {
+      "type": "object",
+      "title": "Content Extraction (Experimental)",
+      "description": "Attempt to extract the content that matters using advanced heuristics. Might not work for your website.",
+      "properties": {
+        "extractContent": {
+          "type": "boolean",
+          "title": "Extract page content",
+          "default": true
+        },
+        "extractMetadata": {
+          "type": "boolean",
+          "title": "Extract metadata",
+          "default": true
+        },
+        "preserveContentFormat": {
+          "type": "boolean",
+          "title": "Store readable html version of body content",
+          "default": false
+        },
+        "metadataPrefix": {
+          "type": "string",
+          "title": "Optional prefix for rich content and extracted metadata"
+        }
+      }
+    },
+    "metatagsPrefix": {
+      "type": "string",
+      "title": "Optional prefix for metatags captured html document",
+      "description": "Optional prefix to add to metatags (except id and charset) captured from an html document to used as a fields as-is (id and charset get prefix) from document",
+      "default": "false"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "html"
+      ],
+      "default": "html"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

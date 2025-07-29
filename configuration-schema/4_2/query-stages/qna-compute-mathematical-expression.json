@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "title": "Compute mathematical expression",
+  "description": "Compute a mathmatical expression for each response document",
+  "required": [
+    "expression",
+    "resultFieldName"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "expression": {
+      "type": "string",
+      "title": "Math expression",
+      "description": "Can reference fields in response document, as well as max_[field name] and min_[field name]",
+      "default": "0.3 * score / max_score + 0.7 * vectors_distance",
+      "minLength": 1
+    },
+    "resultFieldName": {
+      "type": "string",
+      "title": "Result field name",
+      "description": "Results of math expression stored in this field",
+      "default": "ensemble_score",
+      "minLength": 1
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 2,
+  "unsafe": false
+}

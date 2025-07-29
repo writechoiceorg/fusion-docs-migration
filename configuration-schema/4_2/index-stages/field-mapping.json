@@ -1,0 +1,141 @@
+{
+  "type": "object",
+  "title": "Field Mapping",
+  "description": "Add, copy, move, or delete fields on a document",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "reservedFieldsMappingAllowed": {
+      "type": "boolean",
+      "title": "Allow System Fields Mapping?",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "mappings": {
+      "type": "array",
+      "title": "Field Mappings",
+      "description": "List of mapping rules",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "source"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source Field",
+            "description": "The name of the field to be mapped.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "title": "Target Field",
+            "description": "The name of the field to be mapped to.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation",
+            "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+            "enum": [
+              "copy",
+              "move",
+              "delete",
+              "set",
+              "add",
+              "keep"
+            ],
+            "default": "copy",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    "unmapped": {
+      "type": "object",
+      "title": "Unmapped Fields",
+      "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+      "required": [
+        "source"
+      ],
+      "properties": {
+        "source": {
+          "type": "string",
+          "title": "Source Field",
+          "description": "The name of the field to be mapped.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "target": {
+          "type": "string",
+          "title": "Target Field",
+          "description": "The name of the field to be mapped to.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "operation": {
+          "type": "string",
+          "title": "Operation",
+          "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+          "enum": [
+            "copy",
+            "move",
+            "delete",
+            "set",
+            "add",
+            "keep"
+          ],
+          "default": "copy",
+          "hints": [
+            "advanced"
+          ]
+        }
+      },
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 6,
+  "unsafe": false
+}

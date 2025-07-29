@@ -1,0 +1,352 @@
+{
+  "type" : "object",
+  "title" : "Salesforce",
+  "description" : "Connects to a Salesforce web service. This connector requires that you have a Developer Edition organization and have enabled the Salesforce REST API.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Repository",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connects to a Salesforce web service. This connector requires that you have a Developer Edition organization and have enabled the Salesforce REST API.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "salesforce_username", "salesforce_password", "connected_app_client_id", "connected_app_client_secret" ],
+      "properties" : {
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "salesforce_username" : {
+          "type" : "string",
+          "title" : "Salesforce username",
+          "minLength" : 1
+        },
+        "salesforce_password" : {
+          "type" : "string",
+          "title" : "Salesforce password",
+          "hints" : [ "secret" ],
+          "minLength" : 1
+        },
+        "connected_app_client_id" : {
+          "type" : "string",
+          "title" : "Salesforce Client Id",
+          "description" : "Salesforce connected app Consumer Key",
+          "minLength" : 1
+        },
+        "connected_app_client_secret" : {
+          "type" : "string",
+          "title" : "Salesforce Client secret",
+          "description" : "Salesforce connected app Consumer Secret",
+          "hints" : [ "secret" ],
+          "minLength" : 1
+        },
+        "enable_security_trimming" : {
+          "type" : "boolean",
+          "title" : "Enable Security Trimming",
+          "description" : "Security trimming restricts query results to records the user is allowed to access by indexing user access information with other document metadata. Enable this option to index user access metadata.",
+          "default" : false
+        },
+        "is_production_environment" : {
+          "type" : "boolean",
+          "title" : "Is production environment",
+          "description" : "Set to true for production instances and false for sandboxes.",
+          "default" : true
+        },
+        "objects_to_crawl" : {
+          "type" : "array",
+          "title" : "Objects to crawl",
+          "description" : "List of objects to crawl, separated by commas and no spaces.",
+          "default" : [ "Case", "CaseComment", "CaseHistory", "CaseFeed", "FeedComment", "Asset", "Account", "Contact", "Opportunity", "Product2" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "soql_query" : {
+          "type" : "string",
+          "title" : "Custom SOQL query",
+          "description" : "Optional SOQL query to limit or join records fetched for indexing.",
+          "hints" : [ "lengthy" ],
+          "maxLength" : 15000
+        },
+        "acl_collection" : {
+          "type" : "string",
+          "title" : "ACL collection ID",
+          "description" : "Specify a Solr collection ID here for use with security trimming. Please make sure this collection exists in the cluster You can create this collection using the Collection manager. ",
+          "pattern" : "^[A-Za-z0-9_\\-]+$"
+        },
+        "acl_commit_after" : {
+          "type" : "integer",
+          "title" : "ACL commit after (ms)",
+          "description" : "If you are using the acl collection indexing, this will set the frequency of SOLR commits to the acl collection.",
+          "default" : 60000,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "diagnostic_mode" : {
+          "type" : "boolean",
+          "title" : "Diagnostic Mode",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

@@ -1,0 +1,100 @@
+{
+  "type": "object",
+  "title": "Send Slack Message",
+  "description": "Send a Slack Message using the Fusion Messaging Service.  This can be used for things like alerting and more.",
+  "required": [
+    "to",
+    "from",
+    "messageBodyTemplate",
+    "messageSubjectTemplate"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "storeInContext": {
+      "type": "boolean",
+      "title": "Add to Pipeline Context",
+      "description": "Put the generated Message later in the pipeline.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "responseKey": {
+      "type": "string",
+      "title": "Message Response Context Key",
+      "description": "The name of the key to store the MessageResponse under in the Pipeline Context.",
+      "default": "messageResponse",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "errorKey": {
+      "type": "string",
+      "title": "Message Response Failure Key",
+      "description": "The name of the key to store a boolean if sending a message failed.  If set, you can check the MessageResponse errorCode and other attributes for the reason.",
+      "default": "messageResponseFailure",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "to": {
+      "type": "array",
+      "title": "To",
+      "description": "Who to send the message to.  May be a string template similar to the body and subject. ",
+      "items": {
+        "type": "string"
+      }
+    },
+    "from": {
+      "type": "string",
+      "title": "From",
+      "description": "Who the message is from.  May be a string template similar to the body and subject. "
+    },
+    "messageBodyTemplate": {
+      "type": "string",
+      "title": "Message Body Template",
+      "description": "A Message Template that is used to create the message body to send.  See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md for details on the template language.",
+      "default": "Processing Document <doc.id>",
+      "hints": [
+        "lengthy",
+        "code"
+      ]
+    },
+    "messageSubjectTemplate": {
+      "type": "string",
+      "title": "Message Subject Template",
+      "description": "A Message Template that is used to create the message subject to send.  See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md for details on the template language.",
+      "default": "Hello"
+    }
+  },
+  "category": "Troubleshooting",
+  "categoryPriority": 3,
+  "unsafe": false
+}

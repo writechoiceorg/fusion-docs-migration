@@ -1,0 +1,159 @@
+{
+  "type": "object",
+  "title": "Create Indexes in Milvus",
+  "description": "Creates indexes for specified collections in Milvus",
+  "required": [
+    "id",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "indexes-list": {
+      "type": "array",
+      "title": "Indexes",
+      "description": "List of the indexes that should be created with corresponding params.",
+      "items": {
+        "type": "object",
+        "required": [
+          "milvusCollectionName",
+          "indexType"
+        ],
+        "properties": {
+          "milvusCollectionName": {
+            "type": "string",
+            "title": "Collection Name",
+            "description": "Name of the collection in Milvus in which index should be created"
+          },
+          "indexType": {
+            "type": "string",
+            "title": "Index Type",
+            "description": "Index type which should be create for specified collection",
+            "enum": [
+              "FLAT",
+              "IVFLAT",
+              "IVF_SQ8",
+              "RNSG",
+              "IVF_SQ8H",
+              "IVF_PQ",
+              "HNSW",
+              "ANNOY"
+            ],
+            "default": "HNSW"
+          },
+          "indexParams": {
+            "type": "array",
+            "title": "Index Parameters",
+            "description": "Parameters to be used to create index in Milvus. Specific to the chosen IndexType. For example, good starting values might be [M=36, efConstruction=500] for HNSW index and [nlist=4×sqrt(number of vectors)] for IVF indexes.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "title": "Milvus Index Param",
+                  "description": "The name of the Milvus index params like  M / efConstruction for HNSW or nlist for IVF indexes."
+                },
+                "value": {
+                  "type": "integer",
+                  "title": "Value",
+                  "description": "Index param value. For example, good starting values might be [M=36, efConstruction=500] for HNSW index and [nlist=4×sqrt(number of vectors)] for IVF indexes."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-milvus-create-indexes"
+      ],
+      "default": "argo-milvus-create-indexes",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

@@ -1,0 +1,76 @@
+{
+  "type": "object",
+  "title": "Milvus Ensemble Query",
+  "description": "Performs ensemble of different search results to retrieve metadata from Solr.",
+  "required": [
+    "ensembleExpression",
+    "resultFieldName"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "ensembleExpression": {
+      "type": "string",
+      "title": "Ensemble math expression",
+      "description": "Can reference results (numeric_id, score) map objects by key in the context, as well as max_[context key], min_[context key], count_[context key] etc.",
+      "default": "1.0 * milvus_results",
+      "minLength": 1
+    },
+    "resultFieldName": {
+      "type": "string",
+      "title": "Result field name",
+      "description": "Field name to store result ensemble score",
+      "default": "ensemble_score",
+      "minLength": 1
+    },
+    "threshold": {
+      "type": "number",
+      "title": "Threshold",
+      "description": "Only documents with scores greater than or equal to the threshold will be returned"
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

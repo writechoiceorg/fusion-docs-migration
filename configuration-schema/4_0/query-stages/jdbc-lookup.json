@@ -1,0 +1,121 @@
+{
+  "type": "object",
+  "title": "JDBC Lookup",
+  "description": "Connect to a database and lookup one or more values and inject them into the context",
+  "required": [
+    "driver",
+    "connection",
+    "username",
+    "password",
+    "preparedStatement"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "driver": {
+      "type": "string",
+      "title": "JDBC Driver",
+      "description": "The fully qualified class name of the JDBC Driver to use."
+    },
+    "connection": {
+      "type": "string",
+      "title": "Connection URI",
+      "description": "The connection string for the database."
+    },
+    "username": {
+      "type": "string",
+      "title": "Username",
+      "description": "The username to connect to the database."
+    },
+    "password": {
+      "type": "string",
+      "title": "Password",
+      "description": "The password to connect to the database.",
+      "hints": [
+        "secret"
+      ]
+    },
+    "preparedStatement": {
+      "type": "string",
+      "title": "SQL Prepared Statement",
+      "description": "The SQL Prepared Statement to execute when bound with values.",
+      "hints": [
+        "lengthy"
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "title": "Rows",
+      "description": "The number of rows to return.",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "join": {
+      "type": "boolean",
+      "title": "Join With Request",
+      "description": "If true, the results will be added on to the request using the prefix key and the row id, else the results will be put in the pipeline context using",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "preparedStatementKeys": {
+      "type": "array",
+      "title": "Prepared Statement Keys",
+      "description": "The keys in the Request/Header/Context to use to map request attributes into the prepared statement.  These must map to the '?'s in your prepared statement.  They must also be able to be resolved as the first parameter of that name in a request.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "prefix": {
+      "type": "string",
+      "title": "Result Prefix Key",
+      "description": "The string to use as a prefix for all values.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "fetchSize": {
+      "type": "integer",
+      "title": "Fetch Size",
+      "description": "The JDBC Fetch Size to use.  If -1, use the driver default.",
+      "default": -1,
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 4
+}

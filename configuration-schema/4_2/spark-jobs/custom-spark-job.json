@@ -1,0 +1,196 @@
+{
+  "type": "object",
+  "title": "Custom Spark Job",
+  "description": "Use this job when you want to run a custom spark job.",
+  "required": [
+    "id",
+    "resourceName",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "resourceName": {
+      "type": "string",
+      "title": "Blob Resource (JAR or python file)",
+      "description": "Name of the resource uploaded to Blob store. This should match with the Blob name",
+      "minLength": 1,
+      "reference": "blob",
+      "blobType": "file:spark"
+    },
+    "mainClass": {
+      "type": "string",
+      "title": "Main class name",
+      "description": "Application's main class (for Java/Scala)"
+    },
+    "files": {
+      "type": "array",
+      "title": "Additional Files",
+      "description": "Blob resource (files) to be placed in the working directory of each executor",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "pythonFiles": {
+      "type": "array",
+      "title": "Python Files",
+      "description": "Blob resource (.zip, .egg, .py files) to place on the PYTHONPATH for Python apps",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "default": [
+        {
+          "key": "spark.executor.memory",
+          "value": "2g"
+        },
+        {
+          "key": "spark.driver.memory",
+          "value": "2g"
+        },
+        {
+          "key": "spark.logConf",
+          "value": "true"
+        },
+        {
+          "key": "spark.eventLog.enabled",
+          "value": "true"
+        },
+        {
+          "key": "spark.eventLog.compress",
+          "value": "true"
+        },
+        {
+          "key": "spark.scheduler.mode",
+          "value": "FAIR"
+        }
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "submitArgs": {
+      "type": "array",
+      "title": "Spark args",
+      "description": "Additional options to pass to the Spark Submit when running this job.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "javaOptions": {
+      "type": "array",
+      "title": "Java options",
+      "description": "Java options to pass to Spark driver/executor",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "verboseReporting": {
+      "type": "boolean",
+      "title": "Verbose reporting",
+      "description": "Enables verbose reporting for SparkSubmit",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "deleteOnExit": {
+      "type": "boolean",
+      "title": "Delete launcher dir",
+      "description": "Remove all temp files on exit",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "envOptions": {
+      "type": "array",
+      "title": "ENV properties",
+      "description": "Set environment variables for driver",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "custom_spark_job"
+      ],
+      "default": "custom_spark_job",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

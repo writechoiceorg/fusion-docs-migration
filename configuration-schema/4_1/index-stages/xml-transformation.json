@@ -1,0 +1,105 @@
+{
+  "type": "object",
+  "title": "XML Transformation",
+  "description": "This stage transforms XML contained in body field to pipeline document fields",
+  "required": [
+    "rootXPath"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "rootXPath": {
+      "type": "string",
+      "title": "Root XPath"
+    },
+    "parentIdField": {
+      "type": "string",
+      "title": "Parent ID Field Name"
+    },
+    "bodyField": {
+      "type": "string",
+      "title": "Body Field Name",
+      "default": "body"
+    },
+    "mappings": {
+      "type": "array",
+      "title": "XPath Mappings",
+      "items": {
+        "type": "object",
+        "required": [
+          "xpath",
+          "field"
+        ],
+        "properties": {
+          "xpath": {
+            "type": "string",
+            "title": "XPath Expression"
+          },
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "multivalue": {
+            "type": "boolean",
+            "title": "Multi Value",
+            "default": false
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "array",
+      "title": "Additional Metadata",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "value"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        }
+      }
+    },
+    "keepParent": {
+      "type": "boolean",
+      "title": "Keep Parent Document",
+      "default": false
+    }
+  },
+  "category": "Document Transformation",
+  "categoryPriority": 8
+}

@@ -1,0 +1,803 @@
+{
+  "type" : "object",
+  "title" : "A Box API Connector",
+  "description" : "Connector for Box.com. This connector can work in one of  two ways: 1) It can crawl a single user's files (and files shared with that user) using OAuth, or 2) It  supports a JWT Service account method that will crawl all users in an enterprise using Box.com's \"As-User\" header to simulate each user. For large distributed accounts, JWT Service Account is recommended. Otherwise you need to explicitly provide a single user access to every file you want to crawl.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Filesystem",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for Box.com. This connector can work in one of  two ways: 1) It can crawl a single user's files (and files shared with that user) using OAuth, or 2) It  supports a JWT Service account method that will crawl all users in an enterprise using Box.com's \"As-User\" header to simulate each user. For large distributed accounts, JWT Service Account is recommended. Otherwise you need to explicitly provide a single user access to every file you want to crawl.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser",
+      "description" : "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "startLinks", "f.fs.apiKey", "f.fs.apiSecret" ],
+      "properties" : {
+        "refreshAll" : {
+          "type" : "boolean",
+          "title" : "Recrawl all items",
+          "description" : "Set to true to always recrawl all items found in the crawldb.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "startLinks" : {
+          "type" : "array",
+          "title" : "Start Links",
+          "description" : "The IDs of the folders or files to crawl. For example if the URL to your folder is https://app.box.com/folder/12345, then enter 12345. To crawl the entire Box account, enter 0.",
+          "items" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "dedupe" : {
+          "type" : "boolean",
+          "title" : "Dedupe documents",
+          "description" : "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "dedupeField" : {
+          "type" : "string",
+          "title" : "Dedupe field",
+          "description" : "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints" : [ "advanced" ]
+        },
+        "dedupeScript" : {
+          "type" : "string",
+          "title" : "Dedupe script",
+          "description" : "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "dedupeSaveSignature" : {
+          "type" : "boolean",
+          "title" : "Save dedupe signature",
+          "description" : "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "delete" : {
+          "type" : "boolean",
+          "title" : "Delete dead URIs",
+          "description" : "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "default" : true
+        },
+        "deleteErrorsAfter" : {
+          "type" : "integer",
+          "title" : "Fetch failure allowance",
+          "description" : "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "default" : -1
+        },
+        "fetchThreads" : {
+          "type" : "integer",
+          "title" : "Fetch threads",
+          "description" : "The number of threads to use during fetching. The default is 5.",
+          "default" : 5
+        },
+        "emitThreads" : {
+          "type" : "integer",
+          "title" : "Emit threads",
+          "description" : "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "default" : 5
+        },
+        "chunkSize" : {
+          "type" : "integer",
+          "title" : "Fetch batch size",
+          "description" : "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "fetchDelayMS" : {
+          "type" : "integer",
+          "title" : "Fetch delay",
+          "description" : "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "default" : 0,
+          "hints" : [ "advanced" ]
+        },
+        "refreshStartLinks" : {
+          "type" : "boolean",
+          "title" : "Recrawl start links",
+          "description" : "Set to true to recrawl items specified in the list of start links.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshErrors" : {
+          "type" : "boolean",
+          "title" : "Recrawl errors",
+          "description" : "Set to true to recrawl items that failed during the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshOlderThan" : {
+          "type" : "integer",
+          "title" : "Recrawl age",
+          "description" : "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "default" : -1,
+          "hints" : [ "advanced" ]
+        },
+        "refreshIDPrefixes" : {
+          "type" : "array",
+          "title" : "Recrawl ID prefixes",
+          "description" : "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshIDRegexes" : {
+          "type" : "array",
+          "title" : "Recrawl ID regexes",
+          "description" : "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshScript" : {
+          "type" : "string",
+          "title" : "Recrawl script",
+          "description" : "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "forceRefresh" : {
+          "type" : "boolean",
+          "title" : "Force recrawl",
+          "description" : "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "forceRefreshClearSignatures" : {
+          "type" : "boolean",
+          "title" : "Clear signatures",
+          "description" : "If true, signatures will be cleared if force recrawl is enabled.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "retryEmit" : {
+          "type" : "boolean",
+          "title" : "Retry emits",
+          "description" : "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "depth" : {
+          "type" : "integer",
+          "title" : "Max crawl depth",
+          "description" : "Number of levels in a directory or site tree to descend for documents.",
+          "default" : -1
+        },
+        "maxItems" : {
+          "type" : "integer",
+          "title" : "Max items",
+          "description" : "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "default" : -1
+        },
+        "failFastOnStartLinkFailure" : {
+          "type" : "boolean",
+          "title" : "Fail crawl if start links are invalid",
+          "description" : "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "crawlDBType" : {
+          "type" : "string",
+          "title" : "Crawl database type",
+          "description" : "The type of crawl database to use, in-memory or on-disk.",
+          "enum" : [ "in-memory", "on-disk" ],
+          "default" : "on-disk",
+          "hints" : [ "advanced" ]
+        },
+        "commitAfterItems" : {
+          "type" : "integer",
+          "title" : "Commit After This Many Items",
+          "description" : "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "default" : 10000,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default" : [ {
+                "source" : "charSet",
+                "target" : "charSet_s",
+                "operation" : "move"
+              }, {
+                "source" : "fetchedDate",
+                "target" : "fetchedDate_dt",
+                "operation" : "move"
+              }, {
+                "source" : "lastModified",
+                "target" : "lastModified_dt",
+                "operation" : "move"
+              }, {
+                "source" : "signature",
+                "target" : "dedupeSignature_s",
+                "operation" : "move"
+              }, {
+                "source" : "length",
+                "target" : "length_l",
+                "operation" : "move"
+              }, {
+                "source" : "mimeType",
+                "target" : "mimeType_s",
+                "operation" : "move"
+              }, {
+                "source" : "parent",
+                "target" : "parent_s",
+                "operation" : "move"
+              }, {
+                "source" : "owner",
+                "target" : "owner_s",
+                "operation" : "move"
+              }, {
+                "source" : "group",
+                "target" : "group_s",
+                "operation" : "move"
+              } ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              },
+              "default" : {
+                "keep" : true,
+                "delete" : false,
+                "fieldToMoveValuesTo" : "",
+                "fieldToCopyValuesTo" : "",
+                "valueToAddToUnmappedFields" : "",
+                "valueToSetOnUnmappedFields" : ""
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        },
+        "f.maxSizeBytes" : {
+          "type" : "integer",
+          "title" : "Maximum file size (bytes)",
+          "description" : "Maximum size (in bytes) of documents to fetch or -1 for unlimited file size.",
+          "default" : 20000000
+        },
+        "f.minSizeBytes" : {
+          "type" : "integer",
+          "title" : "Minimum file size (bytes)",
+          "description" : "Minimum size, in bytes, of documents to fetch.",
+          "default" : 0
+        },
+        "f.addFileMetadata" : {
+          "type" : "boolean",
+          "title" : "Add file metadata",
+          "description" : "Set to true to add information about documents found in the filesystem to the document, such as document owner, group, or ACL permissions.",
+          "default" : true
+        },
+        "f.index_items_discarded" : {
+          "type" : "boolean",
+          "title" : "Index discarded document metadata",
+          "description" : "Enable to index discarded document metadata",
+          "default" : false
+        },
+        "enable_security_trimming" : {
+          "type" : "object",
+          "title" : "Enable Security Trimming",
+          "properties" : {
+            "f.isSecurityGroupTrimming" : {
+              "type" : "boolean",
+              "title" : "Unused",
+              "description" : "Unused",
+              "hints" : [ "hidden" ]
+            },
+            "isSecurityGroupTrimming" : {
+              "type" : "boolean",
+              "title" : "Include Security Trimming on Groups",
+              "description" : "Is the security trimming for groups included?",
+              "default" : true
+            },
+            "security_filter_cache" : {
+              "type" : "boolean",
+              "title" : "Enable security filter cache",
+              "description" : "Cache of document access control rules.",
+              "default" : true
+            },
+            "cache_expiration_time" : {
+              "type" : "integer",
+              "title" : "Security cache expiration time",
+              "description" : "cache_expiration_time",
+              "default" : 7200
+            }
+          }
+        },
+        "retainOutlinks" : {
+          "type" : "boolean",
+          "title" : "Retain links in the crawldb",
+          "description" : "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "aliasExpiration" : {
+          "type" : "integer",
+          "title" : "Alias expiration",
+          "description" : "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.apiKey" : {
+          "type" : "string",
+          "title" : "API Key",
+          "description" : "The Box API Key."
+        },
+        "f.fs.apiSecret" : {
+          "type" : "string",
+          "title" : "API Secret",
+          "description" : "The Box API Secret.",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.refreshToken" : {
+          "type" : "string",
+          "title" : "OAuth Refresh Token",
+          "description" : "OAuth Refresh token (Not needed for JWT).",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.refreshTokenFile" : {
+          "type" : "string",
+          "title" : "OAuth Refresh Token File",
+          "description" : "File that stores the refresh token for the next session.",
+          "default" : "refresh_token.txt"
+        },
+        "f.fs.appUserId" : {
+          "type" : "string",
+          "title" : "JWT App User ID",
+          "description" : "(JWT only) The JWT App User ID with access to crawl."
+        },
+        "f.fs.publicKeyId" : {
+          "type" : "string",
+          "title" : "JWT Public Key Id",
+          "description" : "(JWT only) The public key prefix from the box.com public keys."
+        },
+        "f.fs.privateKeyBase64" : {
+          "type" : "string",
+          "title" : "JWT Private Key (Base64)",
+          "description" : "(JWT only) Content of the private key. To get this value, open your key file and convert its content (including first and last line) to base64 string.",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.privateKeyPassword" : {
+          "type" : "string",
+          "title" : "JWT Private Key Password",
+          "description" : "(JWT only) The password you entered for the private key file.",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.isGenerateSharedLinkWhenAbsent" : {
+          "type" : "boolean",
+          "title" : "Generate Shared Link When Absent",
+          "description" : "If this is selected, the crawler will automatically create a shared link for any non-shared documents it finds while crawling. Note: This will change all documents to 'Shared' in your Box view. Use with caution.",
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.generatedSharedLinksExpireDays" : {
+          "type" : "integer",
+          "title" : "Generated Shared Link Expries After Days",
+          "description" : "Only applicable when Generate Shared Links when Absent is selected... this will control how many days the shared links stay valid for. 0 for unlimited.",
+          "default" : 0,
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.generatedSharedLinksAccess" : {
+          "type" : "string",
+          "title" : "Generated Shared Link Access",
+          "description" : "Only applicable when Generate Shared Links when Absent is selected... Sets the shared link access setting. Can be left blank (the default) or set to open, company or collaborators",
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.isGenerateSharedLinkPermissionCanDownload" : {
+          "type" : "boolean",
+          "title" : "Generated Shared Link Has Download Permission",
+          "description" : "Only applicable when Generate Shared Links when Absent is selected... On the box shared link, is the \"can download\" permission granted?",
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.isGenerateSharedLinkPermissionCanPreview" : {
+          "type" : "boolean",
+          "title" : "Generated Shared Link Has Preview Permission",
+          "description" : "Only applicable when Generate Shared Links when Absent is selected... On the box shared link, is the \"can preview\" permission granted?",
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.max_request_attempts" : {
+          "type" : "integer",
+          "title" : "Box Max Request Retries",
+          "description" : "If Box API throws an error when trying to get a file, how  many times do we retry before giving up?",
+          "default" : 10,
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.user_filter_term" : {
+          "type" : "string",
+          "title" : "User Filter Term",
+          "description" : "If you specify a user filter term, then a users files will only be crawled if their login starts with the user filter term. Can be comma separated list of multiple filter terms. Example: a,b,c,v would be all box users that have a login starting with a,b,c, or v. This value can be empty to return all results."
+        },
+        "f.fs.user_excludes" : {
+          "type" : "array",
+          "title" : "User exclude regexes",
+          "description" : "In addition to the user filter, you can here optionally specify regexes matching user names that should not be crawled.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.fs.proxyType" : {
+          "type" : "string",
+          "title" : "Proxy type",
+          "description" : "Type of proxy to use, if any. Allowed values are 'HTTP' and 'SOCKS'. Leave empty for no proxy."
+        },
+        "f.fs.proxyHost" : {
+          "type" : "string",
+          "title" : "Proxy host",
+          "description" : "The address to use when connecting through the proxy."
+        },
+        "f.fs.proxyPort" : {
+          "type" : "integer",
+          "title" : "Proxy port",
+          "description" : "The port to use when connecting through the proxy."
+        },
+        "f.fs.distributedCrawlCollectionName" : {
+          "type" : "string",
+          "title" : "Distributed crawl collection name",
+          "description" : "The collection name of the Distributed Crawl Collection. If you do not specify one, it will use 'system_box_distributed_crawl'."
+        },
+        "f.fs.childrenPageSize" : {
+          "type" : "integer",
+          "title" : "Box.com children responses per page",
+          "description" : "The number of results to get from Box.com API's children() methods. Default is the max of 1000, Range can be 1-1000.",
+          "default" : 1000
+        },
+        "f.fs.batchSize" : {
+          "type" : "integer",
+          "title" : "Requests batch size",
+          "description" : "The number of requests to be wrapped into a Box batch request",
+          "default" : 10,
+          "maximum" : 10,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.fs.readTimeoutMs" : {
+          "type" : "integer",
+          "title" : "API Read Timeout (ms)",
+          "description" : "The box api read timeout in milliseconds.",
+          "default" : 240000
+        },
+        "f.fs.connectTimeoutMs" : {
+          "type" : "integer",
+          "title" : "API Connection Timeout (ms)",
+          "description" : "The box api connection timeout in milliseconds.",
+          "default" : 240000
+        },
+        "f.fs.retrievalTimeoutMs" : {
+          "type" : "integer",
+          "title" : "Retrieval Timeout (ms)",
+          "description" : "Timeout before taking items on producer/consumer queues in milliseconds. Default is 1000",
+          "default" : 1000
+        },
+        "f.fs.nestedFolderDepth" : {
+          "type" : "integer",
+          "title" : "Nested folder depth limit",
+          "description" : "Maximum depth of nested folders that will be crawled. Range: [1, int-max]. Default is int-max.",
+          "default" : 2147483647
+        },
+        "f.fs.partitionBucketCount" : {
+          "type" : "integer",
+          "title" : "Number of partition buckets",
+          "description" : "Number of partition buckets to be used during the full crawl. Default is 5000.",
+          "default" : 5000
+        },
+        "f.fs.numDistributedDatasources" : {
+          "type" : "integer",
+          "title" : "Number distributed crawl datasources",
+          "description" : "Number of separate datasource jobs that will be running in this distributed crawl. In other words, how many datasources are part of this crawl? This value is needed in order to distribute work evenly amongst multiple jobs.",
+          "default" : 1
+        },
+        "f.fs.distributedCrawlDatasourceIndex" : {
+          "type" : "integer",
+          "title" : "Distributed crawl datasource index",
+          "description" : "Distributed Job index. Zero-based index of what distributed job index this data source represents. Must be in range [0, numDatasources]. For example, if you have 3 jobs in an distributed crawl, the index can be either 0, 1 or 2. Each data source must have a unique distributedJobIndex. Once the pre-fetch index is created, this index is used to signify the chunk of the file IDs that this node is responsible for indexing from the Distributed Crawl Collection.",
+          "default" : 0
+        },
+        "f.fs.numPreFetchIndexCreationThreads" : {
+          "type" : "integer",
+          "title" : "Number of pre-fetch index creator threads",
+          "description" : "The number of concurrent threads that will create the Distributed Pre-fetch Index. Default: 16",
+          "default" : 5
+        },
+        "f.fs.numSolrEmitterThreads" : {
+          "type" : "integer",
+          "title" : "Number of Solr emitter threads",
+          "description" : "The number of Solr emitter threads. Default: 4",
+          "default" : 4
+        },
+        "f.fs.excludedExtensions" : {
+          "type" : "string",
+          "title" : "Exclude extensions",
+          "description" : "Comma separated list of extensions. No Box Files or Folders that have a filename that ends with any of these extensions will be crawled. Case will be ignored. E.g. .txt,.xls,.DS_Store"
+        },
+        "batch_incremental_crawling" : {
+          "type" : "boolean",
+          "title" : "Batch Incremental crawling",
+          "description" : "When enabled, the re-crawl processes will retrieve just the new, modified and deleted files from Box file system. This feature only works if the user is an enterprise admin user.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "diagnosticMode" : {
+          "type" : "boolean",
+          "title" : "Diagnostic mode",
+          "description" : "Enable to print more detailed information to the logs about each request.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Recrawl Rules",
+        "properties" : [ "refreshAll", "batch_incremental_crawling", "refreshStartLinks", "refreshErrors", "refreshOlderThan", "refreshIDPrefixes", "refreshIDRegexes", "refreshScript", "forceRefresh", "forceRefreshClearSignatures" ]
+      }, {
+        "label" : "Security Trimming",
+        "properties" : [ "enable_security_trimming" ]
+      }, {
+        "label" : "Dedupe",
+        "properties" : [ "dedupe", "dedupeSaveSignature", "dedupeField", "dedupeScript" ]
+      }, {
+        "label" : "Crawl History",
+        "properties" : [ "retainOutlinks", "aliasExpiration", "crawlDBType", "commitAfterItems" ]
+      }, {
+        "label" : "Limit Documents",
+        "properties" : [ "f.maxSizeBytes", "f.minSizeBytes", "f.addFileMetadata", "f.index_items_discarded", "depth", "maxItems", "delete", "deleteErrorsAfter", "addFileMetadata", "maxSizeBytes", "minSizeBytes" ]
+      }, {
+        "label" : "Crawl Performance",
+        "properties" : [ "chunkSize", "fetchThreads", "fetchDelayMS", "emitThreads", "retryEmit", "failFastOnStartLinkFailure", "f.fs.max_request_attempts" ]
+      }, {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

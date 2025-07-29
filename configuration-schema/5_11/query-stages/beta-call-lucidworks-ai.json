@@ -1,0 +1,135 @@
+{
+  "type": "object",
+  "title": "[BETA] Call Lucidworks AI",
+  "description": "General purpose integration between Fusion and Lucidworks AI.",
+  "required": [
+    "accountName",
+    "useCase",
+    "modelName",
+    "inputContextVariable",
+    "outputContextVariable"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "accountName": {
+      "type": "string",
+      "title": "Account Name",
+      "description": "Lucidworks AI integration name as defined by your Fusion Administrator."
+    },
+    "useCase": {
+      "type": "string",
+      "title": "Use Case",
+      "description": "Lucidworks AI Use Case as defined in documentation"
+    },
+    "modelName": {
+      "type": "string",
+      "title": "Model Name",
+      "description": "Lucidworks AI Model Name as defined in Lucidworks AI Models"
+    },
+    "inputContextVariable": {
+      "type": "string",
+      "title": "Input context variable",
+      "description": "Name of the variable in context to be used as input. Supports template expressions."
+    },
+    "outputContextVariable": {
+      "type": "string",
+      "title": "Output context variable",
+      "description": "Name of the variable in context to be used by this stage as output. Supports template expressions."
+    },
+    "includeResponseDocs": {
+      "type": "boolean",
+      "title": "Include Response Documents?",
+      "description": "Flag to indicate whether response documents should be included in the Lucidworks AI request. Note: Only makes sense after Solr Query stage when there are response docs.",
+      "default": false
+    },
+    "useCaseConfig": {
+      "type": "array",
+      "title": "Use Case Configuration",
+      "description": "Additional Use Case keys and values to be sent to Lucidworks AI",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelConfig": {
+      "type": "array",
+      "title": "Model Configuration",
+      "description": "Additional Model configuration parameters to be sent to Lucidworks AI",
+      "minItems": 0,
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

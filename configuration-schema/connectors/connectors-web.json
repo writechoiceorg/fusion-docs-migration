@@ -1,0 +1,1480 @@
+{
+  "type" : "object",
+  "title" : "Web",
+  "description" : "Connector for websites and web-based content resources.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Web",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser",
+      "description" : "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting",
+      "default" : "lucidworks-web"
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "default" : "lucidworks-web",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for websites and web-based content resources.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "startLinks" ],
+      "properties" : {
+        "fetchDelayMSPerHost" : {
+          "type" : "boolean",
+          "title" : "Fetch delay per host",
+          "description" : "If true, the 'Fetch delay (ms)' property will be applied for each host.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "delete" : {
+          "type" : "boolean",
+          "title" : "Delete dead URIs",
+          "description" : "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "deleteErrorsAfter" : {
+          "type" : "integer",
+          "title" : "Fetch failure allowance",
+          "description" : "Number of times a website can error out, for example with a 500 error or a connection timeout, before a document is removed from the index. The default of -1 means such documents are never removed. Note that pages that return a 404 status code can be configured to be removed immediately regardless of this setting.",
+          "default" : -1,
+          "hints" : [ "advanced" ]
+        },
+        "restrictToTreeIgnoredHostPrefixes" : {
+          "type" : "array",
+          "title" : "Restrict crawl host prefix exemptions",
+          "description" : "Modifies the behavior of 'Restrict crawl to start-link tree' to ignore the configured list of prefixes when restricting the crawl. Commonly, 'www.' is ignored so links with the same domain are allowed, whether of the form 'http://host.com' or 'http://www.host.com'. This option requires 'Restrict to start-link tree' to be enabled to have any effect.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "restrictToTree" : {
+          "type" : "boolean",
+          "title" : "Restrict crawl to start-link tree",
+          "description" : "If true, only URLs that match the startLinks URL domain will be followed",
+          "default" : true
+        },
+        "startLinks" : {
+          "type" : "array",
+          "title" : "Start Links",
+          "description" : "The URL(s) that the crawler will start crawling from, for example: https://en.wikipedia.org/wiki/Main_Page",
+          "items" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "dedupe" : {
+          "type" : "boolean",
+          "title" : "Dedupe documents",
+          "description" : "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "dedupeField" : {
+          "type" : "string",
+          "title" : "Dedupe field",
+          "description" : "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints" : [ "advanced" ]
+        },
+        "dedupeScript" : {
+          "type" : "string",
+          "title" : "Dedupe script",
+          "description" : "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "dedupeSaveSignature" : {
+          "type" : "boolean",
+          "title" : "Save dedupe signature",
+          "description" : "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "fetchThreads" : {
+          "type" : "integer",
+          "title" : "Fetch threads",
+          "description" : "The number of threads to use during fetching. The default is 5.",
+          "default" : 5
+        },
+        "emitThreads" : {
+          "type" : "integer",
+          "title" : "Emit threads",
+          "description" : "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "default" : 5
+        },
+        "chunkSize" : {
+          "type" : "integer",
+          "title" : "Fetch batch size",
+          "description" : "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "fetchDelayMS" : {
+          "type" : "integer",
+          "title" : "Fetch delay",
+          "description" : "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "default" : 0,
+          "hints" : [ "advanced" ]
+        },
+        "refreshAll" : {
+          "type" : "boolean",
+          "title" : "Recrawl all items",
+          "description" : "Set to true to always recrawl all items found in the crawldb.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "refreshStartLinks" : {
+          "type" : "boolean",
+          "title" : "Recrawl start links",
+          "description" : "Set to true to recrawl items specified in the list of start links.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshErrors" : {
+          "type" : "boolean",
+          "title" : "Recrawl errors",
+          "description" : "Set to true to recrawl items that failed during the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshOlderThan" : {
+          "type" : "integer",
+          "title" : "Recrawl age",
+          "description" : "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "default" : -1,
+          "hints" : [ "advanced" ]
+        },
+        "refreshIDPrefixes" : {
+          "type" : "array",
+          "title" : "Recrawl ID prefixes",
+          "description" : "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshIDRegexes" : {
+          "type" : "array",
+          "title" : "Recrawl ID regexes",
+          "description" : "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshScript" : {
+          "type" : "string",
+          "title" : "Recrawl script",
+          "description" : "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "forceRefresh" : {
+          "type" : "boolean",
+          "title" : "Force recrawl",
+          "description" : "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "forceRefreshClearSignatures" : {
+          "type" : "boolean",
+          "title" : "Clear signatures",
+          "description" : "If true, signatures will be cleared if force recrawl is enabled.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "retryEmit" : {
+          "type" : "boolean",
+          "title" : "Retry emits",
+          "description" : "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "depth" : {
+          "type" : "integer",
+          "title" : "Max crawl depth",
+          "description" : "Number of levels in a directory or site tree to descend for documents.",
+          "default" : -1
+        },
+        "maxItems" : {
+          "type" : "integer",
+          "title" : "Max items",
+          "description" : "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "default" : -1
+        },
+        "failFastOnStartLinkFailure" : {
+          "type" : "boolean",
+          "title" : "Fail crawl if start links are invalid",
+          "description" : "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "crawlDBType" : {
+          "type" : "string",
+          "title" : "Crawl database type",
+          "description" : "The type of crawl database to use, in-memory or on-disk.",
+          "enum" : [ "in-memory", "on-disk" ],
+          "default" : "on-disk",
+          "hints" : [ "advanced" ]
+        },
+        "commitAfterItems" : {
+          "type" : "integer",
+          "title" : "Commit After This Many Items",
+          "description" : "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "default" : 10000,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default" : [ {
+                "source" : "charSet",
+                "target" : "charSet_s",
+                "operation" : "move"
+              }, {
+                "source" : "fetchedDate",
+                "target" : "fetchedDate_dt",
+                "operation" : "move"
+              }, {
+                "source" : "lastModified",
+                "target" : "lastModified_dt",
+                "operation" : "move"
+              }, {
+                "source" : "signature",
+                "target" : "dedupeSignature_s",
+                "operation" : "move"
+              }, {
+                "source" : "length",
+                "target" : "length_l",
+                "operation" : "move"
+              }, {
+                "source" : "mimeType",
+                "target" : "mimeType_s",
+                "operation" : "move"
+              }, {
+                "source" : "parent",
+                "target" : "parent_s",
+                "operation" : "move"
+              }, {
+                "source" : "owner",
+                "target" : "owner_s",
+                "operation" : "move"
+              }, {
+                "source" : "group",
+                "target" : "group_s",
+                "operation" : "move"
+              } ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              },
+              "default" : {
+                "keep" : true,
+                "delete" : false,
+                "fieldToMoveValuesTo" : "",
+                "fieldToCopyValuesTo" : "",
+                "valueToAddToUnmappedFields" : "",
+                "valueToSetOnUnmappedFields" : ""
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        },
+        "excludeExtensions" : {
+          "type" : "array",
+          "title" : "Excluded file extensions",
+          "description" : "File extensions that should not to be fetched. This will limit this datasource to all extensions except this list.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "excludeRegexes" : {
+          "type" : "array",
+          "title" : "Exclusive regexes",
+          "description" : "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "includeExtensions" : {
+          "type" : "array",
+          "title" : "Included file extensions",
+          "description" : "File extensions to be fetched. This will limit this datasource to only these file extensions.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "includeRegexes" : {
+          "type" : "array",
+          "title" : "Inclusive regexes",
+          "description" : "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "retainOutlinks" : {
+          "type" : "boolean",
+          "title" : "Retain links in the crawldb",
+          "description" : "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "aliasExpiration" : {
+          "type" : "integer",
+          "title" : "Alias expiration",
+          "description" : "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "restrictToTreeAllowSubdomains" : {
+          "type" : "boolean",
+          "title" : "Ignore sub-domains when restricting crawl",
+          "description" : "Modifies the behavior of 'Restrict crawl to start-link tree' so that a link to any sub-domain of the start links is allowed. For example, if the start link is 'http://host.com', this option ensures that links to 'http://news.host.com' are also followed. This option requires 'Restrict to start-link tree' to be enabled to have any effect.",
+          "default" : false
+        },
+        "restrictToTreeUseHostAndPath" : {
+          "type" : "boolean",
+          "title" : "Restrict crawl to start-link path",
+          "description" : "Modifies the behavior of 'Restrict crawl to start-link tree' to include the 'path' of the start link in the restriction logic. For example, if the start link is 'http://host.com/US', this option will limit all followed URLs to ones starting with the '/US/' path. This option requires 'Restrict to start-link tree' to be enabled to have any effect.",
+          "default" : false
+        },
+        "f.maxSizeBytes" : {
+          "type" : "integer",
+          "title" : "Max file size (bytes)",
+          "description" : "Maximum size, in bytes, of a document to fetch.",
+          "default" : 4194304
+        },
+        "f.timeoutMS" : {
+          "type" : "integer",
+          "title" : "Connection timeout (ms)",
+          "description" : "Time in milliseconds to wait for server response.",
+          "default" : 10000,
+          "hints" : [ "advanced" ]
+        },
+        "f.requestRetryCount" : {
+          "type" : "integer",
+          "title" : "Request Retry Count",
+          "description" : "If an http request fails, retry up to this many times before giving up. If set to 0, requests will not be retried. This is useful in situations where your crawls are failing with errors like \"The target server failed to respond\".",
+          "default" : 0
+        },
+        "f.defaultCharSet" : {
+          "type" : "string",
+          "title" : "Default character set",
+          "description" : "Default character set to use when one is not declared in the HTTP headers.",
+          "default" : "UTF-8",
+          "hints" : [ "advanced" ]
+        },
+        "f.obeyCharSet" : {
+          "type" : "boolean",
+          "title" : "Obey server-supplied charset",
+          "description" : "Use the encoding sent by the web server (if any) when parsing content. If unset, Fusion will try to guess the character set when parsing.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "f.defaultMIMEType" : {
+          "type" : "string",
+          "title" : "Default MIME type",
+          "description" : "Default MIME type to use when one is not declared in the HTTP headers.",
+          "default" : "application/octet-stream",
+          "hints" : [ "advanced" ]
+        },
+        "f.sitemapURLs" : {
+          "type" : "array",
+          "title" : "Sitemap URLs",
+          "description" : "URLs for sitemaps, to be used a basis for link discovery. Rules found in sitemaps will not be processed.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.maintainCookies" : {
+          "type" : "boolean",
+          "title" : "Maintain Cookies for No-Auth Crawls",
+          "description" : "If you are not using authentication, then by default cookies are not stored in between web requests (stateless). If checked, cookies will be maintained between requests during the web crawl even when you are not using authentication. If you are using authentication, this checkbox has no effect on the crawl and can be ignored.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.bulkStartLinks" : {
+          "type" : "string",
+          "title" : "Bulk Start Links",
+          "description" : "If a large number of start links must be defined, you can provide them here. One link per line.",
+          "hints" : [ "lengthy" ]
+        },
+        "f.basicAuth" : {
+          "type" : "array",
+          "title" : "Basic Authentication",
+          "description" : "Settings for Basic authentiation",
+          "items" : {
+            "type" : "object",
+            "required" : [ "host", "port" ],
+            "properties" : {
+              "host" : {
+                "type" : "string",
+                "title" : "Host",
+                "description" : "The host of the site. You can specify * to authenticate against any host. (Warning authentication cookies will be send to any host)"
+              },
+              "port" : {
+                "type" : "integer",
+                "title" : "Port",
+                "description" : "The port. You can specify -1 to authenticate against any port"
+              },
+              "realm" : {
+                "type" : "string",
+                "title" : "Realm",
+                "description" : "The realm for the site, if any"
+              },
+              "userName" : {
+                "type" : "string",
+                "title" : "User",
+                "description" : "The username to use for authentication"
+              },
+              "password" : {
+                "type" : "string",
+                "title" : "Password",
+                "description" : "The password for the user",
+                "hints" : [ "secret" ]
+              },
+              "id" : {
+                "type" : "string",
+                "title" : "Auth Config id",
+                "description" : "Auth Config id ",
+                "hints" : [ "hidden" ]
+              }
+            }
+          }
+        },
+        "f.digestAuth" : {
+          "type" : "array",
+          "title" : "Digest Authentication",
+          "description" : "Settings for Digest authentication",
+          "items" : {
+            "type" : "object",
+            "required" : [ "host", "port" ],
+            "properties" : {
+              "host" : {
+                "type" : "string",
+                "title" : "Host",
+                "description" : "The host of the site. You can specify * to authenticate against any host. (Warning authentication cookies will be send to any host)"
+              },
+              "port" : {
+                "type" : "integer",
+                "title" : "Port",
+                "description" : "The port. You can specify -1 to authenticate against any port"
+              },
+              "realm" : {
+                "type" : "string",
+                "title" : "Realm",
+                "description" : "The realm for the site, if any"
+              },
+              "userName" : {
+                "type" : "string",
+                "title" : "User",
+                "description" : "The username to use for authentication"
+              },
+              "password" : {
+                "type" : "string",
+                "title" : "Password",
+                "description" : "The password for the user",
+                "hints" : [ "secret" ]
+              },
+              "id" : {
+                "type" : "string",
+                "title" : "Auth Config id",
+                "description" : "Auth Config id ",
+                "hints" : [ "hidden" ]
+              }
+            }
+          }
+        },
+        "f.ntlmAuth" : {
+          "type" : "array",
+          "title" : "NTLM Authentication",
+          "description" : "Settings for NTLM authentication",
+          "items" : {
+            "type" : "object",
+            "required" : [ "host", "port" ],
+            "properties" : {
+              "host" : {
+                "type" : "string",
+                "title" : "Host",
+                "description" : "The host of the site. You can specify * to authenticate against any host. (Warning authentication cookies will be send to any host)"
+              },
+              "port" : {
+                "type" : "integer",
+                "title" : "Port",
+                "description" : "The port. You can specify -1 to authenticate against any port"
+              },
+              "realm" : {
+                "type" : "string",
+                "title" : "Realm",
+                "description" : "The realm for the site, if any"
+              },
+              "userName" : {
+                "type" : "string",
+                "title" : "User",
+                "description" : "The username to use for authentication"
+              },
+              "password" : {
+                "type" : "string",
+                "title" : "Password",
+                "description" : "The password for the user",
+                "hints" : [ "secret" ]
+              },
+              "id" : {
+                "type" : "string",
+                "title" : "Auth Config id",
+                "description" : "Auth Config id ",
+                "hints" : [ "hidden" ]
+              },
+              "domain" : {
+                "type" : "string",
+                "title" : "Domain",
+                "description" : "The NTLM Domain"
+              },
+              "workstation" : {
+                "type" : "string",
+                "title" : "Workstation",
+                "description" : "The NTLM Workstation name"
+              }
+            }
+          }
+        },
+        "f.formAuth" : {
+          "type" : "array",
+          "title" : "Form Authentication",
+          "description" : "Settings for Form based authentication",
+          "items" : {
+            "type" : "object",
+            "required" : [ "action" ],
+            "properties" : {
+              "action" : {
+                "type" : "string",
+                "title" : "URL",
+                "description" : "The URL of the authentication endpoint"
+              },
+              "ttl" : {
+                "type" : "number",
+                "title" : "TTL (ms)",
+                "description" : "The \"time to live\" in milliseconds for the session that will be created after authentication."
+              },
+              "params" : {
+                "type" : "object",
+                "title" : "Parameters",
+                "description" : "Parameters sent to the authentication endpoint",
+                "properties" : { },
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              },
+              "passwordParamName" : {
+                "type" : "string",
+                "title" : "Password Parameter",
+                "description" : "Name of the parameter containing the password"
+              },
+              "password" : {
+                "type" : "string",
+                "title" : "Password",
+                "description" : "The password to use for the authentication request. This will be copied into the \"Parameters\" using the \"Password Parameter\" name as the key",
+                "hints" : [ "secret" ]
+              },
+              "id" : {
+                "type" : "string",
+                "title" : "Auth Config id",
+                "description" : "Auth Config id ",
+                "hints" : [ "hidden" ]
+              }
+            }
+          }
+        },
+        "f.samlAuth" : {
+          "type" : "array",
+          "title" : "SAML/Smart Form Authentication",
+          "description" : "Settings for SAML/Smart Form based authentication allows you to visit one or more web pages that contain form inputs such as username, password, security questions, etc., submitting each one in turn in order to become authenticated.",
+          "items" : {
+            "type" : "object",
+            "required" : [ "action" ],
+            "properties" : {
+              "action" : {
+                "type" : "string",
+                "title" : "URL",
+                "description" : "The URL of the authentication endpoint"
+              },
+              "ttl" : {
+                "type" : "number",
+                "title" : "TTL (ms)",
+                "description" : "The \"time to live\" in milliseconds for the session that will be created after authentication."
+              },
+              "params" : {
+                "type" : "object",
+                "title" : "Parameters",
+                "description" : "Parameters sent to the authentication endpoint",
+                "properties" : { },
+                "additionalProperties" : {
+                  "type" : "string"
+                }
+              },
+              "passwordParamName" : {
+                "type" : "string",
+                "title" : "Password Parameter",
+                "description" : "Name of the parameter containing the password"
+              },
+              "password" : {
+                "type" : "string",
+                "title" : "Password",
+                "description" : "The password to use for the authentication request. This will be copied into the \"Parameters\" using the \"Password Parameter\" name as the key",
+                "hints" : [ "secret" ]
+              },
+              "id" : {
+                "type" : "string",
+                "title" : "Auth Config id",
+                "description" : "Auth Config id ",
+                "hints" : [ "hidden" ]
+              }
+            }
+          }
+        },
+        "f.credentialsFile" : {
+          "type" : "string",
+          "title" : "credentialsFile",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosEnabled" : {
+          "type" : "boolean",
+          "title" : "kerberosEnabled",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosLoginContextName" : {
+          "type" : "string",
+          "title" : "kerberosLoginContextName",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosSpn" : {
+          "type" : "string",
+          "title" : "kerberosSpn",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosPrincipal" : {
+          "type" : "string",
+          "title" : "kerberosPrincipal",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosKeytabFile" : {
+          "type" : "string",
+          "title" : "kerberosKeytabFile",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosKeytabBase64" : {
+          "type" : "string",
+          "title" : "kerberosKeytabBase64",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.kerberosPassword" : {
+          "type" : "string",
+          "title" : "kerberosPassword",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "secret", "hidden" ]
+        },
+        "f.appendTrailingSlashToLinks" : {
+          "type" : "boolean",
+          "title" : "Add trailing slash to link URLs",
+          "description" : "If true, a trailing '/' will be added to link URLs when the URL does not end in a dot ('.').",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.discardLinkURLQueries" : {
+          "type" : "boolean",
+          "title" : "Discard queries in link URLs",
+          "description" : "If true, query parameters found in URLs will be removed before being added to the discovery queue.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.discardLinkURLAnchors" : {
+          "type" : "boolean",
+          "title" : "Discard anchors in link URLs",
+          "description" : "If true, anchors found in URLs will be removed before being added to the discovery queue.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "f.scrapeLinksBeforeFiltering" : {
+          "type" : "boolean",
+          "title" : "Scrape links before filtering",
+          "description" : "If true, links will be extracted from documents before any other document processing has ocurred. By default, links are extracted after all other document processing.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.crawlJS" : {
+          "type" : "boolean",
+          "title" : "Evaluate Javascript",
+          "description" : "Evaluate JavaScript on web pages when crawling. This makes it possible for the Web fetcher to extract content from pages that is only available after JavaScript has prepared the document, but it may make the crawl slower because JavaScript loading can be time consuming.",
+          "default" : false
+        },
+        "f.jsEnabledAuth" : {
+          "type" : "boolean",
+          "title" : "Evaluate JavaScript during SmartForms/SAML Login",
+          "description" : "Evaluate JavaScript when doing SAML/SmartForm authentication. This is only applicable if you have specified a SmartForms/SAML Authentication element in the \"Crawl Authentication\" area.",
+          "default" : false
+        },
+        "f.jsPageLoadTimeout" : {
+          "type" : "integer",
+          "title" : "Timeout",
+          "description" : "The time to wait in milliseconds for a page load to complete. If the timeout is -1, page loads can be indefinite. Maximum: 180,000ms i.e. 3 minutes",
+          "default" : 20000,
+          "maximum" : 180000,
+          "exclusiveMaximum" : false,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "f.jsScriptTimeout" : {
+          "type" : "integer",
+          "title" : "Script Timeout",
+          "description" : "The time to wait in milliseconds wait for an asynchronous script to finish execution. If the timeout is -1, then the script will be allowed to run indefinitely. Maximum: 30,000ms",
+          "default" : 20000,
+          "maximum" : 180000,
+          "exclusiveMaximum" : false,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "f.jsAjaxTimeout" : {
+          "type" : "integer",
+          "title" : "AJAX Timeout",
+          "description" : "The time in milliseconds after which an AJAX request will be ignored when considering whether all AJAX requests have completed. Maximum: 180,000ms i.e. 3 minutes",
+          "default" : 20000,
+          "maximum" : 180000,
+          "exclusiveMaximum" : false,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "f.extraLoadTimeMs" : {
+          "type" : "integer",
+          "title" : "Extra time to wait for content after page load (ms)",
+          "description" : "The JavaScript evaluation process will first wait for the DOM 'document.readyState' to be set to 'complete'; then it will wait until there are no more pending Ajax before emitting the page’s contents. Use this property to wait an additional number of milliseconds before emitting the contents. This gives background JavaScript routines a chance to finish rendering the page before the contents is emitted.",
+          "default" : 250,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "f.extraPageLoadDeltaChars" : {
+          "type" : "integer",
+          "title" : "Stop waiting for extraLoadTimeMs if page size increases by this many bytes.",
+          "description" : "This parameter is used when the \"Extra time to wait for content after page load (ms)\" parameter is > 0. It will stop the additional wait time if it sees the web page's content grows by at least this many characters. If set to 0 (the default) any increase in character count indicates the page load is finished.",
+          "default" : 0,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : 0,
+          "exclusiveMinimum" : false
+        },
+        "f.useFirefox" : {
+          "type" : "boolean",
+          "title" : "Use Firefox [DEPRECATED]",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "default" : false,
+          "hints" : [ "hidden" ]
+        },
+        "f.firefoxHeadlessBrowser" : {
+          "type" : "boolean",
+          "title" : "Run Firefox in Headless Mode [DEPRECATED]",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "default" : true,
+          "hints" : [ "hidden" ]
+        },
+        "f.quitTimeoutMs" : {
+          "type" : "integer",
+          "title" : "Web Driver Quit Timeout (milliseconds)",
+          "description" : "The amount of time to wait for a web browser to quit before killing the browser process.",
+          "default" : 5000,
+          "hints" : [ "advanced" ],
+          "maximum" : 9999999,
+          "exclusiveMaximum" : false,
+          "minimum" : -1,
+          "exclusiveMinimum" : false
+        },
+        "f.useRequestCounter" : {
+          "type" : "boolean",
+          "title" : "Use Request Counter",
+          "description" : "Use the request counter plugin to wait for all pending ajax requests to be complete before loading the page contents.",
+          "default" : true
+        },
+        "f.requestCounterMinWaitMs" : {
+          "type" : "integer",
+          "title" : "Request counter min wait (ms)",
+          "description" : "When the requestcounter is enabled, often early on the requestcount may say there are 0 pending requests... but there may still be ajax requests that haven't run yet. This parameter provides a certain time in milliseconds to wait for a non-zero count to be returned. If a requestcount is non-zero at any point, then the next requestcount = 0 is assumed to signify this page is done loading.",
+          "default" : 5000,
+          "maximum" : 99999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 0,
+          "exclusiveMinimum" : false
+        },
+        "f.requestCounterMaxWaitMs" : {
+          "type" : "integer",
+          "title" : "Request counter max wait (ms)",
+          "description" : "The request counter plugin counts active ajax requests after a page was loaded until there are no more pending ajax requests. This parameter says how long to wait in milliseconds for the requestcount to go to 0 before giving up.",
+          "default" : 20000,
+          "maximum" : 99999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.firefoxBinaryPath" : {
+          "type" : "string",
+          "title" : "Firefox Custom Binary Path [DEPRECATED]",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "hidden" ]
+        },
+        "f.useHighPerfJsEval" : {
+          "type" : "boolean",
+          "title" : "High Performance Mode",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "default" : false,
+          "hints" : [ "hidden" ]
+        },
+        "f.headlessBrowser" : {
+          "type" : "boolean",
+          "title" : "Headless Browser",
+          "description" : "Applicable only when \"Evaluate JavaScript\"  is selected, deselect this checkbox if you want to actually see browser windows display while fetchers process web pages. Otherwise, if selected, browsers will run in \"headless\" mode which means they will run in the background. If running on a server with no desktop interface, this must stay selected.",
+          "default" : true
+        },
+        "f.takeScreenshot" : {
+          "type" : "boolean",
+          "title" : "Index a screenshot of rendered page",
+          "description" : "Applicable only when \"Evaluate JavaScript\"  is selected, take a screenshot of the fully rendered page and index it. Screenshots will be indexed in a field called \"screenshot_bin\". You must make sure your schema specifies this field as a binary field or indexing will fail. To add this, go to System -> Solr Config -> Managed Schema then add <dynamicField indexed=\"true\" name=\"*_bin\" stored=\"true\" type=\"binary\"/>",
+          "default" : false
+        },
+        "f.screenshotFullscreen" : {
+          "type" : "boolean",
+          "title" : "Screenshots Full Screen",
+          "description" : "When taking a screenshot, capture the full screen.",
+          "default" : false
+        },
+        "f.viewportWidth" : {
+          "type" : "integer",
+          "title" : "Viewport Width",
+          "description" : "Set an optional browser viewport width. If not specified, will default to 800.",
+          "maximum" : 9999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.viewportHeight" : {
+          "type" : "integer",
+          "title" : "Viewport Height",
+          "description" : "Set an optional browser viewport height. If not specified, will default to 600.",
+          "maximum" : 9999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.deviceScreenFactor" : {
+          "type" : "integer",
+          "title" : "Device Screen Factor",
+          "description" : "Set an optional browser device screen factor.  If not specified, will default to 1 (no scaling).",
+          "maximum" : 99999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.simulateMobile" : {
+          "type" : "boolean",
+          "title" : "Simulate mobile",
+          "description" : "Simulate a mobile device",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.mobileScreenWidth" : {
+          "type" : "integer",
+          "title" : "Mobile screen width (Only used for simulate mobile)",
+          "description" : "If simulate mobile is checked, this species the device's emulated screen width.",
+          "hints" : [ "advanced" ],
+          "maximum" : 9999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.mobileScreenHeight" : {
+          "type" : "integer",
+          "title" : "Mobile screen height (Only used for simulate mobile)",
+          "description" : "If simulate mobile is checked, this species the device's emulated screen height.",
+          "hints" : [ "advanced" ],
+          "maximum" : 9999999,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.chromeBinaryPath" : {
+          "type" : "string",
+          "title" : "chromeBinaryPath",
+          "description" : "This property is no longer in use, and is only in place due to backwards compatible configuration validation purposes.",
+          "hints" : [ "advanced" ]
+        },
+        "f.chromeExtraCommandLineArgs" : {
+          "type" : "string",
+          "title" : "Google Chrome Extra Command Line Options",
+          "description" : "Specify additional command line arguments to add to the chromium executable when it is run.",
+          "hints" : [ "advanced" ]
+        },
+        "f.obeyRobots" : {
+          "type" : "boolean",
+          "title" : "Obey robots.txt",
+          "description" : "If true, Allow, Disallow and other rules found in a robots.txt file will be obeyed.",
+          "default" : true
+        },
+        "f.obeyRobotsMeta" : {
+          "type" : "boolean",
+          "title" : "Obey robots meta tags and headers",
+          "description" : "If true, rules like 'noindex', 'nofollow' and others found in a robots meta tag on a page or in the headers of the HTTP response are obeyed.",
+          "default" : true
+        },
+        "f.obeyLinkNofollow" : {
+          "type" : "boolean",
+          "title" : "Obey link nofollow attributes",
+          "description" : "If true, rel='nofollow' on links are obeyed",
+          "default" : true
+        },
+        "f.obeyRobotsDelay" : {
+          "type" : "boolean",
+          "title" : "Obey robots.txt Crawl-Delay",
+          "description" : "If true, Crawl-Delay rules in robots.txt will be obeyed. Disabling this option will speed up crawling, but is considered negative behavior for sites you do not control.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "f.tagFields" : {
+          "type" : "array",
+          "title" : "Tag fields",
+          "description" : "HTML tags of elements to put into their own field in the index. The field will have the same name as the tag.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.tagIDFields" : {
+          "type" : "array",
+          "title" : "Tag-ID fields",
+          "description" : "HTML tag IDs of elements to put into their own field in the index. The field will have the same name as the tag ID.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.tagClassFields" : {
+          "type" : "array",
+          "title" : "Tag-class fields",
+          "description" : "HTML tag classes of elements to put into their own field in the index. The field will have the same name as the tag class.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.selectorFields" : {
+          "type" : "array",
+          "title" : "Jsoup selector fields",
+          "description" : "List of Jsoup selectors for elements to put into their separate field in the index. The field will have the same name as the element. Syntax for jsoup selectors is available at http://jsoup.org/apidocs/org/jsoup/select/Selector.html.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.filteringRootTags" : {
+          "type" : "array",
+          "title" : "Root elements to filter",
+          "description" : "Root HTML elements whose child elements will be used to extract content. By default 'body' and 'head' elements are already included.",
+          "default" : [ "body", "head" ],
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.includeSelectors" : {
+          "type" : "array",
+          "title" : "Jsoup inclusive selectors",
+          "description" : "Jsoup-formatted selectors for elements to include in the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.includeTags" : {
+          "type" : "array",
+          "title" : "Included tags",
+          "description" : "HTML tag names of elements to include in the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.includeTagClasses" : {
+          "type" : "array",
+          "title" : "Included tag classes",
+          "description" : "HTML tag classes of elements to include in the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.includeTagIDs" : {
+          "type" : "array",
+          "title" : "Included tag IDs",
+          "description" : "HTML tag IDs of elements to include in the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.excludeSelectors" : {
+          "type" : "array",
+          "title" : "Jsoup exclusive selectors",
+          "description" : "Jsoup-formatted selectors for elements to exclude from the crawled content. Syntax for jsoup selectors is available at http://jsoup.org/apidocs/org/jsoup/select/Selector.html.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.excludeTags" : {
+          "type" : "array",
+          "title" : "Excluded tags",
+          "description" : "HTML tag names of elements to exclude from the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.excludeTagClasses" : {
+          "type" : "array",
+          "title" : "Excluded tag classes",
+          "description" : "HTML tag classes of elements to exclude from the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.excludeTagIDs" : {
+          "type" : "array",
+          "title" : "Excluded tag IDs",
+          "description" : "HTML tag IDs of elements to exclude from the crawled content.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "f.proxy" : {
+          "type" : "string",
+          "title" : "HTTP proxy address",
+          "description" : "Address of the HTTP proxy, if required. This should be entered in the format host:port."
+        },
+        "f.respectMetaEquivRedirects" : {
+          "type" : "boolean",
+          "title" : "Respect refresh redirects",
+          "description" : "If true, the connector will follow metatags with refresh redirects such as <meta http-equiv=\"refresh\" />.",
+          "default" : false
+        },
+        "f.allowCircularRedirects" : {
+          "type" : "boolean",
+          "title" : "Allow circular redirects",
+          "description" : "If true, a request can be redirected to the same URL multiple times",
+          "default" : false
+        },
+        "f.followCanonicalTags" : {
+          "type" : "boolean",
+          "title" : "Deduplication via canonical tag",
+          "description" : "Deduplicate, by only indexing the document at the URL specified in the canonical tag. https://en.wikipedia.org/wiki/Canonical_link_element",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.canonicalTagsRedirectLimit" : {
+          "type" : "integer",
+          "title" : "The maximum number of requests to perform while resolving the canonical URL for a page.",
+          "description" : "Because canonical tag resolution may be cyclical, a limit must be applied to the total number of requests. This value ensures that the resolution finishes in a reasonable amount of time.",
+          "default" : 4,
+          "hints" : [ "advanced" ]
+        },
+        "f.allowAllCertificates" : {
+          "type" : "boolean",
+          "title" : "Allow all HTTPS certificates",
+          "description" : "If false, security checks will be performed on all SSL/TLS certificate signers and origins. This means self-signed certificates would not be supported.",
+          "default" : false
+        },
+        "f.useIpAddressForSslConnections" : {
+          "type" : "boolean",
+          "title" : "Use IP address for SSL connections",
+          "description" : "Use IP address instead of host name for SSLconnections. This is used to work around misconfigured HTTP server throwing 'unrecognized name' error whenSNI is enabled. (This only works if 'Allow all certificates' setting is also enabled)",
+          "default" : false
+        },
+        "f.userAgentName" : {
+          "type" : "string",
+          "title" : "HTTP user-agent name",
+          "description" : "Name the connector should use when identifying itself to a website in order to crawl it.",
+          "default" : "Lucidworks-Anda/2.0",
+          "hints" : [ "advanced" ]
+        },
+        "f.userAgentEmail" : {
+          "type" : "string",
+          "title" : "HTTP user-agent email address",
+          "description" : "Email address to use as part of connector identification.",
+          "hints" : [ "advanced" ]
+        },
+        "f.userAgentWebAddr" : {
+          "type" : "string",
+          "title" : "HTTP user-agent web address",
+          "description" : "Web address to use as part of connector identification.",
+          "hints" : [ "advanced" ]
+        },
+        "f.cookieSpec" : {
+          "type" : "string",
+          "title" : "Cookie spec",
+          "enum" : [ "browser-compatibility", "rfc-2965", "best-match", "ignore-all" ],
+          "default" : "browser-compatibility"
+        },
+        "parserRetryCount" : {
+          "type" : "integer",
+          "title" : "Max Parser Retries",
+          "description" : "The maximum number of times the configured parser will try getting content before giving up",
+          "default" : 0,
+          "maximum" : 5,
+          "exclusiveMaximum" : true,
+          "minimum" : 0,
+          "exclusiveMinimum" : false
+        },
+        "delete404" : {
+          "type" : "boolean",
+          "title" : "Remove 404/410 pages",
+          "description" : "Select this option to delete indexed pages that return a 404 or 410 error.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "f.addedHeaders" : {
+          "type" : "string",
+          "title" : "Headers to add to HTTP requests",
+          "description" : "Add these headers to http requests. This is useful for web sites that require certain headers to let you visit them. Write each header on its own line in the format HeaderName: HeaderValue",
+          "hints" : [ "lengthy" ]
+        },
+        "f.customLinkSelectors" : {
+          "type" : "array",
+          "title" : "Custom XPath Link Selectors",
+          "description" : "By default, only standard anchor tags, iframe tags, frame tags, and link tags are fetched. This allows you to use one or more XPath expressions to parse links from custom places. Such as //option/@value",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "rewriteLinkScript" : {
+          "type" : "string",
+          "title" : "URI rewrite script",
+          "description" : "A Javascript function 'rewriteLink(link) { }' to modify links to documents before they are fetched.",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "diagnosticMode" : {
+          "type" : "boolean",
+          "title" : "Diagnostic mode",
+          "description" : "Enable to print more detailed information to the logs about each request.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "trackEmbeddedIDs" : {
+          "type" : "boolean",
+          "title" : "Track embedded IDs?",
+          "description" : "Track IDs produced by splitters to enable dedupe and deletion of embedded content?",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "sitemap_incremental_crawling" : {
+          "type" : "boolean",
+          "title" : "Process Sitemap URLs",
+          "description" : "When enabled, only URLs found in the sitemap will be processed and crawled.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "f.index_items_discarded" : {
+          "type" : "boolean",
+          "title" : "Index discarded document metadata",
+          "description" : "Enable to index discarded document metadata",
+          "default" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Crawl Authorization",
+        "properties" : [ "f.proxy", "f.allowAllCertificates", "f.useIpAddressForSslConnections", "f.obeyRobots", "f.obeyRobotsMeta", "f.obeyLinkNofollow", "f.maintainCookies", "f.basicAuth", "f.digestAuth", "f.ntlmAuth", "f.formAuth", "f.samlAuth", "f.credentialsFile", "f.kerberosEnabled", "f.kerberosLoginContextName", "f.kerberosSpn", "f.kerberosPrincipal", "f.kerberosKeytabFile", "f.kerberosKeytabBase64", "f.kerberosPassword" ]
+      }, {
+        "label" : "Javascript Evaluation",
+        "properties" : [ "f.crawlJS", "f.jsEnabledAuth", "f.jsPageLoadTimeout", "f.jsScriptTimeout", "f.jsAjaxTimeout", "f.extraLoadTimeMs", "f.extraPageLoadDeltaChars", "f.useHighPerfJsEval", "f.headlessBrowser", "f.takeScreenshot", "f.screenshotFullscreen", "f.viewportWidth", "f.viewportHeight", "f.deviceScreenFactor", "f.simulateMobile", "f.mobileScreenWidth", "f.mobileScreenHeight", "f.chromeBinaryPath", "f.chromeExtraCommandLineArgs", "f.quitTimeoutMs", "f.useRequestCounter", "f.requestCounterMinWaitMs", "f.requestCounterMaxWaitMs" ]
+      }, {
+        "label" : "Dedupe",
+        "properties" : [ "dedupe", "dedupeSaveSignature", "dedupeField", "dedupeScript", "f.followCanonicalTags", "f.canonicalTagsRedirectLimit" ]
+      }, {
+        "label" : "Crawl History",
+        "properties" : [ "f.discardLinkURLQueries", "f.discardLinkURLAnchors", "retainOutlinks", "aliasExpiration", "crawlDBType", "commitAfterItems" ]
+      }, {
+        "label" : "Link Discovery",
+        "properties" : [ "f.sitemapURLs", "f.addedHeaders", "f.bulkStartLinks", "restrictToTree", "restrictToTreeAllowSubdomains", "restrictToTreeUseHostAndPath", "restrictToTreeIgnoredHostPrefixes", "f.respectMetaEquivRedirects", "f.allowCircularRedirects" ]
+      }, {
+        "label" : "Recrawl Rules",
+        "properties" : [ "refreshAll", "refreshStartLinks", "refreshErrors", "sitemap_incremental_crawling", "refreshOlderThan", "refreshIDPrefixes", "refreshIDRegexes", "refreshScript", "forceRefresh", "forceRefreshClearSignatures", "delete", "delete404", "deleteErrorsAfter" ]
+      }, {
+        "label" : "Limit Documents",
+        "properties" : [ "depth", "maxItems", "includeExtensions", "includeRegexes", "excludeExtensions", "excludeRegexes", "f.maxSizeBytes", "f.index_items_discarded" ]
+      }, {
+        "label" : "Crawler ID",
+        "properties" : [ "f.userAgentName", "f.userAgentEmail", "f.userAgentWebAddr" ]
+      }, {
+        "label" : "Crawl Performance",
+        "properties" : [ "chunkSize", "fetchThreads", "fetchDelayMS", "fetchDelayMSPerHost", "emitThreads", "failFastOnStartLinkFailure", "retryEmit", "parserRetryCount", "f.timeoutMS", "f.requestRetryCount", "f.obeyRobotsDelay" ]
+      }, {
+        "label" : "Document Parsing",
+        "properties" : [ "f.appendTrailingSlashToLinks", "f.defaultCharSet", "f.obeyCharSet", "f.defaultMIMEType", "f.filteringRootTags", "f.scrapeLinksBeforeFiltering", "f.includeTags", "f.includeTagClasses", "f.includeTagIDs", "f.includeSelectors", "f.excludeTags", "f.excludeTagClasses", "f.excludeTagIDs", "f.excludeSelectors", "f.tagFields", "f.tagIDFields", "f.tagClassFields", "f.selectorFields", "f.customLinkSelectors" ]
+      }, {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

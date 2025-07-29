@@ -1,0 +1,64 @@
+{
+  "type": "object",
+  "title": "QnA Result Document Field Sorting",
+  "description": "Re-orders results returned from Solr by the value in a document field",
+  "required": [
+    "sortField",
+    "sortOrder"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "sortField": {
+      "type": "string",
+      "title": "Sort Field",
+      "description": "Which result document field to sort based on",
+      "default": "ensemble_score"
+    },
+    "sortOrder": {
+      "type": "string",
+      "title": "Sort order",
+      "description": "(asc)ending / (desc)ending",
+      "enum": [
+        "desc",
+        "asc"
+      ],
+      "default": "desc"
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    }
+  },
+  "category": "Responses",
+  "categoryPriority": 1,
+  "unsafe": false
+}

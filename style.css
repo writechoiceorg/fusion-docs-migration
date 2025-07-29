@@ -1,0 +1,73 @@
+body::before {
+  content: "";
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 40vw;
+  height: 40vw;
+  background-image: url("https://storage.googleapis.com/docs-downloads/mintlify-site/background-light.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: right bottom;
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.dark body::before {
+  background-image: url("https://storage.googleapis.com/docs-downloads/mintlify-site/background-dark.svg");
+  opacity: 0.15;
+}
+
+table {
+  display: table !important;
+}
+
+.note-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.note-image {
+  display: block;
+}
+
+.note-image-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.3s;
+}
+
+.note-image-wrapper:hover .note-image-overlay {
+  opacity: 1;
+}
+
+@media only screen and (max-width: 768px) {
+  .note-image-overlay {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .note-image-overlay {
+    width: 56px;
+    height: 56px;
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .note-image-overlay {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+h5,
+h6 {
+  font-weight: 600;
+}

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="563px" height="369px" viewBox="0 0 563 369" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 48.2 (47327) - http://www.bohemiancoding.com/sketch -->
+    <title>experiment-metrics-generation</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M27,243.999984 C27,235.715722 33.7173059,229 41.9994909,229 L46.0005091,229 C54.2844992,229 61,235.712643 61,243.999984 L61,259.000016 C61,267.284278 54.2826941,274 46.0005091,274 L28.9999204,274 C27.8953949,274 27,273.101108 27,272.008342 L27,243.999984 Z" id="path-1"></path>
+        <rect id="path-2" x="287" y="99" width="99" height="91"></rect>
+        <rect id="path-3" x="291" y="306" width="89" height="63"></rect>
+        <path d="M0,19.0053221 C0,8.50897255 8.51015208,0 19.0034079,0 L122.996592,0 C133.491884,0 142,8.51029008 142,19.0053221 L142,69.9744971 C142,69.9744971 138.83801,87.0545344 72.3490079,87.9679392 C5.86000544,88.8813439 0,69.9744971 0,69.9744971 L0,19.0053221 Z" id="path-4"></path>
+        <path d="M0,19 C0,19 23.487122,34.0153098 72.6668602,33.9911929 C121.846598,33.9670759 142,19 142,19 L142,82.9640007 C142,86.2748922 139.586252,90.1292195 136.539769,91.459243 C136.539769,91.459243 115.838752,102.974836 72.8386631,103.950093 C29.8385743,104.92535 5.43625035,91.4819641 5.43625035,91.4819641 C2.43389218,90.0885143 0,86.2806133 0,82.9640007 L0,19 Z" id="path-5"></path>
+        <path d="M0,19.0062325 C0,8.50938014 8.51015208,0 19.0034079,0 L122.996592,0 C133.491884,0 142,8.50613948 142,19.0062325 L142,87.4681213 C142,87.4681213 138.83801,108.818168 72.3490079,109.959924 C5.86000544,111.10168 0,87.4681213 0,87.4681213 L0,19.0062325 Z" id="path-6"></path>
+        <path d="M0,22 C0,22 23.487122,41.4314172 72.6668602,41.4002072 C121.846598,41.3689973 142,22 142,22 L142,106.54154 C142,109.85125 139.728844,113.963976 136.848463,115.602686 C136.848463,115.602686 115.838752,130.672421 72.8386631,131.934508 C29.8385743,133.196595 5.13271563,115.631439 5.13271563,115.631439 C2.29799506,113.920937 0,109.849351 0,106.54154 L0,22 Z" id="path-7"></path>
+        <rect id="path-8" x="131" y="209" width="111" height="81" rx="8"></rect>
+    </defs>
+    <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" transform="translate(-14.000000, -9.000000)">
+        <g id="experiment-metrics-generation" transform="translate(-1.000000, 9.000000)">
+            <g id="Group">
+                <text id="Admin" font-family="Lato-Semibold, Lato" font-size="20" font-weight="500" line-spacing="28" fill="#000000">
+                    <tspan x="15.605" y="305">Admin</tspan>
+                </text>
+                <g id="Rectangle-50">
+                    <use fill="#1F81CC" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    <path stroke="#212121" stroke-width="2" d="M28,243.999984 L28,272.008342 C28,272.55094 28.4498008,273 28.9999204,273 L46.0005091,273 C53.731044,273 60,266.731359 60,259.000016 L60,243.999984 C60,236.266015 53.7333023,230 46.0005091,230 L41.9994909,230 C34.268956,230 28,236.268641 28,243.999984 Z"></path>
+                </g>
+                <circle id="Oval-13" stroke="#212121" stroke-width="2" fill="#C2A78F" cx="44" cy="223" r="13"></circle>
+                <polygon id="Triangle" fill="#FF6D14" transform="translate(456.000000, 198.500000) rotate(-330.000000) translate(-456.000000, -198.500000) " points="465 198.5 447 204 447 193"></polygon>
+                <path d="M380.5,175.5 L452.095197,175.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" stroke-dasharray="5,7" transform="translate(416.500000, 175.500000) rotate(-150.000000) translate(-416.500000, -175.500000) "></path>
+                <polygon id="Triangle" fill="#FF6D14" transform="translate(284.000000, 302.500000) rotate(-330.000000) translate(-284.000000, -302.500000) " points="293 302.5 275 308 275 297"></polygon>
+                <path d="M239.144748,287.5 L277.095197,287.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" transform="translate(258.500000, 287.500000) rotate(-150.000000) translate(-258.500000, -287.500000) "></path>
+                <g id="Rectangle-2">
+                    <use fill="#F1AB81" fill-rule="evenodd" xlink:href="#path-2"></use>
+                    <rect stroke="#7D8B88" stroke-width="2" x="288" y="100" width="97" height="89"></rect>
+                </g>
+                <text id="Metrics-Spark-job" font-family="Lato-Semibold, Lato" font-size="20" font-weight="500" line-spacing="25" fill="#000000">
+                    <tspan x="302.835" y="127">Metrics</tspan>
+                    <tspan x="311.465" y="152">Spark</tspan>
+                    <tspan x="322.675" y="177">job</tspan>
+                </text>
+                <g id="Rectangle-2">
+                    <use fill="#F1AB81" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    <rect stroke="#7D8B88" stroke-width="1" x="291.5" y="306.5" width="88" height="62"></rect>
+                </g>
+                <text id="App-Insights" font-family="Lato-Regular, Lato" font-size="20" font-weight="normal" line-spacing="25" fill="#000000">
+                    <tspan x="317.52" y="332">App</tspan>
+                    <tspan x="301.695" y="357">Insights</tspan>
+                </text>
+                <g id="Group-12" transform="translate(436.000000, 0.000000)">
+                    <g id="Rectangle-7" transform="translate(71.000000, 44.000000) scale(1, -1) translate(-71.000000, -44.000000) ">
+                        <use fill="#F4BBBB" fill-rule="evenodd" xlink:href="#path-4"></use>
+                        <path stroke="#212121" stroke-width="2" d="M1,69.7948051 C1.04486292,69.899405 1.12085832,70.0570756 1.23536122,70.2629232 C1.54293082,70.8158564 1.98698107,71.4431999 2.59314205,72.1283875 C4.37264735,74.139891 7.10747454,76.1740622 11.0043624,78.0898318 C22.9718398,83.9732262 42.8053079,87.3737067 72.3352715,86.9680335 C100.608559,86.5796241 119.564741,83.2911503 130.921786,78.0812846 C135.094328,76.1671965 137.896052,74.1398969 139.592476,72.1442348 C140.164096,71.4717843 140.559167,70.8597096 140.811072,70.3238521 C140.914642,70.1035358 140.973053,69.9455743 141,69.8566734 L141,19.0053221 C141,9.06208653 132.939111,1 122.996592,1 L19.0034079,1 C9.06173944,1 1,9.0619547 1,19.0053221 L1,69.7948051 Z"></path>
+                    </g>
+                    <g id="Rectangle-7">
+                        <use fill="#FF9DA3" fill-rule="evenodd" xlink:href="#path-5"></use>
+                        <path stroke="#212121" stroke-width="2" d="M1,20.7283655 L1,82.9640007 C1,85.889308 3.20614789,89.3444779 5.91877821,90.6060834 C6.08223328,90.6961318 6.42035433,90.8720244 6.93057928,91.1215545 C7.78987757,91.541802 8.81617832,92.0112888 10.0069221,92.5178134 C13.4201136,93.9697338 17.4604965,95.4234711 22.107659,96.781476 C36.5787524,101.010253 53.5477841,103.38736 72.8159885,102.95035 C90.8286523,102.541816 106.248259,100.282174 119.120142,96.7727035 C124.116592,95.4104403 128.373219,93.9525488 131.897289,92.4969347 C133.12577,91.9895117 134.173796,91.5193791 135.042265,91.0987741 C135.556868,90.8495486 135.893696,90.6743296 136.13966,90.5427753 C138.787081,89.3869731 141,85.9162247 141,82.9640007 L141,20.8425443 C140.289557,21.2729588 139.47125,21.7366849 138.54302,22.2267125 C135.16742,24.0087477 131.01984,25.7869798 126.065971,27.4439666 C111.983892,32.1541877 94.2751652,34.9805966 72.6673505,34.9911927 C51.0345314,35.0018011 32.6886658,32.173936 17.5639844,27.4501388 C12.269091,25.7964178 7.75153124,24.0225776 4.00289081,22.246035 C2.85979057,21.704301 1.85905971,21.1952134 1,20.7283655 Z"></path>
+                    </g>
+                </g>
+                <text id="Signals-collection" font-family="Lato-Semibold, Lato" font-size="20" font-weight="500" line-spacing="25" fill="#000000">
+                    <tspan x="476.9" y="60">Signals</tspan>
+                    <tspan x="464.405" y="85">collection</tspan>
+                </text>
+                <g id="Group-10" transform="translate(436.000000, 198.000000)">
+                    <g id="Rectangle-7" transform="translate(71.000000, 55.000000) scale(1, -1) translate(-71.000000, -55.000000) ">
+                        <use fill="#F4BBBB" fill-rule="evenodd" xlink:href="#path-6"></use>
+                        <path stroke="#212121" stroke-width="2" d="M1,87.3297223 C1.04603511,87.4756962 1.13387415,87.7123982 1.27508486,88.0297251 C1.59132037,88.7403655 2.04477391,89.5411509 2.66041982,90.4110372 C4.45032464,92.9401108 7.19037816,95.487684 11.0867411,97.8820734 C23.0328073,105.223159 42.8330011,109.466628 72.3318383,108.960071 C100.577769,108.475029 119.504968,104.370722 130.841303,97.8702654 C135.012276,95.4785547 137.818921,92.9399795 139.527485,90.4275495 C140.111246,89.5691332 140.518029,88.781358 140.780065,88.0845988 C140.905969,87.7498164 140.972918,87.5109437 141,87.3807828 L141,19.0062325 C141,9.05953656 132.940712,1 122.996592,1 L19.0034079,1 C9.06175016,1 1,9.06235161 1,19.0062325 L1,87.3297223 Z"></path>
+                    </g>
+                    <g id="Rectangle-7">
+                        <use fill="#FF9DA3" fill-rule="evenodd" xlink:href="#path-7"></use>
+                        <path stroke="#212121" stroke-width="2" d="M1,23.9861766 L1,106.54154 C1,109.499625 3.11517562,113.246084 5.71216372,114.81643 C5.74997381,114.843312 5.83228475,114.900227 5.95874007,114.985179 C6.17412543,115.129874 6.43294783,115.298619 6.73485077,115.48942 C7.60325624,116.038248 8.63974047,116.651388 9.84145224,117.31289 C13.2858396,119.208909 17.3572178,121.107223 22.032863,122.880401 C36.5788807,128.39679 53.5768315,131.499427 72.8093249,130.934938 C90.8068023,130.406698 106.263787,127.455254 119.21039,122.867988 C124.229693,121.089538 128.514181,119.186202 132.068334,117.285797 C133.307347,116.623297 134.36541,116.009476 135.243058,115.460323 C135.763073,115.134944 136.10375,114.906206 136.265617,114.790103 L136.353968,114.733505 C138.883267,113.294533 141,109.537735 141,106.54154 L141,24.1418128 C140.312479,24.6771804 139.526502,25.2515353 138.64027,25.8569917 C135.26064,28.165889 131.107334,30.4702887 126.146002,32.6178375 C112.041644,38.7230108 94.3048873,42.3864757 72.6674948,42.400207 C51.006123,42.4139536 32.633667,38.7490894 17.4873767,32.6272566 C12.1851791,30.4842126 7.66166881,28.1856499 3.90834152,25.8837393 C2.80706077,25.2083253 1.83782602,24.5721142 1,23.9861766 Z"></path>
+                    </g>
+                </g>
+                <text id="Aggregated-signals-c" font-family="Lato-Semibold, Lato" font-size="20" font-weight="500" line-spacing="25" fill="#000000">
+                    <tspan x="456.27" y="261">Aggregated</tspan>
+                    <tspan x="477.99" y="286">signals</tspan>
+                    <tspan x="464.405" y="311">collection</tspan>
+                </text>
+                <path d="M384.426212,121.5 L466.001786,121.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" stroke-dasharray="5,7" transform="translate(425.500000, 121.500000) rotate(150.000000) translate(-425.500000, -121.500000) "></path>
+                <polygon id="Triangle" fill="#FF6D14" transform="translate(391.000000, 141.500000) rotate(150.000000) translate(-391.000000, -141.500000) " points="400 141.5 382 147 382 136"></polygon>
+                <path d="M381.354781,319.5 L439.001786,319.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" stroke-dasharray="5,7" transform="translate(410.500000, 319.500000) rotate(150.000000) translate(-410.500000, -319.500000) "></path>
+                <polygon id="Triangle" fill="#FF6D14" transform="translate(387.000000, 333.500000) rotate(150.000000) translate(-387.000000, -333.500000) " points="396 333.5 378 339 378 328"></polygon>
+                <g id="Rectangle">
+                    <use fill="#E4EAF0" fill-rule="evenodd" xlink:href="#path-8"></use>
+                    <rect stroke="#7D8B99" stroke-width="2" x="132" y="210" width="109" height="79" rx="8"></rect>
+                </g>
+                <text id="Fusion-UI" font-family="Lato-Semibold, Lato" font-size="20" font-weight="500" line-spacing="25" fill="#000000">
+                    <tspan x="157.075" y="245">Fusion</tspan>
+                    <tspan x="176.22" y="270">UI</tspan>
+                </text>
+                <path d="M82.9968359,238.5 L122.504065,238.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" stroke-dasharray="5,7"></path>
+                <polygon id="Triangle" fill="#FF6D14" points="132 238.5 114 244 114 233"></polygon>
+                <path d="M82.9968359,267.5 L122.504065,267.5" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square"></path>
+                <polygon id="Triangle" fill="#FF6D14" points="132 267.5 114 273 114 262"></polygon>
+                <path d="M243.020471,205 L276.504065,205" id="Line" stroke="#FF6D14" stroke-width="2" stroke-linecap="square" stroke-dasharray="5,7" transform="translate(260.000000, 204.500000) rotate(-30.000000) translate(-260.000000, -204.500000) "></path>
+                <polygon id="Triangle" fill="#FF6D14" transform="translate(280.000000, 193.500000) rotate(-30.000000) translate(-280.000000, -193.500000) " points="289 193.5 271 199 271 188"></polygon>
+                <g id="Group-16" transform="translate(88.000000, 188.000000)">
+                    <circle id="Oval" stroke="#FF6D14" stroke-width="1.5" fill="#FDD78A" cx="14.5" cy="14.5" r="14.5"></circle>
+                    <text id="1" font-family="Lato-Heavy, Lato" font-size="20" font-weight="600" fill="#000000">
+                        <tspan x="8.7" y="21">1</tspan>
+                    </text>
+                </g>
+                <g id="Group-17" transform="translate(430.000000, 136.000000)">
+                    <circle id="Oval" stroke="#FF6D14" stroke-width="1.5" fill="#FDD78A" cx="14.5" cy="14.5" r="14.5"></circle>
+                    <text id="2" font-family="Lato-Heavy, Lato" font-size="20" font-weight="600" fill="#000000">
+                        <tspan x="8.7" y="21">2</tspan>
+                    </text>
+                </g>
+                <g id="Group-18" transform="translate(88.000000, 289.000000)">
+                    <circle id="Oval" stroke="#FF6D14" stroke-width="1.5" fill="#FDD78A" cx="14.5" cy="14.5" r="14.5"></circle>
+                    <text id="3" font-family="Lato-Heavy, Lato" font-size="20" font-weight="600" fill="#000000">
+                        <tspan x="8.7" y="21">3</tspan>
+                    </text>
+                </g>
+                <g id="Group-19" transform="translate(232.000000, 308.000000)">
+                    <circle id="Oval" stroke="#FF6D14" stroke-width="1.5" fill="#FDD78A" cx="14.5" cy="14.5" r="14.5"></circle>
+                    <text id="4" font-family="Lato-Heavy, Lato" font-size="20" font-weight="600" fill="#000000">
+                        <tspan x="8.7" y="21">4</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

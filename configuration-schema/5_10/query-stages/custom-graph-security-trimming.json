@@ -1,0 +1,95 @@
+{
+  "type": "object",
+  "title": "Custom Graph Security Trimming",
+  "description": "Graph security trimming stage is an alternative to the general \"Security Trimming Stage\" where you leverage perform all security trimming under a single Solr Graph+Join filter. This is preferred over the general \"Security Trimming Stage\" because instead of having one Solr filter query per-datasource, this will use a single filter query that will work for all data sources.",
+  "required": [
+    "pluginStageType",
+    "aclSolrCollection",
+    "getUserIdentitySource",
+    "getUserIdentityKey"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "pluginStageType": {
+      "type": "string",
+      "title": "Plugin Stage Type",
+      "description": "Plugin Stage Type",
+      "default": "custom-graph-security-trimming",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "aclSolrCollection": {
+      "type": "string",
+      "title": "ACL solr collection",
+      "description": "This is the Solr collection that contains the User and Group ACLs. This collection is populated by connectors for the Users and Groups found while crawling the datasource, namely the LDAP connector",
+      "minLength": 1
+    },
+    "getUserIdentitySource": {
+      "type": "string",
+      "title": "User ID source",
+      "description": "Specify whether the value comes from an http header or query parameter. Must be either query_param or header.",
+      "default": "query_param",
+      "minLength": 1
+    },
+    "getUserIdentityKey": {
+      "type": "string",
+      "title": "User ID key",
+      "description": "The value of the header or query parameter that contains the User ID. E.g. username, userID, etc.",
+      "default": "username",
+      "minLength": 1
+    },
+    "excludeDatasources": {
+      "type": "string",
+      "title": "Exclude Data Source ID(s)",
+      "description": "Do not perform security trimming on documents from the specified data source ID(s).",
+      "minLength": 1
+    },
+    "includeDatasources": {
+      "type": "string",
+      "title": "Inclusive Data Source ID(s)",
+      "description": "Only perform security trimming on documents from the specified data source ID(s).",
+      "minLength": 1
+    },
+    "joinMethod": {
+      "type": "string",
+      "title": "Join method",
+      "description": "The Solr join query method parameter. Can be index, crossCollection, dvWithScore, or topLevelDV.",
+      "default": "crossCollection",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    }
+  },
+  "category": "Custom",
+  "categoryPriority": 2,
+  "unsafe": false
+}

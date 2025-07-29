@@ -1,0 +1,122 @@
+{
+  "type": "object",
+  "title": "Solr Subquery",
+  "description": "Solr query to another collection. Returned results can be used to join results or boost main results",
+  "required": [
+    "key",
+    "collection",
+    "handler",
+    "method",
+    "params"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "key": {
+      "type": "string",
+      "title": "Key",
+      "description": "The key used to join these results onto the pipeline context.",
+      "default": "subquery-results"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection"
+    },
+    "handler": {
+      "type": "string",
+      "title": "Request Handler",
+      "default": "select"
+    },
+    "method": {
+      "type": "string",
+      "title": "HTTP Method",
+      "enum": [
+        "GET",
+        "POST"
+      ],
+      "default": "GET"
+    },
+    "parentParams": {
+      "type": "array",
+      "title": "Query parameters from the parent query",
+      "items": {
+        "type": "string"
+      }
+    },
+    "rollupKeys": {
+      "type": "array",
+      "title": "Rollup results to include",
+      "items": {
+        "type": "string"
+      }
+    },
+    "params": {
+      "type": "array",
+      "title": "Query Parameters",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "headers": {
+      "type": "array",
+      "title": "Headers",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 4
+}

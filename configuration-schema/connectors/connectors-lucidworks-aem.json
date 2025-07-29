@@ -1,0 +1,529 @@
+{
+  "type" : "object",
+  "title" : "AEM",
+  "description" : "An Apache Sling based connector for AEM",
+  "required" : [ "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline.",
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default" : 20,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "An Apache Sling based connector for AEM",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "authConfig", "aemBaseUrl" ],
+      "properties" : {
+        "aemBaseUrl" : {
+          "type" : "string",
+          "title" : "AEM URL",
+          "description" : "Base URL to AEM, e.g. http://localhost:4502",
+          "default" : "http://localhost:4502",
+          "minLength" : 1
+        },
+        "username" : {
+          "type" : "string",
+          "title" : "AEM username (Deprecated)",
+          "description" : "Username to use for authentication. The user should have sufficient permissions to read content paths and access Users/Group APIs in case Security Trimming is needed"
+        },
+        "password" : {
+          "type" : "string",
+          "title" : "AEM password (Deprecated)",
+          "description" : "Password to use for authentication.",
+          "hints" : [ "secret" ]
+        },
+        "authConfig" : {
+          "type" : "object",
+          "title" : "Authentication Settings",
+          "description" : "Select only one option",
+          "required" : [ ],
+          "properties" : {
+            "loginAuthentication" : {
+              "type" : "object",
+              "title" : "Login Settings",
+              "required" : [ ],
+              "properties" : {
+                "username" : {
+                  "type" : "string",
+                  "title" : "AEM username",
+                  "description" : "Username to use for authentication. The user should have sufficient permissions to read content paths and access Users/Group APIs in case Security Trimming is needed"
+                },
+                "password" : {
+                  "type" : "string",
+                  "title" : "AEM password",
+                  "description" : "Password to use for authentication.",
+                  "hints" : [ "secret" ]
+                }
+              },
+              "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.LoginAuthConfig" ]
+            },
+            "oAuth" : {
+              "type" : "object",
+              "title" : "OAuth Settings",
+              "required" : [ ],
+              "properties" : {
+                "accessToken" : {
+                  "type" : "string",
+                  "title" : "Access Token",
+                  "description" : "Access Token",
+                  "hints" : [ "secret" ]
+                },
+                "oAuthRefreshToken" : {
+                  "type" : "string",
+                  "title" : "Refresh Token",
+                  "description" : "Refresh Token will be used to refresh Access Token",
+                  "hints" : [ "secret" ]
+                },
+                "jwtToken" : {
+                  "type" : "string",
+                  "title" : "JWT Token",
+                  "description" : "JWT Token will be used to request new Access Token if Refresh Token is not set",
+                  "hints" : [ "secret" ]
+                },
+                "clientId" : {
+                  "type" : "string",
+                  "title" : "Client Id",
+                  "description" : "Client Id"
+                },
+                "clientSecret" : {
+                  "type" : "string",
+                  "title" : "Client Secret",
+                  "description" : "Client Secret",
+                  "hints" : [ "secret" ]
+                },
+                "redirectUri" : {
+                  "type" : "string",
+                  "title" : "Redirect Uri",
+                  "description" : "Redirect Uri"
+                }
+              },
+              "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.AEMOauthConfig" ]
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.CrawlAuthenticationConfig" ]
+        },
+        "allowAllCertificates" : {
+          "type" : "boolean",
+          "title" : "Allow all HTTPS certificates",
+          "description" : "If false, security checks will be performed on all SSL/TLS certificate signers and origins. This means self-signed certificates would not be supported.",
+          "default" : false
+        },
+        "pageSize" : {
+          "type" : "number",
+          "title" : "Page Batch Size",
+          "description" : "Number of documents to fetch per page request. A higher value can make crawling faster, but memory usage is also increased.",
+          "default" : 100,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : -2147483648,
+          "exclusiveMinimum" : false,
+          "multipleOf" : 1.0
+        },
+        "nodeDepth" : {
+          "type" : "number",
+          "title" : "Node Depth",
+          "description" : "Number of levels you want the query to return",
+          "default" : 10,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : -2147483648,
+          "exclusiveMinimum" : false,
+          "multipleOf" : 1.0
+        },
+        "indexChildPathData" : {
+          "type" : "boolean",
+          "title" : "Index metadata by child path",
+          "description" : "The metadata associated with subdirectories of the item's path will be indexed.",
+          "default" : false
+        },
+        "threadWait" : {
+          "type" : "number",
+          "title" : "Thread wait (ms)",
+          "description" : "Time to wait, in milliseconds, between each page request",
+          "default" : 1000,
+          "maximum" : 2147483647,
+          "exclusiveMaximum" : false,
+          "minimum" : -2147483648,
+          "exclusiveMinimum" : false,
+          "multipleOf" : 1.0
+        },
+        "incremental" : {
+          "type" : "boolean",
+          "title" : "Incremental crawl",
+          "description" : "Incremental crawl doesn't support removal of content",
+          "default" : false,
+          "hints" : [ "hidden" ]
+        },
+        "paths" : {
+          "type" : "array",
+          "title" : "Paths to search",
+          "description" : "AEM paths that will be searched across for content.",
+          "default" : [ "/" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "excludePathRegexes" : {
+          "type" : "array",
+          "title" : "Paths excluded",
+          "description" : "Java regular expressions for paths that should not be fetched",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "aemTypes" : {
+          "type" : "array",
+          "title" : "AEM types",
+          "description" : "AEM document type (jcr:primaryType) to include in the index. e.g. cq:Page, dam:Asset",
+          "default" : [ "cq:Page" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "attachmentTypes" : {
+          "type" : "array",
+          "title" : "Attachment types",
+          "description" : "Attachment extensions to index. By default all attachments are indexed.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "contentIncludePatterns" : {
+          "type" : "array",
+          "title" : "Content properties include patterns",
+          "description" : "List of patterns of content properties that should be included in indexed documents.",
+          "hints" : [ "hidden" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "contentExcludePatterns" : {
+          "type" : "array",
+          "title" : "Content properties exclude patterns",
+          "description" : "List of patterns of content properties that should be excluded from indexed documents.",
+          "hints" : [ "hidden" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "maxSizeBytes" : {
+          "type" : "number",
+          "title" : "Max file size (bytes)",
+          "description" : "Maximum size, in bytes, of a document to fetch. If content is larger it will be trimmed to 'maxSizeBytes' size.",
+          "default" : 4194304,
+          "hints" : [ "advanced" ],
+          "maximum" : 9223372036854775807,
+          "exclusiveMaximum" : false,
+          "minimum" : -9223372036854775808,
+          "exclusiveMinimum" : false,
+          "multipleOf" : 1.0
+        },
+        "requestProperties" : {
+          "type" : "object",
+          "title" : "Request Options",
+          "description" : "A set of options for configuring requests to AEM instance.",
+          "required" : [ ],
+          "properties" : {
+            "connectTimeout" : {
+              "type" : "number",
+              "title" : "Connect Timeout (ms)",
+              "description" : "The timeout in milliseconds until a connection is established.\nA timeout value of zero is interpreted as an infinite timeout. A negative value is interpreted as undefined.",
+              "default" : 10000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "socketTimeout" : {
+              "type" : "number",
+              "title" : "Socket Timeout (ms)",
+              "description" : "The socket timeout (SO_TIMEOUT) in milliseconds, which is the timeout for waiting for data or, put differently, a maximum period inactivity between two consecutive data packets).\nA timeout value of zero is interpreted as an infinite timeout. A negative value is interpreted as undefined.",
+              "default" : 10000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "requestTimeout" : {
+              "type" : "number",
+              "title" : "Request Timeout (ms)",
+              "description" : "The timeout in milliseconds used when requesting a connection from the connection manager.\nA timeout value of zero is interpreted as an infinite timeout. A negative value is interpreted as undefined",
+              "default" : 10000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.RequestConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "retryProperties" : {
+          "type" : "object",
+          "title" : "Retry Options",
+          "description" : "A set of options for configuring requests retry behavior.",
+          "required" : [ ],
+          "properties" : {
+            "maxRetries" : {
+              "type" : "number",
+              "title" : "Max Retries",
+              "description" : "If request to AEM fails it will be retried this amount of times",
+              "default" : 3,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "retryDelay" : {
+              "type" : "number",
+              "title" : "Retry Delay (ms)",
+              "description" : "Time to wait, in milliseconds, between each retry",
+              "default" : 1000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.RetryConfig$Properties" ],
+          "hints" : [ "advanced" ]
+        },
+        "security" : {
+          "type" : "object",
+          "title" : "Graph security filtering configuration",
+          "required" : [ ],
+          "properties" : {
+            "enabled" : {
+              "type" : "boolean",
+              "title" : "Enable security trimming",
+              "description" : "Enable query-time security-trimming",
+              "default" : true
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.aem.config.AEMConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.fusion.connector.plugin.api.config.security.GraphSecurityConfig" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "An Apache Sling based connector for AEM",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "Repository",
+  "categoryPriority" : 1
+}

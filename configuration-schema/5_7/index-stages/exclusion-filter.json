@@ -1,0 +1,97 @@
+{
+  "type": "object",
+  "title": "Exclusion Filter",
+  "description": "Filters fields or documents based on pre-defined exclusion lists",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "filters": {
+      "type": "array",
+      "title": "Filtering Rules",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceField",
+          "caseSensitive"
+        ],
+        "properties": {
+          "sourceField": {
+            "type": "string",
+            "title": "Source Field"
+          },
+          "location": {
+            "type": "string",
+            "title": "Exclusion List URI (Blob name)",
+            "reference": "blob",
+            "blobType": "unspecified"
+          },
+          "excludeValues": {
+            "type": "array",
+            "title": "Values to Exclude",
+            "items": {
+              "type": "string"
+            }
+          },
+          "caseSensitive": {
+            "type": "boolean",
+            "title": "Case Sensitive",
+            "default": false
+          },
+          "regexPattern": {
+            "type": "object",
+            "title": "Regex Expression",
+            "required": [
+              "pattern"
+            ],
+            "properties": {
+              "pattern": {
+                "type": "string",
+                "title": "Regex expression",
+                "format": "regex"
+              },
+              "group": {
+                "type": "integer",
+                "title": "Regex Capture Group",
+                "default": 0
+              }
+            }
+          },
+          "skipDocument": {
+            "type": "boolean",
+            "title": "Skip Document",
+            "default": false
+          }
+        }
+      }
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

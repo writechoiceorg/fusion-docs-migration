@@ -1,0 +1,71 @@
+{
+  "type": "object",
+  "title": "Encode into Milvus",
+  "description": "Invokes a machine learning model to encode a field and store it into Milvus.",
+  "required": [
+    "modelId",
+    "modelOutputVector",
+    "fieldToEncode",
+    "milvusCollection"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "ID of Model used to encode the vector"
+    },
+    "modelOutputVector": {
+      "type": "string",
+      "title": "Encoder Output Vector",
+      "description": "The name of the model output vector that stores the encoded data.",
+      "default": "vector"
+    },
+    "fieldToEncode": {
+      "type": "string",
+      "title": "Field to Encode",
+      "description": "Name of field to encode and store in Milvus."
+    },
+    "milvusCollection": {
+      "type": "string",
+      "title": "Milvus Collection Name",
+      "description": "The name of the collection in Milvus that will be used to store the model output vector."
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

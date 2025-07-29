@@ -1,0 +1,126 @@
+{
+  "type": "object",
+  "title": "Neural Hybrid Query",
+  "description": "Hybrid of Vector and Lexical Search. Will be skipped if query string is blank or wildcard (* or *:*).  Note this will not work well if the incoming q parameter is a Solr query parser string (e.g. field_t:foo) rather than a raw user query string.  Note: The resulting query will ALWAYS be written to <request.params.q>. ",
+  "required": [
+    "lexicalQuery",
+    "lexicalWeight",
+    "lexicalSquash",
+    "vectorQueryField",
+    "vector",
+    "vectorWeight",
+    "minReturnSim",
+    "vectorDepth"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "lexicalQuery": {
+      "type": "string",
+      "title": "Lexical Query Input",
+      "description": "The lexical query itself is retrieved from here.  This field supports Template Expressions such as '<request.params.q>' to evaluate the original user query.",
+      "default": "<request.params.q>"
+    },
+    "lexicalWeight": {
+      "type": "number",
+      "title": "Lexical Query Weight",
+      "description": "Relative weight of the lexical query. If this value is 0, no re-ranking will be applied using the lexical query scores.",
+      "default": 0.1,
+      "maximum": 10.0,
+      "exclusiveMaximum": false
+    },
+    "lexicalSquash": {
+      "type": "number",
+      "title": "Lexical Query Squash Factor",
+      "description": "The squash factor for the lexical query.  This value is used to squash the lexical query scores from 0..inf to 0..1, which can help to prevent the lexical query from dominating the final score.  NOTE: A good value here would be the inverse of the lexical maximum score across all queries for the given collection. NOTE: If this value is 0.0, the resulting squashed lexical scores will ALL by 0.0, resulting in lexical recall but vector scoring.",
+      "default": 0.1,
+      "maximum": 10.0,
+      "exclusiveMaximum": false
+    },
+    "vectorQueryField": {
+      "type": "string",
+      "title": "Vector Query Field",
+      "description": "The name of the Solr field for knn vector search."
+    },
+    "vector": {
+      "type": "string",
+      "title": "Vector Input",
+      "description": "The Vector itself is retrieved from here.  This field supports Template Expressions such as '<ctx.vector>' to evaluate the context variable resulting from a previous stage, such as the Vectorize Query via Lucidworks AI stage.",
+      "default": "<ctx.vector>"
+    },
+    "vectorWeight": {
+      "type": "number",
+      "title": "Vector Query Weight",
+      "description": "Relative weight of the vector query.",
+      "default": 0.9,
+      "maximum": 10.0,
+      "exclusiveMaximum": false,
+      "minimum": 0.001,
+      "exclusiveMinimum": false
+    },
+    "minReturnSim": {
+      "type": "number",
+      "title": "Min Return Vector Similarity",
+      "description": "The minimum vector similarity value to qualify as a match from the Vector portion of the hybrid query.",
+      "default": 0.5,
+      "maximum": 1.0,
+      "exclusiveMaximum": false
+    },
+    "vectorDepth": {
+      "type": "integer",
+      "title": "Number of Vector Results",
+      "description": "The number of vector results to return from the Vector portion of the hybrid query.",
+      "default": 100
+    },
+    "vecSimForLexOnly": {
+      "type": "boolean",
+      "title": "Compute Vector Similarity for Lexical-Only Matches",
+      "description": "Compute the vector similarity score for documents that are not in the  vector result set but are in the lexical result set. ",
+      "default": true
+    },
+    "vecPreFilterBoolean": {
+      "type": "boolean",
+      "title": "Block pre-filtering.",
+      "description": "Checkbox to indicate whether or not to prevent pre-filtering. If checked, preFilter=\"\" will be added to the knn query, which will prevent pre-filtering from being applied to the query.",
+      "default": true
+    }
+  },
+  "category": "AI",
+  "categoryPriority": 10,
+  "unsafe": false
+}

@@ -1,0 +1,77 @@
+{
+  "type": "object",
+  "title": "JavaScript",
+  "description": "Manipulate the request using JavaScript. This stage allows to run arbitrary code on the server.",
+  "required": [
+    "script"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "script": {
+      "type": "string",
+      "title": "Script Body",
+      "description": "Enter your JavaScript code here. Your function does not need to return anything, all request and response modification is done in-place.",
+      "default": "function (request, response, ctx) {\n  // add your logic here\n}",
+      "hints": [
+        "lengthy",
+        "code",
+        "code/javascript"
+      ]
+    },
+    "scriptEngine": {
+      "type": "string",
+      "title": "Javascript Engine",
+      "description": "Choose the Javascript engine implementation to run the script (graalvm is an experimental option).",
+      "enum": [
+        "graalvm",
+        "nashorn"
+      ],
+      "default": "nashorn"
+    },
+    "shareState": {
+      "type": "boolean",
+      "title": "Share state",
+      "description": "Causes all instances of this stage to share global state. Enabling this will increase performance, but can lead to unexpected behavior if any variables are declared globally. This is safe to use if you declare all variables explicitly using 'var'.",
+      "default": true
+    }
+  },
+  "category": "Custom",
+  "categoryPriority": 2,
+  "unsafe": true
+}

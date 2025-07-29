@@ -1,0 +1,385 @@
+{
+  "type": "object",
+  "title": "Aggregation",
+  "description": "Use this job when you want to aggregate your data in some way.",
+  "required": [
+    "id",
+    "inputCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "inputCollection": {
+      "type": "string",
+      "title": "Source Collection",
+      "description": "Collection containing signals to be aggregated."
+    },
+    "definition": {
+      "type": "object",
+      "title": "Aggregation Settings",
+      "description": "Defines the type of aggregation to perform, either SQL or legacy. SQL aggregations allow you to use ANSI SQL 2003, including numerous built-in functions to define your aggregation and rollup logic. The legacy aggregation option is based on pre-Fusion 4.0 features and will be removed in Fusion 4.1.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Aggregation",
+          "description": "The unique id of the Aggregation definition.  If not set, then a UUID will be generated.",
+          "hints": [
+            "hidden"
+          ],
+          "minLength": 1
+        },
+        "timeRange": {
+          "type": "string",
+          "title": "Time Range",
+          "description": "The time range to select signals on, e.g., `[* TO NOW]`. See Solr date range for more options (https://solr.apache.org/guide/8_8/working-with-dates.html).",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "outputCollection": {
+          "type": "string",
+          "title": "Output Collection",
+          "description": "The collection to write the aggregates to on output. This property is required if the selected output / rollup pipeline requires it (the default pipeline does). A special value of '-' disables the output.",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "sourceRemove": {
+          "type": "boolean",
+          "title": "Remove Source",
+          "description": "If true, the processed source signals will be removed after aggregation. Default is false.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "sourceCatchup": {
+          "type": "boolean",
+          "title": "Aggregate New and Merge with Existing",
+          "description": "If checked, only aggregate new signals created since the last time the job was successfully run. If there is a record of such previous run then this overrides the starting time of time range set in 'timeRange' property. If unchecked, then all matching signals are aggregated and any previously aggregated docs are deleted to avoid double counting.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "outputRollup": {
+          "type": "boolean",
+          "title": "Rollup Output",
+          "description": "Roll-up current results with all previous results for this aggregation id, which are available in \"outputCollection\".",
+          "default": true,
+          "hints": [
+            "hidden"
+          ]
+        },
+        "sql": {
+          "type": "string",
+          "title": "SQL",
+          "description": "Use SQL to perform the aggregation. You do not need to include a time range filter in the WHERE clause as it gets applied automatically before executing the SQL statement.",
+          "hints": [
+            "lengthy",
+            "javascript"
+          ],
+          "minLength": 1
+        },
+        "rollupSql": {
+          "type": "string",
+          "title": "Rollup SQL",
+          "description": "Use SQL to perform a rollup of previously aggregated docs. If left blank, the aggregation framework will supply a default SQL query to rollup aggregated metrics.",
+          "hints": [
+            "lengthy",
+            "javascript",
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "groupingFields": {
+          "type": "array",
+          "title": "Grouping Fields",
+          "description": "The fields to group on",
+          "items": {
+            "type": "string"
+          }
+        },
+        "typeFieldName": {
+          "type": "string",
+          "title": "Type Field",
+          "description": "Name of the signal type field; defaults to 'type'",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "signalTypes": {
+          "type": "array",
+          "title": "Signal Types",
+          "description": "The signal types. If not set then any signal type is selected",
+          "items": {
+            "type": "string"
+          }
+        },
+        "selectQuery": {
+          "type": "string",
+          "title": "Query",
+          "description": "The query to select the desired input documents.",
+          "default": "*:*",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "sort": {
+          "type": "string",
+          "title": "Sort Criteria",
+          "description": "The criteria to sort on within a group. If not set then sort order is by id, ascending.",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "outputPipeline": {
+          "type": "string",
+          "title": "Output Pipeline",
+          "description": "What pipeline to use to process the output. If not set then '_system' pipeline will be used.",
+          "default": "_system",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "rollupPipeline": {
+          "type": "string",
+          "title": "Rollup Pipeline",
+          "description": "Pipeline to use for processing results of roll-up. This is by default the same indexing pipeline used for processing the aggregation results.",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "rollupAggregator": {
+          "type": "string",
+          "title": "Rollup Aggregator",
+          "description": "The aggregator to use when rolling up. If not set then the same aggregator will be used for roll-up.",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "aggregator": {
+          "type": "string",
+          "title": "Aggregator",
+          "description": "Aggregator implementation to use. This is either one of the symbolic names (simple, click, em) or a fully-qualified class name of a class extending EventAggregator. If not set then 'simple' is used.",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1
+        },
+        "aggregates": {
+          "type": "array",
+          "title": "Aggregates",
+          "description": "List of functions defining how to aggregate events with results. Not supported for SQL aggregations.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "object",
+            "title": "An Aggregation function",
+            "description": "Defines an operation to do to the events",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "title": "Type",
+                "description": "The function type defining how to aggregate events with results"
+              },
+              "sourceFields": {
+                "type": "array",
+                "title": "Source fields",
+                "description": "The fields that the function will read from",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "targetField": {
+                "type": "string",
+                "title": "Target field",
+                "description": "The field that the function will write to"
+              },
+              "mapper": {
+                "type": "boolean",
+                "title": "Use in map phase",
+                "description": "When true the function will be used in map phase only",
+                "default": false
+              },
+              "parameters": {
+                "type": "array",
+                "title": "Parameters",
+                "description": "Other parameters specific to individual functions",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "title": "Parameter Name"
+                    },
+                    "value": {
+                      "type": "string",
+                      "title": "Parameter Value"
+                    }
+                  }
+                }
+              }
+            },
+            "category": "Other",
+            "categoryPriority": 1
+          }
+        },
+        "statsFields": {
+          "type": "array",
+          "title": "Stats fields",
+          "description": "List of numeric fields in results for which to compute overall statistics. Not supported for SQL aggregations.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "parameters": {
+          "type": "array",
+          "title": "Parameters",
+          "description": "Other aggregation parameters (e.g. start / aggregate / finish scripts, cache size, etc).",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "object",
+            "required": [
+              "key"
+            ],
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Parameter Name"
+              },
+              "value": {
+                "type": "string",
+                "title": "Parameter Value"
+              }
+            }
+          }
+        }
+      },
+      "category": "Other",
+      "categoryPriority": 1,
+      "propertyGroups": [
+        {
+          "label": "SQL Aggregation",
+          "properties": [
+            "sql",
+            "rollupSql"
+          ]
+        },
+        {
+          "label": "Legacy Aggregation",
+          "properties": [
+            "groupingFields",
+            "signalTypes",
+            "sort",
+            "outputPipeline",
+            "rollupPipeline",
+            "rollupAggregator",
+            "aggregator",
+            "aggregates",
+            "statsFields"
+          ]
+        }
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "title": "Batch Size",
+      "description": "Number of rows to read from the source collection per request.",
+      "default": 10000,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Additional configuration settings to fine-tune how input records are read for this aggregation.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "aggregationTime": {
+      "type": "string",
+      "title": "Aggregation Time",
+      "description": "Timestamp to use for the aggregation results. Defaults to NOW.",
+      "hints": [
+        "advanced"
+      ],
+      "format": "date-time"
+    },
+    "referenceTime": {
+      "type": "string",
+      "title": "Reference Time",
+      "description": "Timestamp to use for computing decays and to determine the value of NOW.",
+      "hints": [
+        "advanced"
+      ],
+      "format": "date-time"
+    },
+    "skipCheckEnabled": {
+      "type": "boolean",
+      "title": "Job Skip Check Enabled?",
+      "description": "If the catch-up flag is enabled and this field is checked, the job framework will execute a fast Solr query to determine if this run can be skipped.",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "aggregation"
+      ],
+      "default": "aggregation",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

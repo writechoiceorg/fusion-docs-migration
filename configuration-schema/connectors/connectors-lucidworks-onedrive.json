@@ -1,0 +1,551 @@
+{
+  "category": "File System",
+  "categoryPriority": 1,
+  "description": "Connector for OneDrive file systems",
+  "properties": {
+    "category": {
+      "default": "Connector for OneDrive file systems",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "collection": {
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Collection ID",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "coreProperties": {
+      "description": "Common behavior and performance settings.",
+      "hints": [
+        "advanced"
+      ],
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "properties": {
+        "fetchSettings": {
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ],
+          "properties": {
+            "fetchItemQueueSize": {
+              "default": 100,
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 100.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 500000,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Fetch Item Queue Size",
+              "type": "number"
+            },
+            "fetchRequestCheckInterval": {
+              "default": 15000,
+              "description": "The amount of time to wait before check if a request is done",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 500000,
+              "minimum": 1000,
+              "multipleOf": 1,
+              "title": "Fetch request check interval(ms)",
+              "type": "number"
+            },
+            "fetchResponseCompletedTimeout": {
+              "default": 300000,
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 600000,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Fetch response completion timeout(ms)",
+              "type": "number"
+            },
+            "fetchResponseScheduledTimeout": {
+              "default": 300000,
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 500000,
+              "minimum": 1000,
+              "multipleOf": 1,
+              "title": "Fetch response scheduled timeout(ms)",
+              "type": "number"
+            },
+            "numFetchThreads": {
+              "default": 7,
+              "description": "Maximum number of fetch threads; defaults to 4.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 500,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Fetch Threads",
+              "type": "number"
+            }
+          },
+          "required": [],
+          "title": "Fetch Settings",
+          "type": "object"
+        },
+        "pipelineSettings": {
+          "description": "System level settings for IndexPipeline API calls.",
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$PipelineSystemSettings"
+          ],
+          "properties": {
+            "retryOptions": {
+              "description": "A set of options for configuring retry behavior.",
+              "interfaces": [
+                "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$PipelineEmitterRetryConfig",
+                "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig$Properties"
+              ],
+              "properties": {
+                "delayFactor": {
+                  "default": 2,
+                  "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. The retryer will sleep an exponential amount of time after the first failed attempt and retry in exponentially incrementing amounts after each failed attempt up to the maximumTime. nextWaitTime = exponentialIncrement * multiplier.",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 100,
+                  "minimum": 1,
+                  "multipleOf": 1,
+                  "title": "Delay Factor",
+                  "type": "number"
+                },
+                "delayMs": {
+                  "default": 1000,
+                  "description": "Sets the delay between retries, exponentially backing off to the maxDelayTimeMs and multiplying successive delays by the delayFactor",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 9223372036854776000,
+                  "minimum": 1,
+                  "multipleOf": 1,
+                  "title": "Retry Delay",
+                  "type": "number"
+                },
+                "errorExclusions": {
+                  "description": "Optional regex list that will be matched against failed attempts exception class and message. If any regex matches, do not retry this request. This is needed to prevent the retryer from retrying non-recoverable errors that were not already ignored by the connector implementation.",
+                  "items": {
+                    "maxLength": 256,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "title": "Error Exclusions",
+                  "type": "array"
+                },
+                "maxDelayTimeMs": {
+                  "default": 300000,
+                  "description": "The maximum time wait time between successive retries.",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 600000,
+                  "minimum": 1,
+                  "multipleOf": 1,
+                  "title": "Maximum Delay Time",
+                  "type": "number"
+                },
+                "maxInMemoryBuffer": {
+                  "default": 4000000,
+                  "description": "The maximum in-memory buffer size (bytes) before content is temporarily spilled-over to disk.This allows the indexing process to retry content without forcing the Connector to provide it again.Content smaller than this setting is buffered in-memory.",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 2147483647,
+                  "minimum": 1000,
+                  "multipleOf": 1,
+                  "title": "Maximum In-Memory Buffer",
+                  "type": "number"
+                },
+                "maxRetries": {
+                  "default": 3,
+                  "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. This parameter states the number of attempts to retry until giving up. This parameter, if specified, will override the \"Stop retrying after time (milliseconds)\" parameter.",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 100,
+                  "minimum": 0,
+                  "multipleOf": 1,
+                  "title": "Maximum Retries",
+                  "type": "number"
+                },
+                "maxTimeLimitMs": {
+                  "default": 600000,
+                  "description": "This setting is used to limit the maximum amount of time spent on retries. Note: this will be ignored if \"Maximum Retries\" is specified.",
+                  "exclusiveMaximum": false,
+                  "exclusiveMinimum": false,
+                  "maximum": 28800000,
+                  "minimum": 1,
+                  "multipleOf": 1,
+                  "title": "Maximum Time Limit",
+                  "type": "number"
+                }
+              },
+              "required": [
+                "delayMs",
+                "maxDelayTimeMs",
+                "delayFactor"
+              ],
+              "title": "Retry Options",
+              "type": "object"
+            }
+          },
+          "required": [],
+          "title": "Pipeline Settings",
+          "type": "object"
+        }
+      },
+      "required": [],
+      "title": "Core Properties",
+      "type": "object"
+    },
+    "created": {
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "title": "Date Created",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125,
+      "title": "Description",
+      "type": "string"
+    },
+    "diagnosticLogging": {
+      "default": false,
+      "description": "Enable diagnostic logging; disabled by default",
+      "title": "Diagnostic Logging",
+      "type": "boolean"
+    },
+    "id": {
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Configuration ID",
+      "type": "string"
+    },
+    "modified": {
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "title": "Date Modified",
+      "type": "string"
+    },
+    "parserId": {
+      "description": "The Parser to use in the associated IndexPipeline.",
+      "title": "Parser ID",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Plugin specific properties.",
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugins.onedrive.config.OneDriveConfig$Properties",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.plugin.api.config.SecurityTrimmingProperties",
+        "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.NamePatternConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.SizeLimitConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig"
+      ],
+      "properties": {
+        "clientId": {
+          "description": "Client Id",
+          "title": "Client Id",
+          "type": "string"
+        },
+        "clientSecret": {
+          "description": "Client secret",
+          "hints": [
+            "secret"
+          ],
+          "title": "Client Secret",
+          "type": "string"
+        },
+        "fetchRetryProperties": {
+          "description": "A set of options for configuring retry behavior.",
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig$Properties"
+          ],
+          "properties": {
+            "delayFactor": {
+              "default": 2,
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. The retryer will sleep an exponential amount of time after the first failed attempt and retry in exponentially incrementing amounts after each failed attempt up to the maximumTime. nextWaitTime = exponentialIncrement * multiplier.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 100,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Delay Factor",
+              "type": "number"
+            },
+            "delayMs": {
+              "default": 1000,
+              "description": "Sets the delay between retries, exponentially backing off to the maxDelayTimeMs and multiplying successive delays by the delayFactor",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 9223372036854776000,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Retry Delay",
+              "type": "number"
+            },
+            "errorExclusions": {
+              "description": "Optional regex list that will be matched against failed attempts exception class and message. If any regex matches, do not retry this request. This is needed to prevent the retryer from retrying non-recoverable errors that were not already ignored by the connector implementation.",
+              "items": {
+                "maxLength": 256,
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Error Exclusions",
+              "type": "array"
+            },
+            "maxDelayTimeMs": {
+              "default": 300000,
+              "description": "The maximum time wait time between successive retries.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 600000,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Maximum Delay Time",
+              "type": "number"
+            },
+            "maxRetries": {
+              "default": 3,
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. This parameter states the number of attempts to retry until giving up. This parameter, if specified, will override the \"Stop retrying after time (milliseconds)\" parameter.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 100,
+              "minimum": 0,
+              "multipleOf": 1,
+              "title": "Maximum Retries",
+              "type": "number"
+            },
+            "maxTimeLimitMs": {
+              "default": 600000,
+              "description": "This setting is used to limit the maximum amount of time spent on retries. Note: this will be ignored if \"Maximum Retries\" is specified.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 28800000,
+              "minimum": 1,
+              "multipleOf": 1,
+              "title": "Maximum Time Limit",
+              "type": "number"
+            }
+          },
+          "required": [
+            "delayMs",
+            "maxDelayTimeMs",
+            "delayFactor"
+          ],
+          "title": "Retry Options",
+          "type": "object"
+        },
+        "maximumItemLimitConfig": {
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig$Properties"
+          ],
+          "properties": {
+            "maxItems": {
+              "default": -1,
+              "description": "Limits the number of items emitted to the configured IndexPipeline. The default is no limit (-1).",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "multipleOf": 1,
+              "title": "Maximum Output Limit",
+              "type": "number"
+            }
+          },
+          "required": [],
+          "title": "Item Count Limits",
+          "type": "object"
+        },
+        "namePatternConfig": {
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.NamePatternConfig$Properties"
+          ],
+          "properties": {
+            "excludedFileExtensions": {
+              "description": "A set of all file extensions to be skipped from the fetch.",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Excluded file extensions",
+              "type": "array"
+            },
+            "exclusiveRegexes": {
+              "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Exclusive regexes",
+              "type": "array"
+            },
+            "includedFileExtensions": {
+              "description": "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Included file extensions",
+              "type": "array"
+            },
+            "inclusiveRegexes": {
+              "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "items": {
+                "minLength": 1,
+                "type": "string"
+              },
+              "title": "Inclusive regexes",
+              "type": "array"
+            },
+            "regexCacheSize": {
+              "default": 10000,
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "multipleOf": 1,
+              "title": "Regex Cache Size",
+              "type": "number"
+            }
+          },
+          "required": [],
+          "title": "Name Pattern Rules",
+          "type": "object"
+        },
+        "securityTrimmingProperties": {
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.SecurityTrimmingProperties$Properties"
+          ],
+          "properties": {
+            "enableSecurityTrimming": {
+              "default": true,
+              "description": "Enable indexing and query-time security-trimming",
+              "title": "Enable security trimming",
+              "type": "boolean"
+            }
+          },
+          "required": [],
+          "title": "Security trimming configuration",
+          "type": "object"
+        },
+        "sizeLimitProperties": {
+          "description": "Options for including or excluding items based on size, in bytes.",
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.SizeLimitConfig$Properties"
+          ],
+          "properties": {
+            "maxSizeBytes": {
+              "default": -1,
+              "description": "Used for excluding items when the item size is larger than the configured value.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "multipleOf": 1,
+              "title": "Maximum",
+              "type": "number"
+            },
+            "minSizeBytes": {
+              "default": 1,
+              "description": "Used for excluding items when the item size is smaller than the configured value.",
+              "exclusiveMaximum": false,
+              "exclusiveMinimum": false,
+              "maximum": 2147483647,
+              "minimum": -2147483648,
+              "multipleOf": 1,
+              "title": "Minimum",
+              "type": "number"
+            }
+          },
+          "required": [],
+          "title": "Item Size Limits",
+          "type": "object"
+        },
+        "tenantIdentifier": {
+          "description": "Allowed values are common, organizations, consumers or identifiers (i.e. 8eaef023-2b34-4da1-9baa-8bc8c9d6a490 or example.onmicrosoft.com). For more details see: https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-v2-protocols#endpoints",
+          "title": "Tenant identifier",
+          "type": "string"
+        },
+        "usersFilter": {
+          "description": "When this property is set, just the files and folders from the users listed here will be retrieved. This property accepts the user principal name(UPN) only.",
+          "items": {
+            "type": "string"
+          },
+          "title": "User principal name(UPN) filter",
+          "type": "array"
+        }
+      },
+      "required": [
+        "clientId",
+        "clientSecret",
+        "tenantIdentifier"
+      ],
+      "title": "OneDrive properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "title": "Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "Connector for OneDrive file systems",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipeline"
+  ],
+  "title": "SDK - OneDrive",
+  "type": "object"
+}

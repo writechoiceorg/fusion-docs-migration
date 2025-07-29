@@ -1,0 +1,394 @@
+{
+  "type" : "object",
+  "title" : "JDBC",
+  "description" : "Connector for any JDBC database. This connector requires a JDBC driver to be loaded before creating the datasource.",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Database",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for any JDBC database. This connector requires a JDBC driver to be loaded before creating the datasource.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "url", "sql_select_statement" ],
+      "properties" : {
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "url" : {
+          "type" : "string",
+          "title" : "URL",
+          "description" : "A URL to the database, starting with jdbc and vendor name, e.g., 'jdbc:mysql://localhost/test'",
+          "minLength" : 1
+        },
+        "driver" : {
+          "type" : "string",
+          "title" : "JDBC Driver",
+          "description" : "The class name of the JDBC driver to use to connect to the database. Only JDBC4 drivers will appear in this list. If a JDBC3 driver has been uploaded but does not appear in the list, it may be possible to manually enter the class name."
+        },
+        "manually_uploaded_driver" : {
+          "type" : "string",
+          "title" : "Manually Uploaded JDBC Driver",
+          "description" : "If you for whatever reason cannot use the blob store to upload your JDBC driver and needed to load it manually into the connectors apps/libs directory, you can specify the JDBC Driver class name here."
+        },
+        "username" : {
+          "type" : "string",
+          "title" : "Username",
+          "description" : "The username of a database account used for authentication and data access."
+        },
+        "password" : {
+          "type" : "string",
+          "title" : "Password",
+          "description" : "The password of the account used for authentication and data access.",
+          "hints" : [ "secret" ]
+        },
+        "sql_select_statement" : {
+          "type" : "string",
+          "title" : "SQL Statement",
+          "description" : "A SQL SELECT statement to choose the records to be retrieved.",
+          "hints" : [ "lengthy" ]
+        },
+        "primary_key" : {
+          "type" : "string",
+          "title" : "Primary Key",
+          "description" : "The column name of the primary key for the table."
+        },
+        "nested_queries" : {
+          "type" : "array",
+          "title" : "Nested queries",
+          "description" : "A nested query to join data from multiple tables. The nested query will be used with the SQL Statement and must include the primary key with the $ character. For example, 'SELECT tag FROM tag WHERE document_tag.doc_id=$'.",
+          "hints" : [ "lengthy" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "clean_in_full_import_mode" : {
+          "type" : "boolean",
+          "title" : "Clean in full import mode",
+          "description" : "Clean old records when doing a full import. This will remove all records from the index before re-indexing.",
+          "default" : true
+        },
+        "convert_type" : {
+          "type" : "boolean",
+          "title" : "Convert type",
+          "description" : "If checked, the connector will automatically convert the data from a column to the target Solr data-type. Otherwise, the connector will use the field type based on the data type of the column from the JDBC result set.",
+          "default" : true
+        },
+        "fetch_size" : {
+          "type" : "integer",
+          "title" : "JDBC fetch size",
+          "description" : "The number of documents to retrieve per batch."
+        },
+        "max_docs" : {
+          "type" : "integer",
+          "title" : "Max Documents",
+          "description" : "The maximum number of documents to crawl. Use -1 to index all documents found.",
+          "default" : -1
+        },
+        "delta_sql_query" : {
+          "type" : "string",
+          "title" : "Delta SQL Query",
+          "description" : "A SQL statement to select the delta (records added or changed) since the last run of the datasource. For example, 'SELECT id FROM customers WHERE last_modified > $'. The $ indicates the date and time of the last import.",
+          "hints" : [ "code", "code/sql" ]
+        },
+        "delta_import_query" : {
+          "type" : "string",
+          "title" : "Delta Import SQL Query",
+          "description" : "A SQL statement to retrieve the delta records. If not defined, the original SQL Statement will be used to retrieve delta records, which may be error prone in the case of complex statements. If that occurs, you can define a secondary SQL statement that will only be used for delta imports.",
+          "hints" : [ "code", "code/sql" ]
+        },
+        "kerberosAuthenticationProps" : {
+          "type" : "object",
+          "title" : "Kerberos Authentication",
+          "description" : "Kerberos Authentication Properties",
+          "properties" : {
+            "kerberosServerPrincipal" : {
+              "type" : "string",
+              "title" : "Kerberos Server Principal",
+              "description" : "Kerberos Server Principal"
+            }
+          }
+        },
+        "commit_on_finish" : {
+          "type" : "boolean",
+          "title" : "Solr commit on finish",
+          "description" : "Set to true for a request to be sent to Solr after the last batch has been fetched to commit the documents to the index.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "verify_access" : {
+          "type" : "boolean",
+          "title" : "Validate access",
+          "description" : "Set to true to require successful connection to the filesystem before saving this datasource.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Data Selection",
+        "properties" : [ "sql_select_statement", "primary_key", "nested_queries", "clean_in_full_import_mode", "fetch_size", "convert_type", "max_docs" ]
+      }, {
+        "label" : "Delta Queries",
+        "properties" : [ "delta_sql_query", "delta_import_query" ]
+      }, {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

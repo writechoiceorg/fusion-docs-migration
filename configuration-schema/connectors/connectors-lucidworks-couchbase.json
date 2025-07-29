@@ -1,0 +1,398 @@
+{
+  "type" : "object",
+  "title" : "CouchBase (v2)",
+  "description" : "A connector that index document from CouchBase.",
+  "required" : [ "id", "properties", "pipeline" ],
+  "properties" : {
+    "created" : {
+      "type" : "string",
+      "title" : "Date Created",
+      "description" : "The date at which this Configuration was created.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description",
+      "hints" : [ "lengthy" ],
+      "maxLength" : 125
+    },
+    "collection" : {
+      "type" : "string",
+      "title" : "Collection ID",
+      "description" : "The associated content Collection.",
+      "hints" : [ "readonly", "hidden" ],
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Type",
+      "description" : "A type ID for this connector.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of the IndexPipeline used for processing output.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging" : {
+      "type" : "boolean",
+      "title" : "Diagnostic Logging",
+      "description" : "Enable diagnostic logging; disabled by default",
+      "default" : false
+    },
+    "connector" : {
+      "title" : "Connector Type",
+      "description" : "Connector type.",
+      "minLength" : 1,
+      "type" : "string",
+      "hints" : [ "hidden" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser ID",
+      "description" : "The Parser to use in the associated IndexPipeline.",
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "coreProperties" : {
+      "type" : "object",
+      "title" : "Core Properties",
+      "description" : "Common behavior and performance settings.",
+      "required" : [ ],
+      "properties" : {
+        "fetchSettings" : {
+          "type" : "object",
+          "title" : "Fetch Settings",
+          "description" : "System level settings for controlling fetch behavior and performance.",
+          "required" : [ ],
+          "properties" : {
+            "numFetchThreads" : {
+              "type" : "number",
+              "title" : "Fetch Threads",
+              "description" : "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default" : 20,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexingThreads" : {
+              "type" : "number",
+              "title" : "Index Subscription Threads",
+              "description" : "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default" : 4,
+              "maximum" : 10,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInstances" : {
+              "type" : "number",
+              "title" : "Number of plugin instances for distributed fetching",
+              "description" : "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default" : 0,
+              "maximum" : 500,
+              "exclusiveMaximum" : false,
+              "minimum" : 0,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchItemQueueSize" : {
+              "type" : "number",
+              "title" : "Fetch Item Queue Size",
+              "description" : "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default" : 10000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchRequestCheckInterval" : {
+              "type" : "number",
+              "title" : "Fetch request check interval(ms)",
+              "description" : "The amount of time to wait before check if a request is done",
+              "default" : 15000,
+              "hints" : [ "hidden" ],
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseScheduledTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response scheduled timeout(ms)",
+              "description" : "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default" : 300000,
+              "maximum" : 500000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1000,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "fetchResponseCompletedTimeout" : {
+              "type" : "number",
+              "title" : "Fetch response completion timeout(ms)",
+              "description" : "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default" : 300000,
+              "hints" : [ "hidden" ],
+              "maximum" : 600000,
+              "exclusiveMaximum" : false,
+              "minimum" : 1,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexMetadata" : {
+              "type" : "boolean",
+              "title" : "Index metadata",
+              "description" : "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default" : false
+            },
+            "indexingInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Indexing inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default" : 86400,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "pluginInactivityTimeout" : {
+              "type" : "number",
+              "title" : "Plugin inactivity timeout(seconds)",
+              "description" : "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default" : 600,
+              "maximum" : 691200,
+              "exclusiveMaximum" : false,
+              "minimum" : 60,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "indexContentFields" : {
+              "type" : "boolean",
+              "title" : "Index content fields",
+              "description" : "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default" : false
+            },
+            "asyncParsing" : {
+              "type" : "boolean",
+              "title" : "Async Parsing",
+              "description" : "When enabled, content will be indexed asynchronously.",
+              "default" : false
+            }
+          },
+          "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig" ],
+      "hints" : [ "advanced" ]
+    },
+    "modified" : {
+      "type" : "string",
+      "title" : "Date Modified",
+      "description" : "The date at which this Configuration was last modified.",
+      "hints" : [ "readonly", "hidden" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Configuration ID",
+      "description" : "A unique identifier for this Configuration.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "A connector that index document from CouchBase.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Plugin specific properties.",
+      "required" : [ "authProp", "buckets" ],
+      "properties" : {
+        "authProp" : {
+          "type" : "object",
+          "title" : "Authentication Properties",
+          "description" : "Couchbase Authentication Properties",
+          "required" : [ "password", "nodes", "username" ],
+          "properties" : {
+            "username" : {
+              "type" : "string",
+              "title" : "Couchbase username",
+              "description" : "Couchbase username."
+            },
+            "password" : {
+              "type" : "string",
+              "title" : "Couchbase Password",
+              "description" : "Couchbase Password.",
+              "hints" : [ "secret" ]
+            },
+            "nodes" : {
+              "type" : "array",
+              "title" : "Couchbase nodes",
+              "description" : "List of Couchbase IPs or hostnames.",
+              "items" : {
+                "type" : "string"
+              }
+            },
+            "port" : {
+              "type" : "number",
+              "title" : "Config HTTP Non-Encrypted Port",
+              "description" : "The port which is used if encryption is not enabled and the client needs to bootstrap through HTTP. In general, there is no need to change this value (unless you run a custom Couchbase Server build during development or testing that runs on different ports).",
+              "default" : 8091,
+              "hints" : [ "advanced" ],
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.couchbase.config.CouchBaseProperties$AuthProperties" ]
+        },
+        "buckets" : {
+          "type" : "array",
+          "title" : "Couchbase buckets",
+          "description" : "List of Couchbase Buckets.",
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "sslProp" : {
+          "type" : "object",
+          "title" : "SSL Properties",
+          "description" : "Couchbase SSL Properties",
+          "required" : [ "sslKeystoreFile", "sslKeystorePassword" ],
+          "properties" : {
+            "sslEnabled" : {
+              "type" : "boolean",
+              "title" : "Enabling Encryption",
+              "description" : "If encrypted communication should be enabled. This feature is only available against a Couchbase Server 3.0 EE cluster or later, and setting it to true implies you also set a value for sslKeystoreFile and sslKeystorePassword. Please see the Managing Connections section for more details on how to set it up properly.",
+              "default" : false
+            },
+            "sslKeystoreFile" : {
+              "type" : "string",
+              "title" : "SSL Keystore Location",
+              "description" : "The location to the JVM keystore where the certificates are stored. - if running in multinode all nodes should have the same keystore location"
+            },
+            "sslKeystorePassword" : {
+              "type" : "string",
+              "title" : "SSL Keystore Password",
+              "description" : "The password of the JVM keystore where the certificates are stored.",
+              "hints" : [ "secret" ]
+            },
+            "sslPort" : {
+              "type" : "number",
+              "title" : "Config HTTP Encrypted Port",
+              "description" : "The port which is used if encryption is not enabled and the client needs to bootstrap through HTTP. In general, there is no need to change this value (unless you run a custom Couchbase Server build during development or testing that runs on different ports).",
+              "default" : 18091,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.couchbase.config.CouchBaseProperties$SslProperties" ],
+          "hints" : [ "advanced" ]
+        },
+        "timeoutProp" : {
+          "type" : "object",
+          "title" : "Timeout Options",
+          "description" : "Timeouts apply only for blocking operations",
+          "required" : [ ],
+          "properties" : {
+            "kvTimeout" : {
+              "type" : "number",
+              "title" : "Key-Value Timeout",
+              "description" : "The Key/Value default timeout is used on all blocking operations which are performed on a specific key if not overridden by a custom timeout. It does not affect asynchronous operations. This includes all commands like get(), getFromReplica() and all mutation commands. (default 2500ms)",
+              "default" : 2500,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : -9223372036854775808,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "queryTimeout" : {
+              "type" : "number",
+              "title" : "Query Timeout",
+              "description" : "The Search timeout is used on all FTS operations if not overridden by a custom timeout. It does not affect asynchronous operations. Note that it is set to such a high timeout compared to key/value since it can affect hundreds or thousands of rows. (default 75000ms)",
+              "default" : 75000,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : -9223372036854775808,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "connectTimeout" : {
+              "type" : "number",
+              "title" : "Connect Timeout",
+              "description" : "The connect timeout is used when a Bucket is opened and if not overridden by a custom timeout. It does not affect asynchronous operations. If you feel the urge to change this value to something higher, there is a good chance that your network is not properly set up. Opening a bucket should in practice not take longer than a second on a reasonably fast network. (default 5000ms)",
+              "default" : 5000,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : -9223372036854775808,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "disconnectTimeout" : {
+              "type" : "number",
+              "title" : "Disconnect Timeout",
+              "description" : "The disconnect timeout is used when a Cluster is disconnected or a Bucket is closed synchronously and if not overridden by a custom timeout. It does not affect asynchronous operations. A timeout is applied here always to make sure that your code does not get stuck at shutdown. 25 seconds should provide enough room to drain all outstanding operations properly, but make sure to adapt this timeout to fit your application requirements. (default 25000ms)",
+              "default" : 25000,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : -9223372036854775808,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "managementTimeout" : {
+              "type" : "number",
+              "title" : "Management Timeout",
+              "description" : "The management timeout is used on all synchronous BucketManager and ClusterManager operations and if not overridden by a custom timeout. It set to a quite high timeout because some operations might take a longer time to complete (for example flush). (default 75000ms)",
+              "default" : 75000,
+              "maximum" : 9223372036854775807,
+              "exclusiveMaximum" : false,
+              "minimum" : -9223372036854775808,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            },
+            "socketConnectTimeout" : {
+              "type" : "number",
+              "title" : "Socket Connect Timeout",
+              "description" : "The amount of time the SDK will wait on the socket connect until an error is raised and handled. (default 1000ms)",
+              "default" : 1000,
+              "maximum" : 2147483647,
+              "exclusiveMaximum" : false,
+              "minimum" : -2147483648,
+              "exclusiveMinimum" : false,
+              "multipleOf" : 1.0
+            }
+          },
+          "interfaces" : [ "com.lucidworks.connector.plugins.couchbase.config.CouchBaseProperties$TimeoutProperties" ],
+          "hints" : [ "advanced" ]
+        }
+      },
+      "interfaces" : [ "com.lucidworks.connector.plugins.couchbase.config.CouchBaseConfig$Properties", "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties", "com.lucidworks.connector.plugins.couchbase.config.CouchBaseProperties" ]
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "A connector that index document from CouchBase.",
+      "hints" : [ "hidden", "readonly" ]
+    }
+  },
+  "category" : "Couchbase",
+  "categoryPriority" : 1
+}

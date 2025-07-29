@@ -1,0 +1,759 @@
+{
+  "type" : "object",
+  "title" : "Google Drive",
+  "description" : "GoogleDrive.com file storage",
+  "required" : [ "id", "connector", "type", "pipeline", "properties" ],
+  "properties" : {
+    "category" : {
+      "type" : "string",
+      "title" : "Category",
+      "default" : "Filesystem",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "id" : {
+      "type" : "string",
+      "title" : "Datasource ID",
+      "description" : "Unique name for this datasource.",
+      "minLength" : 1,
+      "pattern" : "^[a-zA-Z0-9_-]+$"
+    },
+    "connector" : {
+      "type" : "string",
+      "title" : "Connector Type",
+      "description" : "Connector Type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "type" : {
+      "type" : "string",
+      "title" : "Datasource Type",
+      "description" : "Datasource type supported by the selected connector type.",
+      "hints" : [ "hidden" ],
+      "minLength" : 1
+    },
+    "pipeline" : {
+      "type" : "string",
+      "title" : "Pipeline ID",
+      "description" : "Name of an existing index pipeline for processing documents.",
+      "minLength" : 1
+    },
+    "description" : {
+      "type" : "string",
+      "title" : "Description",
+      "description" : "Optional description for this datasource."
+    },
+    "type_description" : {
+      "type" : "string",
+      "title" : "Type Description",
+      "default" : "Connector for Google Drive file storage. To use this connector, you must first register an application with access to the Drive API via the Google Developer Console at http://console.developers.google.com/project.",
+      "hints" : [ "hidden", "readonly" ]
+    },
+    "parserId" : {
+      "type" : "string",
+      "title" : "Parser",
+      "description" : "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties" : {
+      "type" : "object",
+      "title" : "Properties",
+      "description" : "Datasource configuration properties",
+      "required" : [ "startLinks", "enable_security_trimming" ],
+      "properties" : {
+        "refreshAll" : {
+          "type" : "boolean",
+          "title" : "Recrawl all items",
+          "description" : "Set to true to always recrawl all items found in the crawldb.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "startLinks" : {
+          "type" : "array",
+          "title" : "Start Links",
+          "description" : "The IDs of the folders or files to crawl. For example if the URL to your folder is https://drive.google.com/drive/folders/0B1u0p7N096R6MWgma3gwUj4j, then enter 0B1u0p7N096R6MWgma3gwUj4j here. To crawl the entire Google Drive, enter the special value 'root'.",
+          "items" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "collection" : {
+          "type" : "string",
+          "title" : "Collection",
+          "description" : "Collection documents will be indexed to.",
+          "hints" : [ "hidden" ],
+          "pattern" : "^[a-zA-Z0-9_-]+$"
+        },
+        "db" : {
+          "type" : "object",
+          "title" : "Connector DB",
+          "description" : "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required" : [ "type" ],
+          "properties" : {
+            "type" : {
+              "type" : "string",
+              "title" : "Implementation Class Name",
+              "description" : "Fully qualified class name of ConnectorDb implementation.",
+              "default" : "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength" : 1
+            },
+            "inlinks" : {
+              "type" : "boolean",
+              "title" : "Process Inlinks?",
+              "description" : "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "aliases" : {
+              "type" : "boolean",
+              "title" : "Process Aliases?",
+              "description" : "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default" : false
+            },
+            "inv_aliases" : {
+              "type" : "boolean",
+              "title" : "Process Inverted Aliases?",
+              "description" : "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default" : false
+            }
+          },
+          "hints" : [ "hidden" ]
+        },
+        "dedupe" : {
+          "type" : "boolean",
+          "title" : "Dedupe documents",
+          "description" : "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "dedupeField" : {
+          "type" : "string",
+          "title" : "Dedupe field",
+          "description" : "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints" : [ "advanced" ]
+        },
+        "dedupeScript" : {
+          "type" : "string",
+          "title" : "Dedupe script",
+          "description" : "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "dedupeSaveSignature" : {
+          "type" : "boolean",
+          "title" : "Save dedupe signature",
+          "description" : "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "delete" : {
+          "type" : "boolean",
+          "title" : "Delete dead URIs",
+          "description" : "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "default" : true
+        },
+        "deleteErrorsAfter" : {
+          "type" : "integer",
+          "title" : "Fetch failure allowance",
+          "description" : "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "default" : -1
+        },
+        "fetchThreads" : {
+          "type" : "integer",
+          "title" : "Fetch threads",
+          "description" : "The number of threads to use during fetching. The default is 5.",
+          "default" : 5
+        },
+        "emitThreads" : {
+          "type" : "integer",
+          "title" : "Emit threads",
+          "description" : "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "default" : 5
+        },
+        "chunkSize" : {
+          "type" : "integer",
+          "title" : "Fetch batch size",
+          "description" : "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "fetchDelayMS" : {
+          "type" : "integer",
+          "title" : "Fetch delay",
+          "description" : "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "default" : 0,
+          "hints" : [ "advanced" ]
+        },
+        "refreshStartLinks" : {
+          "type" : "boolean",
+          "title" : "Recrawl start links",
+          "description" : "Set to true to recrawl items specified in the list of start links.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshErrors" : {
+          "type" : "boolean",
+          "title" : "Recrawl errors",
+          "description" : "Set to true to recrawl items that failed during the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "refreshOlderThan" : {
+          "type" : "integer",
+          "title" : "Recrawl age",
+          "description" : "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "default" : -1,
+          "hints" : [ "advanced" ]
+        },
+        "refreshIDPrefixes" : {
+          "type" : "array",
+          "title" : "Recrawl ID prefixes",
+          "description" : "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshIDRegexes" : {
+          "type" : "array",
+          "title" : "Recrawl ID regexes",
+          "description" : "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints" : [ "advanced" ],
+          "items" : {
+            "type" : "string"
+          }
+        },
+        "refreshScript" : {
+          "type" : "string",
+          "title" : "Recrawl script",
+          "description" : "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints" : [ "advanced", "code", "code/javascript" ]
+        },
+        "forceRefresh" : {
+          "type" : "boolean",
+          "title" : "Force recrawl",
+          "description" : "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "forceRefreshClearSignatures" : {
+          "type" : "boolean",
+          "title" : "Clear signatures",
+          "description" : "If true, signatures will be cleared if force recrawl is enabled.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "retryEmit" : {
+          "type" : "boolean",
+          "title" : "Retry emits",
+          "description" : "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "depth" : {
+          "type" : "integer",
+          "title" : "Max crawl depth",
+          "description" : "Number of levels in a directory or site tree to descend for documents.",
+          "default" : -1
+        },
+        "maxItems" : {
+          "type" : "integer",
+          "title" : "Max items",
+          "description" : "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "default" : -1
+        },
+        "failFastOnStartLinkFailure" : {
+          "type" : "boolean",
+          "title" : "Fail crawl if start links are invalid",
+          "description" : "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "crawlDBType" : {
+          "type" : "string",
+          "title" : "Crawl database type",
+          "description" : "The type of crawl database to use, in-memory or on-disk.",
+          "enum" : [ "in-memory", "on-disk" ],
+          "default" : "on-disk",
+          "hints" : [ "advanced" ]
+        },
+        "commitAfterItems" : {
+          "type" : "integer",
+          "title" : "Commit After This Many Items",
+          "description" : "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "default" : 10000,
+          "hints" : [ "advanced" ]
+        },
+        "initial_mapping" : {
+          "type" : "object",
+          "title" : "Initial field mapping",
+          "description" : "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties" : {
+            "skip" : {
+              "type" : "boolean",
+              "title" : "Skip This Stage",
+              "description" : "Set to true to skip this stage.",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "label" : {
+              "type" : "string",
+              "title" : "Label",
+              "description" : "A unique label for this stage.",
+              "hints" : [ "advanced" ],
+              "maxLength" : 255
+            },
+            "condition" : {
+              "type" : "string",
+              "title" : "Condition",
+              "description" : "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints" : [ "code", "code/javascript", "advanced" ]
+            },
+            "reservedFieldsMappingAllowed" : {
+              "type" : "boolean",
+              "title" : "Allow System Fields Mapping?",
+              "default" : false,
+              "hints" : [ "advanced" ]
+            },
+            "retentionMappings" : {
+              "type" : "array",
+              "title" : "Field Retention",
+              "description" : "Fields that should be kept or deleted",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: keep (default) or delete",
+                    "enum" : [ "keep", "delete" ],
+                    "default" : "keep",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "updateMappings" : {
+              "type" : "array",
+              "title" : "Field Value Updates",
+              "description" : "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default" : [ ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "field", "value" ],
+                "properties" : {
+                  "field" : {
+                    "type" : "string",
+                    "title" : "Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "value" : {
+                    "type" : "string",
+                    "title" : "Value",
+                    "description" : "The value to add to or set on the field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: add (default) or set.",
+                    "enum" : [ "add", "set" ],
+                    "default" : "add",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "translationMappings" : {
+              "type" : "array",
+              "title" : "Field Translations",
+              "description" : "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default" : [ {
+                "source" : "charSet",
+                "target" : "charSet_s",
+                "operation" : "move"
+              }, {
+                "source" : "fetchedDate",
+                "target" : "fetchedDate_dt",
+                "operation" : "move"
+              }, {
+                "source" : "lastModified",
+                "target" : "lastModified_dt",
+                "operation" : "move"
+              }, {
+                "source" : "signature",
+                "target" : "dedupeSignature_s",
+                "operation" : "move"
+              }, {
+                "source" : "length",
+                "target" : "length_l",
+                "operation" : "move"
+              }, {
+                "source" : "mimeType",
+                "target" : "mimeType_s",
+                "operation" : "move"
+              }, {
+                "source" : "parent",
+                "target" : "parent_s",
+                "operation" : "move"
+              }, {
+                "source" : "owner",
+                "target" : "owner_s",
+                "operation" : "move"
+              }, {
+                "source" : "group",
+                "target" : "group_s",
+                "operation" : "move"
+              }, {
+                "source" : "driveMimeType",
+                "target" : "driveMimeType_s",
+                "operation" : "move"
+              } ],
+              "hints" : [ "advanced" ],
+              "items" : {
+                "type" : "object",
+                "required" : [ "source", "target" ],
+                "properties" : {
+                  "source" : {
+                    "type" : "string",
+                    "title" : "Source Field",
+                    "description" : "The name of the field to operate on.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "target" : {
+                    "type" : "string",
+                    "title" : "Target Field",
+                    "description" : "The name of the target field.",
+                    "hints" : [ "advanced" ]
+                  },
+                  "operation" : {
+                    "type" : "string",
+                    "title" : "Operation",
+                    "description" : "The type of operation to perform: copy (default) or move.",
+                    "enum" : [ "copy", "move" ],
+                    "default" : "copy",
+                    "hints" : [ "advanced" ]
+                  }
+                }
+              }
+            },
+            "unmappedRule" : {
+              "type" : "object",
+              "title" : "Unmapped Fields",
+              "description" : "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties" : {
+                "keep" : {
+                  "type" : "boolean",
+                  "title" : "Keep",
+                  "description" : "Keep all unmapped fields",
+                  "default" : true,
+                  "hints" : [ "advanced" ]
+                },
+                "delete" : {
+                  "type" : "boolean",
+                  "title" : "Delete",
+                  "description" : "Delete all unmapped fields",
+                  "default" : false,
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToMoveValuesTo" : {
+                  "type" : "string",
+                  "title" : "Move",
+                  "description" : "Move all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "fieldToCopyValuesTo" : {
+                  "type" : "string",
+                  "title" : "Copy",
+                  "description" : "Copy all unmapped field values to this field",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToAddToUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Add",
+                  "description" : "Add this value to all unmapped fields",
+                  "hints" : [ "advanced" ]
+                },
+                "valueToSetOnUnmappedFields" : {
+                  "type" : "string",
+                  "title" : "Set",
+                  "description" : "Set this value on all unmapped fields",
+                  "hints" : [ "advanced" ]
+                }
+              },
+              "default" : {
+                "keep" : true,
+                "delete" : false,
+                "fieldToMoveValuesTo" : "",
+                "fieldToCopyValuesTo" : "",
+                "valueToAddToUnmappedFields" : "",
+                "valueToSetOnUnmappedFields" : ""
+              }
+            }
+          },
+          "category" : "Field Transformation",
+          "categoryPriority" : 7,
+          "hints" : [ "advanced" ],
+          "unsafe" : false
+        },
+        "f.maxSizeBytes" : {
+          "type" : "integer",
+          "title" : "Maximum file size (bytes)",
+          "description" : "Maximum size (in bytes) of documents to fetch or -1 for unlimited file size.",
+          "default" : 20000000
+        },
+        "f.minSizeBytes" : {
+          "type" : "integer",
+          "title" : "Minimum file size (bytes)",
+          "description" : "Minimum size, in bytes, of documents to fetch.",
+          "default" : 0
+        },
+        "f.addFileMetadata" : {
+          "type" : "boolean",
+          "title" : "Add file metadata",
+          "description" : "Set to true to add information about documents found in the filesystem to the document, such as document owner, group, or ACL permissions.",
+          "default" : true
+        },
+        "f.index_items_discarded" : {
+          "type" : "boolean",
+          "title" : "Index discarded document metadata",
+          "description" : "Enable to index discarded document metadata",
+          "default" : false
+        },
+        "enable_security_trimming" : {
+          "type" : "object",
+          "title" : "Enable Security Trimming",
+          "properties" : {
+            "f.fs.enableSecurityTrimming" : {
+              "type" : "boolean",
+              "title" : "Enable Security Trimming",
+              "description" : "Enable indexing and query-time security-trimming of google users)",
+              "default" : true
+            },
+            "f.fs.userSearchQuery" : {
+              "type" : "string",
+              "title" : "User Search Query",
+              "description" : "Google drive crawl works by first getting a list of users, then crawling them. The User Search Query property lets you customize the query of users to fetch. See this link https://developers.google.com/admin-sdk/directory/v1/guides/search-users#fields for formats. Separate each query with a comma. Example: email:a*,email:b*,email:c*"
+            },
+            "f.fs.userExcludeList" : {
+              "type" : "string",
+              "title" : "User Exclude List",
+              "description" : "By default, all users' files are crawled. Enter a comma-separated list of usernames (email addresses) to exclude from the crawl. If the last character of the email address is an '*', then all email addresses that start with that prefix will be excluded."
+            },
+            "f.fs.defaultDomain" : {
+              "type" : "string",
+              "title" : "Default domain for Google Drive",
+              "description" : "For Google Drive security trimming to work, the username must be of form username@domain. During the security trimming query stage, this default domain will be applied to the security trimming user names in the case that they do not have 'username@domain' format."
+            },
+            "f.fs.applyGroupSecurityFiltering" : {
+              "type" : "boolean",
+              "title" : "Apply Group Security Filtering",
+              "description" : "Check this box if you want to query the Google Directory API to fetch a users' Google groups during security trimming stage. These group names, once indexed, can be used to filter search results by Google Group.",
+              "default" : true
+            },
+            "f.fs.security_filter_cache" : {
+              "type" : "boolean",
+              "title" : "Unused",
+              "description" : "Unused",
+              "hints" : [ "hidden" ]
+            },
+            "f.fs.cache_expiration_time" : {
+              "type" : "integer",
+              "title" : "Unused",
+              "description" : "Unused",
+              "hints" : [ "hidden" ]
+            },
+            "f.fs.cache_max_size" : {
+              "type" : "integer",
+              "title" : "No longer in use",
+              "description" : "No longer in use",
+              "default" : 0,
+              "hints" : [ "hidden" ]
+            },
+            "security_filter_cache" : {
+              "type" : "boolean",
+              "title" : "Enable security filter cache",
+              "description" : "Cache of document access control rules.",
+              "default" : true
+            },
+            "cache_expiration_time" : {
+              "type" : "integer",
+              "title" : "Security cache expiration time",
+              "description" : "Time in seconds before the security filter cache expires.",
+              "default" : 7200
+            }
+          }
+        },
+        "retainOutlinks" : {
+          "type" : "boolean",
+          "title" : "Retain links in the crawldb",
+          "description" : "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "aliasExpiration" : {
+          "type" : "integer",
+          "title" : "Alias expiration",
+          "description" : "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "default" : 1,
+          "hints" : [ "advanced" ]
+        },
+        "f.fs.clientID" : {
+          "type" : "string",
+          "title" : "Google Drive OAuth Client ID",
+          "description" : "Google OAuth Client ID for a registered application with access to the Drive API."
+        },
+        "f.fs.clientSecret" : {
+          "type" : "string",
+          "title" : "Google Drive OAuth Client Secret",
+          "description" : "Google OAuth Client Secret for the registered application.",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.refreshToken" : {
+          "type" : "string",
+          "title" : "Google Drive OAuth Refresh Token",
+          "description" : "OAuth Refresh Token to allow re-authorization of the connector to the Drive API."
+        },
+        "f.fs.serviceAccountId" : {
+          "type" : "string",
+          "title" : "Service Account ID",
+          "description" : "For Service Account configuration - specifies the Service Account ID to use to connect Fusion to Google Drive."
+        },
+        "f.fs.serviceAccountPrivateKey" : {
+          "type" : "string",
+          "title" : "Service account JSON private key contents",
+          "description" : "For Service Account configuration - specifies the private key file in JSON format. Open the private key json file (from Google api console) with a text editor, select all the text, copy, then paste into this text box. This private key is treated as a password meaning it is encrypted and is not visible in plain text when editing.",
+          "hints" : [ "secret" ]
+        },
+        "f.fs.serviceAccountEmail" : {
+          "type" : "string",
+          "title" : "Service Account Email",
+          "description" : "For Service Account configuration only - NOTE: Required only when 'Apply Group Security Filtering' is checked. This service account email must be assigned to your Google project as a Service Actor in the console. It must have ability to list groups for a user, list users, and read google drive content."
+        },
+        "f.fs.serviceAccountPrivateKeyFile" : {
+          "type" : "string",
+          "title" : "Service Account P12 Private Key File",
+          "description" : "For Service Account configuration - specifies the private key file in P12 private key format.",
+          "hints" : [ "hidden", "readonly" ]
+        },
+        "f.fs.serviceAccountPrivateKeyFilePassword" : {
+          "type" : "string",
+          "title" : "Service Account P12 Private Key Password.",
+          "description" : "For Service Account configuration - specifies the private key file in P12 private key format.",
+          "hints" : [ "hidden", "readonly" ]
+        },
+        "f.fs.extraFileFieldsToIndex" : {
+          "type" : "string",
+          "title" : "Extra File fields to index",
+          "description" : "Google Drive by default will only index \"id,createdTime,modifiedTime,size,name,description,mimeType,owners,permissions,webContentLink,webViewLink,fileExtension,trashed,parents\". You can specify additional fields to index here. Note: You can only specify top level fields. Such as \"capabilities\". Specifying sub fields like \"capabilities(canAddChildren,canRename)\" will result in an error."
+        },
+        "f.fs.mime_type_includes" : {
+          "type" : "string",
+          "title" : "Mime Type Includes",
+          "description" : "A comma-separated list of the Mime types to include in this crawl. Includes supercede excludes."
+        },
+        "f.fs.mime_type_excludes" : {
+          "type" : "string",
+          "title" : "Mime Type Excludes",
+          "description" : "A comma-separated list of the Mime types to exclude from this crawl. NOTE: This is only used if the \"Mime Type Includes\" field is empty."
+        },
+        "f.fs.additional_item_filters" : {
+          "type" : "string",
+          "title" : "Additional Item Filters",
+          "description" : "In https://developers.google.com/drive/v3/web/search-parameters#fn4 there are additional search parameters you can add to filter the files returned by google to be indexed. Example: modifiedTime > '2012-06-04T12:00:00'"
+        },
+        "f.fs.indexTrash" : {
+          "type" : "boolean",
+          "title" : "Index trash",
+          "description" : "Set to true to index files in users Trash folders",
+          "default" : false
+        },
+        "f.fs.connectTimeout" : {
+          "type" : "integer",
+          "title" : "Google Drive Connect timeout (ms)",
+          "description" : "Determines how long, in milliseconds, a request to the Google Drive API is allowed to take to connect prior to timing out",
+          "default" : 20000
+        },
+        "f.fs.readTimeout" : {
+          "type" : "integer",
+          "title" : "Google Drive read timeout (ms)",
+          "description" : "Determines how long, in milliseconds, a request to the Google Drive API is allowed to attempt to read content prior to timing out",
+          "default" : 20000
+        },
+        "f.fs.batchPageSize" : {
+          "type" : "integer",
+          "title" : "Incremental crawling batch page size",
+          "description" : "Incremental crawling batch page size",
+          "default" : 100,
+          "hints" : [ "advanced" ],
+          "maximum" : 100,
+          "exclusiveMaximum" : false,
+          "minimum" : 1,
+          "exclusiveMinimum" : false
+        },
+        "f.fs.RecrawlCollectionName" : {
+          "type" : "string",
+          "title" : "Incremental crawling collection name",
+          "description" : "The collection name for incremental crawling",
+          "default" : "system_google_drive_recrawl"
+        },
+        "diagnosticMode" : {
+          "type" : "boolean",
+          "title" : "Diagnostic mode",
+          "description" : "Enable to print more detailed information to the logs about each request.",
+          "default" : false,
+          "hints" : [ "advanced" ]
+        },
+        "batch_incremental_crawling" : {
+          "type" : "boolean",
+          "title" : "Batch Incremental crawling",
+          "description" : "Batch Incremental crawling",
+          "default" : true,
+          "hints" : [ "advanced" ]
+        },
+        "parserRetryCount" : {
+          "type" : "integer",
+          "title" : "Max Parser Retries",
+          "description" : "The maximum number of times the configured parser will try getting content before giving up",
+          "default" : 0,
+          "maximum" : 5,
+          "exclusiveMaximum" : true,
+          "minimum" : 0,
+          "exclusiveMinimum" : false
+        }
+      },
+      "propertyGroups" : [ {
+        "label" : "Crawl Performance",
+        "properties" : [ "chunkSize", "fetchThreads", "fetchDelayMS", "emitThreads", "retryEmit", "failFastOnStartLinkFailure", "connectTimeout", "readTimeout", "parserRetryCount" ]
+      }, {
+        "label" : "Recrawl Rules",
+        "properties" : [ "refreshAll", "batch_incremental_crawling", "refreshStartLinks", "refreshErrors", "refreshOlderThan", "refreshIDPrefixes", "refreshIDRegexes", "refreshScript", "forceRefresh", "forceRefreshClearSignatures" ]
+      }, {
+        "label" : "Security Trimming",
+        "properties" : [ "enable_security_trimming" ]
+      }, {
+        "label" : "Dedupe",
+        "properties" : [ "dedupe", "dedupeSaveSignature", "dedupeField", "dedupeScript" ]
+      }, {
+        "label" : "Crawl History",
+        "properties" : [ "retainOutlinks", "aliasExpiration", "crawlDBType", "commitAfterItems" ]
+      }, {
+        "label" : "Limit Documents",
+        "properties" : [ "depth", "maxItems", "delete", "deleteErrorsAfter", "indexTrash", "f.maxSizeBytes", "f.minSizeBytes", "f.addFileMetadata", "f.index_items_discarded" ]
+      }, {
+        "label" : "Field Mapping",
+        "properties" : [ "initial_mapping" ]
+      } ]
+    }
+  },
+  "category" : "Other",
+  "categoryPriority" : 1,
+  "unsafe" : false
+}

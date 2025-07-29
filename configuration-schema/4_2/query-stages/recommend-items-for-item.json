@@ -1,0 +1,174 @@
+{
+  "type": "object",
+  "title": "Recommend Items for Item",
+  "description": "This stage returns item-item recommendations or boost similar items for an item ",
+  "required": [
+    "boostingMethod",
+    "boostingParam"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "numRecommendations": {
+      "type": "integer",
+      "title": "Number of Recommendations",
+      "default": 10
+    },
+    "modelID": {
+      "type": "string",
+      "title": "Model ID",
+      "default": "*"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Recommendation Collection",
+      "description": "If left blank, the default recommendation collection for the collection being queried will be used."
+    },
+    "resultsLocation": {
+      "type": "string",
+      "title": "Results Location",
+      "description": "If As Response is chosen, then the result of the RPC call will be the one and only response.  In all other cases, the stage will put the response from the REST/RPC call into the target location using the resultsKey. ",
+      "enum": [
+        "As Boosts",
+        "As Response"
+      ],
+      "default": "As Boosts"
+    },
+    "modelIdField": {
+      "type": "string",
+      "title": "Model ID Field",
+      "description": "the name of the field in the recommendation collection where model ID is stored",
+      "default": "modelId",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "scaleRange": {
+      "type": "object",
+      "title": "Scale Boosts",
+      "description": "Scale the boost values to a [min,max] range",
+      "required": [
+        "scaleMin",
+        "scaleMax"
+      ],
+      "properties": {
+        "scaleMin": {
+          "type": "number",
+          "title": "Minimum value of the scale range"
+        },
+        "scaleMax": {
+          "type": "number",
+          "title": "Maximum value of the scale range"
+        }
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "foldInUpdates": {
+      "type": "boolean",
+      "title": "Estimate Recent Results",
+      "description": "Update recommendations based on user activity that has happened since the last recommendation job run",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "boostFieldName": {
+      "type": "string",
+      "title": "Boost Field",
+      "description": "The field name to boost the values on.",
+      "default": "id",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "boostingMethod": {
+      "type": "string",
+      "title": "Boost Method",
+      "description": "The boost method to use. query-parser should be chosen if defType!=edismax for main query.",
+      "enum": [
+        "query-param",
+        "query-parser"
+      ],
+      "default": "query-param",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "boostingParam": {
+      "type": "string",
+      "title": "Boost Param",
+      "description": "’Boost' multiplies scores by the boost values whereas 'bq' adds optional clauses to main query.",
+      "enum": [
+        "boost",
+        "bq"
+      ],
+      "default": "boost",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemIdParam": {
+      "type": "string",
+      "title": "Item ID Request Parameter",
+      "description": "The name of the request parameter containing the item ID",
+      "default": "item_id"
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Item ID Field",
+      "description": "the name of the field in the recommendation collection where user ID is stored",
+      "default": "itemId",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "otherItemIdField": {
+      "type": "string",
+      "title": "Recommended item ID Field",
+      "description": "the name of the field in the recommendation collection where similar item recommendation is stored",
+      "default": "otherItemId",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "similarityScoreField": {
+      "type": "string",
+      "title": "Similarity Score Field",
+      "description": "the name of the field in the recommendation collection where item similarity is stored",
+      "default": "sim",
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Results Relevancy",
+  "categoryPriority": 6,
+  "unsafe": false
+}
