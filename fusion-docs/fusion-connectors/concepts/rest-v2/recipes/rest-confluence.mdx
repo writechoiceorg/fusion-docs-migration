@@ -1,0 +1,159 @@
+---
+title: "Confluence"
+description: "REST V2 connector"
+permalink: "8sbhj5"
+---
+
+The Confluence recipe is used to retrieve data from an instance of [Atlassian’s Confluence](https://www.atlassian.com/software/confluence) corporate wiki system.
+
+The configuration details and JSON recipe are added here for convenience, but you can also view them directly at the public [REST configuration repository](https://github.com/lucidworks/rest-configurations/tree/main/confluence) on GitHub.
+
+## Confluence REST Configuration
+
+This documentation describes aspects of the Confluence REST `confluence-v1.json` file configuration such as the authentication methods, data crawled and retrieved, pagination information, variables used, and endpoints used. Terminology is also provided as a reference.
+
+The list of data the REST connector crawls using the Confluence REST configuration is:
+
+* Spaces
+* Pages such as Wiki pages
+* Blog posts
+* Pages and blog posts comments that are indexed as individual solr-docs
+
+## Authentication methods
+
+The Confluence REST configuration supports:
+
+* Basic Authentication using the username and password from an Atlassian account. For more information, see [Basic auth for REST APIs | Atlassian Developer](https://developer.atlassian.com/cloud/confluence/basic-auth-for-rest-apis/).
+* API Token. For information about how to create a new API token, see [API Tokens | Atlassian ID](https://id.atlassian.com/manage/api-tokens).
+
+## Supported crawl options
+
+The Confluence REST configuration supports the following crawl options:
+
+* Full crawl
+* Recrawl that uses the `rely on the strayContentDeletion` parameter
+
+## Pagination information
+
+This recipe is configured to use pagination by batch size.
+
+* The `${LW_INDEX_START}` variable is set to zero because the Atlassian pagination is zero-index-based.
+* The `${LW_BATCH_SIZE}` variable is set to `20`, but can be adjusted to any value.
+* The pagination `stop` condition is set to a `results` response object set `[]`. Pagination stops when this condition is met.
+
+## Variables used
+
+The Confluence REST configuration variables used are:
+
+* `${LW_BATCH_SIZE}` - This variable is used to set the `limit` query parameter, which controls the number of results that are returned in the response for both `blogpost` and `pages`.
+* `${LW_INDEX_START}` - This variable is used to set the `start` query parameter, which is used to traverse the pagination. Confluence pagination is zero-index-based. This means the first page number is 0.
+* `${LW_PARENT_DATA_KEY}` - This variable is used to access a value of the response from the `main request` to use in an `additional request`. The Confluence use case indicates this variable can be added the URL to execute a GET request to retrieve comments for blogposts and pages.
+
+## Endpoints to configure with the Confluence REST connector
+
+The following table describes the Confluence REST connector endpoints.
+
+**Notes:**
+
+The list of objects is retrieved in batches. Objects include spaces, pages, blogs, and comments. The default number of batch items retrieved is 25. You can configure the query limit to retrieve more objects. The maximum value to retrieve is 250.
+
+| Endpoint | HTTP operation | Query parameter | Description | Request type |
+| --- | --- | --- | --- | --- |
+| `/wiki/rest/api/content` | GET | `type=blogpost&start=0&limit=1&expand=body.storage` | Returns all blogposts from the specified endpoint. | Root Request |
+| `/wiki/rest/api/content/${LW_PARENT_DATA_KEY}/child/comment` | GET | `expand=body.storage` | Returns all comments in the blogposts from the specified endpoint. The value of `id` from the main request needs to be assigned to the `${LW_PARENT_DATA_KEY}` variable so the additional feature can insert that value when building the GET URL. | Child Request |
+| `/wiki/rest/api/content` | GET | `type=paget&start=0&limit=1&expand=body.storage` | Returns all pages from the specified endpoint. | Root Request |
+| `/wiki/rest/api/content/${LW_PARENT_DATA_KEY}/child/comment` | GET | `expand=body.storage` | Returns all page comments from the specified endpoint. The value of `id` from the main request needs to be assigned to the `${LW_PARENT_DATA_KEY}` variable so the additional feature can insert that value when building the GET URL. | Child Request |
+
+## Terminology
+
+The following terms are provided as a reference.
+
+| Term | Description |
+| --- | --- |
+| **Service Endpoints** | The list of service endpoints from which the data is retrieved. Each service endpoint configures a root endpoint request. |
+| **Root Request** | The type of request to retrieve data the root data objects. |
+| **Child Request** | The type of request to retrieve additional information for the root data objects. It iterates over root data objects, and performs a request for each one. |
+| **Root Response Mapping** | Defines the mapping between the response and data objects to be indexed. |
+| **Child Response Mapping** | Defines the mapping between the child response and child data objects to be indexed. |
+| **Data Path** | The path to access a specific data object within a response. For example, to access a list of elements named with key `objects`, the DataPath would be `objects`. If not provided, the entire response body will be indexed. |
+| **DATA ID** | The identifier key for the data object where the value is the solr-document’s ID. If not provided, a random universally unique identifier (UUID) will be used. |
+| **Parent Data Key** | Key to extract data from the root/parent response used in the subsequent request. The extracted value is used to replace the ${LW_PARENT_DATA_KEY} variable in the child request configuration (endpoint, query params or body). For example, endpoint: /api/path/${LW_PARENT_DATA_KEY}/additionalInfo. |
+| **Child Data Path** | The path to access a specific object within a child response. For example, to access a list of elements named with the key `objects`, the ChildDataPath would be `objects`. If not provided, the entire response body will be indexed. |
+| **Child Data ID** | The identifier key for the child data object, where the value is the solr-document’s ID. Enter this when the `Custom Solr Field` is empty, otherwise the solr-document’s ID will be a random universally unique identifier (UUID). |
+| **Custom Solr Field** | The field in which to store the child data within the root data objects. If not set, the child data object will be indexed as an individual solr-document. |
+
+## Recipe
+
+```json
+{
+    "parserId": "{add parserid }",
+    "coreProperties": {},
+    "id": "confluence",
+    "type": "lucidworks.rest",
+    "properties": {
+        "serviceURL": "https://{add confluence url}",
+        "authenticationMode": {
+            "basicAuth": {
+                "password": "xXx-Redacted-xXx",
+                "user": "add email address here!!!"
+            }
+        },
+        "serviceEndpoints": [
+            {
+                "childrenRequests": [
+                    {
+                        "dataRequest": {
+                            "endpoint": "/wiki/rest/api/content/${LW_PARENT_DATA_KEY}/child/comment",
+                            "httpMethod": "GET",
+                            "queries": [
+                                {
+                                    "queryKey": "expand",
+                                    "queryValue": "body.storage"
+                                }
+                            ]
+                        },
+                        "childResponseMapping": {
+                            "childDataPath": "results",
+                            "parentIdKey": "id"
+                        }
+                    }
+                ],
+                "rootRequest": {
+                    "dataRequest": {
+                        "endpoint": "/wiki/rest/api/content",
+                        "pagination": {
+                            "paginationByBatchSize": {
+                                "batchSize": 100,
+                                "indexStart": 0
+                            }
+                        },
+                        "httpMethod": "GET",
+                        "queries": [
+                            {
+                                "queryKey": "start",
+                                "queryValue": "${LW_INDEX_START}"
+                            },
+                            {
+                                "queryKey": "limit",
+                                "queryValue": "${LW_BATCH_SIZE}"
+                            },
+                            {
+                                "queryKey": "expand",
+                                "queryValue": "body.storage"
+                            }
+                        ]
+                    },
+                    "rootResponseMapping": {
+                        "dataId": "id",
+                        "dataPath": ""
+                    }
+                }
+            }
+        ],
+        "collection": "{add collection name here}"
+    },
+    "pipeline": "{add pipeline name here}",
+    "connector": "lucidworks.rest"
+}
+
+```

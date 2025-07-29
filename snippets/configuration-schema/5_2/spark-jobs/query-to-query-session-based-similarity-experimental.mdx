@@ -1,0 +1,337 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job to to batch compute query-query similarities using a co-occurrence based approach",
+  "properties": {
+    "countField": {
+      "default": "count_i",
+      "description": "Solr field containing number of events (e.g., number of clicks).",
+      "title": "Event Count Field Name",
+      "type": "string"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "minLength": 1,
+      "title": "Data format",
+      "type": "string"
+    },
+    "docIdField": {
+      "default": "doc_id_s",
+      "description": "Solr field containing document id that user clicked.",
+      "title": "Document id Field Name",
+      "type": "string"
+    },
+    "fieldToVectorize": {
+      "default": "query_s",
+      "description": "Field containing queries.",
+      "minLength": 1,
+      "title": "Query Field Name",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "maxQueryLength": {
+      "default": 50,
+      "description": "Queries above this length will not be considered for generating recommendations.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Maximum query length",
+      "type": "integer"
+    },
+    "minPairOccCount": {
+      "default": 2,
+      "description": "Minimum number of times a query pair must be generated to be considered valid.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Minimum query-recommendation pair occurrence count",
+      "type": "integer"
+    },
+    "minQueryCount": {
+      "default": 1,
+      "description": "The minimum number of clicked documents needed for comparing queries.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Query Clicks Threshold",
+      "type": "integer"
+    },
+    "minQueryLength": {
+      "default": 3,
+      "description": "Queries below this length (in number of characters) will not be considered for generating recommendations.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Minimum query length",
+      "type": "integer"
+    },
+    "outputCollection": {
+      "description": "Collection to store synonym and similar query pairs.",
+      "hints": [
+        "dummy"
+      ],
+      "title": "Output collection",
+      "type": "string"
+    },
+    "overlapEnabled": {
+      "default": true,
+      "description": "Maximize score for query pairs with overlapping tokens by setting score to 1.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Boost on token overlap",
+      "type": "boolean"
+    },
+    "overlapThreshold": {
+      "default": 0.3,
+      "description": "The threshold above which query pairs are consider similar. Decreasing the value can fetch more pairs at the expense of quality.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Query Similarity Threshold",
+      "type": "number"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "randomSeed": {
+      "default": 1234,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sessionIdField": {
+      "default": "session_id_s",
+      "description": "If session id is not available, specify user id field instead. If this field is left blank, session based recommendations will be disabled.",
+      "title": "Session/User ID field",
+      "type": "string"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "dummy",
+        "hidden"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "specialCharsFilterString": {
+      "default": "~!@#$^%&*\\(\\)_+={}\\[\\]|;:\"'<,>.?`/\\\\-",
+      "description": "String of special characters to be filtered from queries.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Special characters to be filtered out",
+      "type": "string"
+    },
+    "stopwordsBlobName": {
+      "blobType": "file:spark",
+      "default": "stopwords/stopwords_en.txt",
+      "description": "Name of the stopwords blob resource. This is a .txt file with one stopword per line. By default the file is called stopwords/stopwords_nltk_en.txt however a custom file can also be used. Check documentation for more details on format and uploading to blob store.",
+      "reference": "blob",
+      "title": "Stopwords Blob Store",
+      "type": "string"
+    },
+    "tokenOverlapValue": {
+      "default": 1,
+      "description": "Minimum amount of overlap to consider for boosting. To specify overlap in terms of ratio, specify a value in (0, 1). To specify overlap in terms of exact count, specify a value >= 1. If value is 0, boost will be applied if one query is a substring of its pair.Stopwords are ignored while counting overlaps.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Minimum match for token overlap",
+      "type": "number"
+    },
+    "trainingCollection": {
+      "description": "Collection containing queries, document id and event counts. Can be either signal aggregation collection or raw signals collection.",
+      "title": "Input Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to additionally filter the input collection.",
+      "hints": [
+        "dummy"
+      ],
+      "title": "Data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "similar_queries",
+      "enum": [
+        "similar_queries"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "countField",
+        "docIdField",
+        "sessionIdField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "minQueryLength",
+        "maxQueryLength",
+        "specialCharsFilterString",
+        "stopwordsBlobName",
+        "overlapThreshold",
+        "overlapEnabled",
+        "tokenOverlapValue",
+        "minQueryCount",
+        "minPairOccCount"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "docIdField",
+    "type"
+  ],
+  "title": "Query-to-Query Session Based Similarity (Experimental)",
+  "type": "object"
+}

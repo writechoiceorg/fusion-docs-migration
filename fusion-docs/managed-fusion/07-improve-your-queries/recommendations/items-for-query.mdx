@@ -1,0 +1,25 @@
+---
+title: "Items-for-query"
+description: "Recommendations"
+permalink: "g8cwr6"
+---
+
+The Items for Query recommender is the primary algorithm that supports recommendations on the search results page.
+
+Items-for-query recommendations are based on how other users interacted with search results from the same query. This is one type of [collaborative recommendation](/managed-fusion/5.9/l0emoh/methods#content-based-vs-collaborative).
+
+For example, if users have searched for "titanic" in the past and many of them clicked on the search result for the DVD of the movie *Titanic* (as opposed to books or memorabilia), then this method boosts the DVD item on subsequent searches for "titanic".
+
+Below is an example of items-for-query recommendations based on a search for "madonna":
+
+<Frame>![Items-for-query examples](/assets/images/4.2/recommendations-items-for-query.png)</Frame>
+
+To use this type of boosting, signals must be enabled but recommendations need not be.
+
+## Job configuration
+
+The items-for-query recommendations are implemented as a [Query-to-Query Session-Based Similarity](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs-experimental) job.
+
+## Query pipeline configuration
+
+The [Boost with Signals](/managed-fusion/5.9/ihes2t/boost-with-signals-stage) query stage is part of the default query pipeline, so usually you do not need to add it. It takes its input from the aggregated signals collection (`COLLECTION_NAME_signals_aggr`) at query time.

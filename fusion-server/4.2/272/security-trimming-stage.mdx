@@ -1,0 +1,19 @@
+---
+title: "Security Trimming Stage"
+permalink: "272"
+---
+
+The Security Trimming query pipeline stage restricts query results according to the user ID. While indexing the content, the Fusion connectors service stores security ACL metadata associated with the crawled items and indexes them as fields. The Security Trimming stage matches this information against the ID of the user running the search query.
+
+This stage supports [asynchronous processing](/fusion-server/4.2/173/query-pipelines#async).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

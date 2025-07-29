@@ -1,0 +1,29 @@
+---
+title: "Job REST Server APIs"
+permalink: "8a21lq"
+---
+
+Fusion’s Job REST Server stores your job configurations and communicates with other services to compute recommendations, index signals, and control jobs.
+You can use it to generate customized lists of recommended items based on a set of signals, index your signals directly into a signals collection, or configure and monitor your Spark jobs.
+
+Job REST Server APIs include the following:
+
+* [Recommendations API](/fusion/5.9/8826/recommendations-api)
+
+  Fetch recommended documents based on raw or aggregated signals.
+  Fusion can generate recommendations based on what users have searched for, clicked, saved, purchased, or any other type of user-generated event signal.
+  You can get recommendations based on signals from one user or from many.
+  For complete details, see [Recommendations](/fusion/5.9/3241/recommendations).
+* [Signals API](/fusion/5.9/549/signals-api)
+
+  Generally, you use this API to index signals directly into a signals collection.
+  Alternatively, you can index signals through the [Indexing APIs](/fusion/5.9/gq9miz/indexing-ap-is).
+  For additional details, see [Indexing Signals](/fusion/5.9/3225/indexing-signals).
+  To aggregate your signals, see the Spark Jobs API (below).
+* [Spark Jobs API](/fusion/5.9/312/spark-jobs-api)
+
+  Create, control, and run Spark jobs in Fusion, including SQL aggregation jobs, Python jobs, and Scala script jobs.
+  You can also fetch job logs from Fusion’s Spark pods for monitoring and troubleshooting.
+  See [Spark Jobs](/fusion/5.9/187/spark-jobs) for additional details about different types of Spark jobs and how to configure them.
+
+For more information, [view the API specification.](?open-api=true)

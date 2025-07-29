@@ -1,0 +1,44 @@
+---
+title: "chart:timeline"
+permalink: "1096"
+---
+
+## Description
+
+The Timeline directive
+
+## Usage
+
+as element:
+
+```xml
+<chart:timeline
+       response="{object}"
+       date="{string}"
+       event="{string}"
+       [milestone-grouping="{string}"]
+       [orientation="{string}"]
+       [max-width="{string}"]
+       [max-height="{string}"]
+       [query="{object}"]
+       [platform="{string}"]>
+</chart:timeline>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object |
+| date | **string** | The result field to use as a date for the timeline |
+| event | **string** | The result field to use for the event content |
+| milestoneGrouping  *(optional)* | **string** | How to group the milestones i.e. year (yyyy), month (MM) |
+| orientation  *(optional)* | **string** | The orientation of the timeline. (horizontal or vertical. Default vertical) |
+| maxWidth  *(optional)* | **string** | Set max width of timeline container |
+| maxHeight  *(optional)* | **string** | Set max height of timeline container |
+| query  *(optional)* | **object** | Query object to fetch more results |
+| platform  *(optional)* | **string** | Platform to query for more results |

@@ -1,0 +1,34 @@
+---
+title: "track:query"
+permalink: "1147"
+---
+
+## Description
+
+## Usage
+
+as element:
+
+```xml
+<track:query
+       [var="{string}"]
+       [host="{string}"]
+       [page-title="{string}"]
+       [path="{string}"]
+       [query="{string}"]>
+</track:query>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var  *(optional)* | **string** | The variable to assign the query to. Default:'queryToken' |
+| host  *(optional)* | **string** | Endpoint where the twigkit instance is to send the data to. |
+| page-title  *(optional)* | **string** | Title of the page where the query is sent to. (Defaults to current page title). |
+| path  *(optional)* | **string** | Relative path of the page where the query is sent to. (Defaults to current URL). |
+| query  *(optional)* | **string** | The name of the query to send to the server, defaults to parameters in the URL if no query is entered. |

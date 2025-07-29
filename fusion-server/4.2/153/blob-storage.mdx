@@ -1,0 +1,42 @@
+---
+title: "Blob Storage"
+permalink: "153"
+---
+
+Fusion accepts large binary objects (blobs) for upload, and stores them in Solr. Blob uploads are used to install models, lookup lists, JDBC drivers, connectors, and more.
+
+## Blob Types
+
+A `resourceType` query parameter can be used to specify the a blob type. For example, specify `plugin:connector` when uploading a connector, like this:
+
+```bash
+curl -H 'content-type:application/zip' -X PUT 'fusion-host:{api-port}/api/blobs/myplugin?resourceType=plugin:connector' --data-binary @myplugin.zip
+```
+
+The complete list of valid values for `resourceType` is below:
+
+| Type | Description |
+| --- | --- |
+| `banana` | A Banana [dashboard](/fusion-server/4.2/139/dashboards) |
+| `catalog` | An [analytics catalog](/fusion-server/4.2/329/catalog-api) |
+| `driver:jdbc` | A [JDBC driver](/how-to/916/upload-a-jdbc-driver-to-fusion-server) |
+| `file:js-index` | A JavaScript file for use with a [Managed Javascript index stage](/fusion-server/4.2/217/managed-java-script-index-stage). |
+| `file:js-query` | A JavaScript file for use with a [Managed Javascript query stage](/fusion-server/4.2/258/managed-java-script-stage). |
+| `file` | Any uploaded file, such as from the [Quickstart](/how-to/660/quickstart) or the [Index Workbench](/fusion-server/4.2/158/index-workbench). |
+| `model:ml-model` | A [machine learning model](/fusion-ai/4.2/492/machine-learning-models-in-fusion) (Fusion AI only) |
+| `model:open-nlp` | An [OpenNLP model](/fusion-ai/4.2/542/open-nlp-ner-extraction-index-stage) (Fusion AI only) |
+| `other` | A blob of unknown type  If no `resourceType` is specified on upload, "other" is assigned by default. |
+| `plugin:connector` | A [connector plugin](/how-to/8813/install-a-connector-fusion-4-x) |
+
+## The Blob manager
+
+In addition to the [Blob Store API](/fusion-server/4.2/305/blob-store-api), the Fusion UI provides an interface to the blob store in the [Fusion workspace](/fusion-server/4.2/116/fusion-ui#workspace) at **System** > **Blobs**:
+
+<Frame>![Blobs](/assets/images/4.0/workspace-blobs.png)</Frame>
+
+* Click **Add** to upload a new blob:
+
+  <Frame>![Add a blob](/assets/images/4.0/blobs-add.png)</Frame>
+* Select an uploaded blob to view, replace, or delete it:
+
+  <Frame>![Modify a blob](/assets/images/4.0/blobs-edit.png)</Frame>

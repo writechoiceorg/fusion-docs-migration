@@ -1,0 +1,497 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to compute user recommendations or item similarities using a Bayesian Personalized Ranking recommender. You can also implement a user-to-item recommender in the advanced section of this job’s configuration UI.",
+  "properties": {
+    "deleteOldRecs": {
+      "default": true,
+      "description": "Should previous recommendations be deleted. If this box is unchecked, then old recommendations will not be deleted but new recommendations will be appended with a different Job ID. Both sets of recommendations will be contained within the same collection. Will only work when output path is solr.",
+      "title": "Delete Old Recommendations",
+      "type": "boolean"
+    },
+    "doEvaluation": {
+      "description": "Evaluate how well the trained model predicts user clicks. Test data will be sampled from original dataset.",
+      "title": "Evaluate on test data",
+      "type": "boolean"
+    },
+    "epochs": {
+      "default": 30,
+      "description": "Number of model training iterations. Model will converge better with larger number at the expense of increased training time. For bigger datasets use smaller values.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Training iterations",
+      "type": "integer"
+    },
+    "excludeFromDeleteFilter": {
+      "description": "If the 'Delete Old Recommendations' flag is enabled, then use this query filter to identify existing recommendation docs to exclude from delete. The filter should identify recommendation docs you want to keep.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Exclude from Delete Filter",
+      "type": "string"
+    },
+    "factors": {
+      "default": 100,
+      "description": "Latent factor dimension used for matrix decomposition. Bigger values require more time and memory but usually provide better results.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Dimension of latent factors",
+      "type": "integer"
+    },
+    "filterClicked": {
+      "default": true,
+      "description": "Whether to filter out already clicked items in item recommendations for user. Takes more time but drastically improves quality.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Filter already clicked items",
+      "type": "boolean"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "indexNN": {
+      "description": "If perform ANN, the depth of constructed index. Higher value improves recall at the expense of longer indexing time.Reasonable range: 100~2000",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 2000,
+      "minimum": 100,
+      "title": "Indexing Depth",
+      "type": "integer"
+    },
+    "itemIdField": {
+      "default": "item_id_s",
+      "description": "Solr field name in the training collection that contains stored Item ID.",
+      "minLength": 1,
+      "title": "Training Collection Item Id Field",
+      "type": "string"
+    },
+    "itemMetadataCollection": {
+      "description": "Cloud storage path or Solr collection containing item metadata fields you want to add to the recommendation output documents. Leave blank and fill in the metadata fields if you want to fetch data from the training collection. Join field needs to be specified.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Item Metadata Path",
+      "type": "string"
+    },
+    "itemMetadataFields": {
+      "description": "List of item metadata fields to include in the recommendation output documents. WARNING: Adding many fields can lead to huge output sizes or OOM issues.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Item Metadata Fields",
+      "type": "array"
+    },
+    "itemMetadataFormat": {
+      "default": "solr",
+      "description": "The format of the metadata - solr, parquet etc.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Metdata format",
+      "type": "string"
+    },
+    "itemMetadataJoinField": {
+      "description": "Name of field in the item metadata collection to join on.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Item Metadata Join Field",
+      "type": "string"
+    },
+    "jobRunName": {
+      "description": "Identifier for this job run. Use it to filter recommendations from particular runs.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Job Run Name",
+      "type": "string"
+    },
+    "learningRate": {
+      "default": 0.05,
+      "description": "Model learning rate.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Learning rate",
+      "type": "number"
+    },
+    "maxNeighbors": {
+      "description": "If perform ANN, size of the potential neighbors for the indexing phase. Higher value leads to better recall and shorter retrieval times (at the expense of longer indexing time).Reasonable range: 5~100",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 2000,
+      "minimum": 100,
+      "title": "Max neighbors for indexing",
+      "type": "integer"
+    },
+    "maxNumTestUsers": {
+      "default": 10000,
+      "description": "Maximum number of test users to choose. If more users satisfying the Minimum Clicked Products criterion are present, the number will be capped to what is specified here.",
+      "exclusiveMinimum": false,
+      "minimum": 0,
+      "title": "Maximum Test Users",
+      "type": "integer"
+    },
+    "metadataCategoryFields": {
+      "description": "These fields will be used for item-item evaluation and for determining if the recommendation pair belong to the same category.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Metadata fields for item-item evaluation",
+      "type": "array"
+    },
+    "minNumClickedProducts": {
+      "default": 3,
+      "description": "Minimum number of clicked products the user should have to be a candidate for the test set.",
+      "exclusiveMinimum": false,
+      "minimum": 2,
+      "title": "Minimum Clicked Products",
+      "type": "integer"
+    },
+    "minNumItemUniqueClicks": {
+      "default": 2,
+      "description": "Items must have at least this no. of unique user interactions to be included for training and recommendations. The higher this value, the more popular items selected but the amount of training data will reduce.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Training Data Filtered By Popular Items",
+      "type": "integer"
+    },
+    "numRecsPerUser": {
+      "default": 10,
+      "description": "Number of recommendations that will be saved per user.",
+      "exclusiveMinimum": false,
+      "minimum": 0,
+      "title": "No. of recs per user",
+      "type": "integer"
+    },
+    "numSimsPerItem": {
+      "default": 10,
+      "description": "Number of recommendations that will be saved per item.",
+      "exclusiveMinimum": false,
+      "minimum": 0,
+      "title": "No. of recs per item",
+      "type": "integer"
+    },
+    "numTestUserClicks": {
+      "default": 1,
+      "description": "How many test user clicks to use for testing. Should be less than the value for Minimum Clicked Products.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Number of User Clicks for Test",
+      "type": "integer"
+    },
+    "outputBatchSize": {
+      "default": "15000",
+      "description": "Batch size of documents when pushing results to solr",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Output Batch Size",
+      "type": "string"
+    },
+    "outputFormat": {
+      "default": "solr",
+      "description": "The format of the output data - solr, parquet etc.",
+      "minLength": 1,
+      "title": "Output data format",
+      "type": "string"
+    },
+    "outputItemSimCollection": {
+      "description": "Solr collection or cloud storage path to store batch-computed item/item similarities (if absent, none computed). Specify at least one of Items-Users Output Collection or Items-Items Output Collection.",
+      "minLength": 1,
+      "title": "Item-Items Output Path",
+      "type": "string"
+    },
+    "outputUserRecsCollection": {
+      "description": "Solr collection or cloud storage path to store batch-predicted user/item recommendations (if absent, none computed). Specify at least one of Items-Users Output Collection or Items-Items Output Collection.",
+      "minLength": 1,
+      "title": "Items-Users Output Path",
+      "type": "string"
+    },
+    "partitionFields": {
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Partition fields",
+      "type": "string"
+    },
+    "performANN": {
+      "default": true,
+      "description": "Whether to perform approximate nearest neighbor search (ANN). ANN will drastically reduce training time, but accuracy will drop a little. Disable only if training dataset is very small.",
+      "title": "Perform approximate nearest neighbor search",
+      "type": "boolean"
+    },
+    "randomSeed": {
+      "default": 12345,
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random Seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "searchNN": {
+      "description": "If perform ANN, the depth of search used to find neighbors. Higher value improves recall at the expense of longer retrieval time.Reasonable range: 100~2000",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 2000,
+      "minimum": 100,
+      "title": "Search Depth",
+      "type": "integer"
+    },
+    "secretName": {
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Cloud storage secret name",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "trainingCollection": {
+      "description": "Solr collection or cloud storage path where training data is present.",
+      "minLength": 1,
+      "title": "Training data path",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`.",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Training Data Filter Query",
+      "type": "string"
+    },
+    "trainingFormat": {
+      "default": "solr",
+      "description": "The format of the training data - solr, parquet etc.",
+      "minLength": 1,
+      "title": "Training data format",
+      "type": "string"
+    },
+    "trainingSampleFraction": {
+      "default": 1,
+      "description": "Choose a fraction of the data for training.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training Data Sampling Fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "argo-item-recommender-user",
+      "enum": [
+        "argo-item-recommender-user"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "userIdField": {
+      "default": "user_id_s",
+      "description": "Solr field name in the training collection that contains stored User ID.",
+      "minLength": 1,
+      "title": "Training Collection User Id Field",
+      "type": "string"
+    },
+    "userTopkAnn": {
+      "description": "Applies only when Filter Already Clicked Items is enabled. This is used to fetch additional recommendations so that the value specified for the Number of Recommendations Per User is most likely satisfied with filtering turned on.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0,
+      "title": "No. of User Recs to Compute for Filtering",
+      "type": "integer"
+    },
+    "weightField": {
+      "default": "aggr_count_i",
+      "description": "Solr field name containing stored counts/weights the user has for that item. This field is used as weight during training",
+      "title": "Training Collection Counts/Weights Field",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingFormat",
+        "outputUserRecsCollection",
+        "outputItemSimCollection",
+        "outputFormat",
+        "outputBatchSize",
+        "secretName",
+        "partitionFields"
+      ]
+    },
+    {
+      "label": "Training Data Settings",
+      "properties": [
+        "trainingDataFilterQuery",
+        "trainingSampleFraction",
+        "userIdField",
+        "itemIdField",
+        "weightField",
+        "trainingDataFrameConfigOptions"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "numRecsPerUser",
+        "numSimsPerItem",
+        "filterClicked",
+        "userTopkAnn",
+        "minNumItemUniqueClicks",
+        "maxIters",
+        "deleteOldRecs",
+        "excludeFromDeleteFilter",
+        "performANN",
+        "maxNeighbors",
+        "searchNN",
+        "indexNN",
+        "factors",
+        "epochs",
+        "learningRate",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Evaluation Parameters",
+      "properties": [
+        "doEvaluation",
+        "minNumClickedProducts",
+        "numTestUserClicks",
+        "maxNumTestUsers"
+      ]
+    },
+    {
+      "label": "Item Metadata Settings",
+      "properties": [
+        "itemMetadataCollection",
+        "itemMetadataFormat",
+        "itemMetadataJoinField",
+        "itemMetadataFields",
+        "metadataCategoryFields"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "trainingFormat",
+    "outputFormat",
+    "userIdField",
+    "itemIdField",
+    "type"
+  ],
+  "title": "BPR Recommender",
+  "type": "object"
+}

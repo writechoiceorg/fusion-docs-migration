@@ -1,0 +1,130 @@
+---
+title: "Fusion Microservices"
+permalink: "195"
+---
+
+Fusion is comprised of microservices that drive features and functionality within a deployment. The services running in your deployment depend on the version of Fusion and the features you have enabled.
+
+## Get deployment details
+
+You can view your deployment details using [kubectl](https://kubernetes.io/docs/reference/kubectl/).
+
+1. First, verify that you have access to your cluster, replacing the example values with your parameters. This example is for a Fusion instance deployed using GKE.
+
+   ```sh
+   gcloud container clusters get-credentials EXAMPLE-CLUSTER --region EXAMPLE-REGION --project EXAMPLE-PROJECT
+   ```
+2. Get the ports and services:
+
+   ```sh
+   kubectl get svc -n EXAMPLE-NAME
+   ```
+3. Get the StatefulSets:
+
+   ```sh
+   kubectl get statefulsets -n EXAMPLE-NAME
+   ```
+4. Get the deployments:
+
+   ```sh
+   kubectl get deploy -n EXAMPLE-NAME
+   ```
+
+## Overview
+
+The table below lists the Fusion microservices deployed by the Helm chart. It also include Kubernetes services that manage traffic to microservices.
+
+<Note>
+Fusion is a complex distributed application composed of many stateful and stateless services designed to support demanding search-oriented workloads at high scale.
+</Note>
+
+For Docker image versions associated with microservices, see the list of [Docker images and versions for each Fusion release](/fusion/5.9/ybm338/fusion-microservices).
+
+## Microservices
+
+Below is a list of microservices used in Fusion 5.9.x.
+
+| Microservice | Required for Fusion | Protocol | Deployment or StatefulSet | Node Pool Assignment | Autoscaling Supported | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| `admin` | Yes | REST/HTTP | Deployment | system | Not required. Minimum of 1, but 2 pods are recommended for high availability. | Exposes endpoints for admin tasks, such as creating applications and running jobs. |
+| `admin-ui` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Serves static Web assets for the admin UI. |
+| `apps-manager` | Yes | REST/HTTP | Deployment | analytics or system | Not required. One pod is enough for most clusters. | Tracks Fusion entitlement license and consumption. |
+| `auth-ui` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Serves static Web assets for the login form. |
+| `connector-plugin-<connector_plugin>` | No | HTTP/TCP | Deployment | analytics or system | Yes (CPU or custom metric). | Deployment for each connector plugin type. Note: There is a base deployment, connector-plugin with 0 replicas. This is used as a deployment template for each connector plugin type. It should not be deleted or scaled. |
+| `connectors` | No | REST/HTTP | Deployment | analytics or system | Not required. One pod is enough for most clusters. | Routes REST API requests to connectors-classic and connectors-rpc. |
+| `connectors-backend` | No | gRPC | Deployment | analytics or system | Yes (CPU or custom metric). | gRPC service for managing SDK-based connector plugins. |
+| `connectors-classic` | No | REST/HTTP | StatefulSet | analytics or system | Not supported. | REST service for supporting non-RPC connector plugins. This microservice was previously named classic-rest-service. |
+| `{fusion-namespace}-argo` | No | HTTP | Deployment | system | Yes (CPU or custom metric). | Orchestrates parallel jobs on Kubernetes. |
+| `{fusion-namespace}-argo-argo-ui` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Stores logs and prior Argo workflow runs. |
+| `{fusion-namespace}-kafka` | Yes | HTTP | StatefulSet | system | Required. One pod is enough for most clusters. | Contains incoming data for Solr. |
+| `{fusion-namespace}-kafka-headless` | Yes | HTTP | StatefulSet | system | Required. One pod is enough for most clusters. | Contains incoming data for Solr. |
+| `{fusion-namespace}-ml-model-service-ambassador` | No | Web | Deployment | system | Not required. Minimum of 1, but 2 pods are recommended for high availability. | Load balancing and proxy for Seldon Core deployments. |
+| `{fusion-namespace}-ml-model-service-mysql` | No | Web | Deployment | system | Not required. Minimum of 1, but 2 pods are recommended for high availability. | Handles metadata for Milvus service. |
+| `{fusion-namespace}-solr-headless` | Yes | HTTP | StatefulSet | At least 3 nodes in search, 2 in analytics, and 2 in system | Yes (CPU or custom metric). | Search engine. |
+| `{fusion-namespace}-solr-svc` | Yes | HTTP | StatefulSet | At least 3 nodes in search, 2 in analytics, and 2 in system | Yes (CPU or custom metric). | Search engine. |
+| `{fusion-namespace}-zookeeper` | Yes | TCP | StatefulSet | system | Not required. You need to run 1, 3, or 5 ZooKeeper pods to keep quorum. Do not use HPA for scaling ZooKeeper. | Stores centralized configuration and performs distributed coordination tasks. |
+| `{fusion-namespace}-zookeeper-headless` | Yes | TCP | StatefulSet | system | No. You need to run 1, 3, or 5 ZooKeeper pods to keep quorum. Do not use HPA for scaling ZooKeeper. | Stores centralized configuration and performs distributed coordination tasks. |
+| `indexing` | Yes | REST/HTTP | Deployment | search or analytics depending on write-volume | Yes (CPU or custom metric). | Processes indexing requests. |
+| `insights` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Serves the App Insights UI. |
+| `job-config` | Yes | REST/HTTP | Deployment | system | Yes, but not usually required. One pod is enough for most clusters. | Manages job configurations and histories. |
+| `job-launcher` | No | REST/HTTP | Deployment | analytics | Not required. One pod is enough for most clusters. | Configures and launches the Spark driver pod for running Spark jobs. |
+| `job-rest-server` | No | REST/HTTP | Deployment | analytics | Not required. One pod is enough for most clusters. | Performs admin tasks for creating and running Spark jobs. |
+| `kuberay-operator` | No | HTTP | Deployment | - | Not required. One pod is enough for most clusters. | Manages Ray deployments and jobs (in Fusion 5.9.12 and later). |
+| `milvus` | No | REST/HTTP | Deployment | analytics or system | Not required. One pod is enough for most clusters. | Dense Vector Search Engine for ML models active. |
+| `ml-model-grpc` | No | REST/HTTP and gRPC | Deployment | search | Yes (CPU or custom metric). | Exposes gRPC endpoints for generating predictions from ML models. |
+| `ml-model-service` | No | REST/HTTP and gRPC | Deployment | search | Yes (CPU or custom metric). | Exposes gRPC endpoints for generating predictions from ML models. |
+| `pm-ui` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Serves static Web assets for the Predictive Merchandiser app. |
+| `proxy / api-gateway` | Yes | HTTP | Deployment | search | Not required. Minimum of 1, but 2 pods are recommended for high availability. | Performs authentication, authorization, and traffic routing. |
+| `query` | Yes | REST/HTTP | Deployment | search | Yes (CPU or custom metric). | Processes query requests. |
+| `rules-ui` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Serves static Web assets for the Rules UI. |
+| `seldon-webhook-service` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Maintains Seldon Core deployments for ML model serving active. |
+| `templating` | No | Web | Deployment | system | Not required. One pod is enough for most clusters. | Retrieves and renders Predictive Merchandiser templates. |
+| `webapps` | No | REST/HTTP | Deployment | system | Not required. One pod is enough for most clusters. | Serves App Studio-based Web apps. |
+
+## Ports used by Fusion
+
+Below you will find the list of pod ports for intra-cluster communications.
+
+| Service | Port |
+| --- | --- |
+| `admin` | 8765 |
+| `admin-ui` | 8080 |
+| `apps-manager` | 9025 |
+| `async-parsing` | 9005 |
+| `argo-argo-ui` | 2746 |
+| `auth-ui` | 8080 |
+| `connector-plugin` | 9020, 5701 |
+| `connectors` | 9010 |
+| `connectors-backend` | 8771 |
+| `connectors-classic` | 9000 |
+| `{fusion-namespace}-argo-argo-ui` | 2746 |
+| `{fusion-namespace}-kafka` | 9092, 9093 |
+| `{fusion-namespace}-kafka-headless` | 9092, 9093 |
+| `{fusion-namespace}-ml-model-service-ambassador` | 80, 443 |
+| `{fusion-namespace}-ml-model-service-mysql` | 3306 |
+| `{fusion-namespace}-reverse-search-headless` | 8983 |
+| `{fusion-namespace}-reverse-search-svc` | 8983 |
+| `{fusion-namespace}-solr-headless` | 8983 |
+| `{fusion-namespace}-solr-svc` | 8983 |
+| `{fusion-namespace}-zookeeper` | 2181, 2281 |
+| `{fusion-namespace}-zookeeper-headless` | 2181, 3888, 2888, 2281 |
+| `indexing` | 8765 |
+| `insights` | 8080 |
+| `job-launcher` | 8083 |
+| `job-rest-server` | 8081 |
+| `milvus` | 19530, 19121 |
+| `ml-model-grpc` | 6565 |
+| `ml-model-service` | 8086 |
+| `pm-ui` | 8080 |
+| `proxy` | 6764 |
+| `query` | 8787 |
+| `rules-ui` | 8080 |
+| `seldon-webhook-service` | 443 |
+| `templating` | 5250 |
+| `webapps` | 8780 |
+
+## Transport Layer Security (TLS)
+
+In Fusion release 5.9.2, Fusion microservices can be [configured to use Transport Layer Security (TLS)](/how-to/3290/enable-transport-layer-security-tls-for-fusion-microservices).
+
+When enabled, Fusion generates a TLS certificate for each pod when the pod starts. This allows Fusion to use the [Kubernetes endpoints API](https://kubernetes.io/docs/concepts/overview/kubernetes-api) to reach each pod by its IP address and perform load balancing, circuit breaking, and retries in the Fusion microservices.

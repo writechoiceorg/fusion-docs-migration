@@ -1,0 +1,61 @@
+---
+title: "Signals Beacon FAQ"
+permalink: "vdi9jl"
+---
+
+This page contains frequently-asked questions about the Signals Beacon.
+
+## Does the beacon impact site performance or load times?
+
+The Signals Beacon is designed to be lightweight and efficient.
+It uses a lazy loading technique to minimize the impact on page load times and overall site performance.
+The beacon scripts are served from Google Cloud Storage, which ensures fast loading with minimal overhead.
+
+## What events does the Signals Beacon track?
+
+The Signals Beacon transmits the URLs of visited pages, actions taken on those pages, and the results of those actions.
+For example, when a user performs a search, the beacon captures the list of displayed products and subsequent interactions such as clicks, cart adds, or purchases.
+
+The following signals are collected:
+
+* **Query signals.** When a user performs a search, a signal is recorded.
+* **Click signals.** When a user clicks on a product, a signal is recorded. One example of a click signal is when a user clicks a search result, which is a strong indicator the result is relevant.
+* **Cart-add signals.** When a user clicks to add an item to the cart, a signal is recorded.
+* **Purchase signals.** When a user clicks to purchase the items in the cart, a signal is recorded.
+* **Facet usage signals.** When a user interacts with the facets associated with the results, a signal is recorded.
+
+## How do I customize the beacon to track specific user actions?
+
+By default, the Signals Beacon tracks visitor, session, query, and cart IDs.
+You can customize which IDs the beacon tracks by [editing the JSON configuration](/lw-platform/analytics/k649vy/signals-beacon#install-the-beacon).
+
+## Can I send signals directly to Analytics Studio without using the Signals Beacon?
+
+Yes, by using the [Signals API](/lw-platform/analytics/uist05/signals-api).
+
+## Does the Signals Beacon track users between devices?
+
+No, the user is tracked in the browser’s local storage and is tracked anonymously (no personally identified information, like name or address).
+
+## If I have multiple websites, do I need to create multiple beacons?
+
+Yes, you need to create a separate Signals Beacon for each website.
+Each website’s beacon has its own signals store and dashboard.
+
+## How does the beacon handle user privacy and data security?
+
+The Signals Beacon does not use cookies and only captures anonymized session data to respect user privacy.
+IP addresses are anonymized by dropping the last octet, ensuring no precise user location or personal data is stored.
+For more information, see [Lucidworks Signals Beacon Privacy and Security policies](/policies/76qvrv/lucidworks-signals-beacon-privacy-and-security-policies) and [GDPR Compliance policy](/policies/2cddpz/gdpr-compliance-policy)
+
+## Can the Signals Beacon replace indexing signals in Fusion?
+
+You can use the Signals Beacon in addition to or instead of indexing signals in Fusion.
+
+## Can I use the Signals Beacon in a self-hosted, non-SaaS deployment?
+
+Yes, the Signals Beacon is part of a standalone SaaS offering that captures and sends signals to the Lucidworks Signals Store.
+
+## Does bot traffic affect my signals data?
+
+No, the Signals Beacon automatically identifies and blocks a list of Google’s cralwer IP addresses to ensure your signals data is accurate. This prevents bot traffic from triggering the Signals Beacon on your website and skewing your analytics.

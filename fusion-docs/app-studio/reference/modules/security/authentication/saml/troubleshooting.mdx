@@ -1,0 +1,79 @@
+---
+title: "Troubleshooting SAML"
+permalink: "3164"
+---
+
+The SAML authentication standard is a broad XML specification covering a range of functionality and 'binding' protocols. As such, it is not uncommon to encounter problems integrating applications (Service Provider’s) with SAML Identity Providers. Numerous technologies can form the SSO back-end (Identity Provider) and there is no 'one-size-fits-all' approach.
+
+If you have reviewed the main SAML documentation for integration in Appkit and are encountering problems, here we document tips and tricks picked up from previous installations.
+
+Because Appkit uses the [Spring Security SAML](http://docs.spring.io/spring-security-saml/docs/1.0.x/reference/htmlsingle/) extension for underlying SAML compliant client behavior, a useful reference is the [Spring documentation](http://docs.spring.io/spring-security-saml/docs/1.0.x/reference/htmlsingle/).
+
+## Debugging
+
+To enable detailed debugging, add this to your `logback.xml` file:
+
+```xml
+<logger name="org.opensaml" level="TRACE"/>
+<logger name="org.springframework.security" level="TRACE"/>
+```
+
+You will now see the content of any SAML request and response messages, as well as a lot of extra debugging information. Also, if you suspect a certificate or SSL related error, you can start the JVM/Tomcat with this argument:
+
+```
+-Djava.net.debug=ssl
+```
+
+## IdP rejects an authentication request (AutnRequest) from app
+
+A range of issues could cause this. Most commonly, it is because the request from the application failed validation which is often due to the IdP lacking the correct configuration. You must ensure that the endpoints and application identifiers match in the IdP’s configuration for the application. For example if using ADFS, this is the 'Relying Party Trust' configuration. If manually configuring this is proves problematic, you can ensure that the IdP has the correct configuration for the app by generating an SP 'metadata' XML file that can be imported into the IdP.
+
+To enable this you must:
+
+1. Add this to `spring-security.xml` in the filter chain:
+
+   ```xml
+   <filter-chain pattern="/saml/metadata/**" filters="metadataDisplayFilter"/>
+   ```
+
+   For example:
+
+   ```xml
+   ...
+   <filter-chain pattern="/saml/logout/**" filters="samlLogoutFilter"/>
+   <filter-chain pattern="/saml/metadata/**" filters="metadataDisplayFilter"/>
+   <filter-chain pattern="/saml/SSO/**" filters="samlWebSSOProcessingFilter"/>
+   ...
+   ```
+   
+2. Add the bean definition for this filter:
+
+   ```xml
+   <!-- The filter is waiting for connections on URL suffixed with filterSuffix and presents SP metadata there -->
+   <beans:bean id="metadataDisplayFilter" class="org.springframework.security.saml.metadata.MetadataDisplayFilter"/>
+   ```
+   
+3. Deploy the application and browse to `http://your-app-server/saml/metadata/`.
+
+   This should generate the SP metadata XML file describing the applications configuration which can then be imported to almost any compliant IdP in the administration console/configuration.
+
+After the issue is resolved in production, we recommend that you remove this filter because it exposes information about the authentication mechanism.
+
+## IdP rejects authentication or sends back a status code in response message indicating an error
+
+It is worth inspecting the status code in the response message and the logs from the IdP as a next step. This issue is often found if the configuration matches at both the IdP and SP, but there is a 'trust' issue, which can be related to the signing certificates used.
+We have found some IdPs (ADFS for example) that reject self-signed certificates from the application. It is recommended to use a genuine trusted certificate to avoid this problem.
+
+## Illegal Key Size error
+
+You might find you get an error at some stage that is a `java.security.InvalidKeyException` or similar stating 'Illegal Key Size'. This is because a key has been used with a size larger than that which the JVM accepts by default. This is a known Java issue to do with cryptography restrictions shipped with a standard JVM. The solution is to install the 'unrestricted JCE policy files' in the JVM on which the application is running. You can obtain this from Oracle and it is usually installed in the JRE directory in `lib/security`. Make sure you install the files for the correct version of Java.
+
+## Fusion rejects a SAML assertion
+
+There are a few reasons why Fusion might reject a SAML assertion. If you’re having issues:
+
+* Check that **IdP Issuer** matches `<saml:Issuer>` in the SAML payload.
+* Check that **App Issuer** matches `<saml:Audience>` in the SAML payload.
+* When using encrypted certificates, you must provide the X.509 key info in the SAML payload, which must match the **Certificate Fingerprint** in Fusion.
+
+Refer to [Configure Fusion for SAML](/how-to/863/configure-fusion-for-saml) for more information.

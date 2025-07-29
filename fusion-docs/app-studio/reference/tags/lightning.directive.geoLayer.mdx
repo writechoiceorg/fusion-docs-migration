@@ -1,0 +1,47 @@
+---
+title: "geo:layer"
+permalink: "1148"
+---
+
+## Description
+
+The geo:layer directive allows you to add multiple results from multiple
+responses to your [Geo Map](/app-studio/4.2/1077/geo-map).
+
+## Usage
+
+as element:
+
+```xml
+<geo:layer
+       response="{string}"
+       [address-field="{string}"]
+       [latitude-field="{string}"]
+       [longitude-field="{string}"]
+       [target="{string}"]
+       [url-field="{string}"]
+       [url-prefix="{string}"]
+       [label-field="{string}"]
+       [icon="{string}"]
+       [icon-field="{string}"]>
+</geo:layer>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | Name of the response. |
+| address-field  *(optional)* | **string** | The field containing a full address to geocode to obtain latitude and longitude values. Use this or latitudeField/longitudeField, not both. |
+| latitude-field  *(optional)* | **string** | The field containing the latitude. |
+| longitude-field  *(optional)* | **string** | The field containing the longitude. |
+| target  *(optional)* | **string** | Specify the link target to use for the map pins. Can be one of '_blank', '_parent', '_self', '_top' or the name of a window. Default value is '_blank'." |
+| url-field  *(optional)* | **string** | The field containing the URL to make clickable from the map marker. |
+| url-prefix  *(optional)* | **string** | Use this if the URL retrieved from the URLField needs to be prefixed with a value. |
+| label-field  *(optional)* | **string** | The field containing the label to use as tooltip for the marker. |
+| icon  *(optional)* | **string** | The location of the marker image to use for this set of coordinates. |
+| icon-field  *(optional)* | **string** | The field from the response to get the icon from. |

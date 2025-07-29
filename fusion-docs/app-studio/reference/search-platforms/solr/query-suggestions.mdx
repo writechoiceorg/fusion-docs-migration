@@ -1,0 +1,172 @@
+---
+title: "Query Suggestions"
+permalink: "3205"
+---
+
+Solr provides the means to suggest documents or terms to the end-user as he is typing search terms in the search box. It can suggest terms based on a dictionary file, terms indexed in a specific field or suggest entire documents based on the occurrence of the search terms in a specific field. For more details on how to implement these features, refer to the [suggester](https://cwiki.apache.org/confluence/display/solr/Suggester) as well as the [terms component](https://cwiki.apache.org/confluence/display/solr/The+Terms+Component).
+
+## Suggester
+
+As an example here, these are things that you must add to your `solrconfig.xml` file to get suggestions based on matching against a `title` field, as well as looking up terms in your main `content` field.
+
+```xml
+    <searchComponent name="suggest" class="solr.SuggestComponent">
+        <!--Suggestion based on matches in the title. This will return the entire title field as a suggestion-->
+        <lst name="suggester">
+            <str name="name">titleMatchSuggester</str>
+            <str name="lookupImpl">FuzzyLookupFactory</str>
+            <str name="dictionaryImpl">DocumentDictionaryFactory</str>
+            <str name="field">title</str>
+            <str name="suggestAnalyzerFieldType">text_general</str>
+            <str name="buildOnStartup">true</str>
+        </lst>
+        <!--Suggestion based on keyword matches in the content field. This will only return the individual words matching the input string-->
+        <lst name="suggester">
+            <str name="name">freeTextContentSuggester</str>
+            <str name="lookupImpl">FreeTextLookupFactory</str>
+            <str name="dictionaryImpl">DocumentDictionaryFactory</str>
+            <str name="field">content</str>
+            <str name="suggestFreeTextAnalyzerFieldType">text_general</str>
+            <str name="suggestAnalyzerFieldType">text_general</str>
+            <str name="buildOnStartup">true</str>
+        </lst>
+    </searchComponent>
+
+    <requestHandler class="org.apache.solr.handler.component.SearchHandler" name="/suggest">
+        <lst name="defaults">
+            <str name="suggest">true</str>
+            <str name="suggest.count">5</str>
+            <str name="suggest.dictionary">titleMatchSuggester</str>
+            <str name="suggest.dictionary">freeTextContentSuggester</str>
+        </lst>
+        <arr name="components">
+            <str>suggest</str>
+        </arr>
+    </requestHandler>
+```
+
+After this is set up and you have restarted your Solr engine, the query `http://localhost:8983/solr/sample/suggest?q=al` (replace 'al' with the string the end-user has typed) will bring back suggestions for both suggesters in this format:
+
+```xml
+<response>
+    <lst name="responseHeader">
+        <int name="status">0</int>
+        <int name="QTime">3</int>
+    </lst>
+    <lst name="suggest">
+        <lst name="titleMatchSuggester">
+            <lst name="al">
+                <int name="numFound">1</int>
+                <arr name="suggestions">
+                    <lst>
+                        <str name="term">allpicsppt</str>
+                        <long name="weight">0</long>
+                        <str name="payload"/>
+                    </lst>
+                </arr>
+            </lst>
+        </lst>
+        <lst name="freeTextContentSuggester">
+            <lst name="al">
+                <int name="numFound">4</int>
+                <arr name="suggestions">
+                    <lst>
+                        <str name="term">all</str>
+                        <long name="weight">14243018808291072</long>
+                        <str name="payload"/>
+                    </lst>
+                    <lst>
+                        <str name="term">alternative</str>
+                        <long name="weight">4069433945226020</long>
+                        <str name="payload"/>
+                    </lst>
+                    <lst>
+                        <str name="term">aligned</str>
+                        <long name="weight">2034716972613010</long>
+                        <str name="payload"/>
+                    </lst>
+                    <lst>
+                        <str name="term">alzheimer’s</str>
+                        <long name="weight">2034716972613010</long>
+                        <str name="payload"/>
+                    </lst>
+                </arr>
+            </lst>
+        </lst>
+    </lst>
+</response>
+```
+
+This response basically suggests one document with a title that contains the keyword typed by the end user, as well as suggesting search terms that exist in the index.
+
+## Accessing the Solr Suggest component in Appkit
+
+Appkit provides two different services to access Solr suggestions depending on whether or not backwards compatibility (set via the [`backwardsCompatible`](/fusion/5.9/3206/solr) attribute) is enabled.
+
+### Backwards compatibility is disabled
+
+When backwards compatibility is disabled, use the `SolrQuerySuggestionService` to access suggestions. In `resources/conf/services/suggestions`, create a configuration file (for example, `querySuggestions.conf`) to contain the configuration parameters for the suggestion service. Here is an example of how this might look:
+
+```yaml
+name: twigkit.search.solr.suggestions.SolrQuerySuggestionService
+source: platforms.solr
+parenthesis: true
+title: Staff
+custom: count[5]
+doctype: reference
+```
+
+Both the `name` and `source` attribute are required. The `name` indicates which suggestion service is used. The `source` gives the id for accessing the platform configuration attributes.
+
+The remaining attributes shown here are optional. If `parenthesis` is set to true, the query value, equated with the URL parameter `suggest.q`, will be surrounded by parenthesis. The `title` attribute gives a title to the list of suggestions. Custom parameters can also be set on the query. For example, `count[5]` translates to `count=5` on the query URL.
+
+### Backwards compatibility is enabled
+
+When backwards compatibility is enabled, use the `SolrSuggestionsParserService` to access suggestions. In `resources/conf/services/suggestions` create a configuration file (for example, `querySuggestions.conf`) to contain the configuration parameters for the suggestion service. Here is an example of how this might look:
+
+```yaml
+name: twigkit.search.solr.suggestions.SolrSuggestionsParserService
+source: platforms.fusion
+suggester: titleMatchSuggester
+parenthesis: true
+title: Staff
+custom: count[5]
+doctype: reference
+```
+
+As above, both the `name` and `source` attributes are required. The `source` attribute here refers to a Fusion platform configuration, which must have the `backwardsCompatible` attribute set to true. The other required attribute for this service is `suggester`. This is the name of the Solr suggester as defined in the solrconfig.xml. For example, using the example above, `suggester` could be set to titleMatchSuggester or freeTextContentSuggester.
+
+The remaining attributes shown here are optional and are the same as described above for when backwards compatibility is disabled.
+
+## Terms component
+
+The Solr [terms component](https://cwiki.apache.org/confluence/display/solr/The+Terms+Component) "provides access to the indexed terms in a field and the number of documents that match each term". This can be used, for example, to find all terms in the Solr index that match an expansion of the given query term. For example, "car" might return CARRY, CARRIED, CARE, CARL etc.
+
+### Accessing the Solr Terms component in Appkit
+
+To access the Terms component in Appkit, use the `SolrQueryTermsService`. In `resources/conf/services/suggestions` create a configuration file (for example, `queryTerms.conf`) to contain the configuration parameters for the terms suggestion service. Here is an example of how this might look:
+
+```yaml
+name: twigkit.search.solr.suggestions.SolrQueryTermsService
+source: platforms.solr.suggestions.terms
+term-fields: Symbol
+title: Suggested phrase
+doctype: reference
+```
+
+Both the `name` and `source` attributes are required as well as the `term-fields` attribute. The `name` indicates which suggestion service is used. The `source` gives the configuration name for accessing the Solr platform’s configuration attributes (in the example shown above the platform configuration would be stored in `resources/conf/platforms/solr/suggestions/terms.conf`. Within this platform configuration the `requestHandler` attribute mat be defined. However, by default, this is set to `/terms`.
+
+The `term-fields` attribute is equivalent to the `terms.fl` parameter required by the Solr Terms Component. It is a comma-separated list of fields from which to retrieve terms. In the example above, only one field, `Symbol`, is used.
+
+The `title` attribute gives a title to the group of suggestions that are returned by Solr. This title can be used to group suggestions in the UI.
+
+### Referring to the suggestion and/or terms service in the search:box
+
+Finally, to ensure your application hooks into the suggestion and/or terms service when it is run, place this line inside your [`<search:box>`](/fusion/5.9/1058/search-box):
+
+```xml
+<query:suggestions completion-service="services.suggestions.querySuggestions" action="/search"></query:suggestions>
+<query:suggestions completion-service="services.suggestions.queryTerms" action="/search"></query:suggestions>
+```
+
+With this in place, when you type a query into the search box, a drop-down list of query suggestions and/or terms will be shown that you can click on to fire a query.

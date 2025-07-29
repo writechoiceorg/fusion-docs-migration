@@ -1,0 +1,381 @@
+---
+title: "Domain Specific Language"
+permalink: "0bvcy0"
+---
+
+Managed Fusion Domain Specific Language (DSL) provides expected search results as a JSON response in a way that reduces search query complexity for the user.
+
+Previously, users needed to understand complex syntax to express certain search queries in Managed Fusion (for example, the best way to express a facet filter). DSL gives Managed Fusion control over how to execute a query by transforming a structured query input into a Solr request, where we can add intelligence around the index and the user’s intent.
+
+## Use existing DSL query pipelines with Commerce Studio
+
+DSL does not work with [Commerce Studio](/lw-platform/cs/nd39eb/commerce-studio). If you have existing query pipelines with DSL that you want to use with Commerce Studio, instead of recreating the entire pipeline, Lucidworks can keep the pipeline and remove DSL by doing the following.
+
+1. For DSL-enabled pipelines where supported search mode = `all` or `dsl`, select `legacy` option instead.
+2. Update or disable pipeline stages used solely for DSL.
+
+   1. For query stage parameters, remove any fields with DSL values mapped.
+   2. In JavaScript, comment out or remove instances of `with(DSL)` code blocks.
+
+## Why Search DSL
+
+Managed Fusion Search Domain Specific Language (DSL) reduces search query complexity for the user. Managed Fusion Search DSL supports expressive search queries and responses via a structured, modern JSON format.
+
+Search DSL is an alternative to the current (now referred to as) “Legacy” format for performing search queries. Previously, users needed to understand complex syntax to express certain search queries in Managed Fusion (for example, the best way to express a facet filter).
+
+Compared to the legacy Solr parameter format, Search DSL is structured to more closely align with the central concepts of Managed Fusion and provide a more usable alternative for expressing complex Managed Fusion queries.
+
+Search DSL gives Managed Fusion control over how to execute a query by transforming a structured query input into a Solr request, at which time Managed Fusion can add intelligence around the index and the user’s intent.
+
+### Limitations
+
+Despite the advantages, there are still some important limitations to be aware of when deciding whether to use the Managed Fusion Search DSL.
+
+<Note>
+These limitations only apply to DSL queries. Legacy queries can still be issued separately from DSL queries without being subject to these limitations.
+</Note>
+
+1. **Head / Tail Rewrite**. Support is currently limited when using DSL queries:
+
+   1. In order to work on DSL queries, the `Improved Query` must be entered in as a JSON string representing the desired `main` query that should be issued (this replaces the `queryDefinition.main` field in the rewritten DSL query)
+   2. The query rewrites produced by the built-in head/tail rewrite job will NOT work on DSL queries, as the job only outputs legacy-style rewrites
+2. **Query Stage Support**. All query stages are fully supported
+3. **Rules Support**. All kinds of rules are fully supported with the exceptions noted below
+
+   1. **Set Params**. Not supported
+   2. **Custom Rule**. Not supported
+
+## Request format
+
+This section describes each top-level field of a Search DSL request.
+
+### Overview
+
+The Search DSL format is supported in the following endpoints:
+
+|  |  |
+| --- | --- |
+| **query pipelines** | `query-pipelines/QUERY_PIPELINE/collections/COLLECTION_ID` |
+| **query profiles** | `query/QUERY_PROFILE` |
+| **templating render** | `templating/renderDSL/APP_NAME` |
+
+In all cases, it should be a POST with a `Content-Type: application/json` header.
+
+The below table briefly summarizes the function of each of the top-level fields.
+
+| Field | Description |
+| --- | --- |
+| `queryDefinition` | Defines the logic of what to query for. The `userQuery` holds the raw user query (if there is one) which is used by various Managed Fusion components such as Rules to determine which rewrites / rules trigger. The `main` and `filter` fields accept a variety of different possible query types (terms and singleTerm are shown here) and together define the matching criteria. Additional fields are also possible here for boosting and grouping - `boostsByValues`, `boostsByQuery`, `groupedQuery`, `groupedFilters`. |
+| `results` | Defines how the results should be displayed and organized. A variety of fields are available here, such as `cursorMark`, `start`, and `size` for pagination, sort for sorting, fields for the list of fields to display for each document, highlight for highlighting features, and group for grouping. |
+| `facets` | The faceting configuration for the query. Defines the fields to perform faceting on as well as the desired behavior of the returned facet values. Supports range facets in the `ranges` field and field facets in the `fields` field. |
+| `context` | Accepts parameters used by some query stages as well as DSL hints. Should not be necessary for typical use cases. For example, `tags` can be provided here to adjust which rules should trigger based on their tags, and `lw.rules.debug` can be specified with a value of “1” to include rule triggering debug info in the response. |
+| `params` | Allows arbitrary query parameters to be added to the underlying Solr query. Should not be necessary for most use cases - the other DSL fields should be used when possible, but this field can be used when those fields do not suffice. If the Security Trimming Stage is in use, this field can be used to supply the various parameters for that stage (username, user identity key, collection, shards, etc…). |
+
+The following sections provide an example of each field in use.
+
+<Note>
+More detailed information on each field can be found in the [Managed Fusion API Javadocs](/fusion-pipeline-javadocs/5.9/overview-summary).
+</Note>
+
+### queryDefinition
+
+```json
+{
+    "queryDefinition": {
+        "userQuery": "cyberpunk novels",
+        "main": {
+            "type": "terms",
+            "field": "body_t",
+            "values": ["cyberpunk", "novels"],
+            "method": "booleanQuery"
+        },
+        "filters": [
+          {
+            "type": "singleTerm",
+            "field": "category_t",
+            "value": ["books"]
+          }
+        ]
+    }
+}
+```
+
+The `queryDefinition` defines the logic of what to query for. The above example queries for “cyberpunk novels” against the `body_t` field, additionally filtering to only show matches that have “books” in the `category_t` field.
+
+### results
+
+```json
+{
+  "results": {
+      "start": 20,
+      "size": 20,
+      "group": {
+        "field": "author",
+        "size": 5
+      }
+  }
+}
+```
+
+The `results` defines how the results should be displayed and organized. The above example is set to show the next 20 results starting from the 21st matched document (as with Solr, `start` is 0-based). Additionally, results will be grouped by author, showing 5 results per group. In the DSL response, the head document of each group will show up in the results list with the other documents in the group in the head doc’s `groupedDocs` field.
+
+### facets
+
+```json
+{
+  "facets": {
+    "fields": [
+        {
+            "field": "category",
+            "limit": 5
+        },
+        {
+            "field": "brand",
+            "offset": "10"
+        }
+    ],
+    "ranges": [
+        {
+            "field": "published_dt",
+            "gap": "+1YEAR",
+            "start": "2006-01-01T00:00:00Z",
+            "end": "2020-01-01T00:00:00Z"
+        }
+    ]
+  }
+}
+```
+
+The `facets` field controls faceting for the query. In the above example, faceting is enabled on the `category` field (limiting to show only 5 values), brand field (showing all values starting from the 11th value), and `published_dt` field (showing 1 year increments between 2006 and 2020).
+
+### context
+
+```json
+{
+  "context": {
+    "tags": "sometag",
+    "lw.rules.debug": "1"
+  }
+}
+```
+
+The `context` field accepts parameters used by various query stages as well as DSL hints. In the above example, the tags parameter has been specified for the Apply Rules stage which will cause only rules with the “sometag” tag to be triggered. The `lw.rules.debug` parameter has also been specified to return extra rule triggering information in the response.
+
+### params
+
+```json
+{
+  "params": {
+    "uid": "je985"
+  }
+}
+```
+
+The `params` field allows arbitrary query parameters to be added to the underlying Solr query and is also used to supply Security Trimming Stage parameters. In the above query, the user’s id has been supplied for the Security Trimming Stage.
+
+## Response format
+
+This section describes each top-level field of a Search DSL response.
+
+### Overview
+
+The below table briefly summarizes the function of each of the top-level fields. The following sections provide an example of each field in a real response (some parts omitted for brevity).
+
+| Field | Description |
+| --- | --- |
+| `results` | Holds the results list with pagination info, scoring, and hit count. When grouping is performed via the `results.group` setting in the DSL request, the groups show up here with the head doc at the top level and the other docs in the group in the `groupedDocs` field. |
+| `facets` | Holds the returned facets and facet values. Each facet has an associated `label` which can serve as the user-friendly display name and can be defined using the Set Facets rule. As this is a map, the order of facets should not be relied upon. Facet ordering can be determined instead using the Set Facets rule and the `responseValues.facet_labels` field. The `groupFacets` flag controls controls the level on which facets are calculated: before grouping (`groupFacets=false`) or after grouping (`groupFacets=true`). Default value is `true`. |
+| `rules` | Holds data returned by any rules that triggered. There are array fields for data from particular rule types: `redirects` for Redirect, `banners` for Banner, and `jsonBlobs` for JSON Blob (organized into separate arrays based on blob type). The `responseValues` field holds values set by the Response Value rules or any rules that provide a response values setting, as well as the `facet_labels` from the Set Facets rule. When multiple rules of a given kind trigger, the one with the higher precedence appears first in the corresponding list (breaking ties on creation date, newer rule comes first). |
+| `spellcheck` | Holds all the spelling suggestions. Suggestions are provided for any misspelled words via the `wordSuggestions` field, and for the entire query via the `querySuggestions` field. |
+| `meta` | Assorted metadata about the query, such as timing and debug information. The `debug.solrParams` field provides a list of the query parameters that were sent in the underlying Solr query. The `timing.mainQuery` provides the QTime of the underlying Solr query, while the `timing.total` field measures the entire DSL query (both in milliseconds). The timings of individual pipeline stages are broken down in the `timing.pipeline` field. |
+
+### results
+
+```json
+{
+  "results": {
+    "list": {
+      "hits": 1024,
+      "maxScore": 1.0,
+      "pagination": {
+        "start": 10
+      }
+      "docs": [
+        {
+          "collection": "books",
+          "type": "generic",
+          "id": "281",
+          "score": 1.0,
+          "fields": {
+            "author": "Iain Banks"
+            "title": "Player of Games"
+          },
+          "groupedDocs": {
+            "hits": 228,
+            "docs": [
+              {
+                "collection": "books",
+                "type": "generic",
+                "id": "283",
+                "score": 1.0,
+                "fields": {
+                  "author": "Iain Banks"
+                  "title": "Consider Phlebas"
+                }
+              }
+            ]
+          }
+        },
+        ...additional docs...
+      ]
+    }
+  }
+}
+```
+
+The `results` field holds the results list with pagination info, scoring, and hit count. In the above, grouping has been performed on the `author` field.
+
+### facets
+
+```json
+{
+  "facets": {
+    "field": {
+      "category": {
+        "label": "Category",
+        "counts": [
+          {
+              "name": "Sci-Fi",
+              "count": 7
+          },
+          {
+              "name": "Fantasy",
+              "count": 3
+          }
+          ...additional values...
+        ]
+      },
+     ... additional field facets...
+    }
+  },
+  "range": {
+    "published_dt": {
+      "label": "Publication Date",
+      "gap": "+1YEAR",
+      "start": "2006-01-01T00:00:00Z",
+      "end": "2020-01-01T00:00:00Z",
+      "counts": [
+        ...range values...
+      ]
+    }
+  }
+}
+```
+
+The `facets` field holds the returned facets and facet values. In the above, we see facet results for the `category` field and a range facet on the `published_dt` field, each of which has a corresponding `label` configured via a Set Facets rule for a user-friendly display name for the facet.
+
+### rules
+
+```json
+{
+  "rules": {
+    "responseValues": {
+        "facet_labels": [
+            "category:Category,published_dt:Publication Date"
+        ]
+    },
+    "jsonBlobs": {
+        "default": [
+            {
+              "someField": "someValue"
+            },
+            {
+              "someField": "someValue2"
+            }
+        ]
+    }
+  }
+}
+```
+
+The `rules` field holds data returned by any rules that triggered. In the above, 3 rules have triggered. A Set Facets rule created a facet_labels entry defining the desired ordering and labels for the facets (the labels are also present in the `facets` section of the response). Two JSON Blob rules of type `default` have triggered, the first blob in the list having a higher precedence value than the second (and thus appearing first).
+
+### spellcheck
+
+```json
+{
+  "spellcheck" : {
+    "correctlySpelled" : false,
+    "wordSuggestions" : {
+      "whiskeys" : {
+        "startOffset" : 6,
+        "endOffset" : 14,
+        "origFreq" : 0,
+        "wordFreqList" : [ {
+          "word" : "whiskey",
+          "freq" : 4764
+        }, {
+          "word" : "whiskies",
+          "freq" : 15963
+        }, {
+          "word" : "whisky",
+          "freq" : 2206
+        } ]
+      },
+      "scoch" : {
+        "startOffset" : 0,
+        "endOffset" : 5,
+        "origFreq" : 0,
+        "wordFreqList" : [ {
+          "word" : "scotch",
+          "freq" : 1556
+        }, {
+          "word" : "scott",
+          "freq" : 3340
+        }, {
+          "word" : "stock",
+          "freq" : 78
+        }, {
+          "word" : "shock",
+          "freq" : 9
+        } ]
+      }
+    },
+    "querySuggestions" : [ {
+      "query" : "scotch whiskey",
+      "hits" : 6320,
+      "corrections" : {
+        "whiskeys" : "whiskey",
+        "scoch" : "scotch"
+      }
+    } ]
+  }
+}
+```
+
+The `spellcheck` field holds all the spelling suggestions. Above, the query has misspelled “scotch whiskey” as “scoch whiskeys” and a number of suggestions are provided for each word as well as a collation with the fully corrected query.
+
+### meta
+
+```json
+{
+  "meta": {
+    "timing": {
+      "total": 105,
+      "mainQuery": 14,
+      "pipeline": [
+        ... pipeline stage timing info..
+      ]
+    },
+    "debug": {
+      "solrParams": {
+        "fl": "*,score",
+        "facet": "true"
+        ...additional solr params...
+      }
+    }
+  }
+}
+```
+
+The `meta` field holds assorted metadata about the query, such as timing and debug information. Above, in the `timing.mainQuery` field we see that the underlying Solr query took 14 ms (taken from Solr’s QTime) while the `total` field shows that the entire DSL query took 105 ms. The timings of individual pipeline stages are broken down in the `pipeline` field. The `debug` field here shows the various parameters that were sent in the underlying Solr query.

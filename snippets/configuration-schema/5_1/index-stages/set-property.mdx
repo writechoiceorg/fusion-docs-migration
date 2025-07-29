@@ -1,0 +1,92 @@
+export const schema = {
+  "type": "object",
+  "title": "Set Property",
+  "description": "A stage can conditionally set a value on a document or into the Pipeline Context for downstream consumption by having any one of the simple conditions return true. If you wish to have a more complex condition than the ones provided here, then use the Javascript Conditional option available on the stage.",
+  "required": [
+    "outputType"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "source": {
+      "type": "array",
+      "title": "Source",
+      "description": "The source fields and context keys to check conditions against.  If only the source fields are set and nothing else, then only set the property if all fields are present and non-null on the document.  May be a String Template.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "ifEquals": {
+      "type": "string",
+      "title": "If Value Equals",
+      "description": "Check whether a value equals another value.  Valid entries for this are: another field/context key, the word 'null' or 'not null' (without the quotes) or a literal string (e.g. \"match\") in quotes (single or double).  The value may be a String Template."
+    },
+    "regularExpression": {
+      "type": "string",
+      "title": "Regular Expression Match",
+      "description": "Apply the regular expression to the source fields and or context keys.  If any of them match, than set the property.  The implementation returns true if the regular expression matches anywhere in the string."
+    },
+    "outputKey": {
+      "type": "string",
+      "title": "Output Key",
+      "description": "The name of the key to insert into the output location (document or context). May be a String Template. See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md",
+      "default": "setPropertyKey"
+    },
+    "outputValue": {
+      "type": "string",
+      "title": "Output Value",
+      "description": "The value to set.  May be a String Template. See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md",
+      "default": "true"
+    },
+    "falseOutputValue": {
+      "type": "string",
+      "title": "False Output Value",
+      "description": "The value to set when nothing matches.  If null/empty, then nothing will be output (same behavior as in Fusion 2.2).  May be a String Template. See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md"
+    },
+    "whatMatchedKey": {
+      "type": "string",
+      "title": "What Matched Key",
+      "description": "The name of the context key to use to store a space separated list of what conditionals matched.",
+      "default": "whatMatched"
+    },
+    "outputType": {
+      "type": "string",
+      "title": "Output Type",
+      "description": "Select whether the flag should be set on the document or in the Pipeline Context.",
+      "enum": [
+        "document",
+        "context"
+      ],
+      "default": "context"
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

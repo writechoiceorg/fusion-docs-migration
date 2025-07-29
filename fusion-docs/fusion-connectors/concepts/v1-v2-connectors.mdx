@@ -1,0 +1,41 @@
+---
+title: "V1 and V2 Connectors"
+permalink: "331vyj"
+---
+
+There are two types of frameworks for Fusion connectors: V1 (also referred to as classic or built-in) and V2 (also known as plugin).
+
+## V1 (Classic) connectors
+
+V1 connectors are developed with a general-purpose crawler framework called Anda, created by Lucidworks. Anda helps simplify and streamline crawler development, reducing the task of developing a new crawler to gain access to your data.
+
+In Fusion 5.2.0 and later, V1 connectors are included in the Fusion image. You can [install connectors](/how-to/8810/install-a-connector-5-2-and-later) at any time through the UI (under Datasources).
+
+## V2 (Plugin) connectors
+
+Fusion 4.1.0 and later supports V2 connectors, which utilize a Java SDK framework.
+Fusion V2 connectors are installed via Datasources in the UI or by using the [Connector Plugins Repository API](/fusion/5.9/354/connector-plugins-repository-api-reference).
+In addition to the features and benefits provided by V1 connectors, V2 connectors offer:
+
+* Updates and improvements delivered separately from Fusion releases. Update a V2 connector by installing the [latest plugin version](/fusion-connectors/n0s114/download-connectors).
+* [Security Access-control Lists [(ACL)](/fusion-connectors/4selgx/ldap-ac-ls-v-2) which are separate from content.
+* [SSL/TLS security](/how-to/778/develop-a-custom-connector#security).
+* Improved scalability. Jobs can be scaled by simply adding instances of the connector. The fetching process supports distributed fetching, allowing many instances to contribute to the same job.
+
+### Remote V2 connectors
+
+V2 Connectors can be hosted within Fusion, or can [run remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors).
+
+* Hosted connectors are part of the Fusion cluster. The same connector type on separate nodes can act as separate connectors.
+* Remote connectors become clients of Fusion and run a lightweight process and communicate to Fusion using an efficient messaging format.
+* Remote connectors can be located wherever the data is located, which might be required for performance or security and access.
+
+### gRPC framework
+
+V2 connectors use Google’s gRPC framework as the underlying client/server technology. This offers:
+
+* Increased flexibility in the way services and their methods are defined.
+* HTTP/2 based transport.
+* Efficient serialization format for data handling (protocol buffers).
+* Bi-directional/multiplexed streams.
+* As of Fusion 5.6.1, V2 connectors using a gRPC backend can be [run remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors).

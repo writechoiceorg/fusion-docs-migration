@@ -1,0 +1,464 @@
+---
+title: "Custom JavaScript Stages for Query Pipelines"
+permalink: "170"
+---
+
+The JavaScript Query stage allows you to write custom processing logic using JavaScript
+to manipulate search requests and responses.
+The first time that the pipeline is run, Fusion compiles the JavaScript program
+into Java bytecode using the JDK’s JavaScript engine.
+
+The JavaScript Query stage allows you to run JavaScript functions over search requests and responses by manipulating variables called "request" and "response" which are
+[Request objects](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/request)
+and
+[Response objects](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/response), respectively.
+
+<Warning>
+**Caution**
+
+Users who can create or modify code obtain access to the broader Fusion environment. This access can be used to create intentional or unintentional damage to Fusion.
+</Warning>
+
+## The JavaScript Engine Used by Fusion
+
+The
+default
+JavaScript engine used by Fusion is the Nashorn engine from Oracle.
+See [The Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html) for details.
+
+In Fusion 5.9.6 and up, you also have the option to select OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>
+
+## JavaScript Query Stage Global Variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+In a JavaScript stage, Fusion uses the Nashorn engine, which implements [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) version 5.1. Although Nashorn does include some ECMAScript 6 (ES6) features such as `let`, `const`, or template strings, Fusion does not enable ES6 by default, so ES6 support is not guaranteed.
+
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Query stage, the container is a Fusion query pipeline.
+The following global pipeline variables are available:
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Name</th>
+      <th class="tableblock halign-left valign-top">Type</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>request</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Request.html" target="_blank"
+                rel="noopener">
+                Request for a Regular Query
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The <code>request</code> variable contains Solr query information and is referred to as a
+              <strong>regular</strong> request.
+              A regular query request does <em>not</em> include Search DSL (domain specific language) parameters.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>request</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/request/DslRequest.html" target="_blank"
+                rel="noopener">
+                DSL Request
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The <code>request</code> variable is also used when the query contains parameters for a Search DSL (domain
+              specific language) request.
+            </p>
+          </div>
+          <Note>
+            See <a href="/fusion/5.9/8833/domain-specific-language-dsl">Domain Specific Language</a> for more
+            information.
+          </Note>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>response</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Response.html" target="_blank"
+                rel="noopener">
+                Response for a Regular Query
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The <code>response</code> variable contains Solr response information, and is used to return information
+              from a <strong>regular</strong> request.
+              Because a regular request does <em>not</em> include Search DSL (domain specific language) parameters, the
+              response will not return Search DSL results.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>response</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/response/DslResponse.html"
+                target="_blank" rel="noopener">
+                DSL Response
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The <code>response</code> variable is also used to return information from a Search DSL (domain specific
+              language) request.
+            </p>
+          </div>
+          <Note>
+            See <a href="/fusion/5.9/8833/domain-specific-language-dsl">Domain Specific Language</a> for more information.
+          </Note>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>ctx</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/Context.html" target="_blank"
+                rel="noopener">
+                Context
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>A map that stores miscellaneous data created by each stage of the pipeline.</p>
+          </div>
+          <div class="exampleblock">
+            <div class="content">
+              <Tip>
+                **Important**
+
+                Use the <code>ctx</code> variable instead of the deprecated <code>_context</code> global variable.
+              </Tip>
+              <div class="paragraph">
+                <p>The <code>ctx</code> variable is used to:</p>
+              </div>
+              <div class="ulist">
+                <ul>
+                  <li>
+                    <p>Pass data from one stage to another</p>
+                  </li>
+                  <li>
+                    <p>Store data that needs to be passed from one custom stage to a later custom stage</p>
+                  </li>
+                </ul>
+              </div>
+              <div class="paragraph">
+                <p>The data can differ between stages:</p>
+              </div>
+              <div class="ulist">
+                <ul>
+                  <li>
+                    <p>If the previous stage changes the data</p>
+                  </li>
+                  <li>
+                    <p>Based on the configuration of each stage</p>
+                  </li>
+                </ul>
+              </div>
+              <Note>
+                If the data is modified in one stage, it may cause a later stage to function irregularly.
+              </Note>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>collection</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>String</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>The name of the Fusion collection being indexed or queried.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>solrServer</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/component/BufferingSolrServer.html"
+                target="_blank" rel="noopener">
+                BufferingSolrServer
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The Solr server instance that manages the pipeline’s default Fusion collection.
+              All indexing and query requests are done by calls to methods on this object.
+              See <a href="https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html"
+                target="_blank" rel="noopener">
+                solrClient
+              </a> for details.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>solrServerFactory</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/cloud/api/solr/SolrClusterComponent.html"
+                target="_blank" rel="noopener">
+                SolrClusterComponent
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The SolrCluster server used for lookups by collection name which returns a Solr server instance for that
+              collection, e.g.<br />
+              <code>var productsSolr = solrServerFactory.getSolrServer("products");</code>.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>QueryRequestAndResponse</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/QueryRequestAndResponse.html"
+                target="_blank" rel="noopener">
+                QueryRequestAndResponse
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Used to create query pipeline requests and responses.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p><code>JSONResponse</code></p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/solr/response/JSONResponse.html"
+                target="_blank" rel="noopener">
+                JSONResponse
+              </a>
+            </p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Returns list of info as a string.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<Note>
+See [Custom JavaScript Query Stage Examples](/fusion/5.9/864/custom-java-script-query-stage-examples) for more information.
+</Note>
+
+
+
+### Syntax Variants
+
+JavaScript stages can be written using ***function syntax***. With function syntax, global variables are passed as function parameters.
+
+<Note>
+Support for legacy syntax was removed in Fusion 5.8.
+</Note>
+
+
+
+#### Function Syntax
+
+```js
+function(request,response) {
+   request.addParam("foo", "bar");
+}
+```
+
+<Tip>
+**Important**
+
+
+*Function syntax* is used for the examples in this document.
+</Tip>
+
+### Global variable `logger`
+
+The logs are output to the query service logs for custom query stages. Access the Log Viewer and filter on this service to view the information.
+
+## See also
+
+* [Fusion Pipeline Javadocs](/fusion-pipeline-javadocs/5.9/)
+* [JavaScript Query Stage](/fusion/5.9/283/java-script-query-stage)
+* [Custom JavaScript Query Stage Examples](/fusion/5.9/864/custom-java-script-query-stage-examples)
+* [Custom JavaScript Stages Global Variables](/fusion/5.9/395/custom-java-script-stages-global-variables)
+* [Managed JavaScript Query Stage](/fusion/5.9/258/managed-java-script-query-stage)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **JavaScript in Fusion** focuses on how to leverage JavaScript in Fusion to build powerful and responsive scripts at index and query time:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/javascript-in-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/javascript-in-fusion.jpg" alt="JavaScript in Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

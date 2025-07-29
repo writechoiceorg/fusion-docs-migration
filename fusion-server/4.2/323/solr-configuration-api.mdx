@@ -1,0 +1,158 @@
+---
+title: "Solr Configuration API"
+permalink: "323"
+---
+
+
+The Solr Configuration REST API is used to access and manage the Solr configuration files stored in ZooKeeper.
+
+To manage Solr synonym lists, use the [Synonyms Editor API](/fusion-server/4.2/335/synonyms-editor-api).
+
+To manage Solr lists of stopwords, see [Stopwords Files](/fusion-server/4.2/181/stopwords-files).
+
+## Solr Configuration Definition Properties
+
+**Path Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| collection | The collection that contains the configuration files to list or view. |
+| path | The path to a specific file or nested child nodes. If the file is not nested, the filename can be entered without any path information. |
+
+**Query Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| expand | If true, the binary content of a file will be returned base64 encoded. If this is not included, only the metadata about each node will be returned.  If you would like to see the content of the file in plain text, you can add 'Accept: text/plain' to the request header. Alternately, you can get the raw bytes by adding 'Accept: application/octet-stream' to the header. |
+| recursive | If true, children of nested ZooKeeper nodes will be returned. This can be used in conjunction with the path to show only children of a specific node. |
+
+The output will include a list of each file with the following information:
+
+* **name.** The name of the file or node.
+* **version.** The file or node version from ZooKeeper.
+* **isDir.** If the node has children, this value will be true.
+* **value.** Only returned if "expand=true" is added as a query parameter. This will be returned as the base64 encoding of the contents of the file.
+
+If the header includes 'Accept: text/plain' or 'Accept: application/octet-stream', metadata about the file will not be returned and only the content as either plain text or raw bytes.
+
+If recursive=true and expand=true are both used in the same request, the request may be a little slow depending on how much data is requested.
+
+## ZooKeeper Collection Configuration Definition Properties
+
+**Path Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| collection | The collection that contains the configuration files to list or view. |
+| path | The path to a specific file (including nested child nodes). |
+
+**Query Parameters**
+
+| Parameter | Description |
+| --- | --- |
+| reload | If true, the collection will be reloaded to make the changes available to Solr immediately. |
+
+**Input Content**
+
+The REST API does not restrict the type of content that can be sent to ZooKeeper, but care should be taken to make sure the format of the file remains compatible with Solr’s requirements.
+
+As a best practice, all requests should include the Content-type in the request header.
+
+## Examples
+
+*Show _rest_managed.json for the 'docs' collection, with the base64 encoded content:*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/collections/docs/solr-config/_rest_managed.json?expand=true
+```
+
+**OUTPUT**
+
+```json
+{
+  "name" : "_rest_managed.json",
+  "version" : 0,
+  "isDir" : false,
+  "value" : "eyJpbml0QXJncyI6e30sIm1hbmFnZWRMaXN0IjpbXX0NCg=="
+}
+```
+
+*Get the plain text version of 'synonyms.txt':*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD -H 'Accept: text/plain' https://FUSION_HOST:8764/api/collections/docs/solr-config/synonyms.txt
+```
+
+**OUTPUT**
+
+```
+GB,gib,gigabyte,gigabytes
+MB,mib,megabyte,megabytes
+Television, Televisions, TV, TVs
+pixima => pixma
+```
+
+*Show the child nodes of 'clustering':*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/collections/docs/solr-config/clustering?recursive=true
+```
+
+**OUTPUT**
+
+```json
+{
+  "name" : "clustering",
+  "version" : 0,
+  "isDir" : true,
+  "children" : [ {
+    "name" : "carrot2",
+    "parent" : "clustering",
+    "version" : 0,
+    "isDir" : true,
+    "children" : [ {
+      "name" : "kmeans-attributes.xml",
+      "parent" : "clustering/carrot2",
+      "version" : 0,
+      "isDir" : false
+    }, {
+      "name" : "lingo-attributes.xml",
+      "parent" : "clustering/carrot2",
+      "version" : 0,
+      "isDir" : false
+    }, {
+      "name" : "stc-attributes.xml",
+      "parent" : "clustering/carrot2",
+      "version" : 0,
+      "isDir" : false
+    } ]
+  } ]
+}
+```
+
+*Replace the contents of the existing synonyms.txt file with the contents of a file named "updated-synonyms.txt" and reload the collection:*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-type: text/plain' --data-binary'@updated-synonyms.txt' https://FUSION_HOST:8764/api/collections/docs/solr-config/synonyms.txt?reload=true
+```
+
+**OUTPUT**
+
+None.
+
+### Change Solr configurations in Fusion 5.x using the API
+
+Add a search component and a request handler:
+
+```bash
+curl -u USERNAME:PASSWORD -H "Accept: application/octet-stream" https://{host}/api/collections/collectionName/solr-config/solrconfig.xml
+```
+

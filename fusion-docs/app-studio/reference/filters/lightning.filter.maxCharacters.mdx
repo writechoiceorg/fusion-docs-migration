@@ -1,0 +1,28 @@
+---
+title: "maxCharacters"
+permalink: "1008"
+---
+
+## Description
+
+Renders fields actual value
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ maxCharacters_expression | maxCharacters:maxCharacters }}
+```
+
+### In JavaScript
+
+```js
+$filter('maxCharacters')(string, maxCharacters)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| string | string | The field to get the actual value from |
+| maxCharacters | number | Number of characters to display |

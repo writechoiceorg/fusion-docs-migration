@@ -1,0 +1,31 @@
+---
+title: "Troubleshooting"
+description: "REST V2 connector"
+permalink: "q96bhh"
+---
+
+This page explains for the REST V2 connector any commonly known issues that could occur, nuances, and workarounds.
+
+## Successful response but connector is not listed
+
+If a request to create a datasource returns as successful but it does not show up in the list of connectors, verify the `collection` in the JSON file matches the name of the app you are using. If the `collection` does not match the name of the app, the request shows as successful, but the connector will not be listed under **Indexing > Datasources**.
+
+## Success message after running the connector, but no documents seen on query workbench
+
+Open the datasource under **Indexing > Datasources** and click on **Job History**. Look for response errors that can let you know a crawl has failed even if a success message was returned. For example, a `406` error can indicate incorrect headers were used. If no errors are found, check the authentication details again to verify they are correct.
+
+## Internal content shows up in the index
+
+The REST API base URL from where the data is extracted is entered in the `serviceURL` parameter of a recipe. The connector will find and collect all content using that URL unless the content is secured. Be sure to add additional levels of security for any content you do not want indexed.
+
+## Authenticating with an API key
+
+Basic authentication uses username and password properties for authentication. Depending on the API used to connect to resources outside of Lucidworks, it may require an API Key to authenticate. In this case, enter the username as usual but replace the password with the API Key.
+
+## Documents missed due to duplicate IDs
+
+When using some recipes with multiple endpoints, documents run the risk of being assigned the same `idKey` value, which can cause missing documents when indexing. To avoid this, set the `idKey` to `self` instead of `id`.
+
+## Receive a `401` or `406` response
+
+If a `401` response is received when sending a recipe to Fusion, check the headers for accuracy. For example, setting XML in the header (`--header 'Content-Type: application/xml' \`) instead of JSON (`--header 'Content-Type: application/json' \`) can return a `401` or `406` error. If JSON is entered correctly, check the authentication details.

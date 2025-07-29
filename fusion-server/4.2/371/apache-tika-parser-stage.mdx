@@ -1,0 +1,19 @@
+---
+title: "Apache Tika Parser Stage"
+permalink: "371"
+---
+
+Apache Tika is a versatile parser that supports many types of unstructured document formats, such as HTML, PDF, Microsoft Office documents, OpenOffice, RTF, audio, video, images, and more. A complete list of supported formats is available at http://tika.apache.org/.
+
+To perform image text extraction when **Include images** is enabled, [Tesseract](https://github.com/tesseract-ocr/tesseract) should be installed in the server hosting Fusion.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/parsers/apache-tika-deprecated-.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,11 @@
+---
+title: "click_pos"
+permalink: "3251"
+---
+
+The `click_pos` UDF computes either a reciprocal rank or a raw click position (using a 0-based index) of a document in a page of results. This UDF is used to compute the mean reciprocal rank (MRR) for experiments. For example, given the following list of documents and a doc ID, the `click_pos` UDF will return 2:
+
+```
+docs: a,b,c,d
+doc ID: c
+```

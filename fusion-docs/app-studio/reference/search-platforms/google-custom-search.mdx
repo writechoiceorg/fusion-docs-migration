@@ -1,0 +1,76 @@
+---
+title: "Google Custom Search"
+permalink: "3191"
+---
+
+The Google Custom Search Engine (CSE) platform module brokers all communication with a [Google Custom Search Engine](https://cse.google.co.uk/cse/).
+
+## Setup
+
+To add Google CSE connectors to a Maven project, you must add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.google.cse</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+### Required attributes
+
+- `apiKey (java.lang.String)`
+    The unique ID of the CSE (much like an API key).
+
+### Optional attributes
+
+- `client (java.lang.String)`
+    The CSE 'client' query parameter - which front-end to use.
+
+- `dateFields (java.lang.String)`
+    Which fields in the index represent dates. This is a comma separated list.
+
+- `numericFields (java.lang.String)`
+    Which fields in the index represent numbers. This is a comma separated list.
+
+- `output (java.lang.String)`
+    Return output with (xml) or without (xml_no_dtd) Google’s DTD.  
+    Default: `xml_no_dtd`
+
+### Attributes shared across platforms
+
+- `host (java.lang.String)`
+    The URI of the platform. Must be specified using the full URI (for example, `http://localhost:1234`; `localhost:1234` will not work).
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified.
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.

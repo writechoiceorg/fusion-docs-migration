@@ -1,0 +1,25 @@
+---
+title: "REST Query Stage"
+permalink: "276"
+---
+
+The REST Query pipeline stage is available in Fusion versions 3.0 and later.
+
+<Note>
+In Fusion version 3.0 and earlier, this pipeline stage was called the Query RPC Stage. RPC is the acronym for Remote Procedure Calls.
+</Note>
+
+
+
+The notation to send text as payload in **Request entity (as string)** field is `<request.q>`.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/rest-query.mdx";
+
+<SchemaParamFields schema={schema}/>

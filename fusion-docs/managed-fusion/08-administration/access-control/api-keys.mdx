@@ -1,0 +1,204 @@
+---
+title: "API keys"
+permalink: "rrlnf6"
+---
+
+API keys are an access control feature that allows users to create, store, and manage their API credentials in a secure manner. Only Managed Fusion users with admin permissions can manage API Keys.
+
+You can use an API key instead of a username and password combination to power your search application or operations.
+
+<Note>
+In the examples on this page, you can use either the `apiKey` or `x-api-key` query parameter.
+</Note>
+
+The following example authenticates a request to check the status of the query service with an API key:
+
+```sh
+curl -H "x-api-key: API_KEY" "https://FUSION_HOST/api/query/status"
+curl -H "apiKey: API_KEY" "https://FUSION_HOST/api/query/status"
+curl https://FUSION_HOST/api/query/status?apiKey=API_KEY
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+There isn’t a hard limit on the amount of API Keys you can create.
+
+<Note>
+**Important**
+
+API keys require an **apikey** realm in Fusion to work. If your Fusion cluster was created prior to Fusion 5.6.0, it lacks the required realm for API keys. Upgrading to Fusion 5.6.0 through 5.10.0 does not create the realm automatically.
+
+For more information, see [Create an apikey realm](#manual-realm).
+
+</Note>
+
+## Manage API keys in the Managed Fusion UI
+
+You can create, delete, and view the names of API keys in the UI:
+
+1. Navigate to **System > Access Control > API Keys**.
+2. Select **Add API Key**.
+3. Give the API key a name.
+4. Assign the appropriate roles to give the API key the correct permissions for your search application.
+5. Select **Generate Key**.
+6. Copy the API key that appears. Save this key in a secure location.
+
+<Warning>
+**Caution**
+
+API keys are treated like an automatically generated password. They are only visible during the key creation and do not display again. You must copy and securely store the API key to see it again after creation.
+</Warning>
+
+## Manage API keys with the API
+
+You can use `GET`, `POST`, and `DELETE` HTTP requests to manage your API keys. The following examples use an API key to authenticate. To use an API key in an API request, use the `x-api-key` HTTP request header.
+
+### Create a new API key
+
+Use a `POST` HTTP request to create a new API key. Assign the appropriate roles to give the API key the correct permissions for your search application.
+
+<Warning>
+**Caution**
+
+API keys are treated like an automatically generated password. They are only visible during the key creation and do not display again. You must copy and securely store the API key to see it again after creation.
+</Warning>
+
+<Tabs>
+  <Tab title="Request">
+    ```sh
+    curl -H "x-api-key: API_KEY" -X POST "https://EXAMPLE_COMPANY.lucidworks.cloud/api/api-key" -d '
+    {
+      "name": "searchaccess",
+      "id": "api-key-searchaccess-16744867518441",
+      "roles": ["rules", "search-template", "search"]
+    }
+    '
+    ```
+  </Tab>
+  <Tab title="Response">
+    ```json
+    {
+      "name": "searchaccess",
+      "id": "api-key-searchaccess-16744867518441",
+      "key": "API_KEY",
+      "roles": [
+        "rules", "search-template", "search"
+      ],
+      "createdAt": "2023-01-23T15:12:32Z"
+    }
+    ```
+  </Tab>
+</Tabs>
+
+
+<Note>
+The value of the `key` field is the API key.
+</Note>
+
+### List all available API keys
+
+Use a `GET` HTTP request to view all API keys.
+
+The API key values are not included in the response. You can only access API keys at the time of creation.
+
+<Tabs>
+  <Tab title="Request">
+    ```sh
+    curl -H "x-api-key: API_KEY" -X GET "https://EXAMPLE_COMPANY.lucidworks.cloud/api/api-key"
+    ```
+  </Tab>
+  <Tab title="Response">
+    ```json
+    [{
+      "name": "searchaccess",
+      "id": "api-key-searchaccess-16744867518441",
+      "createdAt": "2023-01-23T15:12:32Z",
+      "roles": ["rules", "search-template", "search"]
+    }, {
+      "name": "adminaccess",
+      "id": "api-key-test-5-16630249022972",
+      "createdAt": "2022-09-12T23:21:42Z",
+      "roles": ["admin"]
+    }]
+    ```
+  </Tab>
+</Tabs>
+
+### Get details about an API key
+
+Use a `GET` HTTP request to get the details of a specific API key. You must supply the ID of the API key as part of your request URL.
+
+<Tabs>
+  <Tab title="Request">
+    ```sh
+    curl -H "x-api-key: API_KEY" -X GET "https://EXAMPLE_COMPANY.lucidworks.cloud/api/api-key/API_KEY_ID"
+    ```
+  </Tab>
+  <Tab title="Response">
+    ```json
+    {
+      "name": "searchaccess",
+      "id": "api-key-searchaccess-16744867518441",
+      "createdAt": "2023-01-23T15:12:32Z",
+      "roles": ["rules", "search-template", "search"]
+    }
+    ```
+  </Tab>
+</Tabs>
+
+### Delete an API key
+
+Use a `DELETE` HTTP request to delete a specific API key. You must supply the ID of the API key as part of your request.
+
+The request returns an HTTP `200 OK` status code when the API key is successfully deleted.
+
+<Tabs>
+  <Tab title="Request">
+    ```sh
+    curl -H "x-api-key: API_KEY" -X DELETE "https://EXAMPLE_COMPANY.lucidworks.cloud/api/api-key/API_KEY_ID"
+    ```
+  </Tab>
+</Tabs>
+
+
+
+## Create an apikey realm
+
+<Note>
+This section only applies to Managed Fusion clusters created prior to Managed Fusion 5.6.0, but have since been updated to 5.6.0 through 5.10.0.
+</Note>
+
+API keys require an **apikey** realm in Fusion to work. If your Fusion cluster was created prior to Fusion 5.6.0, it lacks the required realm for API keys. Upgrading to Fusion 5.6.0 through 5.10.0 does not create the realm automatically.
+
+As a result, when you use an API key, you’ll receive an HTTP `401 Unauthorized` status code:
+
+```json
+{
+  "service": "proxy",
+  "error": "unauthorized",
+  "path": "/api/query/status",
+  "timestamp": "2023-01-25T18:01:44.059096"
+}
+```
+
+In order to use API keys with an upgraded Managed Fusion cluster, you must create the **apikey** realm using a `POST` HTTP request.
+
+This cannot be done in the Managed Fusion UI.
+
+<Tabs>
+  <Tab title="Request">
+    ```sh
+    curl -u USERNAME:PASSWORD -X POST "https://EXAMPLE_COMPANY.lucidworks.cloud/api/realm-configs" -H 'Content-type: application/json' -d '
+    {
+      "realmType": "apikey",
+      "name": "apikey",
+      "enabled": true
+    }
+    '
+    ```
+  </Tab>
+</Tabs>
+
+After creating the **apikey** realm, you can use API keys to perform API requests as expected.

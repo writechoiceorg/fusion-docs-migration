@@ -1,0 +1,376 @@
+---
+title: "JavaScript"
+description: "Query pipeline stage configuration specifications"
+permalink: "56khq2"
+---
+
+The JavaScript Query stage allows you to write custom processing logic using JavaScript
+to manipulate search requests and responses.
+The first time that the pipeline is run, Managed Fusion compiles the JavaScript program
+into Java bytecode using the JDK’s JavaScript engine.
+
+The JavaScript Query stage allows you to run JavaScript functions over search requests and responses by manipulating variables called "request" and "response" which are [Request objects](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/request)
+and [Response objects](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/response), respectively.
+
+<Warning>
+**Caution**
+
+Users who can create or modify code obtain access to the broader Managed Fusion environment. This access can be used to create intentional or unintentional damage to Managed Fusion.
+</Warning>
+
+## The JavaScript engine used by Managed Fusion
+
+The default JavaScript engine used by Managed Fusion is the Nashorn engine from Oracle.
+See [The Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html) for details.
+
+In Managed Fusion 5.9.6 and up, you also have the option to select OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>
+
+## JavaScript Query Stage global variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+In a JavaScript stage, Fusion uses the Nashorn engine, which implements [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) version 5.1. Although Nashorn does include some ECMAScript 6 (ES6) features such as `let`, `const`, or template strings, Fusion does not enable ES6 by default, so ES6 support is not guaranteed.
+
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Query stage, the container is a Managed Fusion query pipeline.
+The following global pipeline variables are available:
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>request</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Request.html" target="_blank" rel="noopener">Request for a Regular Query</a>
+      </td>
+      <td>
+        The <code>request</code> variable contains Solr query information and is referred to as a <strong>regular</strong> request. A regular query request does <em>not</em> include Search DSL (domain specific language) parameters.
+      </td>
+    </tr>
+    <tr>
+      <td><code>request</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/request/DslRequest.html" target="_blank" rel="noopener">DSL Request</a>
+      </td>
+      <td>
+        The <code>request</code> variable is also used when the query contains parameters for a Search DSL (domain specific language) request.<br/>
+        <Note>
+         See <a href="/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl">Domain Specific Language</a> for more information.
+        </Note>
+      </td>
+    </tr>
+    <tr>
+      <td><code>response</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Response.html" target="_blank" rel="noopener">Response for a Regular Query</a>
+      </td>
+      <td>
+        The <code>response</code> variable contains Solr response information, and is used to return information from a <strong>regular</strong> request. Because a regular request does <em>not</em> include Search DSL parameters, the response will not return DSL results.
+      </td>
+    </tr>
+    <tr>
+      <td><code>response</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/response/DslResponse.html" target="_blank" rel="noopener">DSL Response</a>
+      </td>
+      <td>
+        The <code>response</code> variable is also used to return information from a Search DSL request.<br/>
+        <Note>
+          See <a href="/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl">Domain Specific Language</a> for more information.
+        </Note>
+      </td>
+    </tr>
+    <tr>
+      <td><code>ctx</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/Context.html" target="_blank" rel="noopener">Context</a>
+      </td>
+      <td>
+        A map that stores miscellaneous data created by each stage of the pipeline.<br/>
+        <div class="admonitionblock important">
+        <Tip>
+         **Important**
+
+         Use the <code>ctx</code> variable instead of the deprecated <code>_context</code> global variable.
+        </Tip>
+        </div>
+        <p>The <code>ctx</code> variable is used to:</p>
+        <ul>
+          <li>Pass data from one stage to another</li>
+          <li>Store data that needs to be passed from one custom stage to a later custom stage</li>
+        </ul>
+        <p>The data can differ between stages:</p>
+        <ul>
+          <li>If the previous stage changes the data</li>
+          <li>Based on the configuration of each stage</li>
+        </ul>
+        <Note>
+         If the data is modified in one stage, it may cause a later stage to function irregularly.
+        </Note>
+      </td>
+    </tr>
+    <tr>
+      <td><code>collection</code></td>
+      <td>String</td>
+      <td>The name of the Managed Fusion collection being indexed or queried.</td>
+    </tr>
+    <tr>
+      <td><code>solrServer</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/component/BufferingSolrServer.html" target="_blank" rel="noopener">BufferingSolrServer</a>
+      </td>
+      <td>
+        The Solr server instance that manages the pipeline’s default Managed Fusion collection. All indexing and query requests are done by calls to methods on this object. See <a href="https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html" target="_blank" rel="noopener">SolrClient</a> for details.
+      </td>
+    </tr>
+    <tr>
+      <td><code>solrServerFactory</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/cloud/api/solr/SolrClusterComponent.html" target="_blank" rel="noopener">SolrClusterComponent</a>
+      </td>
+      <td>
+        The SolrCluster server used for lookups by collection name which returns a Solr server instance for that collection, e.g.<br/>
+        <code>var productsSolr = solrServerFactory.getSolrServer("products");</code>
+      </td>
+    </tr>
+    <tr>
+      <td><code>QueryRequestAndResponse</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/QueryRequestAndResponse.html" target="_blank" rel="noopener">QueryRequestAndResponse</a>
+      </td>
+      <td>Used to create query pipeline requests and responses.</td>
+    </tr>
+    <tr>
+      <td><code>JSONResponse</code></td>
+      <td>
+        <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/solr/response/JSONResponse.html" target="_blank" rel="noopener">JSONResponse</a>
+      </td>
+      <td>Returns list of info as a string.</td>
+    </tr>
+  </tbody>
+</table>
+
+<Note>
+See [Custom JavaScript Query Stage examples](/fusion/5.9/864/custom-java-script-query-stage-examples) for more information.
+</Note>
+
+
+
+### Syntax variants
+
+JavaScript stages can be written using ***legacy syntax*** or ***function syntax***. The key difference between these syntax variants is how the "global variables" are used and interpreted. While using legacy syntax, these variables are used as global variables. With function syntax, however, these variables are passed as function parameters.
+
+#### Legacy syntax
+
+```
+request.addParam("foo", "bar");
+
+```
+
+#### Function syntax
+
+```js
+function(request,response) {
+   request.addParam("foo", "bar");
+}
+```
+
+<Note>
+**Important**
+
+*Function syntax* is used for the examples in this document.
+</Note>
+
+### Global variable `logger`
+
+The logs are output to the query service logs for custom query stages. Access the Log Viewer and filter on this service to view the information.
+
+## JavaScript Query Stage global variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+In a JavaScript stage, Fusion uses the Nashorn engine, which implements [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) version 5.1. Although Nashorn does include some ECMAScript 6 (ES6) features such as `let`, `const`, or template strings, Fusion does not enable ES6 by default, so ES6 support is not guaranteed.
+
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Query stage, the container is a Managed Fusion query pipeline.
+The following global pipeline variables are available:
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+   <tr>
+      <td>`request`</td>
+      <td>
+         <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Request.html" target="_blank" rel="noopener">Request for a Regular Query</a>
+      </td>
+      <td>
+         The <code>request</code> variable contains Solr query information and is referred to as a <strong>regular</strong> request. A regular query request does <em>not</em> include Search DSL (domain specific language) parameters.
+      </td>
+      </tr>
+   <tr>
+  <td>`request`</td>
+  <td>
+   <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/request/DslRequest.html" target="_blank" rel="noopener">DSL Request</a>
+  </td>
+  <td>
+      The <code>request</code> variable is also used when the query contains parameters for a Search DSL (domain specific language) request.
+      <Note>
+         See <a href="/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl">Domain Specific Language</a> for more information.
+      </Note>
+  </td>
+</tr>
+<tr>
+  <td>`response`</td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/Response.html" target="_blank" rel="noopener">Response for a Regular Query</a>
+  </td>
+  <td>
+    The <code>response</code> variable contains Solr response information, and is used to return information from a <strong>regular</strong> request. Because a regular request does <em>not</em> include Search DSL parameters, the response will not return DSL results.
+  </td>
+</tr>
+<tr>
+  <td>`response`</td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/search/dsl/response/DslResponse.html" target="_blank" rel="noopener">DSL Response</a>
+  </td>
+  <td>
+    The <code>response</code> variable is also used to return information from a Search DSL request.
+    <Note>
+      See <a href="/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl">Domain Specific Language</a> for more information.
+    </Note>
+  </td>
+</tr>
+<tr>
+  <td>`ctx`</td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/Context.html" target="_blank" rel="noopener">Context</a>
+  </td>
+  <td>
+    A map that stores miscellaneous data created by each stage of the pipeline.
+    <Tip>
+      **Important**
+
+      Use the <code>ctx</code> variable instead of the deprecated <code>_context</code> global variable.
+    </Tip>
+    <p>The <code>ctx</code> variable is used to:</p>
+    <ul>
+      <li>Pass data from one stage to another</li>
+      <li>Store data that needs to be passed from one custom stage to a later custom stage</li>
+    </ul>
+    <p>The data can differ between stages:</p>
+    <ul>
+      <li>If the previous stage changes the data</li>
+      <li>Based on the configuration of each stage</li>
+    </ul>
+    <Note>
+      If the data is modified in one stage, it may cause a later stage to function irregularly.
+    </Note>
+  </td>
+</tr>
+<tr>
+  <td>`collection`</td>
+  <td>String</td>
+  <td>The name of the Managed Fusion collection being indexed or queried.</td>
+</tr>
+<tr>
+  <td>
+`solrServer`
+  </td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/component/BufferingSolrServer.html" target="_blank" rel="noopener">BufferingSolrServer</a>
+  </td>
+  <td>
+    The Solr server instance that manages the pipeline’s default Managed Fusion collection. All indexing and query requests are done by calls to methods on this object. See <a href="https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html" target="_blank" rel="noopener">SolrClient</a> for details.
+  </td>
+</tr>
+<tr>
+  <td>
+`solrServerFactory`
+  </td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/cloud/api/solr/SolrClusterComponent.html" target="_blank" rel="noopener">SolrClusterComponent</a>
+  </td>
+  <td>
+    The SolrCluster server used for lookups by collection name which returns a Solr server instance for that collection, e.g.
+    <code>var productsSolr = solrServerFactory.getSolrServer("products");</code>
+  </td>
+</tr>
+<tr>
+  <td>
+`QueryRequestAndResponse`
+  </td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/QueryRequestAndResponse.html" target="_blank" rel="noopener">QueryRequestAndResponse</a>
+  </td>
+  <td>Used to create query pipeline requests and responses.</td>
+</tr>
+<tr>
+  <td>
+`JSONResponse`
+  </td>
+  <td>
+    <a href="/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/solr/response/JSONResponse.html" target="_blank" rel="noopener">JSONResponse</a>
+  </td>
+  <td>Returns list of info as a string.</td>
+</tr>
+  </tbody>
+</table>
+
+<Note>
+See [Custom JavaScript Query Stage examples](/fusion/5.9/864/custom-java-script-query-stage-examples) for more information.
+</Note>
+
+### Syntax variants
+
+JavaScript stages can be written using ***legacy syntax*** or ***function syntax***. The key difference between these syntax variants is how the "global variables" are used and interpreted. While using legacy syntax, these variables are used as global variables. With function syntax, however, these variables are passed as function parameters.
+
+#### Legacy syntax
+
+```js
+request.addParam("foo", "bar");
+```
+
+#### Function syntax
+
+```js
+function(request,response) {
+   request.addParam("foo", "bar");
+}
+```
+
+<Note>
+**Important**
+
+*Function syntax* is used for the examples in this document.
+</Note>
+
+
+### Global variable `logger`
+
+The logs are output to the query service logs for custom query stages. Access the Log Viewer and filter on this service to view the information.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

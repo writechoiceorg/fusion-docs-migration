@@ -1,0 +1,63 @@
+---
+title: "Ingress and Security"
+permalink: "3226"
+---
+
+The Fusion proxy service serves as an API gateway and provides authentication and authorization. Route all external access to Fusion services through the Fusion proxy service. The most common approach is to set up a [Kubernetes Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) that routes Fusion service requests to the proxy service as shown in the example ingress definition [below](#example-ingress-def). It’s also common to do [TLS termination](https://cloud.google.com/load-balancing/docs/https/#tls_support) at the Ingress, so that all traffic to and from the Kubernetes cluster is encrypted.
+
+<Note>
+Internal requests happen over unencrypted HTTP.
+</Note>
+
+```yaml
+apiVersion: v1
+items:
+- apiVersion: extensions/v1beta1
+  kind: Ingress
+  metadata:
+    annotations:
+      ...
+    labels:
+      ...
+    name: <RELEASE>-api-gateway
+    namespace: <NAMESPACE>
+  spec:
+    rules:
+    - host: <HOSTNAME>
+      http:
+        paths:
+        - backend:
+            serviceName: proxy
+            servicePort: 6764
+          path: "/*"
+    tls:
+    - hosts:
+      - <HOSTNAME>
+      secretName: <RELEASE>-api-gateway-tls-secret
+  status:
+    loadBalancer:
+      ingress:
+      - ip: <SOME_IP>
+```
+
+### EKS
+
+For deployments that run on EKS, the [setup_f5_eks.sh](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_eks.sh) setup script creates a classic elastic load balancer (ELB) to expose the Fusion proxy service for demonstration purposes. However, you’re strongly encouraged to configure a Kubernetes Ingress with TLS termination in front of the proxy service. See [How do I terminate HTTPS traffic on Amazon EKS workloads with ACM?](https://aws.amazon.com/premiumsupport/knowledge-center/terminate-https-traffic-eks-acm/) for more information.
+
+You can also opt to use an [Application Load balancer](https://github.com/lucidworks/fusion-cloud-native#eks-ingress) instead of the proxy service.
+
+### AKS
+
+AKS deployments can use the [setup_f5_aks.sh](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_aks.sh) setup script, which exposes the Fusion proxy service on an external IP using HTTP for demonstration purposes. We recommend that you configure a [Kubernetes Ingress with TLS termination](https://github.com/lucidworks/fusion-cloud-native#aks-ingress) in front of the proxy service.
+
+### Other Kubernetes Platforms
+
+If your deployment runs on OpenShift using a cluster created with OpenShift Infrastructure Provider, the [setup_f5_k8s.sh](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_k8s.sh) setup script will install Fusion 5 on your existing cluster. OpenShift Online services are not supported.
+
+See the [RedHat OpenShift](https://github.com/lucidworks/fusion-cloud-native#redhat-openshift) section of the readme for more tips toward a successful installation.
+
+If your deployment runs on GKE, the [setup_f5_gke.sh](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_gke.sh) setup script in the `fusion-cloud-native` repo provides the option to create the [Ingress and TLS cert](https://github.com/lucidworks/fusion-cloud-native#gke-ingress-and-tls).
+
+This process uses [Let’s Encrypt](https://letsencrypt.org/).
+
+For other Kubernetes providers, refer to provider’s documentation on creating an Ingress and TLS certificates.

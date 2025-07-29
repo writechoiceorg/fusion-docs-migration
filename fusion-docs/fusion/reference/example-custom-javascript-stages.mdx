@@ -1,0 +1,134 @@
+---
+title: "Custom JavaScript Query Stage examples"
+permalink: "864"
+---
+
+The following is a list of examples for reference when creating [custom JavaScript Query stages](/fusion/5.9/283/java-script-query-stage).
+
+## Add a parameter to the query request
+
+```js
+function(request,response , ctx, collection, solrServer, solrServerFactory) {
+   request.addParam("foo", "bar");
+}
+```
+
+## Add a parameter to the query response
+
+This example contains a simple JavaScript function which copies information from the `ctx` (Context) object into the query response. Requirements:
+
+* The `response` parameter cannot be used in query pipeline stages prior to the Solr query stage. This example assumes use in a later stage.
+* The `response.initialEntity.appendStringList()` function only works if the query’s `wt` (writer type) parameter is set to json or xml, for example: `wt=json`.
+
+```js
+(function () {
+    "use strict";
+
+    var List = Java.type('java.util.List');
+
+    function add_to_response(key, list) {
+      if (list.length > 0) {
+         response.initialEntity.appendStringList(key, Java.to(list, List));
+      }
+    }
+
+    return function(request,response , ctx, collection, solrServer, solrServerFactory) {
+       add_to_response('banners', ctx.getProperty('banners'));
+       add_to_response('landing-pages', ctx.getProperty('redirects'));
+    };
+})();
+```
+
+## Java object interactions
+
+The default JavaScript engine used by Fusion is the Nashorn engine from Oracle.
+See [The Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html) for details.
+
+In Fusion 5.9.6 and up, you also have the option to select OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>
+
+The Nashorn engine exposes the full Java Classpath to JavaScript. This means that Java objects can be instantiated and called from JavaScript. Objects returned by a call to a Java function will not be JavaScript objects. For example, calling `typeof(object)` will not give meaningful results. Instead, you can use JavaScript to discover the Java type of an object. Once you know the Java type of an object, you can refer to the [Fusion Pipeline Javadocs](/fusion/5.9/8822/pipeline-javadocs) to learn more about the Java type and how to use Java Objects.
+
+```js
+/* globals Java, logger*/
+(function () {
+  "use strict";
+  var Collection = Java.type("java.util.Collection")
+  var isDebug = false
+  function logIfDebug(m) { if (isDebug && m) logger.info(m, Array.prototype.slice.call(arguments).slice(1)); }
+
+  /**
+  * @return a boolean indicating whether or not a given object looks like a Java object
+  */
+  function isJavaType(obj) {
+      return (obj && typeof obj.getClass === 'function' &&
+            typeof obj.notify === 'function' &&
+            typeof obj.hashCode === 'function');
+  };
+  function isJavaArray(obj) {
+      return (obj && isJavaType(obj) && getTypeOf(obj).endsWith('[]'));
+  };
+  function isJavaCollection(collection) {
+      return isJavaType(collection) && Collection['class'].isInstance(collection);
+  };
+
+  /**
+  * Nashorn allows obj.length and obj['property'] and obj.property functionality
+  * for some object types.  This helps discover that fact at runtime
+  */
+  function isArrayLike(obj) {
+      return isJavaCollection(obj) || Array.isArray(obj) || isJavaArray(obj);
+  };
+/**
+    * For Java objects, return the simplified version of their classname e.g. 'Format' for a java.text.Format
+    * because Java naming conventions call for upper case in the first character.
+    *
+    * For JavaScript objects, the type will be a lower case string e.g. 'date' for a JavaScript Date.
+    * Note: Nashorn uses java.lang.String objects instead of JavaScript string objects
+    */
+   function getTypeOf(obj, verbose) {
+      'use strict';
+      var typ = 'unknown';
+      var isJava = isJavaType(obj);
+      logIfDebug("UTIL getTypeOf:called with verbose: ",verbose);
+      //test for java objects
+      if (isJava && verbose) {
+          typ = obj.getClass().getName();
+          logIfDebug("UTIL getTypeOf:inverbose block, type:: ",typ);
+      } else if (isJava) {
+          typ = obj.getClass().getSimpleName();
+      } else if (obj === null) {
+          typ = 'null';
+      } else if (typeof (obj) === typeof (undefined)) {
+          typ = 'undefined';
+      } else if (typeof (obj) === typeof (String())) {
+          typ = 'string';
+      } else if (Array.isArray(obj)) {
+          typ = 'array';
+      }
+      else if (Object.prototype.toString.call(obj) === '[object Date]') {
+          typ = 'date';
+      } else {
+          typ = obj ? typeof (obj) : typ;
+      }
+      return typ;
+  };
+
+  return function main(request, response, ctx, collection, solrServer, solrServerFactory) {
+    //output info about the objects passed in
+    logger.info("request object has type '{}'",getTypeOf(request,true))
+    //note, response is only valued after the solr query stage
+    logger.info("response object has type '{}'",getTypeOf(response,true))
+    logger.info("ctx object has type '{}'",getTypeOf(ctx,true))
+    logger.info("collection object has type '{}'",getTypeOf(collection,true))
+    logger.info("solrServer object has type '{}'",getTypeOf(solrServer,true))
+    logger.info("solrServerFactory object has type '{}'",getTypeOf(solrServerFactory,true))
+  };
+})();
+```
+
+For more information, see [JavaScript Query Stage Global Variables for Fusion 5.x.x](/fusion/5.9/395/custom-java-script-stages-global-variables#java-script-query-stage-global-variables).

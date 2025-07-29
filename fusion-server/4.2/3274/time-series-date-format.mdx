@@ -1,0 +1,71 @@
+---
+title: "Time Series (date_format)"
+permalink: "3274"
+---
+
+Fusion SQL provides a powerful and flexible time series aggregation query through the use of the `date_format` function. Aggregations that group by a `date_format` are translated to a Solr range facet query. This allows for fast, interactive time series reporting over large data sets.
+
+An example of a time series aggregation is shown below:
+
+```sql
+select date_format(rec_time, 'yyyy-MM') as month, count(*) as cnt
+from logrecords where rec_time > '2000-01-01' and rec_time < '2010-01-01'
+group by month
+```
+
+The `date_format` function is used to specify both the output format and the time interval in one compact pattern as specified by the Java
+[SimpleDateFormat](https://docs.oracle.com/javase/8/docs/api/java/text/SimpleDateFormat.html) class.
+
+The example above is performing a monthly time series aggregation over the `rec_time` field which is a `datetime` field.
+
+To switch to a daily time series aggregation all that is needed is to change the date pattern:
+
+```sql
+select date_format(rec_time, 'yyyy-MM-dd') as day, count(*) as cnt
+from logrecords where rec_time > '2000-01-01' and rec_time < '2000-12-31'
+group by day
+```
+
+## Interval Gap
+
+The interval gap can be defined with the optional `gap` parameter. If the gap parameter is not
+defined it is inferred from the date format string. For example the date format string 'yyyy-MM'
+will have an inferred gap of 1MONTH.
+
+To specify a custom gap you can add the gap parameter to the date format string as follows:
+
+```sql
+select date_format(rec_time, 'yyyy-MM-dd gap=2DAYS') as day, count(*) as cnt
+from logrecords where rec_time > '2000-01-01' and rec_time < '2000-12-31'
+group by day
+```
+
+The time series above will compute a time series with 2 day intervals between buckets.
+
+Interval gaps can be specified for: YEARS, MONTHS, DAYS, HOURS, MINUTES and SECONDS.
+
+## Date math predicates
+
+Fusion SQL also supports date math predicates through the `date_add`, `date_sub`, and `current_date` functions.
+
+Below is an example of the use of date math predicates.
+
+```sql
+select date_format(rec_time, 'yyyy-MM-dd gap=3DAYS') as day, count(*) as cnt
+from logrecords where rec_time > date_sub(current_date(), 30)
+group by day
+```
+
+## Auto-filling of time intervals
+
+Fusion SQL automatically fills any time interval that does not contain data with zeroes. This ensures that the full time range is included in the output
+which makes the time series results easy to visualize in charts.
+
+## Sort Order
+
+Time series aggregations are sorted by default in time ascending order. The `ORDER BY` clause can be used to sort time series aggregation results in
+a different order.
+
+## Having Clause
+
+A `HAVING` clause can also be applied to a time series query to limit the results to rows that meet specific criteria.

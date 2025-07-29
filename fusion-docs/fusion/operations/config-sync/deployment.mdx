@@ -1,0 +1,29 @@
+---
+title: "ConfigSync deployment"
+permalink: "5gj79e"
+---
+
+ConfigSync is disabled by default because it requires preparation of a GitHub repository.
+This topic provides an overview of the deployment process.
+
+## 1. Prepare a GitHub repository
+
+The `config-sync` service uses a GitHub repository to store the configuration files.
+
+See [Set up a GitHub repo for ConfigSync](/how-to/config-sync/y7nigg/set-up-a-git-hub-repo-for-config-sync) to learn how to prepare a repository for use with ConfigSync.
+
+[Repo organization](/fusion/5.9/a6m3du/repo-organization) explains what you’ll find in the repository when ConfigSync is enabled.
+
+## 2. Enable ConfigSync
+
+To enable ConfigSync, you need to update your Helm chart configuration.
+See [Enable ConfigSync](/how-to/config-sync/y1rt4o/enable-config-sync) for instructions.
+
+## 3. Configure the synchronization mode
+
+You can select [Publisher](/fusion/5.9/b1rtue/publisher-mode), [Subscriber](/fusion/5.9/t51vvb/subscriber-mode), or [PubSub](/fusion/5.9/r0xnd3/pub-sub-mode) mode.
+See [Configure the ConfigSync mode](/how-to/config-sync/r4vnii/configure-the-config-sync-mode) for instructions.
+
+## Additional configuration options
+
+For additional configuration options, see the [ConfigSync configuration reference](/fusion/5.9/ifv6st/config-sync-configuration-reference).

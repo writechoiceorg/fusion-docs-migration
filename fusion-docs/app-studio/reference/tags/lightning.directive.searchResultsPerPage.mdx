@@ -1,0 +1,59 @@
+---
+title: "search:results-per-page"
+permalink: "1091"
+---
+
+## Description
+
+The Results Per Page Directive allows you to change the number of
+documents that are returned from the platform. The results per page tag
+should be wrapped in a [Layout
+Controls Tag](/app-studio/4.2/1062/layout-controls).
+
+## Usage
+
+as element:
+
+```xml
+<search:results-per-page
+       response="{object}"
+       [title="{string}"]
+       [options="{string}"]>
+</search:results-per-page>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object |
+| title  *(optional)* | **string** | The title to display before the result count options. |
+| options  *(optional)* | **string** | Which options to provide the user. Should be a comma-separated list of integers. |
+
+## Example
+
+#### Source
+
+```xml
+<layout:controls>
+  <search:results-per-page response="response" options="10,20,25,50"></search:results-per-page>
+</layout:controls>
+
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+          $scope.response = {
+
+          }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchResultsPerPage.png)</Frame>

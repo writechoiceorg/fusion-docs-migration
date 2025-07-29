@@ -1,0 +1,123 @@
+---
+title: "Signals API"
+permalink: "314"
+---
+
+
+The Signals API accepts a set of [signals](/fusion/4.2/466/signals-types-and-structures), encoded as JSON objects, for indexing into a signals collection.
+
+<Note>
+This API requires a [Fusion AI license](/fusion-ai/4.2/505/licensing).
+</Note>
+
+Normally, signals are indexed just like ordinary documents, through a configured datasource and index pipeline. This API is provided for cases where it is more convenient to index signals directly.
+
+To aggregate signals, use a [SQL aggregation](/fusion-ai/4.2/471/sql-aggregations) job, which is a kind of [Spark job](/fusion-server/4.2/187/spark-jobs).
+
+<Tip>
+You can manage aggregation jobs in the [Jobs manager](/fusion-server/4.2/184/jobs-overview#jobs-manager) and [Scheduler](/fusion-server/4.2/184/jobs-overview#scheduler) in the Admin UI, or with the [Spark jobs API](/fusion-server/4.2/312/spark-jobs-api). We recommend using the Admin UI.
+</Tip>
+
+See [Signal types and structure](/fusion-ai/4.2/469/signals#signals-types-and-structure) to learn how to send well-formed signals to this API.
+
+## Examples
+
+*Send two signal events to record user clicks:*
+
+**REQUEST**
+
+```bash
+curl \
+ -u USERNAME:PASSWORD -X POST -H 'Content-type:application/json' -d @- \
+https://FUSION_HOST:8764/api/signals/docs?commit=true \
+<<EOF
+[
+ {"params": {
+      "query": "Televisiones Panasonic  50 pulgadas",
+      "filterQueries": ["cat00000","abcat0100000", "abcat0101000", "abcat0101001"],
+      "docId": "2125233" },
+ "type":"click",
+ "timestamp": "2011-09-01T23:44:52.53Z"
+ },
+ {"params": {
+       "query": "Sharp",
+       "filterQueries": ["cat00000", "abcat0100000", "abcat0101000", "abcat0101001"],
+       "docId": "2009324" },
+  "type":"click",
+  "timestamp": "2011-09-05T12:25:37.42Z"
+ }
+]
+EOF
+```
+
+A successful request results in events being added to the signals collection.
+For the above example, the events will be represented as follows:
+
+```json
+ {
+  "responseHeader":{
+    "status":0,
+    "QTime":1,
+    "params":{
+      "indent":"true",
+      "q":"docId: 2125233",
+      "wt":"json"}
+ },
+  "response":{"numFound":1198,"start":0,"docs":[
+      {
+        "id": "7aee7b1f-5cde-4957-b73c-c15881f559ec",
+        "filters_s": "abcat0100000 $ abcat0101000 $ abcat0101001 $ cat00000",
+        "query_orig_s": "Televisiones Panasonic  50 pulgadas",
+        "params.user_s": "000000df17cd56a5df4a94074e133c9d4739fae3",
+        "docId": "2125233",
+        "params.query_time__s": "2011-09-01T23:43:59.75Z",
+        "query_t": "televisiones panasonic 50 pulgadas",
+        "query_s": "televisiones panasonic 50 pulgadas",
+        "filters_orig_ss": [
+          "abcat0100000",
+          "abcat0101000",
+          "abcat0101001",
+          "cat00000"
+        ],
+        "flag_s": "EVENT",
+        "type_s": "click",
+        "attr_params.filterQueries_": [
+          "cat00000",
+          "abcat0100000",
+          "abcat0101000",
+          "abcat0101001"
+        ],
+        "timestamp_dt": "2011-09-01T23:44:52.53Z",
+        "_version_": 1478892846857584600
+      },
+      {
+        "id": "6789a209-f5b5-457e-9df6-8033b8f7f317",
+        "filters_s": "abcat0100000 $ abcat0101000 $ abcat0101001 $ cat00000",
+        "query_orig_s": "Sharp",
+        "params.user_s": "000001928162247ffaf63185cd8b2a244c78e7c6",
+        "docId": "2009324",
+        "params.query_time__s": "2011-09-05T12:25:01.18Z",
+        "query_t": "sharp",
+        "query_s": "sharp",
+        "filters_orig_ss": [
+          "abcat0100000",
+          "abcat0101000",
+          "abcat0101001",
+          "cat00000"
+        ],
+        "flag_s": "EVENT",
+        "type_s": "click",
+        "attr_params.filterQueries_": [
+          "cat00000",
+          "abcat0100000",
+          "abcat0101000",
+          "abcat0101001"
+        ],
+        "timestamp_dt": "2011-09-05T12:25:37.42Z",
+        "_version_": 1478892846859681800
+      }
+    ]
+  }
+}
+```
+

@@ -1,0 +1,47 @@
+---
+title: "hide:when"
+permalink: "1054"
+---
+
+## Description
+
+Show or hideWhen element based on expression passed to it.
+
+## Usage
+
+as attribute
+
+```xml
+<ANY hide-when="{expression}">
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| hide-when | **expression** | Expression to evaluate. |
+
+## Example
+
+#### Source
+
+```jsx
+<p><a href="javascript:void(0);" ng-click="alert()" styling="button">{{foo ? 'Show' : 'Hide'}}!</a></p>
+<h3 hide-when="foo" id="example_hello-world">Hello World</h3>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+          $scope.foo = false;
+          $scope.alert = function(){
+            $scope.foo = !$scope.foo
+          };
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/hideWhen.png)</Frame>

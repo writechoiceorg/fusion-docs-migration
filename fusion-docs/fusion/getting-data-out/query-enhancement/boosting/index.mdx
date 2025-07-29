@@ -1,0 +1,95 @@
+---
+title: "Boosting"
+permalink: "3242"
+---
+
+[Signals](/fusion/5.9/469/signals) contain data about how users interact with search results. Once your Fusion app has accumulated a sufficient number of [aggregated signals](/fusion/5.9/590/aggregation-jobs), they become useful for automatically producing recommendations and boosts for better relevance and higher conversion rates.
+
+The same data used to produce recommendations can also be used for automatic boosting. So although recommendations and boosts are different (as explained below), these topics use "recommender data" to refer to the data that can be used for boosting as well as for recommendations.
+
+## Recommendations vs boosts
+
+Recommendations and boosts are two ways of presenting AI-powered estimations about which items are most likely to interest a user:
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Recommendations</th>
+      <th class="tableblock halign-left valign-top">Boosts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              Personalized search results from a special, automatic query,
+              <em>whether or not the user has performed a query</em>.
+            </p>
+          </div>
+          <div class="paragraph">
+            <p>Recommendations can be based on a variety of criteria, as in the examples below:</p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>"Based on your purchase history, you might be interested in these items."</p>
+              </li>
+              <li>
+                <p>"People who viewed this item also viewed these items."</p>
+              </li>
+              <li>
+                <p>"People who searched for 'ipad' also searched for these items."</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              Modifications to the <em>scores</em> of the items in a query’s search results.
+            </p>
+          </div>
+          <div class="paragraph">
+            <p>
+              The set of search results does not change, but their ranking does. For example:
+            </p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li><p>Boost the most popular items</p></li>
+              <li><p>Boost items this user has clicked before</p></li>
+              <li><p>Boost seasonal items</p></li>
+            </ul>
+          </div>
+          <div class="paragraph">
+            <p>
+              Boosts can also be configured manually, using the
+              <a href="/fusion/5.9/167/query-workbench#boosting-and-blocking">
+                Query Workbench
+              </a>
+              or the
+              <a href="/fusion/5.9/8835/business-rules">
+                Query Rewriting UI
+              </a>
+              .
+              You can also perform boosts within a set of recommendations.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+These topics explain how to configure and use recommendations and boosts:
+
+* [Getting Started](/fusion/5.9/480/getting-started-with-recommendations-and-boosting) shows you how to quickly enable the basic feature set and see some results.
+* [Recommendation Methods](/fusion/5.9/475/methods-for-recommendations-and-boosting) explains the available approaches to recommendations and boosting, including methods that do not rely on signals.
+
+## See also
+
+* [Boost with Signals](/fusion/5.9/483/boost-with-signals)

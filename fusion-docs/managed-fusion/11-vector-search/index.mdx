@@ -1,0 +1,128 @@
+---
+title: "Neural Hybrid Search"
+permalink: "6ogpnt"
+---
+
+Neural Hybrid Search is a capability that combines lexical and semantic dense vector search to produce more accurate and relevant search results.
+
+Lexical search works by looking for literal matches of keywords.
+For example, a query for `chips` would result in potato chips and tortilla chips, but it could also result in chocolate chips.
+
+Semantic vector search, however, imports meaning.
+Semantic search could serve up results for potato chips, as well as other salty snacks like dried seaweed or cheddar crackers.
+
+Both methods have their advantages, and often you’ll want one or the other depending on your use case or search query.
+Neural Hybrid Search lets you use both: it combines the precision of lexical search with the nuance of semantic search.
+
+To use semantic vector search in Managed Fusion, you need to configure Neural Hybrid Search.
+Then you can choose the balance between lexical and semantic vector search that works best for your use case.
+For example, you can use a 70/30 split between semantic and lexical search, or a 50/50 split, or any other ratio that works for you.
+
+This topic explains the concepts that you need to understand to configure and use Neural Hybrid Search in Managed Fusion.
+For instructions for enabling and configuring it in your pipeline, see [Configure Neural Hybrid Search](/how-to/56o1tt/configure-neural-hybrid-search).
+
+<Note>
+**Important**
+
+This feature is currently only available to clients who have contracted with Lucidworks for features related to Neural Hybrid Search and Lucidworks AI.
+
+</Note>
+
+
+<Note>
+This feature is only available in Managed Fusion 5.9.x for versions 5.9.6+.
+</Note>
+
+
+
+## Hybrid Scoring
+
+The combination of lexical and semantic score is based on this function:
+
+```
+(vector_weight*vector_score + lexical_weight*scaled(lexical_score))
+```
+
+Because lexical scores can be arbitrarily large due to the use of TF-IDF and BM25, `scaled()` means that the lexical scores are scaled close to `0` and `1` to be aligned with the bounded vector scores. This scaling of `1` is achieved by taking the largest lexical score and dividing all lexical scores by that high score.
+
+Hybrid scoring tips:
+
+* For highly tuned lexical and semantic search, the ratio will be closer to `0.3` lexical weight and `0.7` semantic weight.
+* When using the [Boost with Signals stage](/managed-fusion/5.9/ihes2t/boost-with-signals) use `bq`, not `boost`, and enable **Scale Boosts** to control how much the signals can impact the overall hybrid score. Lucidworks recommends keeping the scale boost values low, since SVS with scale scores with a max of `1`.
+
+<Note>
+**Important**
+
+In Fusion 5.9.5 - 5.9.9, all of the documents within the search collection *must* have an associated vector field. Otherwise, hybrid search fails on that vector field. This does not apply to Fusion 5.9.10 and later.
+</Note>
+
+
+
+For more information, see [Semantic vector search test guidelines.](/managed-fusion/5.9/9yfvck/semantic-vector-search-test-guidelines)
+
+## Solr Vector Query Types
+
+Solr supports vector query types for semantic search that compare the similarity between encoded vector representations of content. These query types determine how results are retrieved and ranked based on proximity or similarity within the vector space.
+
+The two vector query types used at Lucidworks are K-Nearest Neighbors (KNN) and Vector Similarity Threshold (VecSim).
+
+The simplest difference between the two is how they return results:
+
+* KNN always returns a fixed number of results (topK), no matter the input. For example, if topK = 10, you’ll always get 10 results.
+* VecSim returns a varying number of results based on similarity score (from 0 to 1). Only items above a set threshold are returned, so it’s possible to get zero results if nothing is similar enough.
+
+Read below to learn more about their details.
+
+### K-Nearest Neighbors (KNN)
+
+This is a query where a top value (k) is always returned, referred to as topK. Regardless of the input vector there will always be k vectors returned because within the vector space of your encoded vectors there is always something in proximity.
+
+Sharding with topK pulls k from each shard, so the final top k on a sharded collection will be `topK*Shard_count`.
+
+Using prefiltering makes it possible for top level filters to filter out results and still allow for results that were collected by the KNN query. Otherwise, when prefiltering is blocked it is possible to have 0 results after the KNN query after the filters are applied, to mitigate that risk a larger topK can be used at the cost of performance.
+
+#### KNN Solr Scoring
+
+Solr supports three different similarity score metrics: `euclidean`, `dot_product` or `cosine`. In Managed Fusion, the default is `cosine`. It’s important to note that Lucene bounds cosine to `0` to `1`, and therefore differs from standard [cosine similarity](https://en.wikipedia.org/wiki/Cosine_similarity). For more information, refer to the [Lucene documentation on scoring formula](https://lucene.apache.org/core/4_10_0/core/org/apache/lucene/search/similarities/TFIDFSimilarity.html) and the [Solr documentation on Dense Vector Search](https://solr.apache.org/guide/solr/latest/query-guide/dense-vector-search.html#densevectorfield).
+
+<Note>
+In Managed Fusion 5.9.5 - 5.9.9, Solr Collapse does not work well with Neural Hybrid Search because the computed hybrid score uses the vector score that is based on the `head` node and not the most relevant vector document within the collapse. This does not apply to Managed Fusion 5.9.10 and later.
+</Note>
+
+### Vector Cosine Similarity Cutoff/Threshold (VecSim)
+
+This is a query where a cosine float value between 0 and 1 is given to compare similarity scores of the vectors to the input vector, everything above and at the threshold is kept, everything else is left out. It is possible to get zero results when using a similarity threshold because there may not be any documents that are within the given threshold.
+
+This can be slower because the number of vectors is unknowable and it’s impossible to control the size of the vector result set. VecSim will speed up when prefiltering is enabled.
+
+## Replica choice
+
+Lucidworks recommends using PULL and TLOG replicas. These replica types copy the index of the leader replica, which results in the same HNSW graph on every replica. When querying, the HNSW approximation query will be consistent given a static index.
+
+In contrast, NRT replicas have their own index, so they will also have their own HNWS graph. HNSW is an Approximate Nearest Neighbor (ANN) algorithm, so it will not return exactly the same results for differently constructed graphs. This means that queries performed can and will return different results per HNWS graph (# of NRT replicas in a shard) which can lead to noticeable result shifts. When using NRT replicas, the shifts can be made less noticeable by increasing the `topK` parameter. Variation will still occur, but should be lower in the documents. Another way to mitigate shifts is to use Neural Hybrid Search with a vector similarity cutoff.
+
+For more information, refer to [Solr Types of Replicas](https://solr.apache.org/guide/solr/latest/deployment-guide/solrcloud-shards-indexing.html#types-of-replicas).
+
+## Considerations for multi-sharded collections
+
+* The Managed Fusion UI will show vectors floats encapsulated by `“ ”`. This is expected behavior.
+* Sharding with `topK` pulls `K` from each shard `topK*Shard_count`.
+
+## More resources
+
+* [Configure Neural Hybrid Search](/how-to/56o1tt/configure-neural-hybrid-search)
+* [Configure Ray/Seldon vector search](/how-to/f2t34r/configure-seldon-ai-vector-search)
+* [Configure the LWAI Neural Hybrid Search pipeline](/how-to/tpq759/lwai-neural-hybrid-search-pipeline)
+* [Configure the LWAI Vectorize Pipeline](/how-to/3kjevu/lwai-vectorize-pipeline)
+
+### Index stages
+
+* [LWAI Vectorize Field](/managed-fusion/5.9/4h364i/lwai-vectorize-field)
+* [Ray/Seldon Vectorize Field Stage](/managed-fusion/5.9/rxqfrt/ray-seldon-vectorize-field-stage)
+
+### Query stages
+
+* [Hybrid Query (5.9.9 and earlier)](/managed-fusion/5.9/23oiz7/hybrid-query-stage)
+* [Neural Hybrid Query (5.9.10 and later)](/managed-fusion/5.9/4xm0li/neural-hybrid-query-stage)
+* [LWAI Vectorize Query](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query)
+* [Ray/Seldon Vectorize Query Stage](/managed-fusion/5.9/4engao/ray-seldon-vectorize-query-stage)

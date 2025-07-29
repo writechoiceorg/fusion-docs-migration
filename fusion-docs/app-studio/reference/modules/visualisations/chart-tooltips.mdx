@@ -1,0 +1,36 @@
+---
+title: "Chart Tooltips"
+permalink: "3144"
+---
+
+## Tooltips
+
+Tooltips display information when you hover over a point or area of the chart. Tooltips can be set across the whole chart or specifically to a series using the Chart Tooltip tag.
+
+This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart), or in either of the series tags ([Series Facet tag](/fusion/5.9/3150/faceting-a-data-series) and [Series Result List tag](/fusion/5.9/3149/search-result-data-series)) if the tooltip is specific to a series.
+
+```xml
+<chart:display response="response" title="Current Products vs Recommended Products">
+    <series:facet name="current_products" type="column" title="Current Products"></series:facet>
+    <series:facet name="recommended_products" type="column" title="Recommended Products"></series:facet>
+    <chart:tooltip header-format="<b>{point.x}</b><br/>" point-format="{series.name}: <b>{point.y}</b><br/>"></chart:tooltip>
+</chart:display>
+```
+
+<Frame>![Chart Tooltip](/assets/images/appkit/4.2/highchart-tooltip.png)</Frame>
+
+## Shared Tooltip
+
+If you are rendering more then one series you can set the tooltip to be shared, this means it will display information about all the series for the point you have hovered over.
+
+```xml
+<chart:display response="response" title="Current Products vs Recommended Products" stacking="normal">
+    <series:facet name="current_products" type="column" title="Current Products"></series:facet>
+    <series:facet name="recommended_products" type="column" title="Recommended Products"></series:facet>
+    <chart:tooltip headerFormat="<b>{point.x}</b><br/>" point-format="{series.name}: <b>{point.y}</b><br/>" shared="true"></chart:tooltip>
+</chart:display>
+```
+
+<Frame>![Chart Tooltip Shared](/assets/images/appkit/4.2/highchart-tooltip-shared.png)</Frame>
+
+To see all related attributes, see the [chart:tooltip](/fusion/5.9/1103/chart-tooltip) tag documentation.

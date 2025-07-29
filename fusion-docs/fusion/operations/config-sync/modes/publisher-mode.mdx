@@ -1,0 +1,55 @@
+---
+title: "Publisher mode"
+permalink: "b1rtue"
+---
+
+In Publisher mode, ConfigSync watches Zookeeper and polls Solr collections for changes in Fusion and pushes them to a Git repository.
+Once you deploy ConfigSync in the publisher mode, any changes to the app in the Fusion admin UI (or API) are picked and committed to the branch in GitHub.
+See [Configure the ConfigSync mode](/how-to/config-sync/r4vnii/configure-the-config-sync-mode) for steps to configure Publisher mode.
+
+## Watch Zookeeper
+
+The publisher watches Zookeeper for changes in Fusion objects.
+It uses Fusion’s [Links API](/fusion/5.9/319/links-api) to determine app association for Fusion objects.
+The publisher does not track links in GitHub as it uses the directory structure to maintain app association for an object.
+
+## Poll Solr collections
+
+Not all Fusion objects are stored in Zookeeper.
+Some objects are stored in Solr collections, such as blobs, rules, etc.
+The publisher polls Solr collections for changes in these objects and pushes them to the Git.
+
+### Blobs
+
+Blobs are stored in Solr (`system_blobs` collection) and not Zookeeper, consequently there is no ZK watch event fired when a blob has been added, deleted, or updated.
+Consequently, the publisher runs a background task that queries the blob store for changes every 20 seconds (configurable via `cfg.pub.checkForBlobUpdatesEveryMs`).
+If blob changes are detected, the publisher stores the blob in the local repo and normally pushes it to GitHub.
+
+### Rules
+
+Rules are stored in Solr (`*_query_rewrite` and `*_query_rewrite_staging` collections) and not Zookeeper, consequently there is no ZK watch event fired when a rule has been added, deleted, or updated.
+Consequently, the publisher runs a background task that queries the rule store for changes every 300 seconds (configurable via `cfg.pub.checkForRuleUpdatesEveryMs`).
+Rules are stored in the local repo as JSON lines files and normally pushed to GitHub.
+
+<Note>
+Rules sync isn’t a cheap operation, as it requires a full scan of the `*_query_rewrite` and `*_query_rewrite_staging` collections.
+</Note>
+
+
+
+## Pushing changes
+
+By default, the publisher pushes pending commits in the local repo every 30 secs (see `cfg.sync.syncEvery`); a PUSH operation is typically slow and can take several seconds to complete.
+PUSH is synchronized so that only one thread is sending updates to GitHub at a time.
+
+## Repository structure
+
+Read more about the repository structure in the [Repo organization](/fusion/5.9/a6m3du/repo-organization) section.
+
+## Watched objects
+
+Check the [Supported objects](/fusion/5.9/u8n1i5/supported-objects) section for a list of objects that are watched by the publisher.
+
+## Filters
+
+Publisher mode supports [App filters](/fusion/5.9/7p74hf/apps-filter) and [Object filters](/fusion/5.9/ztfcnr/object-filters).

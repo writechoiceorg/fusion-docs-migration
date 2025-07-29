@@ -1,0 +1,50 @@
+---
+title: "TranslationService"
+permalink: "1220"
+---
+
+## Description
+
+Appkit Translation Service
+
+## Methods
+
+### addBundle(name, bundle)
+
+Add a translation bundle with a specified name
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string |  |
+| bundle | object |  |
+### get(term, fallback, namespaces)
+
+Get a translation for a term if it exists, otherwise return the original term
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| term | string | The term to translate |
+| fallback | string | The fallback to apply |
+| namespaces *(optional)* | string | The bundle names to use. Comma delimited  *(default: "default")* |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | The translated term |
+### put(key, translation, namespace, override)
+
+Add a new translation
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| key | string |  |
+| translation | string |  |
+| namespace *(optional)* | string |  |
+| override *(optional)* | string |  |

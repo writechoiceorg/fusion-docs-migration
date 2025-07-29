@@ -1,0 +1,45 @@
+---
+title: "DateUtils"
+permalink: "1224"
+---
+
+## Description
+
+Twigkit service for useful date functions
+
+## Methods
+
+### dateSortResults(results, dateField, oldestFirst)
+
+Sort results array by date
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| results | mixed | Array of results from response |
+| dateField | string | Result field to use for ordering |
+| oldestFirst | boolean | If true the results will be order from oldest to newest |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| mixed | Sorted array of results |
+### groupByDateRanges(results, dateField, groupBy)
+
+Group results into date ranges, used for the timeline
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| results | mixed | Sorted array of results |
+| dateField | string | Result field to use for ordering |
+| groupBy | string | Optionally specify how to group the results, by default it tries to get the best fit |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| mixed | Array of grouped results |

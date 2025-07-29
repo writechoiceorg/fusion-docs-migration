@@ -1,0 +1,20 @@
+---
+title: "Rollup Aggregation"
+description: "Query pipeline stage configuration specifications"
+permalink: "mz3o72"
+---
+
+The Rollup Aggregation query pipeline stage (previously called the Rollup Aggregator stage) is used to roll up Solr results from a context variable. In the REST API, this stage type is named `rollup-rec-aggr`.
+
+This stage reads the Solr results (`SolrResponse.class`) from the context and rolls up over a single field product a list of unique IDs and also aggregates the weights (any numeric field in Solr) for those IDs using any of the statistical aggregation functions available. The result from aggregation is saved back in the context and can be used later in a Parameterized Boosting stage.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/rollup-aggregation.mdx";
+
+<SchemaParamFields schema={schema}/>

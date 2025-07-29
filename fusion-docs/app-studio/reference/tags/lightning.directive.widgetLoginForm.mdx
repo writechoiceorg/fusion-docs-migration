@@ -1,0 +1,70 @@
+---
+title: "widget:login-form"
+permalink: "1195"
+---
+
+## Description
+
+Creates a login form
+
+## Usage
+
+as element:
+
+```xml
+<widget:login-form
+       [logo="{string}"]
+       [logo-alt="{string}"]
+       [title="{string}"]
+       [message="{string}"]
+       [action="{string}"]
+       [method="{string}"]
+       [username="{string}"]
+       [password="{string}"]
+       [username-placeholder="{string}"]
+       [password-placeholder="{string}"]
+       [remember="{string}"]
+       [submit-label="{string}"]
+       [access-denied="{string}"]
+       [error-message="{string}"]
+       [reset-link="{string}"]
+       [create-link="{string}"]
+       [username-error-message="{string}"]
+       [password-error-message="{string}"]>
+</widget:login-form>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| logo  *(optional)* | **string** | The path to the logo |
+| logo-alt  *(optional)* | **string** | The alt text for the logo |
+| title  *(optional)* | **string** | The title text that displays below the logo |
+| message  *(optional)* | **string** | The message to display below the title |
+| action  *(optional)* | **string** | URL to send the form data to |
+| method  *(optional)* | **string** | The form method to use. Default POST |
+| username  *(optional)* | **string** | The name of the username input |
+| password  *(optional)* | **string** | The name of the password input |
+| username-placeholder  *(optional)* | **string** | The placeholder of the username input |
+| password-placeholder  *(optional)* | **string** | The placeholder of the password input |
+| remember  *(optional)* | **string** | The name of the remember input. Set to false to hide remember me checkbox  *(default: "remember")* |
+| submit-label  *(optional)* | **string** | The text on the submit button.  *(default: "Login")* |
+| access-denied  *(optional)* | **string** | Checks the URL for the value of access-denied, if found the error message will be displayed E.g. access=denied |
+| error-message  *(optional)* | **string** | The error message to display when the login is rejected.  *(default: "Invalid username or password")* |
+| reset-link  *(optional)* | **string** | Provide a link to reset the user’s password |
+| create-link  *(optional)* | **string** | Provide a link to for a user to request an account |
+| username-error-message  *(optional)* | **string** | Message to display if the username is not entered or valid.  *(default: "This field is required.")* |
+| password-error-message  *(optional)* | **string** | Message to display if the password is not entered or valid.  *(default: "This field is required.")* |
+
+## Example
+
+#### Source
+
+```xml
+<widget:login-form></widget:login-form>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetLoginForm.png)</Frame>

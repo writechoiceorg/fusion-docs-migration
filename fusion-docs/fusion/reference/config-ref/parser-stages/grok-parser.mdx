@@ -1,0 +1,58 @@
+---
+title: "Grok Parser Stage"
+permalink: "373"
+---
+
+The Grok parser stage uses [Java Grok](https://github.com/thekrakken/java-grok) and Grok patterns (a specific kind of regex matching) to parse log files and similar text files that have line-oriented, semi-structured data. Parsing a text file with the Grok parser lets you give more structure to semi-structured data and extract more information.
+
+## Whether the Grok stage parses a file
+
+Before a Grok parser stage parses a file, the file must meet criteria regarding the media type and file name.
+
+### Media type
+
+The Grok parser stage parses files that have media types that match either the default media types *or* media types that you specify.
+
+Select or unselect **Use default media types for this parser stage**:
+
+* Selected.* The Grok parser stage parses files that have one of the default media types (`text/plain` or `text/x-log`), as well as files that have media types that you specify under **Media Types for this Parser Stage**.
+* Unselected.* The Grok parser stage *only* parses files that have one of the media types that you specify under **Media Types for this Parser Stage**.
+
+### File name
+
+Optionally, you can specify a file name or file name pattern that a file must match for the Grok parser stage to parse the file.
+
+| Field | Description |
+| --- | --- |
+| Pattern Type | `glob`. Use `bash` shell wildcards. Examples include `z.txt`, `*.md`, and `/a/*/b/f.txt`.  `regex`. Use Java regular expressions (PCRE; Perl-compatible regular expressions). Examples include `z.txt$`, `.*\.txt$`, and `^/a/[^\/]*/b/f.txt$`. |
+| File Name or Pattern | Name of the file or a pattern for the file name. The parser parses matching files. |
+
+## Grok patterns
+
+Grok patterns are regular expressions written in the language of the [Oniguruma regular expression library](https://github.com/kkos/oniguruma), which has [this syntax](https://github.com/kkos/oniguruma/blob/master/doc/RE).
+
+You configure a Grok parsing stage to use predefined [Grok patterns](/fusion/5.9/379/grok-patterns) (about 300 patterns are available) and/or Grok pattern definitions that you write yourself.
+
+* **Use predefined patterns.** Under the **Grok Pattern** part of the Grok parser stage configuration, specify a single top-level Grok pattern by name, for example, `REDISLOG`.
+* **Write your own Grok pattern definition(s).** (*optional*) Write one or more Grok pattern definitions, and then enter them in the **Grok Definition** part of the Grok parser stage configuration.
+
+## Parsing rules
+
+These are rules that affect the results of parsing:
+
+* **Precedence in the event of identical names.** If the name of a custom Grok pattern definition that you provide is identical to the name of a predefined pattern definition, then your definition is used.
+* **Invalid patterns.** If a pattern is not syntactically valid, then the full text of the row being parsed is treated as a single field.
+
+* **Pattern does not match any data.** If a pattern does not match any data, then the full text of the row being parsed is treated as a single field.
+* **Line by line.** Parsing is line by line. If data has a multiline structure, the parser does not capture the relationship between lines.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/grok.mdx";
+
+<SchemaParamFields schema={schema}/>

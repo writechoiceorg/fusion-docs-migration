@@ -1,0 +1,108 @@
+---
+title: "User API"
+permalink: "340"
+---
+
+View API specification
+
+The User API allows you to create, update, and remove user accounts. This API should only be called to manage users in the native security realm. Users from other security realms are managed directly by Fusion’s auth proxy.
+
+## Create, Update, Delete or List Users
+
+The path for this request is:
+
+`/api/users/<id>`
+
+where *\<id>* is the user ID.
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion-server/4.2/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+A GET request lists information about the user. The ID can be omitted in a GET request to get all users.
+
+A POST request creates a new user, while a PUT updates a user record.
+
+DELETE will remove the user.
+
+### Input
+
+| Parameter | Description |
+| --- | --- |
+| username  *Required* | The username. This is distinct from their ID, which is assigned by the system as a unique identifier. |
+| password  *Required* | The user’s password. Required when creating a new user. The user’s password is not returned in the output of any request. |
+| passwordConfirm  *Required* | When creating a user or updating a user’s password, you must confirm the defined password. |
+| realmName  *Required* | The realm the user belongs to, which defines how they authenticate against the system. |
+| permissions  *Optional* | The permissions that have been defined for this user that are not inherited from their assigned role. |
+| inheritedPermissions  *Optional* | The user’s specific permissions that are inherited from their role assignment. |
+| roleNames  *Optional* | The list of user’s roles, which define some or all of the permissions they have. |
+
+### Output
+
+When creating a user with a POST request or listing users with GET, the user properties will be returned.
+
+When updating or removing a user with a PUT or DELETE, no output will be returned.
+
+### Examples
+
+*Get all the configured users of the system:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/users
+```
+
+**RESPONSE**
+
+```json
+[
+	{
+	"realmName":"native",
+	"username":"admin",
+	"id":"2856ba33-80bd-400d-99dc-3d181bc68d9a",
+	"roleNames":["admin"],
+	"permissions":[],
+	"createdAt":"2015-07-01T03:18:06Z"},
+		{"realmName":"native",
+		"username":"collection-admin",
+		"id":"9780a33c-c49d-48e3-a869-bd65951aea8f",
+		"roleNames":["ui-user","collection-admin"],
+		"permissions":[],
+		"createdAt":"2015-07-01T03:18:06Z"
+	}
+]
+```
+
+*Add a new user named 'guest'*:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"username":"guest", "password":"password456", "passwordConfirm":"password456", "realmName": "native"}' https://FUSION_HOST:8764/api/users
+```
+
+**RESPONSE**
+
+```json
+{
+	"realmName":"native",
+	"username":"guest",
+	"id":"2f5b52a7-550d-407d-b592-32ab42afe3ca",
+	"roleNames":[],
+	"permissions":[],
+	"createdAt":"2015-08-06T11:42:15Z"
+}
+```
+
+*Update a user to include the role named "admin":*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-type: application/json' -d '{"name":"joe.smith", "realmName":"myLDAP", "roleNames":["admin"]}' https://FUSION_HOST:8764/api/users/aefa7ffc-23f1-45ac-b326-f7bb007d3b9d
+```
+
+**RESPONSE**
+
+None.

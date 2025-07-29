@@ -1,0 +1,105 @@
+---
+title: "APIs"
+description: "Configuration specifications"
+permalink: "t51gkk"
+---
+
+Managed Fusion’s REST APIs provide programmatic access to Managed Fusion services and features.
+You can use the APIs to automate tasks, integrate Managed Fusion with other systems, and build custom applications.
+
+## API authentication
+
+There are two ways to authenticate when making API calls to Managed Fusion:
+
+* Basic authentication with a username and password
+* API key authentication
+
+### Authenticate with basic auth
+
+You can use a Managed Fusion username and password to authenticate with Managed Fusion’s REST API.
+The user’s [role](/managed-fusion/5.9/ydvorx/roles) and [permissions](/managed-fusion/5.9/ro1m7q/permissions) must include access to the endpoints and methods you want to use.
+
+### Authenticate with an API key
+
+You can use an API key instead of a username and password combination to power your search application or operations.
+Pass your API key to Fusion using either `apiKey` or `x-api-key`, as in these examples:
+
+```
+curl -H "x-api-key: API_KEY" "https://FUSION_HOST/api/query/status"
+curl -H "apiKey: API_KEY" "https://FUSION_HOST/api/query/status"
+curl https://FUSION_HOST/api/query/status?apiKey=API_KEY
+```
+
+For more information, see [API Keys](/managed-fusion/5.9/rrlnf6/api-keys).
+
+## Access API endpoints
+
+API endpoints follow this pattern:
+
+```
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/SERVICE_NAME/ENDPOINT
+```
+
+Example: `https://EXAMPLE_COMPANY.b.lucidworks.cloud/query/query-pipelines`
+
+<Note>
+This is different than the paths in the Swagger/OpenAPI specs, which specify the paths as `/api/SERVICE_NAME/ENDPOINT`. Omit the `/api` base path when making REST API calls to Managed Fusion.
+</Note>
+
+## Discover API endpoints
+
+There are several ways to discover Managed Fusion’s REST API endpoints.
+
+### Discover endpoints in the docs
+
+Navigate this documentation to find the API for each Managed Fusion service.
+On any API documentation page, click the **View API specification** button to see the Swagger/OpenAPI specs for that service’s API endpoints.
+
+You can also jump directly to the specs from here:
+
+* [Admin API specs](/managed-fusion/5.9/4qv08d/admin-ap-is?open-api=true#/)
+* [Apps Manager API specs](/managed-fusion/5.9/5ixgx1/apps-manager-api?open-api=true#/)
+* [Async Parsing API specs](/managed-fusion/5.9/3uszuk/async-parsing-api?open-api=true#/)
+* [Query API specs](/managed-fusion/5.9/zozko5/query-ap-is?open-api=true#/)
+* [Connectors APIs specs](/managed-fusion/5.9/e5kftb/connectors-ap-is?open-api=true#/)
+* [Proxy API specs](/managed-fusion/5.9/2hququ/managed-fusion-proxy-ap-is?open-api=true#/)
+* [Indexing APIs specs](/managed-fusion/5.9/25joat/indexing-ap-is?open-api=true#/)
+* [Job Config API specs](/managed-fusion/5.9/bg2tq9/job-config-api?open-api=true)
+* [Job Launcher API specs](/managed-fusion/5.9/o5byg3/job-launcher-ap-is?open-api=true#/)
+* [Job REST Server API specs](/managed-fusion/5.9/472sk5/job-rest-server-ap-is?open-api=true#/)
+* [Machine Learning Model API specs](/managed-fusion/5.9/eegjqq/machine-learning-model-ap-is?open-api=true#/)
+* [Templating API specs](/managed-fusion/5.9/s3uqb5/templating-api?open-api=true#/)
+
+### Access the Swagger UI
+
+Access the Swagger UI at this URL:
+
+```
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/swagger-ui/index.html
+```
+
+Use the Explore bar to switch between the APIs for different services.
+For any API you want to see, enter `/SERVICE_NAME/v3/api-docs` in the Explore bar.
+For example, enter `/indexing/v3/api-docs` to see the Indexing API:
+
+<Frame>![Swagger UI](/assets/images/swagger-ui.png)</Frame>
+
+### Get the API specs in JSON
+
+You can view or download the JSON-formatted API specs for each service by appending
+`/v3/api-docs`
+to the service’s base URL:
+
+```
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/swagger
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/apps-manager/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/async-parsing/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/connectors/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/indexing/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/job-config/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/job-launcher/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/job-rest-server/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/ml-model-service/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/query/v3/api-docs
+https://EXAMPLE_COMPANY.b.lucidworks.cloud/templating/v3/api-docs
+```

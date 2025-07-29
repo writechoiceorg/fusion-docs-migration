@@ -1,0 +1,68 @@
+---
+title: "Solr collections"
+permalink: "011kpa"
+---
+
+ConfigSync offers a streamlined way to handle Solr collections directly from your repository.
+Here’s a practical guide on creating, modifying, and potentially deleting Solr collections through ConfigSync.
+
+## Configuration storage
+
+Store your Solr collection configurations in the `_lw_system/solr-collections` directory within your repository.
+
+## Creating Solr collections
+
+### Format
+
+The JSON file for a Solr collection should follow the Solr V2 API format as detailed in the [Solr Guide for Collection Management](https://solr.apache.org/guide/solr/latest/deployment-guide/collection-management.html#create).
+
+### Example
+
+Here’s a sample JSON configuration for creating a Solr collection with an alias:
+
+```json
+{
+  "pullReplicas" : "0",
+  "replicationFactor" : "1",
+  "router" : {
+    "name" : "compositeId"
+  },
+  "maxShardsPerNode" : "1",
+  "autoAddReplicas" : "false",
+  "nrtReplicas" : "1",
+  "tlogReplicas" : "0",
+  "name" : "collection_live",
+  "numShards" : 1,
+  "alias" : "solr_collection_b",
+  "config" : "RH"
+}
+```
+
+### Alias creation
+
+If an alias is specified in the JSON, ConfigSync also creates this alias alongside the collection.
+
+## Modifying Solr collections
+
+### Modification constraints
+
+While it’s possible to modify the Solr collection JSON file, only certain properties can be changed as per the [Solr Guide for Modifying Collections](https://solr.apache.org/guide/solr/latest/deployment-guide/collection-management.html#modifycollection).
+
+### Properties you can modify
+
+These include `alias`, `config`, `replicationFactor`, `maxShardsPerNode`, `readOnly`, `perReplicaState`, and `autoAddReplicas`.
+
+### Alias modification/deletion
+
+Modifying the collection configuration can also modify or delete an existing alias, if specified.
+
+## Deleting Solr collections
+
+### Safety first
+
+By default, ConfigSync is designed not to delete Solr collections to prevent accidental data loss.
+
+### Force deletion
+
+If you’re certain about your action, you can force delete a Solr collection by prefixing your commit message with `force:<MESSAGE>` when you remove collection files from the repo.
+This action can also remove any specified alias.

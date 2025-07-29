@@ -1,0 +1,304 @@
+---
+title: "Machine Learning Jobs"
+permalink: "494"
+---
+
+Fusion provides these job types to perform machine learning tasks.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Machine Learning in Fusion** focuses on the basics about machine learning jobs in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/machine-learning-in-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/intro-to-machine-learning.jpg" alt="Machine Learning in Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Signals analysis
+
+These jobs analyze a collection of signals in order to perform [query rewriting](#qrw), [signals aggregation](#aggr), or [experiment analysis](#exp).
+
+* [Ground Truth](/fusion/5.9/567/ground-truth-jobs)
+
+  Ground truth or gold standard datasets are used in the ground truth jobs and query relevance metrics to define a specific set of documents.
+
+Ground truth jobs estimate ground truth queries using click signals and query signals, with document relevance per query determined using a click/skip formula.
+
+Use this job along with the [Ranking Metrics job](/fusion/5.9/575/ranking-metrics-jobs) to calculate relevance metrics, such as Normalized Discounted Cumulative Gain (nDCG).
+
+To create a ground truth job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Experiment Evaluation Jobs section, select **Ground Truth**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes the **Signals collection** field, which is the Solr collection that contains click signals and its associated search log identifier. This is the `signalsCollection` field in the configuration file. Required field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use in this job. This is the `sparkConfig` field in the configuration file.
+* **Additional Options.** This section includes the following options:
+
+  + **Search logs pipeline.** The pipeline ID associated with search log entries. This is the `searchLogsPipeline` field in the configuration file.
+  + **Join key (query signals).** The common key that joins the query signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Join key (click signals).** The common key that joins the click signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Search logs and options.** This section lets you enter `property name:property value` options to when loading the search logs collection. This is the `searchLogsAddOpts` field in the configuration file.
+  + **Additional signals options.** This section lets you enter `property name:property value` options when loading the signals collection. This is the `signalsAddOpts` field in the configuration file.
+  + **Filter queries.** The `array[string]` filter query to apply when selecting top queries from the query signals in the signals collection. This is the `filterQueries` field in the configuration file.
+  + **Top queries limit.** The total number of queries to select for ground truth calculations when this job is run. This is the `topQueriesLimit` field in the configuration file.
+
+For more information, see [Ground truth query rewrite API configurations](/fusion/5.9/7m6pv9/ground-truth-query-rewrite-api-configurations).
+
+### Query rewriting
+
+These jobs produce data that can be used for query rewriting or to inform updates to the [synonyms.txt file](/fusion/5.9/3240/synonyms).
+
+* [Head/Tail Analysis](/fusion/5.9/552/head-tail-analysis-jobs)
+
+  Perform head/tail analysis of queries from collections of raw or aggregated signals, to identify underperforming queries and the reasons. This information is valuable for improving overall conversions, Solr configurations, auto-suggest, product catalogs, and SEO/SEM strategies, in order to improve conversion rates.
+* [Phrase Extraction](/fusion/5.9/568/phrase-extraction-jobs)
+
+  Identify multi-word phrases in signals.
+* [Synonym Detection Jobs](/fusion/5.9/8803/synonym-detection-jobs)
+
+  Use this job to generate pairs of synonyms and pairs of similar queries. Two words are considered potential synonyms when they are used in a similar context in similar queries.
+* [Token and Phrase Spell Correction](/fusion/5.9/566/token-and-phrase-spell-correction-job)
+
+  Detect misspellings in queries or documents using the numbers of occurrences of words and phrases.
+
+### Signals aggregation
+
+* [SQL Aggregation](/fusion/5.9/8804/sql-aggregation-jobs)
+
+  A Spark SQL aggregation job where user-defined parameters are injected into a built-in SQL template at runtime.
+
+### Experiment analysis
+
+* [Ranking Metrics](/fusion/5.9/575/ranking-metrics-jobs)
+
+  Use this job to calculate relevance metrics by replaying [ground truth queries](fusion/5.9/567/ground-truth-jobs) against catalog data using variants from an [experiment](/fusion/5.9/460/experiments). Metrics include Normalized Discounted Cumulative Gain (nDCG) and others.
+
+To create a Ranking Metrics job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Experiment Evaluation Jobs section, select **Ranking Metrics**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Output collection.** The Solr collection where the job output is stored. The job will write the output to this collection. This is the `outputCollection` field in the configuration file. Required field.
+* **Ground Truth Parameters.** This section includes this parameter:
+
+  + **Ground truth input collection.** The collection that stores the ground truth dataset this job accesses. This is the `inputCollection` field in the configuration file. Required field.
+* **Ranking Experiment Parameters.** This section includes the following parameters:
+
+  + **Ranking experiment input collection.** The collection that stores the experiment data this job accesses. This is the `rankingExperimentConfig` `inputCollection` field in the configuration file. Optional field.
+  + **Experiment ID.** The identifier for the experiment that stores the variants this job uses to calculate ranking metrics. This is the `rankingExperimentConfig` `experimentId` field in the configuration file. Optional field.
+  + **Experiment metric name.** The name of the purpose (objective) of the experiment this job accesses to calculate ranking metrics. This is the `rankingExperimentConfig` `experimentObjectiveName` field in the configuration file. Optional field.
+  + **Default query profile.** The name of the query profile this job defaults to if the value is not specified in the experiment variants. This is the `rankingExperimentConfig` `defaultProfile` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use in this job. This is the `sparkConfig` field in the configuration file.
+* **Ranking position @K.** The number of returned or recommended items that are ranked (based on the relevancy rating) that are used for metrics calculation. This is the `rankingPositionK` field in the configuration file.
+* **Calculate metrics per query.** If this checkbox is selected (set to `true`), the job calculates the ranking metrics per query in the ground truth dataset, and saves the metrics data to the **Output collection** designated for this job. This is the `metricsPerQuery` field in the configuration file.
+* **Ground Truth Parameters.** The advanced option adds these parameters:
+
+  + **Filter queries.** The Solr filter queries this job applies against the ground truth collection to calculate ranking metrics. This is the `groundTruthConfig` `filterQueries` field in the configuration file.
+  + **Query field.** The query field in the ground truth collection. This is the `groundTruthConfig` `queryField` field in the configuration file.
+  + **Doc ID field.** This field contains the ranked document IDs in the collection. This is the `groundTruthConfig` `docIdField` field in the configuration file.
+  + **Weight field.** This field contains the weight of the document as it relates to the query. This is the `groundTruthConfig` `weightField` field in the configuration file.
+* **Ranking Experiment Parameters.** The advanced option adds these parameters:
+
+  + **Query pipelines.** These are the query pipelines for the experiment that stores the variants this job uses to calculate ranking metrics. This is the `rankingExperimentConfig` `queryPipelines` field in the configuration file.
+  + **Doc ID field.** This field contains the values (that match the ground truth data) this job uses to calculate ranking metrics. This is the `rankingExperimentConfig` `docIdField` field in the configuration file.
+
+## Collaborative recommenders
+
+These jobs analyze signals and generate matrices used to provide [collaborative recommendations](/fusion/5.9/475/methods-for-recommendations-and-boosting).
+
+* [BPR Recommender](/fusion/5.9/8805/bpr-recommender-jobs)
+
+  Use this job when you want to compute user recommendations or item similarities using a Bayesian Personalized Ranking (BPR) recommender algorithm.
+* [Query-to-Query Session-Based Similarity jobs](/fusion/5.9/8802/query-to-query-session-based-similarity-jobs)
+
+  This recommender is based on co-occurrence of queries in the context of clicked documents and sessions. It is useful when your data shows that users tend to search for similar items in a single search session. This method of generating query-to-query recommendations is faster and more reliable than the Query-to-Query Similarity recommender job, and is session-based unlike the similar queries previously generated as part of the [Synonym Detection job](/fusion/5.9/8803/synonym-detection-jobs).
+
+## Content-based recommenders
+
+[Content-based recommenders](/fusion/5.9/475/methods-for-recommendations-and-boosting) create matrices of similar items based on their content.
+
+* [Content-Based Recommender](/fusion/5.9/8807/content-based-recommender-jobs-experimental)
+
+  Use this job when you want to compute item similarities based on their content, such as product descriptions.
+
+## Content analysis
+
+* [Cluster Labeling](/fusion/5.9/577/cluster-labeling-jobs)
+
+  Cluster labeling jobs are run against your data collections, and are used:
+* When clusters or well-defined document categories already exist
+* When you want to discover and attach keywords to see representative words within existing clusters
+
+To create a cluster labeling job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Clustering and Outlier Analysis Jobs section, select **Cluster Labeling**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes these parameters:
+
+  + **Training collection.** The Solr collection that contains documents associated with defined categories or clusters. The job will be run against this information. This is the `trainingCollection` field in the configuration file. Required field.
+  + **Output collection.** The Solr collection where the job output is stored. The job will write the output to this collection. This is the `outputCollection` field in the configuration file. Required field.
+  + **Data format.** The format that contains training data. The format must be compatible with Spark and options include `solr`, `parquet`, and `orc`. Required field.
+* **Field Parameters.** This section includes these parameters:
+
+  + **Field to detect keywords from.** The field that contains the data that the job will use to discover keywords for the cluster. This is the `fieldToVectorize` field in the configuration file. Required field.
+  + **Existing document category field.** The field that contains existing cluster IDs or document categories. This is the `clusterIdField` field in the configuration file. Required field.
+  + **Top frequent terms field name.** The field where the job output stores top frequent terms in each cluster. Terms may overlap with other clusters. This is the `freqTermField` field in the configuration file. Optional field.
+  + **Top unique terms field name.** The field where the job output stores the top frequent terms that, for the most part, are unique in each cluster. This is the `clusterLabelField` field in the configuration file. Optional field.
+* **Model Tuning Parameters.** This section includes these parameters:
+
+  + **Max doc support.** The maximum number of documents that can contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `maxDF` field in the configuration file. Optional field.
+  + **Min doc support.** The minimum of documents that must contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `minDF` field in the configuration file. Optional field.
+  + **Number of keywords for each cluster.** The number of keywords required to label each cluster. This is the `numKeywordsPerLabel` field in the configuration file. Optional field.
+* **Featurization Parameters.** This section includes this parameter:
+
+  + **Lucene analyzer schema.** This is the JSON-encoded Lucene text analyzer schema used for tokenization. This is the `analyzerConfig` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** The Spark configuration settings include:
+
+  + **Spark SQL filter query.** This field contains the Spark SQL query that filters your input data. For example, `SELECT * from spark_input` registers the input data as `spark_input`. This is the `sparkSQL` field in the configuration file.
+  + **Data output format.** The format for the job output. The format must be compatible with Spark and options include `solr` and `parquet`. This is the `dataOutputFormat` field in the configuration file.
+  + **Partition fields.** If the job output is written to non-Solr sources, this field contains a comma-delimited list of column names that partition the dataframe before the external output is written. This is the `partitionCols` field in the configuration file.
+* **Read Options.** This section lets you enter `parameter name:parameter value` options to use when reading input from Solr or other sources. This is the `readOptions` field in the configuration file.
+* **Write Options.** This section lets you enter `parameter name:parameter value` options to use when writing output to Solr or other sources. This is the `writeOptions` field in the configuration file.
+* **Dataframe config options.** This section includes these parameters:
+
+  + **Property name:property value.** Each entry defines an additional Spark dataframe loading configuration option. This is the `trainingDataFrameConfigOptions` field in the configuration file.
+  + **Training data sampling fraction.** This is the fractional amount of the training data the job will use. This is the `trainingDataSamplingFraction` field in the configuration file.
+  + **Random seed.** This value is used in any deterministic pseudorandom number generation to group documents into clusters based on similarities in their content. This is the `randomSeed` field in the configuration file.
+* **Field Parameters.** The advanced option adds this parameter:
+
+  + **Fields to load.** This field contains a comma-delimited list of Solr fields to load. If blank, the job selects the required fields to load at runtime. This is the `sourceFields` field in the configuration file.
+* **Miscellaneous Parameters.** This section includes this parameter:
+
+  + **Model ID.** The unique identifier for the model to be trained. If no value is entered, the `Spark Job ID` is used. This is the `modelId` field in the configuration file.
+
+<Note>
+To create new clusters, use the [Document Clustering job](/fusion/5.9/582/document-clustering-jobs).
+</Note>
+
+* [Document Clustering](/fusion/5.9/582/document-clustering-jobs)
+
+  The Document Clustering job uses an unsupervised machine learning algorithm to group documents into clusters based on similarities in their content. You can enable more efficient document exploration by using these clusters as facets, high-level summaries or themes, or to recommend other documents from the same cluster. The job can automatically group similar documents in all kinds of content, such as clinical trials, legal documents, book reviews, blogs, scientific papers, and products.
+* [Classification job](/fusion/5.9/8808/classification)
+
+  This job analyzes how your existing documents are categorized and produces a classification model that can be used to predict the categories of new documents at index time.
+* [Outlier Detection](/fusion/5.9/578/outlier-detection-jobs)
+
+  Outlier detection jobs are run against your data collections, and also perform the following actions:
+* Identify information that significantly differs from other data in the collection
+* Attach labels to designate each outlier group
+
+To create an Outlier Detection job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Clustering and Outlier Analysis Jobs section, select **Outlier Detection**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes these parameters:
+
+  + **Training collection.** The Solr collection that contains documents that will be clustered. The job will be run against this information. This is the `trainingCollection` field in the configuration file. Required field.
+  + **Output collection.** The Solr collection where the job output is stored. The job will write the output to this collection. This is the `outputCollection` field in the configuration file. Required field.
+  + **Data format.** The format that contains training data. The format must be compatible with Spark and options include `solr`, `parquet`, and `orc`. This is the `dataFormat` field in the configuration file. Required field.
+* **Only save outliers?** If this checkbox is selected (set to `true`), only outliers are saved in the job’s output collection. If not selected (set to `false`), the entire dataset is saved in the job’s output collection. This is the `outputOutliersOnly` field in the configuration file. Optional field.
+* **Field Parameters.** This section includes these parameters:
+
+  + **Field to vectorize.** The Solr field that contains text training data. To combine data from multiple fields with different weights, enter `field1:weight1`,`field2:weight2`, etc. This is the `fieldToVectorize` field in the configuration file. Required field.
+  + **ID field name.** The unique ID for each document. This is the `uidField` field in the configuration file. Required field.
+  + **Output field name for outlier group ID.** The field that contains the ID for the outlier group. This is the `outlierGroupIdField` field in the configuration file. Optional field.
+  + **Top unique terms field name.** The field where the job output stores the top frequent terms that, for the most part, are unique for each outlier group. The information is computed based on term frequency-inverse document frequency (TF-IDF) and group ID. This is the `outlierGroupLabelField` field in the configuration file. Optional field.
+  + **Top frequent terms field name.** The field where the job output stores top frequent terms in each cluster. Terms may overlap with other clusters. This is the `freqTermField` field in the configuration file. Optional field.
+  + **Output field name for doc distance to its corresponding cluster center.** The field that contains the document’s distance from the center of its cluster. This is based on the arithmetic mean of all of the documents in the cluster. This denotes how representative the document is in the cluster. This is the `distToCenterField` field in the configuration file. Optional field.
+* **Model Tuning Parameters.** This section includes these parameters:
+
+  + **Max doc support.** The maximum number of documents that can contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `maxDF` field in the configuration file. Optional field.
+  + **Min doc support.** The minimum number of documents that must contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `minDF` field in the configuration file. Optional field.
+  + **Number of keywords for each cluster.** The number of keywords required to label each cluster. This is the `numKeywordsPerLabel` field in the configuration file. Optional field.
+* **Featurization Parameters.** This section includes the following parameter:
+
+  + **Lucene analyzer schema.** This is the JSON-encoded Lucene text analyzer schema used for tokenization. This is the `analyzerConfig` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** The Spark configuration settings include the following:
+
+  + **Spark SQL filter query.** This field contains the Spark SQL query that filters your input data. For example, `SELECT * from spark_input` registers the input data as `spark_input`. This is the `sparkSQL` field in the configuration file.
+  + **Data output format.** The format for the job output. The format must be compatible with Spark and options include `solr` and `parquet`. This is the `dataOutputFormat` field in the configuration file.
+  + **Partition fields.** If the job output is written to non-Solr sources, this field contains a comma-delimited list of column names that partition the dataframe before the external output is written. This is the `partitionCols` field in the configuration file.
+* **Input/Output Parameters.** This advanced option adds these parameters:
+
+  + **Training data filter query.** If Solr is used, this field contains the Solr query executed to load training data. This is the `trainingDataFilterQuery` field in the configuration file.
+* **Read Options.** This section lets you enter `parameter name:parameter value` options to use when reading input from Solr or other sources. This is the `readOptions` field in the configuration file.
+* **Write Options.** This section lets you enter `parameter name:parameter value` options to use when writing output to Solr or other sources. This is the `writeOptions` field in the configuration file.
+* **Dataframe config options.** This section includes these parameters:
+
+  + **Property name:property value.** Each entry defines an additional Spark dataframe loading configuration option. This is the `trainingDataFrameConfigOptions` field in the configuration file.
+  + **Training data sampling fraction.** This is the fractional amount of the training data the job will use. This is the `trainingDataSamplingFraction` field in the configuration file.
+  + **Random seed.** This value is used in any deterministic pseudorandom number generation to group documents into clusters based on similarities in their content. This is the `randomSeed` field in the configuration file.
+* **Field Parameters.** The advanced option adds this parameter:
+
+  + **Fields to load.** This field contains a comma-delimited list of Solr fields to load. If blank, the job selects the required fields to load at runtime. This is the `sourceFields` field in the configuration file.
+* **Model Tuning Parameters.** The advanced option adds these parameters:
+
+  + **Number of outlier groups.** The number of clusters to help find outliers. This is the `outlierK` field in the configuration file.
+  + **Outlier cutoff.** The fraction out of the total documents to designate as an outlier group. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `outlierThreshold` field in the configuration file.
+  + **Vector normalization.** The p-norm value used to normalize vectors. A value of `-1` turns off normalization. This is the `norm` field in the configuration file.
+* **Miscellaneous Parameters.** This section includes this parameter:
+
+  + **Model ID.** The unique identifier for the model to be trained. If no value is entered, the `Spark Job ID` is used. This is the `modelId` field in the configuration file.
+
+## Data ingest
+
+The Parallel Bulk Loader (PBL) job enables bulk ingestion of structured and semi-structured data from big data systems, NoSQL databases, and common file formats like Parquet and Avro.
+
+Datasources the PBL uses include not only common file formats, but Solr databases, JDBC-compliant databases, MongoDB databases and more.
+
+In addition, the PBL distributes the load across the Fusion Spark cluster to optimize performance. And because no parsing is needed, indexing performance is also maximized by writing directly to Solr.
+
+For more information about:
+
+* Available datasources and key features of the Parallel Bulk Loader, see [Parallel Bulk Loader concepts](/fusion/5.9/452/parallel-bulk-loader-pbl).
+* Usage and detailed configuration, see [Parallel Bulk Loader configuration reference](/fusion/5.9/557/parallel-bulk-loader).

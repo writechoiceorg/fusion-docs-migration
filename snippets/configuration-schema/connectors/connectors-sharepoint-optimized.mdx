@@ -1,0 +1,1123 @@
+export const schema = {
+  "type": "object",
+  "title": "SharePoint Optimized (v2)",
+  "description": "An Optimized Connector for SharePoint 2010, 2013, 2016, 2019 and SharePoint Online",
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipeline"
+  ],
+  "properties": {
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "connector": {
+      "title": "Connector Type",
+      "description": "Connector type.",
+      "minLength": 1,
+      "type": "string",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default": 1,
+              "maximum": 1,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "asyncParsing": {
+              "type": "boolean",
+              "title": "Async Parsing",
+              "description": "When enabled, content will be indexed asynchronously.",
+              "default": false
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingInactivityTimeout": {
+              "type": "number",
+              "title": "Indexing inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default": 86400,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInactivityTimeout": {
+              "type": "number",
+              "title": "Plugin inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default": 600,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default": false
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default": false
+            },
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default": 20,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointConfig$CoreSharepointConfig$SharepointFetchSettings",
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointConfig$CoreSharepointConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "An Optimized Connector for SharePoint 2010, 2013, 2016, 2019 and SharePoint Online",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "SharePoint properties",
+      "description": "Plugin specific properties.",
+      "required": [
+        "webApplication"
+      ],
+      "properties": {
+        "webApplication": {
+          "type": "object",
+          "title": "Web application config",
+          "description": "The SharePoint Web application to crawl.",
+          "required": [
+            "webApplicationUrl"
+          ],
+          "properties": {
+            "webApplicationUrl": {
+              "type": "string",
+              "title": "Web application URL",
+              "minLength": 1
+            },
+            "fetchSiteCollections": {
+              "type": "boolean",
+              "title": "Fetch all site collections",
+              "description": "This feature requires site collection administrator rights on your Sharepoint instance. If enabled, the sharepoint crawler will fetch all site collections from the web application automatically. If not enabled, you must explicitly list all site collections in the siteCollections parameter.",
+              "default": true
+            },
+            "doNotRunExporter": {
+              "type": "boolean",
+              "title": "Skip Exporter",
+              "description": "No longer used.",
+              "default": false,
+              "hints": [
+                "hidden",
+                "advanced"
+              ]
+            },
+            "forceFullCrawl": {
+              "type": "boolean",
+              "title": "Force Full Crawl",
+              "description": "Do this if you want to force a full crawl each time you run this datasource.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "aclsOnlyCrawl": {
+              "type": "boolean",
+              "title": "Only Crawl ACLs (no longer used)",
+              "description": "Kept for back compat. Not used.",
+              "default": false,
+              "hints": [
+                "hidden"
+              ]
+            },
+            "siteCollections": {
+              "type": "array",
+              "title": "Site collection list",
+              "description": "A list of site collections to crawl. Because only site collection administrators or site collection auditors can list the site collections in a SharePoint web application, you can use this when you are crawling as a user that is not an admin/auditor. This allows you to explicitly list site collections you want to crawl. Specify paths relative to the web application url, such as /sites/site1",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "includedFileExtensions": {
+              "type": "array",
+              "title": "Included file extensions",
+              "description": "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "excludedFileExtensions": {
+              "type": "array",
+              "title": "Excluded file extensions",
+              "description": "A set of all file extensions to be skipped from the fetch.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "inclusiveRegexes": {
+              "type": "array",
+              "title": "Inclusive regexes",
+              "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "exclusiveRegexes": {
+              "type": "array",
+              "title": "Exclusive regexes",
+              "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "includeContentsExtensions": {
+              "type": "array",
+              "title": "Include extensions for having contents downloaded",
+              "description": "Only files with these file extensions will not have their contents downloaded when indexing this item. The list item metadata will still be indexed but the file contents will not. The comparison is not case sensitive, and you do not have to specify the '.' but it still work if you do. For example \"zip\" and \".zip\" are both acceptable. The whitespace will also be trimmed.",
+              "default": [],
+              "items": {
+                "type": "string"
+              }
+            },
+            "excludeContentsExtensions": {
+              "type": "array",
+              "title": "Exclude extensions from having contents downloaded",
+              "description": "File extensions of files that will not have their contents downloaded when indexing this item. The list item metadata will still be indexed but the file contents will not. The comparison is not case sensitive, and you do not have to specify the '.' but it still work if you do. For example \"zip\" and \".zip\" are both acceptable. The whitespace will also be trimmed.",
+              "default": [],
+              "items": {
+                "type": "string"
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "restrictToSpecificItems": {
+              "type": "array",
+              "title": "Restrict to specific SharePoint items",
+              "description": "Instead of specifying regular expressions to restrict the SharePoint items that are crawled, this allows you to specify specific SharePoint item URLs of the resources that are to be crawled. The crawl will then be restricted to only include these specified SharePoint items URLs. You can specify list, sub-site, folder, and list item URLs.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "restrictToSpecificSubsites": {
+              "type": "array",
+              "title": "Restrict to specific sub-sites (no longer used)",
+              "description": "Restrict crawl to specific sub-sites.",
+              "default": [],
+              "hints": [
+                "hidden"
+              ],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.WebApplicationConfig",
+            "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "apiQueryRowLimit": {
+          "type": "number",
+          "title": "API query row limit",
+          "default": 5000,
+          "hints": [
+            "advanced"
+          ],
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": 1,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "changeApiQueryRowLimit": {
+          "type": "number",
+          "title": "Changes API query row limit",
+          "default": 2000,
+          "hints": [
+            "advanced"
+          ],
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": 1,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "aclCommitAfter": {
+          "type": "number",
+          "title": "ACL solr commitWithin",
+          "description": "When doing solr update to the acl collection, specify the commitWithin parameter to use when updating.",
+          "default": 60000,
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": -2147483648,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "siteCollectionDeletionThreshold": {
+          "type": "number",
+          "title": "Site Collection Deletion Threshold",
+          "description": "Site collections will be removed from the index after they are no longer available for this many hours. Set to 0 for immediate deletion. Default is 2 weeks.",
+          "default": 336,
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": -2147483648,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "solrSocketTimeout": {
+          "type": "number",
+          "title": "Solr socket timeout",
+          "description": "Socket timeout when performing solr operations.",
+          "default": 60000,
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": -2147483648,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "moderationStatusFilter": {
+          "type": "array",
+          "title": "Moderation Status Filter",
+          "description": "If specified, only index items with the following moderation statuses specified. Valid values are: 0 = The list item is approved, 1 = The list item has been denied approval, 2 = The list item is pending approval, 3 = The list item is in the draft or checked out state, 4 = The list item is scheduled for automatic approval at a future date.",
+          "items": {
+            "type": "number",
+            "title": "Moderation Status Filter",
+            "description": "If specified, only index items with the following moderation statuses specified. Valid values are: 0 = The list item is approved, 1 = The list item has been denied approval, 2 = The list item is pending approval, 3 = The list item is in the draft or checked out state, 4 = The list item is scheduled for automatic approval at a future date.",
+            "enum": [
+              0,
+              1,
+              2,
+              3,
+              4
+            ],
+            "maximum": 2147483647,
+            "exclusiveMaximum": false,
+            "minimum": -2147483648,
+            "exclusiveMinimum": false,
+            "multipleOf": 1
+          }
+        },
+        "fetchTaxonomies": {
+          "type": "boolean",
+          "title": "Fetch Taxonomies",
+          "description": "Fetch Taxonomy data from sharepoint.",
+          "default": false
+        },
+        "siteCollectionTaxonomyCacheSize": {
+          "type": "number",
+          "title": "Taxonomy Terms Cache Size",
+          "description": "To make the connector faster, when the taxonomy terms for a site collection are needed, they are cached to avoid looking up from disk again. This is the size of that cache.",
+          "default": 10,
+          "hints": [
+            "advanced"
+          ],
+          "maximum": 10000,
+          "exclusiveMaximum": false,
+          "minimum": 1,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "fetchACLs": {
+          "type": "boolean",
+          "title": "Fetch ACLs",
+          "description": "Fetch Access Control Data",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "asyncParsing": {
+          "type": "boolean",
+          "title": "Tika Async",
+          "description": "Enable only if Tika Async is configured in the Fusion environment. Note: To enable async-parsing, check Core Properties -> Fetch Settings -> Async Parsing (since Fusion 5.8.0)",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "veryLargeGroups": {
+          "type": "array",
+          "title": "ACL ids with large group memberships",
+          "description": "There are times when one or more groups may have huge group memberships which slows down security trimming. If you have any of these such groups, list them here and an optimized security trimming query will be used for improved performance.",
+          "default": [],
+          "hints": [
+            "hidden"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "zkHosts": {
+          "type": "string",
+          "title": "Solr zk hosts string",
+          "description": "Solr zk hosts string used for direct connections to solr.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "contentCommitAfter": {
+          "type": "number",
+          "title": "Content solr commitWithin",
+          "description": "When doing solr update to the content collection, specify the commitWithin parameter to use when updating.",
+          "default": 60000,
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": -2147483648,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "zkChroot": {
+          "type": "string",
+          "title": "Solr zk chroot string",
+          "description": "Solr zk chroot string used for direct connections to solr.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "solrConnectionTimeout": {
+          "type": "number",
+          "title": "Solr connection timeout",
+          "description": "Connection timeout when performing solr operations.",
+          "default": 60000,
+          "maximum": 2147483647,
+          "exclusiveMaximum": false,
+          "minimum": -2147483648,
+          "exclusiveMinimum": false,
+          "multipleOf": 1
+        },
+        "includedListBaseTypes": {
+          "type": "array",
+          "title": "Included List Base Types",
+          "description": "If specified, the only SharePoint lists that will be fetched are the ones that match one of these base types. Accepts values (not case sensitive): [None, GenericList, DocumentLibrary, Unused, DiscussionBoard, Survey, Issue]",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includedObjectTypes": {
+          "type": "array",
+          "title": "Included SharePoint Object Types",
+          "description": "If specified, only fetch specific SharePoint objects. SharePoint object types that can be specified (not case sensitive): [Site, List, List_Item, Folder, Attachment]",
+          "items": {
+            "type": "string"
+          }
+        },
+        "builtInFieldNames": {
+          "type": "array",
+          "title": "Built-in field names",
+          "description": "List of field names that will be skipped while indexing Sharepoint List Items",
+          "default": [
+            "_no_longer_used_"
+          ],
+          "hints": [
+            "hidden"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "proxyProperties": {
+          "type": "object",
+          "title": "Proxy options",
+          "description": "A set of options for configuring the proxy.",
+          "required": [],
+          "properties": {
+            "username": {
+              "type": "string",
+              "title": "Proxy username",
+              "description": "Proxy username",
+              "minLength": 1
+            },
+            "password": {
+              "type": "string",
+              "title": "Proxy password",
+              "description": "Proxy password",
+              "hints": [
+                "secret"
+              ],
+              "minLength": 1
+            },
+            "url": {
+              "type": "string",
+              "title": "Proxy URL",
+              "description": "The proxy URL",
+              "minLength": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.ProxyConfig$Properties"
+          ],
+          "hints": [
+            "advanced"
+          ]
+        },
+        "ntlmProperties": {
+          "type": "object",
+          "title": "NTLM Authentication settings",
+          "required": [],
+          "properties": {
+            "user": {
+              "type": "string",
+              "title": "User",
+              "description": "User",
+              "minLength": 1
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Password",
+              "hints": [
+                "secret"
+              ],
+              "minLength": 1
+            },
+            "domain": {
+              "type": "string",
+              "title": "Domain",
+              "description": "Domain",
+              "minLength": 1
+            },
+            "workstation": {
+              "type": "string",
+              "title": "Workstation",
+              "description": "Workstation",
+              "minLength": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointNTLMConfig$Properties",
+            "com.lucidworks.connector.components.httpclient.config.authentication.NTLMConfig$Properties",
+            "com.lucidworks.connector.components.httpclient.config.authentication.AuthConfig$Properties"
+          ]
+        },
+        "sharepointOnlineAuthProperties": {
+          "type": "object",
+          "title": "SharePoint Online Authentication",
+          "description": "Settings relevant only when crawling SharePoint online .",
+          "required": [
+            "userAgent"
+          ],
+          "properties": {
+            "account": {
+              "type": "string",
+              "title": "SharePoint Online Account",
+              "description": "Your Microsoft SharePoint Online Account name which takes the form of username@domain.com",
+              "minLength": 1
+            },
+            "password": {
+              "type": "string",
+              "title": "Password",
+              "description": "Password for your Microsoft SharePoint Online Account.",
+              "hints": [
+                "secret"
+              ],
+              "minLength": 1
+            },
+            "sessionExpirationMs": {
+              "type": "number",
+              "title": "Session expiration (ms)",
+              "description": "How long in milliseconds before new SharePoint online authentication cookies should be fetched.",
+              "default": 7200000,
+              "maximum": 172800000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "userAgent": {
+              "type": "string",
+              "title": "User agent",
+              "description": "The user agent header decorates the http traffic. This is important for preventing hard rate limiting by SharePoint Online.",
+              "default": "ISV|Lucidworks|Fusion/5.x"
+            },
+            "capUserAgent": {
+              "type": "string",
+              "title": "CAP User agent",
+              "description": "When \"O365 Conditional Access Policy (CAP) setting\" is enabled, we need to use a compliant User-Agent that matches one of the supported devices when doing O365 STS authentication. For example if iOS is a supported platform, set this to 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_3 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) CriOS/60.0.3112.89 Mobile/14G60 Safari/602.1'",
+              "maxLength": 4000,
+              "minLength": 1
+            },
+            "appAuthClientId": {
+              "type": "string",
+              "title": "Azure AD Client ID",
+              "description": "Applicable to SharePoint Online App-Auth Public/Private Service Account. The Azure client ID of your application.",
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "appAuthPkcs12KeystoreBase64String": {
+              "type": "string",
+              "title": "Azure AD PKCS12 Base64 Keystore",
+              "description": "Applicable to SharePoint Online App-Auth only. This is the base64 string of your PKCS12 keystore loaded with the PFX certificate file supplied by Azure AD. To get this value, first take the Azure AD yourcert.pfx you recieved from Azure and convert to PKCS12 keystore format (example \"keytool -importkeystore -srckeystore yourcert.pfx -srcstoretype pkcs12 -destkeystore yourcert.p12 -deststoretype pkcs12\"). Next convert yourcert.p12 to base64 string.",
+              "hints": [
+                "secret"
+              ],
+              "maxLength": 10000,
+              "minLength": 1
+            },
+            "appAuthPkcs12KeystorePassword": {
+              "type": "string",
+              "title": "Azure AD PKCS12 Keystore Password",
+              "description": "Applicable to SharePoint Online App-Auth Public/Private Service Account. Password of the PKCS12 keystore.",
+              "hints": [
+                "secret"
+              ],
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "appAuthClientSecret": {
+              "type": "string",
+              "title": "Azure AD Client Secret",
+              "description": "Applicable to SharePoint Online OAuth App-Auth only. The Azure client ID of your application.",
+              "hints": [
+                "secret"
+              ],
+              "maxLength": 100,
+              "minLength": 1
+            },
+            "appAuthRefreshToken": {
+              "type": "string",
+              "title": "Azure AD Refresh Token",
+              "description": "Applicable to SharePoint Online OAuth App-Auth only. This is a refresh token which is reusable for up to 12 hours. You must obtain a new tokenusing the OAuth login process if the token becomes expired.",
+              "maxLength": 1000,
+              "minLength": 1
+            },
+            "appAuthTenant": {
+              "type": "string",
+              "title": "Azure AD Tenant",
+              "description": "Applicable to SharePoint Online App-Auth only. The Office365 tenant name to use when authenticating with Azure AD.",
+              "maxLength": 2083,
+              "minLength": 1
+            },
+            "appAuthAzureLoginEndpoint": {
+              "type": "string",
+              "title": "Azure AD Login Endpoint",
+              "description": "Applicable to SharePoint Online App-Auth Public/Private Service Account. The Azure login endpoint to use when authenticating.",
+              "default": "https://login.windows.net",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 2083,
+              "minLength": 1
+            },
+            "jsAuthConfigJson": {
+              "type": "string",
+              "title": "JS Auth Config Json File",
+              "description": "JS Auth config json file contains a list of WebCredential to do a web driver login process."
+            },
+            "jsAuthLoginUrl": {
+              "type": "string",
+              "title": "JS Auth Login Url",
+              "description": "JS Auth Login Url to use when doing the login process."
+            },
+            "jsAuthSeleniumUrl": {
+              "type": "string",
+              "title": "JS Auth Selenium Grid URL",
+              "description": "URL of the Selenium grid service to use while obtaining performing WebDriver auth to sharepoint online."
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointOnlineAuthConfig$Properties"
+          ]
+        },
+        "maximumItemLimitConfig": {
+          "type": "object",
+          "title": "Item Count Limit",
+          "required": [],
+          "properties": {
+            "maxItems": {
+              "type": "number",
+              "title": "Maximum Output Limit",
+              "description": "Limits the number of items emitted to the configured IndexPipeline. The default is no limit (-1).",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig$Properties"
+          ]
+        },
+        "sizeLimitProperties": {
+          "type": "object",
+          "title": "Item Size Limits",
+          "description": "For documents which do not meet the maximum/minimum size limits, only metadata will be indexed without body.The documents will indicate reason why content is not indexed, with the field '_lw_contents_excluded_s: file size'",
+          "required": [],
+          "properties": {
+            "maxSizeBytes": {
+              "type": "number",
+              "title": "Maximum",
+              "description": "Used for excluding items when the item size is larger than the configured value.",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "minSizeBytes": {
+              "type": "number",
+              "title": "Minimum",
+              "description": "Used for excluding items when the item size is smaller than the configured value.",
+              "default": 1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.SizeLimitConfig$Properties"
+          ]
+        },
+        "fetchRetryProperties": {
+          "type": "object",
+          "title": "Retry Options",
+          "description": "A set of options for configuring retry behavior.",
+          "required": [
+            "delayMs",
+            "maxDelayTimeMs",
+            "delayFactor"
+          ],
+          "properties": {
+            "delayMs": {
+              "type": "number",
+              "title": "Retry Delay",
+              "description": "Sets the delay between retries, exponentially backing off to the maxDelayTimeMs and multiplying successive delays by the delayFactor",
+              "default": 1000,
+              "maximum": 9223372036854776000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxDelayTimeMs": {
+              "type": "number",
+              "title": "Maximum Delay Time",
+              "description": "The maximum time wait time between successive retries.",
+              "default": 300000,
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxTimeLimitMs": {
+              "type": "number",
+              "title": "Maximum Time Limit",
+              "description": "This setting is used to limit the maximum amount of time spent on retries. Note: this will be ignored if \"Maximum Retries\" is specified.",
+              "default": 600000,
+              "maximum": 28800000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "errorExclusions": {
+              "type": "array",
+              "title": "Error Exclusions",
+              "description": "Optional regex list that will be matched against failed attempts exception class and message. If any regex matches, do not retry this request. This is needed to prevent the retryer from retrying non-recoverable errors that were not already ignored by the connector implementation.",
+              "items": {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              }
+            },
+            "delayFactor": {
+              "type": "number",
+              "title": "Delay Factor",
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. The retryer will sleep an exponential amount of time after the first failed attempt and retry in exponentially incrementing amounts after each failed attempt up to the maximumTime. nextWaitTime = exponentialIncrement * multiplier.",
+              "default": 2,
+              "maximum": 9999,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxRetries": {
+              "type": "number",
+              "title": "Maximum Retries",
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. This parameter states the number of attempts to retry until giving up. This parameter, if specified, will override the \"Stop retrying after time (milliseconds)\" parameter.",
+              "default": 3,
+              "maximum": 100,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig$Properties"
+          ]
+        },
+        "connections": {
+          "type": "object",
+          "title": "Http client options",
+          "description": "A set of options for configuring the http client.",
+          "required": [
+            "maxPerRoute",
+            "maxConnections"
+          ],
+          "properties": {
+            "maxConnections": {
+              "type": "number",
+              "title": "Max connections",
+              "description": "The maximum number of connections",
+              "default": 5000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxPerRoute": {
+              "type": "number",
+              "title": "Max per route",
+              "description": "Defines a connection limit per one HTTP route. In simple cases you can understand this as a per target host limit. Under the hood things are a bit more interesting: HttpClient maintains a couple of HttpRoute objects, which represent a chain of hosts each, like proxy1 -> proxy2 -> targetHost. Connections are pooled on per-route basis. In simple cases, when you're using default route-building mechanism and provide no proxy suport, your routes are likely to include target host only, so per-route connection pool limit effectively becomes per-host limit.",
+              "default": 1000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "ignoreSSLValidationExceptions": {
+              "type": "boolean",
+              "title": "Ignore SSL Validation Exceptions",
+              "description": "Do not attempt to do an SSL Handshake and do not verify the hostname of SSL certificates. Use this when accessing an https url with a self-signed or enterprise certificate authority that you do not want to put in the Java keystore.",
+              "default": false
+            },
+            "readTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 60000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "connectTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 300000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointHttpClientConfig$Properties"
+          ],
+          "hints": [
+            "advanced"
+          ]
+        },
+        "debug": {
+          "type": "object",
+          "title": "Debug options",
+          "description": "Special properties used for debugging the connector.",
+          "required": [],
+          "properties": {
+            "onlyFetchAcls": {
+              "type": "boolean",
+              "title": "ACLs only crawl",
+              "description": "Do a full crawl where we only crawl acls. Also - when the ACLs are all fully indexed, clear any old ACL documents from previous crawl(s) for this datasource. This gives you a fresh SharePoint ACLs without effecting the content.",
+              "default": false
+            },
+            "logThreadDumpEveryNSeconds": {
+              "type": "number",
+              "title": "Write Thread Dump to Logs Every N Seconds",
+              "description": "For diagnostic purposes, write a thread dump to logs every N seconds. If set <= 0, no dump is taken.",
+              "default": -1,
+              "maximum": 9999999,
+              "exclusiveMaximum": false,
+              "minimum": -1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "simulate429ErrorsEveryNRequests": {
+              "type": "number",
+              "title": "Simulate rate limit error every N requests",
+              "description": "If > 0, simulate a SharePoint 429 status (too-many-requests) error such that there will be one error per this many requests.",
+              "default": -1,
+              "maximum": 999999,
+              "exclusiveMaximum": false,
+              "minimum": -1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "preserveFullExportDb": {
+              "type": "boolean",
+              "title": "Preserve full export DB",
+              "description": "The list* tables are normally cleared prior to saving the crawl database. This gives option to leave these files for analysis. This parameter is ignored if using a persistent volume to store the crawl DB because the data will always be saved in that case.",
+              "default": false
+            },
+            "onlyFetchMetadata": {
+              "type": "boolean",
+              "title": "Only Fetch Metadata",
+              "description": "For diagnostic purposes, do a dry run where the connector will only generate the metadata sharepoint export database and index the ACL records in the ACL collection, but will not fetch content.",
+              "default": false
+            },
+            "logAclInserts": {
+              "type": "boolean",
+              "title": "Log ACL Inserts",
+              "description": "For diagnostic purposes, log all documents inserted into the ACL collection.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugins.sharepoint.config.DebugConfig$Properties"
+          ]
+        },
+        "security": {
+          "type": "object",
+          "required": [],
+          "properties": {
+            "collectionId": {
+              "type": "string",
+              "title": "ACL collection id",
+              "description": "Id of the collection to be used for storing ACL records. If not specified, ACL collection name will be generated automatically using pattern '<datasource_id>_access_control_hierarchy'."
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.security.AccessControlConfig$Properties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointConfig$Properties",
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointNTLMConfig",
+        "com.lucidworks.connector.components.httpclient.config.authentication.NTLMConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.security.AccessControlConfig",
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointHttpClientConfig",
+        "com.lucidworks.connector.components.httpclient.config.authentication.AuthConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SharepointOnlineAuthConfig",
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.ProxyConfig",
+        "com.lucidworks.fusion.connector.plugins.sharepoint.config.SizeLimitConfig"
+      ]
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "An Optimized Connector for SharePoint 2010, 2013, 2016, 2019 and SharePoint Online",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    }
+  },
+  "category": "SharePoint",
+  "categoryPriority": 1
+}

@@ -1,0 +1,36 @@
+---
+title: "Cold start solution"
+description: "Smart Answers"
+permalink: "qe78yu"
+---
+
+When no training data exists to use the Supervised job, the cold start solution uses general pre-trained Deep Learning models or provides a possibility to train custom word embeddings for specific domains.
+
+Over time, we suggest capturing [signals](/managed-fusion/5.9/ws4w2h/signals) from document clicks, likes, and downloads.
+These signals can be used to construct training dataset. After cumulating at least 3000 pairs, that feedback can be used as training data for the [Supervised solution](#faq).
+
+Like the Supervised solution, the Cold start solution has two parts:
+
+## 1. Prepare a model
+
+There are two ways to do this:
+
+* Smart Answers comes with two pre-trained cold-start models. These models can serve as a strong baseline if your data does not have too much domain-specific terms. See [Set Up A Pre-Trained Cold Start Model](/how-to/gv3jta/set-up-a-pre-trained-cold-start-model-for-smart-answers).
+* You can train your own cold start model by configuring a job that analyzes your existing content. See [Train A Smart Answers Cold Start Model](/how-to/hxiuyl/train-a-smart-answers-cold-start-model).
+
+## 2. Create collections in Milvus
+
+In order to use `{app_name}-smart-answers` pipelines, you need to create collections in Milvus. Please refer to the [Milvus](/fusion/5.9/8821/milvus) documentation page.
+
+## 3. Configure the pipelines
+
+The trained model should be used at both index and query time in order to perform dense vector search.
+
+* At index time, we provide the `{app_name}-smart-answers` index pipeline to help generate a dense vector representation of answers.
+* At query time, we provide a `{app_name}-smart-answers` query pipeline to conduct run-time neural search. This pipeline transforms the incoming query into a dense vector using the trained model, then compares it with indexed answer dense vectors by computing the cosine distance between them. You can also use a query stage to combine Solr and document vector similarity scores at query time.
+
+See [Configure The Smart Answers Pipelines](/how-to/2bfmm2/configure-the-smart-answers-pipelines). Once your pipelines are configured, see [Evaluate a Smart Answers Query Pipeline](/how-to/tij2o9/evaluate-a-smart-answers-query-pipeline) to test its effectiveness so that you can fine-tune the configuration.
+
+## Short answer extraction
+
+By default, the question-answering query pipelines return complete documents that answer questions. Optionally, you can extract just a paragraph, a sentence, or a few words that answer the question. See [Extract Short Answers from Longer Documents](/how-to/1eti6h/extract-short-answers-from-longer-documents).

@@ -1,0 +1,235 @@
+---
+title: "Filter List Rule API Configurations"
+description: "Managed Fusion Query Rewrite APIs"
+permalink: "5b2r4d"
+---
+
+This rule type is used in the [Query Rewrite API](/managed-fusion/5.9/8ee4m8/query-rewrite-api).
+
+For a complete list of rule and rewrite types in the Query Rewrite API, see [Query Rewrite API Configurations](/managed-fusion/5.9/dyazfo/query-rewrite-api-configurations).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Filter List
+
+The Filter List action applies [filter queries](https://solr.apache.org/guide/common-query-parameters.html) (`fq`) to the query and changes the results so a pre-selected set of content displays.
+
+For example, an e-commerce website may display only movies rated G or PG when a user searches for children’s movies.
+
+### General information
+
+* Endpoint: `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/schema/RULE_TYPE`
+* Required parameters are:
+
+  + name
+  + field_name
+  + field_values
+  + type
+* The values for the `hints` parameter include:
+
+  + `hidden`: Do not display in the Fusion UI, but can be read and written in the schema.
+  + `readonly`: Cannot be set by the user. If attempted, an error is generated and the operation fails.
+
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Schema</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="2"><strong>type</strong></td>
+    </tr>
+    <tr>
+      <td><strong>type</strong></td>
+      <td>string</td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>properties</strong></td>
+    </tr>
+
+    <tr>
+      <td><strong>id</strong></td>
+      <td>
+        ```json
+        {
+          "id": {
+            "type": "string",
+            "title": "ID",
+            "description": "The ID for this Rule. Used in the API to reference this query rewrite rule. Allowed characters: a-z, A-Z, 0-9, dash (-) and underscore (_)",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_\\-]+$"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>source</strong></td>
+      <td>
+        ```json
+        {
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "The source for this query rewrite rule, such as a Spark Job.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>terms_query_separator_s</strong></td>
+      <td>
+        ```json
+        {
+          "terms_query_separator_s": {
+            "type": "string",
+            "title": "Terms Query Separator",
+            "description": "Separator delimiting the values in the terms query string, defaulting to a comma.",
+            "default": ",",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>terms_query_method_s</strong></td>
+      <td>
+        ```json
+        {
+          "terms_query_method_s": {
+            "type": "string",
+            "title": "Terms Query Method",
+            "description": "One of termsFilter (default), booleanQuery, automaton, docValuesTermsFilter",
+            "default": "termsFilter",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>field_name</strong><br/><strong>Required</strong></td>
+      <td>
+        ```json
+        {
+          "field_name": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "Set the field name used by this rule to match the specified values.",
+            "default": "id"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>field_values</strong><br/><strong>Required</strong></td>
+      <td>
+        ```json
+        {
+          "field_values": {
+            "type": "array",
+            "title": "Field Values",
+            "description": "List of values for the specified field.",
+            "minItems": 1,
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>use_qec</strong></td>
+      <td>
+        ```json
+        {
+          "use_qec": {
+            "type": "boolean",
+            "title": "Use Query Elevation Component",
+            "description": "Set true to use Solr's QEC to force-elevate documents to the top. QEC only supports elevation through \"id\" field. Failed to config QEC in Solr correctly while having this box checked will cause this rule to stop working.",
+            "default": false
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>type</strong><br/><strong>Required</strong></td>
+      <td>
+        ```json
+        {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "enum": ["filter_list"],
+            "default": "filter_list",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>doc_type</strong></td>
+      <td>
+        ```json
+        {
+          "doc_type": {
+            "type": "string",
+            "title": "Doc Type",
+            "enum": ["rule"],
+            "default": "rule",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>display_type</strong></td>
+      <td>
+        ```json
+        {
+          "display_type": {
+            "type": "string",
+            "title": "Display Type",
+            "enum": ["Filter List"],
+            "default": "Filter List",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>additionalProperties</strong></td>
+    </tr>
+    <tr>
+      <td><strong>additionalProperties</strong></td>
+      <td>
+        ```json
+        {
+          "additionalProperties": true
+        }
+        ```
+      </td>
+    </tr>
+  </tbody>
+</table>

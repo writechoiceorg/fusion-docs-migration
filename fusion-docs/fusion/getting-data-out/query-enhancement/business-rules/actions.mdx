@@ -1,0 +1,331 @@
+---
+title: "Actions"
+permalink: "8836"
+---
+
+Business rule actions define what actions are taken when a rule fires.
+
+<Note>
+Some rule actions are only available to specific version of Fusion.
+</Note>
+
+
+
+## Configuration options
+
+### Banner
+
+The Banner action returns an image outside of the search results that can be displayed in the frontend.
+
+For example, an e-commerce website may display a banner to promote a sale or new product release.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Banner URL** | The URL of the desired banner image. | `https://example-site.com/assets/promotion.png` |
+|  | **Banner zone** | An arbitrary value used by the frontend, generally to instruct the search application where to place the banner image. | `TOP` |
+
+### Block list
+
+The Block List action blocks the associated values from appearing in the search results.
+
+For example, a workplace may block documents that the user does not have permission to view.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+
+### Boost attributes
+
+The Boost Attributes action boosts documents with specific attributes in a search. Boosts can be additive or multiplicative.
+
+For example, an e-commerce website may boost the laptop manufacturer’s name if the search query contains a manufacturer.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Boost param** | * `bq`. An additive boost that is added to the main query’s score.<br/>● `boost`. A multiplicative boost based on document scores. This boost increases or decreases the score by a relative amount. | `boost` |
+| ✅ | **Boost query** | The query that the boost will apply to. | `bq`: `category_s:"Small Business"^5`  `boost`: `category_s:"Small Business"` |
+
+### Boost list
+
+The Boost List action boosts documents with a large multiplicative boost so the documents appear at the top of the results. Larger boosts can override this action.
+
+For example, an e-commerce website may boost new or seasonal items.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+
+### Bury list
+
+The Bury List action buries documents with the selected values. This action minimizes certain documents without blocking them.
+
+For example, a workplace may bury out-of-date documents.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+
+### Filter list
+
+The Filter List action applies [filter queries](https://solr.apache.org/guide/common-query-parameters.html) (`fq`) to the query and changes the results so a pre-selected set of content displays.
+
+For example, an e-commerce website may display only movies rated G or PG when a user searches for children’s movies.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+
+### Ingroup actions
+
+Ingroup actions perform a specific action within a [product group](/fusion/5.9/596/product-grouping). You can boost, bury, or pin specific items within a group.
+
+Ingroup actions require a grouping field to perform the action within.
+
+#### Ingroup boost list
+
+The Ingroup Boost List action boosts an item within a product group. This action does not boost the product group.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+| ✅ | **Grouping field** | The name of the group field that the rule action applies to. This group field *must* have a `group-field` parameter or the rule does not apply. | `color_group_name` |
+
+#### Ingroup bury list
+
+The Ingroup Bury List action buries an item within a product group. This action does not bury the product group.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+| ✅ | **Grouping field** | The name of the group field that the rule action applies to. This group field *must* have a `group-field` parameter or the rule does not apply. | `color_group_name` |
+
+#### Ingroup pinned
+
+The Ingroup Pinned action sticks a document to a specific location within a product group. This ensures that users view a result in a specified place. This action does not pin the product group.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `title` |
+| ✅ | **Field values** | The values of the field that the rule action applies to. The field determines what field values are available. | `Voyager Jacket` |
+| ✅ | **Grouping field** | The name of the group field that the rule action applies to. This group field *must* have a `group-field` parameter or the rule does not apply. | `color_group_name` |
+| ✅ | **Pin within a specific group value** | The values of the grouping field that the rule action applies to. The field determines what field values are available. Only a single group value is supported. | `red` |
+| ✅ | **Pinned documents** | The individual documents that the rule action applies to. | `Summit Pants (red)` |
+
+### Pinned
+
+The Pinned action sticks a document to a specific location within the search results. This ensures that users view a result in a specified place.
+
+For example, a workplace may pin documents answering frequently asked questions.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the rule action applies to. The documents in the datasource determine what fields are available. | `id` |
+| ✅ | **Pinned documents** | Individual documents to pin. Specify the following: <br/>● Value. The values of the field that the rule action applies to. The field determines what field values are available.<br/>● Position. Position within the results where the document is pinned, with `1` being the 1st result. Each position is available to only a single document. | Value: `1000026`  Position: `4` |
+
+### Redirect
+
+The Redirect action displays a message at the top of the search results that the frontend can utilize to redirect a user to a specific URL. This action guides users to the desired URL when the search query isn’t included in the collection.
+
+For example, a workplace may create a redirect action that displays a link to the internal help desk when an employee searches for "computer broken".
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Redirect** | The URL that the user will redirect to. | `https://www.activate-conf.com/` |
+
+### Response value
+
+The Response Value action sends an arbitrary value to the frontend or pipeline, which the frontend of pipeline can use to perform another action. The Response Value action can be combined with other actions within the same rule.
+
+For example, an e-commerce website may use the response value action to display an advertisement.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Field name** | The name of the field that the response value is found under. | `ad-code` |
+| ✅ | **Field value** | The response value that is included in the results response. | `AD_CODE_99` |
+
+### Set facets
+
+The Set Facets action customizes the facets returned in the query response. These facets are different from the facets set in the Query Workbench.
+
+For example, an e-commerce website may display different facets on the homepage, the primary search page, and category pages.
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 11.1111%;" />
+    <col style="width: 22.2222%;" />
+    <col style="width: 33.3333%;" />
+    <col style="width: 33.3334%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Required</th>
+      <th class="tableblock halign-left valign-top">Parameter</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+      <th class="tableblock halign-left valign-top">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><strong>Position</strong></td>
+      <td class="tableblock halign-left valign-top">
+        Position of the facet field in the list of facets, with <code>1</code> being the top of the list.
+        Each position is available to only a single facet.
+      </td>
+      <td class="tableblock halign-left valign-top"><code>3</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><strong>Facet field</strong></td>
+      <td class="tableblock halign-left valign-top">The name of the facet field.</td>
+      <td class="tableblock halign-left valign-top"><code>Color</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><strong>Facet type</strong></td>
+      <td class="tableblock halign-left valign-top">
+        The type of facet:
+        <div class="paragraph"><code>field</code> - A field found in the datasource.</div>
+        <div class="paragraph"><code>range</code> - An accepted range for the facet field to exist within. Specify the following:</div>
+        <ul>
+          <li>Range start—the lower bounds of the facet range. For example, <code>0</code>.</li>
+          <li>Range end—the upper bounds of the facet range. For example, <code>50</code>.</li>
+          <li>Range gap—the increment amount dividing the range. For a facet range of <code>1-50</code> and a range gap of <code>20</code>, 3 facets are available: <code>0-20</code>, <code>20-40</code>, <code>40-60</code>.</li>
+        </ul>
+      </td>
+      <td class="tableblock halign-left valign-top"><code>field</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top" colspan="4">
+        <strong>Advanced options for <code>field</code> facet types</strong>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Select type</strong></td>
+      <td class="tableblock halign-left valign-top">Determines whether the user can select a single facet or multiple facets.</td>
+      <td class="tableblock halign-left valign-top"><code>multi</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Facet sort</strong></td>
+      <td class="tableblock halign-left valign-top">
+        Sort order of the individual facets within the facet field:
+        <ul>
+          <li><code>count</code>—Facets are sorted by the number of documents in descending order.</li>
+          <li><code>index</code>—Facets are sorted in alphanumeric order.</li>
+        </ul>
+      </td>
+      <td class="tableblock halign-left valign-top"><code>count</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Min count</strong></td>
+      <td class="tableblock halign-left valign-top">Sets a minimum requirement for the number of documents in the facet to display.</td>
+      <td class="tableblock halign-left valign-top"><code>10</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Boost values</strong></td>
+      <td class="tableblock halign-left valign-top">
+        Boost individual facets in the order added, overriding the default <strong>Facet sort</strong>.
+        For example, boost <code>tshirt</code> and <code>shorts</code> over <code>hoodie</code> during summer.
+      </td>
+      <td class="tableblock halign-left valign-top"><code>tshirt</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Bury values</strong></td>
+      <td class="tableblock halign-left valign-top">Bury individual facets with the facet field in the order added.</td>
+      <td class="tableblock halign-left valign-top"><code>hoodie</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Suppress values</strong></td>
+      <td class="tableblock halign-left valign-top">Prevent individual facets from appearing within the facet field.</td>
+      <td class="tableblock halign-left valign-top"><code>coat</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top" colspan="4">
+        <strong>Advanced options for <code>range</code> facet types</strong>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Select type</strong></td>
+      <td class="tableblock halign-left valign-top">Determines whether the user can select a single facet or multiple facets.</td>
+      <td class="tableblock halign-left valign-top"><code>multi</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Facet sort</strong></td>
+      <td class="tableblock halign-left valign-top">
+        Sort order of the individual facets within the facet field:
+        <ul>
+          <li><code>count</code>—Facets are sorted by the number of documents in descending order.</li>
+          <li><code>index</code>—Facets are sorted in alphanumeric order.</li>
+        </ul>
+      </td>
+      <td class="tableblock halign-left valign-top"><code>count</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><strong>Min count</strong></td>
+      <td class="tableblock halign-left valign-top">Sets a minimum requirement for the number of documents in the facet to display.</td>
+      <td class="tableblock halign-left valign-top"><code>10</code></td>
+    </tr>
+  </tbody>
+</table>
+
+### Set Params
+
+The Set Params action sets a [parameter name and value](https://solr.apache.org/guide/common-query-parameters.html) to a search query.
+
+For example, a workplace may use the name and value to display only specific filetypes in the results.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Parameter name** | The name of the [query parameter](https://wiki.apache.org/solr/QueryParametersIndex). | `fl` |
+| ✅ | **Parameter value** | The value of the query parameter. | `discountAmount` |
+| ✅ | **Update policy** | The manner in which the parameter affects the results response: <br/>● `append`. Add the parameter to the default parameters in the results response.<br/>● `default`. Add the parameter to the default parameters in the results response if it is not already included in the request or the default specification in the Solr config file solrconfig.xml.<br/>● `remove`. Remove the parameter from the results response.<br/>● `replace`. Replace the default parameter in the results response. | `append` |
+
+### JSON Blob
+
+The JSON Blob action returns an [arbitrary JSON blob](/fusion/5.9/8835/business-rules#faq) to your frontend when a business rule fires. The JSON blob displays outside of the search results.
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Blob Type** | An arbitrary value used by the frontend, generally to indicate what kind of data the JSON blob contains. | `default` |
+| ✅ | **JSON Blob** | An arbitrary JSON value used by the frontend. When the rule is triggered, the JSON is sent with the results response. This behaves similarly to the **Banner** rule, given that it returns the JSON object *outside* of the search results. | `{"parameter1":"value", "parameter2":["value_a", "value_b"]}` |
+
+## Additional configuration options
+
+* **Set response values.** Combine **Response Value** rules with other rules for purposes as [described above](#response-value).
+* **Use Query Elevation Component (QEC).** Apply the rule action to configure the top results regardless of the document’s score. However, enabling QEC does not boost the document’s score. The QEC only supports elevation through the `id` field. If QEC is enabled but is not configured correctly in Solr, the rule does not fire.
+
+  To use the Query Elevation Component, you must first [configure your Solr cluster](/how-to/8867/use-the-query-elevation-component). Note that query elevation *does not boost scores*.
+
+The chart below shows additional configuration support for each business rule action:
+
+| Action | Response value | Query Elevation Component |
+| --- | --- | --- |
+| **Banner** | ✘ | ✘ |
+| **Block List** | ✅ | ✘ |
+| **Boost Attributes** | ✅ | ✘ |
+| **Boost List** | ✅ | ✅ |
+| **Bury List** | ✅ | ✘ |
+| **Filter List** | ✅ | ✅ |
+| **Ingroup Boost List** | ✅ | ✘ |
+| **Ingroup Bury List** | ✅ | ✘ |
+| **Ingroup Pinned** | ✅ | ✘ |
+| **Pinned** | ✅ | ✅ |
+| **Redirect** | ✘ | ✘ |
+| **Response Value** | ✅ | ✘ |
+| **Set Facets** | ✅ | ✘ |
+| **Set Params** | ✅ | ✘ |

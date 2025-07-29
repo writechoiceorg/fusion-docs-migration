@@ -1,0 +1,258 @@
+---
+title: "Custom JavaScript Stages For Index Pipelines"
+permalink: "156"
+---
+
+The JavaScript Index stage allows you to write a custom processing logic using JavaScript to manipulate Pipeline Documents and the index pipeline context, which will be compiled by the JDK into Java bytecode that is executed by the Fusion pipeline.
+The first time that the pipeline is run, Fusion compiles the JavaScript program into Java bytecode using the JDK’s JavaScript engine.
+
+For a JavaScript Index stage, the JavaScript code must return either:
+a single document or array of documents; or the null value or an empty array.
+In the latter case, no further processing is possible,
+which means that the document will not be indexed or updated. For example, Solr commits have a `null` value and are dropped. For information about how to skip stages when Solr commits are sent, see the [Skip JavaScript stages during Solr commits](#skip-javascript-stages-during-solr-commits).
+
+## JavaScript Index Stage Global Variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+The JavaScript in a JavaScript stage is standard [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript).
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Index stage, the container is a Fusion index pipeline.
+The following global pipeline variables are available:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `doc` | [PipelineDocument](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/common/pipeline/pipelinedocument) | The contents of each document submitted to the pipeline. |
+| `ctx` | [Context](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/context) | A reference to the container that holds a map over the pipeline properties. Used to update or modify this information for downstream pipeline stages. |
+| `collection` | String | The name of the Fusion collection being indexed or queried. |
+| `solrServer` | [BufferingSolrServer](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/component/bufferingsolrserver) | The Solr server instance that manages the pipeline’s default Fusion collection. All indexing and query requests are done by calls to methods on this object. See [SolrClient](https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html) for details. |
+| `solrServerFactory` | [SolrClientFactory](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/component/solrclientfactory) | The SolrCluster server used for lookups by collection name which returns a Solr server instance for a that collection, e.g.  `var productsSolr = solrServerFactory.getSolrServer("products");` |
+
+<Note>
+The now-deprecated global variable `_context` refers to the same object as `ctx`.
+</Note>
+
+### Syntax Variants
+
+JavaScript stages can be written using ***legacy syntax*** or ***function syntax***. The key difference between these syntax variants is how the "global variables" are used. While using legacy syntax, these variables are used as global variables. With function syntax, however, these variables are passed as function parameters.
+
+#### Legacy Syntax
+
+```js
+//do some work...
+return doc;
+```
+
+#### Function Syntax
+
+```javascript
+function (doc) {
+    // do some work ...
+    return doc;
+}
+```
+
+<Tip>
+**Important**
+
+*Function syntax* is used for the examples in this document.
+</Tip>
+
+### JavaScript Use
+
+The JavaScript in a JavaScript Index stage must return either a single document or an array of documents.
+This can be accomplished by either:
+
+* a series of statements where the final statement evaluates to a document or array of documents
+* a function that returns a document or an array of documents
+
+All pipeline variables referenced in the body of the JavaScript function are passed in as arguments to the function. E.g., in order to access the PipelineDocument in global variable 'doc',
+the JavaScript function is written as follows:
+
+```javascript
+function doWork(doc) {
+    // do some work ...
+    return doc;
+}
+```
+
+The allowed set of function declarations are:
+
+```javascript
+function doWork(doc) {  ... return doc; }
+function doWork(doc, ctx) {  ... return doc; }
+function doWork(doc, ctx, collection) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer, solrServerFactory) {  ... return doc; }
+```
+
+The order of these arguments is according to the (estimated) frequency of use.
+The assumption is that most processing only requires access to the document object itself,
+and the next-most frequent type of processing requires only the document and read-only access of some context parameters.
+If you need to reference the solrServerFactory global variable, you must use the 5-arg function declaration.
+
+In order to use other functions in your JavaScript program, you can define and use them, as long as the final statement
+in the program returns a document or documents.
+
+### Global variable `logger`
+
+The global variable named `logger` writes messages to the log file of the server running the pipeline.
+This variable is truly global and does not need to be declared as part of the function parameter list.
+
+Since Fusion’s API service does the index pipeline processing, these log messages go into the log file: `https://FUSION_HOST:FUSION_PORT/var/log/api/api.log`.
+There are 5 methods available, which each take either a single argument (the string message to log) or two arguments (the string message and an exception to log).
+The five methods are, "debug", "info", "warn", and "error".
+
+## JavaScript Index Stage Examples
+
+### Skip JavaScript stages during Solr commits
+
+When JavaScript stages contain data manipulation such as values in the `conditions` field, errors may be generated and Solr commits are dropped because the value is `null`. To skip those stages when a Solr commit is sent through the pipeline, add the following condition to those stages: `doc.getCommands().size()==0`.
+
+### Add a field to a document
+
+```javascript
+function (doc) {
+  doc.addField('some-new-field', 'some-value');
+  return doc;
+}
+```
+
+### Join two fields
+
+The following example conjoins separate latitude and longitude fields into a single geo-coordinate field,
+whose field name follows Solr schema conventions and ends in "_p".
+It also removes the original latitude and longitude fields from the document.
+
+```javascript
+function(doc) {
+  var value = "";
+  if (doc.hasField("myGeo_Lat") && doc.hasField("myGeo_Long"))   {
+    value = doc.getFirstFieldValue("myGeo_Lat") + "," + doc.getFirstFieldValue("myGeo_Long");
+    doc.addField("myGeo_p", value);
+    doc.removeFields("myGeo_Lat");
+    doc.removeFields("myGeo_Long");
+    logger.debug("conjoined Lat, Long: " + value);
+  }
+  return doc;
+}
+```
+
+### Return an array of documents
+
+```javascript
+function (doc) {
+  var subjects = doc.getFieldValues("subjects");
+  var id = doc.getId();
+  var newDocs = [];
+  for (i = 0; i < subjects.size(); i++) {
+     var pd = new com.lucidworks.apollo.common.pipeline.PipelineDocument(id+'-'+i );
+     pd.addField('subject',  subjects.get(i));
+     newDocs.push( pd  );
+  }
+  return newDocs;
+}
+```
+
+### Parse a JSON-escaped string into a JSON object
+
+While it is simpler to use a JSON Parsing index stage, the following code example
+shows you how to parse a JSON-escaped string representation into a JSON object.
+
+This code parses a JSON object into an array of attributes,
+and then find the attribute "tags" which has as its value a list of strings.
+Each item in the list is added to a multi-valued document field named "tag_ss".
+
+```javascript
+var imports = new JavaImporter(Packages.sun.org.mozilla.javascript.internal.json.JsonParser);
+function(doc) {
+    with (imports) {
+        myData = JSON.parse(doc.getFirstFieldValue('body'));
+        logger.info("parsed object");
+        for (var index in myData) {
+            var entity = myData[index];
+            if (index == "tags") {
+                for (var i=0; i<entity.length;i++) {
+                    var tag = entity[i][0];
+                    doc.addField("tag_ss",tag);
+                }
+            }
+        }
+    }
+    doc.removeFields("body");
+    return doc;
+}
+```
+
+### Do a lookup on another Fusion collection
+
+```javascript
+function doWork(doc, ctx, collection, solrServer, solrServerFactory) {
+    var sku = doc.getFirstFieldValue("sku");
+    if (!doc.hasField("mentions")) {
+        var mentions = ""
+        var productsSolr = solrServerFactory.getSolrServer("products");
+        if( productsSolr != null ){
+            var q = "sku:"+sku;
+            var query = new org.apache.solr.client.solrj.SolrQuery();
+            query.setRows(100);
+            query.setQuery(q);
+            var res = productsSolr.query(query);
+            mentions = res.getResults().size();
+            doc.addField("mentions",mentions);
+        }
+    }
+    return doc;
+}
+```
+
+### Reject a document
+
+If the function returns `null` or an empty array, it will not be indexed or updated into Fusion.
+
+```javascript
+function doWork(doc) {
+ if (!doc.hasField("required_field")) {
+    return null;
+ }
+ return doc;
+}
+```
+
+## Debugging and Troubleshooting
+
+To debug a JavaScript Index stage you can:
+
+* Check the Fusion api server logs for compilation errors.
+* Check the Fusion connectors server logs for runtime processing errors.
+* Use the `logger` object for print debugging (in the Fusion connectors log file).
+* Use the [Index Workbench](/fusion-server/4.2/158/index-workbench).
+
+## The JavaScript Engine Used by Fusion
+
+The JavaScript engine used by Fusion is the Nashorn engine from Oracle.
+See [The Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html) for details.
+
+### Upgrading to the latest Nashorn engine
+
+The default version of the Nashorn engine used by Fusion versions 2.4.1 and earlier
+is the nashorn-0.1-jdk7.jar which contains many bugs that have since been fixed in the official JDK 1.8 version.
+In order to use the latest version of the Nashorn engine, you must:
+
+* Have an up-to-date version of Java 8 installed.
+* Remove the nashorn-0.1-jdk7.jar from the Fusion classpaths:
+
+  + `cd FUSION_INSTALL_PATH`
+  + `find . -name "nashorn-0.1-jdk7.jar" -print -exec rm -i {} \;`
+
+### Creating and accessing Java types
+
+The following information is taken from
+Oracle’s JavaScript programming guide section 3,
+[Using Java From Scripts](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/javascript.html#A1147207).
+
+To create script objects that access and reference Java types from Javascript use the `Java.type()` function:
+
+```javascript
+var ArrayList = Java.type("java.util.ArrayList");
+var a = new ArrayList;
+```

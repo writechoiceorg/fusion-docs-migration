@@ -1,0 +1,39 @@
+---
+title: "Parsers"
+permalink: "0e80mp"
+---
+
+Parsers provide fine-grained configuration for inbound data. You configure parsers with stages, much like index pipelines and query pipelines. Parsers can include conditional parsing and nested parsing. You can configure them through the [Managed Fusion UI](/managed-fusion/5.9/8ds9gm/parsers#ui-config) or the [Parsers API](/managed-fusion/5.9/8ds9gm/parsers#api-config).
+
+Connectors receive the inbound data, convert it into a byte stream, and send the byte stream to a parser’s configured parsing stages. The parser selects a parsing stage to handle the stream, which parses the data and produces documents that are sent to the index pipeline.
+
+Each parsing stage evaluates whether the inbound stream matches the stage’s default media types or filename extensions. The first stage that finds a match processes the data and can output one or both of the following:
+
+* Zero or more pipeline documents for consumption by the index pipeline
+* Zero or more new input streams for re-parsing
+
+  This recursive approach is useful for containers (for example, `zip` and `tar` files). The output of the container parsing can be another container or a stream of uncompressed content that requires its own parsing.
+
+Stages that might match the stream beyond the first match will not be used.
+
+A few static fields impact the overall parser configuration. They are accessible when you select the parser in the Index Workbench:
+
+| Field | Description |
+| --- | --- |
+| Document ID Source Field | Field in the source file that contains the document ID |
+| Maximum Parser Recursion Depth | Maximum number of times the parser may recurse over the file, before proceeding to the next parser. This is useful for files with hierarchical structures (for example, `zip` and `tar` files). |
+| Enable automatic media type detection | Whether to automatically detect the media type of the source files. If disabled, the parser uses the media type `application/octet-stream`. |
+
+## Built-in parser stages
+
+The parser stages found in the [Parsers reference area](/managed-fusion/5.9/8ds9gm/parsers) are available for configuration.
+
+Datasources that use connectors that retrieve fixed-structure content, such as those for Twitter and Jira, have hard-coded parsers and do not expose any configurable parser options.
+
+## Configure parsers
+
+When you configure a datasource, you can use the [Index Workbench](/managed-fusion/5.9/g4oud0/index-workbench) or the [Parsers API](/managed-fusion/5.9/hqxqm1/parsers-api) to create a parser. A parser consists of an ordered list of parser stages, some global parser parameters, and the stage-specific parameters. You can re-order the stages list by dragging them up or down in the Index Workbench.
+
+Any parser stage can be added to the same parser multiple times if different configuration options are needed for different stages. Datasources with fixed-structure data will also be parsed by Managed Fusion, but with default settings that do not need to be customized.
+
+There is no limit to the number of stages that can be included in a parser. The priority-order of the stages is completely flexible. In a default parser configuration, a fallback parser is provided at the end of the parsing stage list to handle streams no other stage matches. If present, this stage is selected and attempts to parse anything that has not yet been matched.

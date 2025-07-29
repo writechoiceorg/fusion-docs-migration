@@ -1,0 +1,104 @@
+---
+title: "Machine Learning"
+description: "Query pipeline stage configuration specifications"
+permalink: "43gkel"
+---
+
+The Machine Learning query pipeline stage uses a trained machine learning model to analyze a field or fields of a [Request](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/pipeline/query/Request.html) object and stores the results of analysis in a new field added to either the Request or the [Context](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/common/pipeline/Context.html) object.
+
+In order to use the Machine Learning Stage, you must train a machine learning model. There are two different ways to train a model:
+
+* Use a Managed Fusion job that trains a model, like
+
+[Classification](/managed-fusion/5.9/seo2hq/classification-jobs)
+
+* [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model)
+
+This stage requires that you use JavaScript to construct a model input object from the Request and/or Context. This JavaScript is defined in the "Model input transformation script" property. This script must construct a HashMap containing fields and values to be sent to the model.
+The field names and values will depend on the input schema of the model.
+
+Value types supported are:
+
+* `String`
+* `Double`
+* `String[]`
+* `double[]`
+* `List<String>`
+* `List<Number>`
+
+The JavaScript interpreter that executes the script will have the following variables available in scope:
+
+* [`request`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/pipeline/query/Request.html)
+* [`response`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/pipeline/query/Response.html)
+* [`context`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/common/pipeline/Context.html)
+
+The last line of the script must be a reference to the HashMap object you created.
+
+**Example 1: Single string parameter from request to modelInput HashMap**
+
+```js
+var modelInput = new java.util.HashMap()
+modelInput.put("input_1", request.getFirstParam("q"))
+modelInput
+```
+
+**Example 2: List of strings from request to modelInput HashMap**
+
+```js
+var modelInput = new java.util.HashMap()
+modelInput.put("input_1", request.getParam("q")) // request.getParam returns a Collection
+modelInput
+```
+
+**Example 3: List of numeric values from request to modelInput HashMap**
+
+```js
+var modelInput = new java.util.HashMap()
+var list = new java.util.ArrayList()
+list.add(Double.parseDouble(request.getFirstParam("numeric_1")))
+list.add(Double.parseDouble(request.getFirstParam("numeric_2")))
+modelInput.put("input_1", list)
+modelInput
+```
+
+Similarly, you will need to use JavaScript to store the predictions into the Request and/or Context from the model output object. The model output object is a HashMap containing fields and values produced by the model.
+
+The JavaScript interpreter that executes the script will have the following variables available in scope:
+
+* modelOutput (a HashMap containing fields/values returned from ML model service)
+* [`request`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/pipeline/query/Request.html)
+* [`response`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/pipeline/query/Response.html)
+* [`context`](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/common/pipeline/Context.html)
+
+**Example: Place predictedLabel (string) on request**
+
+```js
+request.putSingleParam("sentiment", modelOutput.get("predictedLabel"))
+```
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Intro to Machine Learning in Fusion** focuses on using machine learning to to infer the goals of customers and users in order to deliver a more sophisticated search experience:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/intro-to-machine-learning-in-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/intro-to-machine-learning.jpg" alt="Intro to Machine Learning in Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/machine-learning.mdx";
+
+<SchemaParamFields schema={schema}/>

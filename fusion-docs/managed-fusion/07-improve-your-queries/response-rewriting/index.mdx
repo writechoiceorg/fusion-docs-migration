@@ -1,0 +1,40 @@
+---
+title: "Response rewriting"
+permalink: "tsjj9g"
+---
+
+Response rewriting is a strategy for improving relevancy using AI-generated data by modifying Solr’s response before passing it to the search application. There are two approaches to configuring response rewriting:
+
+## Rules
+
+Any [rule type](/managed-fusion/5.9/tw7rlx/query-rewriting#types) can add content to the response by modifying the `responseValues` field. These two rule types can replace the whole response:
+
+* Banner
+
+  Display a user-defined banner message when the rule fires.
+* Redirect
+
+  Send users to a different URL instead of the search results.
+
+For more information, see [Query rewriting business rules](/managed-fusion/5.9/tw7rlx/query-rewriting#business-rules) section.
+
+## Query pipeline stages
+
+Query pipeline stages that perform response rewriting must appear *after* the [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage). These stages fall into two categories:
+
+* **Stages that act on the whole set of results**
+
+  + [Response Shuffle stage](/managed-fusion/5.9/l45eky/response-shuffle-stage)
+
+    "De-bias" results by shuffling the top N results randomly.
+  + [Response Pairwise Swap stage](/managed-fusion/5.9/wmqc3m/response-pairwise-swap-stage)
+
+    "De-bias" results by swapping the search results at any two positions, such as positions 1 and 2, positions 3 and 4, and so on.
+* **Stages that act on individual documents**
+
+  + [Response Document Exclusion stage](/managed-fusion/5.9/vor74c/response-document-exclusion-stage)
+
+    Drop all documents that match all of the specified rules.
+  + [Modify Response with Rules stage](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage)
+
+    Apply [rules](/managed-fusion/5.9/03vd0y/business-rules) to the response.

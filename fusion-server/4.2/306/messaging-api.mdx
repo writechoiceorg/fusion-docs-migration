@@ -1,0 +1,102 @@
+---
+title: "Messaging API"
+permalink: "306"
+---
+
+
+The [Messaging Service](/fusion-server/4.2/135/messaging-and-alerting) provides implementations to support sending messages and alerts under a coherent REST API. Service instances can be added and removed via REST API. Messages can be scheduled or sent immediately.
+
+## Attributes
+
+The Messaging API supports the generic concept of a message, and each implementation interprets attributes in context. For example, *"to:"* in the context of a Slack message references the intended channel, whereas *"to:"* in the context of an email(SMTP) references the intended email address of its recipient.
+
+| Message Attribute | Description |
+| --- | --- |
+| `id` | An application specific id for tracking the message. Must be unique. |
+| `type` | The type of message to send, one of the following: * `log` * `smtp` * `slack` * `pagerduty` |
+| `to` | One or more destinations for the message, as a list |
+| `from` | Who/what the message is from |
+| `subject` | The subject of the message |
+| `body` | The main body of the message |
+| `schedule` | Used to pass messages at a later time, or at a recurring basis. |
+| `messageServiceParams` | Passes a map of any service-specific parameters, such as the user name and password |
+
+## Examples
+
+*Display current messaging services*:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/messaging/service
+```
+
+**RESPONSE**
+
+```json
+[ {
+"type": "logging-message-service-config",
+"defaultLogLevel" : "info",
+"template": "<to>:<from>:<subject>:<body>",
+"serviceType": "log"
+} ]
+```
+
+*Send a message using Slack*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d  '{"id": "myID", "type": "slack", "subject": "test", "body": "@recipient: this is a test", "to": ["recipient"], "from": "sender"}' https://FUSION_HOST:8764/api/messaging/send
+```
+
+**RESPONSE**
+
+```json
+[ {   "id": "myID",
+    "type": "slack",
+    "subject": "test",
+    "body": "@recipient: this is a test",
+        "to": "recipient",
+    "from": "sender"
+} ]
+```
+
+**Get all scheduled messages**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/messaging/scheduled
+```
+
+**RESPONSE**
+
+```json
+[
+ {
+   "id": "myID",
+   "type": "slack",
+   "subject": "Updates",
+   "body": "@recipient:here is the latest version",
+   "to": ["updatechannel"],
+   "from": "sender",
+   "schedule":{"id":"slack", "creatorType":"human", "creatorId":"admin", "repeatUnit":"DAY", "interval":1, "startTime":"2015-05-21T06:44:00.000Z", "active":true}
+ }
+```
+
+*Show the current status of messaging services:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/messaging/status
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "status" : "ok",
+  "node" : "http://xxx.xx.xx.x:8764/api/messaging",
+  "messages" : [ ]
+} ]
+```

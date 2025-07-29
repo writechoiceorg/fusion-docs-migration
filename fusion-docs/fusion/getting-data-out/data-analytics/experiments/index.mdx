@@ -1,0 +1,112 @@
+---
+title: "Experiments"
+permalink: "460"
+---
+
+When making changes to a query pipeline or query parameters that will affect users' search experience, it is often a good idea to run an experiment in order to verify that the results are what you intended. Fusion lets you create and run experiments that take care of dividing traffic between variants and calculating the results of each variant with respect to configurable objectives such as purchases, click-through rate, or search relevance.
+
+There are two ways that a search application might interact with an experiment:
+
+* Preferred: Using a query profile
+* Alternative: Using an Experiment query pipeline stage
+
+If a query profile is configured to use an experiment, then a search app sends queries and signals to the query profile endpoint. If the experiment is active, then Fusion routes each query through one of the experiment variants. The search app will also send subsequent signal data relating to that query — clicks, purchases, "likes", or whatever is relevant to the application — to that same query profile, and Fusion will record it along with information about the experiment variant that the user was exposed to.
+
+Fusion generates and stores the data that metrics calculations use. It also automatically creates jobs that periodically calculate the metrics. After metrics have been calculated, they are available in [App Insights](/fusion/5.9/456/app-insights).
+
+This topic explains the experiment workflow and basic concepts. These additional topics provide details about how to implement experiments to improve the user experience:
+
+* [Plan an Experiment](/how-to/experiments/942/plan-an-experiment)
+* [Set Up an Experiment](/how-to/experiments/722/set-up-an-experiment-using-a-query-profile)
+* [Run an Experiment](/how-to/experiments/666/run-an-experiment)
+* [Analyze Experiment Results](/how-to/experiments/709/analyze-experiment-results)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Experiments** focuses on understanding and running experiments in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/experiments-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/experiments.jpeg" alt="Experiments" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Run an Experiment Tutorial
+
+The [Run an Experiment](/how-to/experiments/666/run-an-experiment) tutorial takes you through the steps needed to run an A/B experiment to compare metrics such as click-through rate (CTR) and query relevance for two differently configured query pipelines. You plan the experiment, create a Fusion app, index a datasource, and create a query profile that includes the configuration data needed for experiments. In Fusion, you start and stop the experiment. A search app uses the query profile for Fusion queries. Different users get different search results, but they are blissfully unaware that an experiment is going on.
+
+## A/B/n experiments
+
+Fusion’s experiments feature set implements [A/B/n experiments](https://en.wikipedia.org/wiki/A/B_testing), also called A/B experiments or A/B tests, where A and B are *experiment groups* with one or more *variants*.
+
+Fusion’s implementation of an A/B experiment uses consistent hashing on a unique ID field (typically `userId`), concatenated with the experiment’s name, to assign each request to one of the experiment groups. Any future requests with that hash are assigned to the same group, guaranteeing user "stickiness".
+
+<Tip>
+If you prefer "stickiness" only at the session level, you can send a session ID instead of a user ID.
+</Tip>
+
+
+
+If you send no ID at all, the request is not assigned to a variant since there is no way to consistently assign it to the same one. In that case, the request uses the "default" configuration of the query profile or experiment stage.
+
+## Example
+
+The following experiment is an example of an A/B/n experiment with three variants:
+
+* **Variant 1 (control).** Use the default query pipeline with no modifications. Each experiment should have a "control" variant as the first variant; the other variants will be compared against this one.
+* **Variant 2 (content-based filtering with a Solr MoreLikeThis stage).** Content-based filtering uses data about a user’s search results, browsing history, and/or purchase history to determine which content to serve to the user. The filtering is non-collaborative.
+* **Variant 3 (collaborative filtering with a Recommend Items for User stage).** Collaborative filtering takes advantage of knowledge about the behavior of many individuals. It makes serendipitous discovery possible—a user is presented with items that other users deem relevant, for example, socks when buying shoes.
+
+## High-level workflow
+
+In an experiment:
+
+1. A Fusion administrator defines the experiment. An experiment has *variants* with differences in query pipelines, query pipeline stages, collections, and/or query parameters.
+2. The Fusion administrator assigns the experiment to a query profile.
+3. A user searches using that query profile.
+4. If the experiment is running, Fusion assigns the user to one of the experiment variants, in accordance with [traffic weights](/how-to/experiments/942/plan-an-experiment#choose-traffic-weights). Assignment to a variant is persistent. The next time the user searches, Fusion assigns the same variant.
+5. Different experiment variants return different search results to users.
+6. Users interact with the search results, for example, viewing them, possibly clicking on specific results, possibly buying things, and so forth.
+7. Based on the interactions, the search app backend sends signals to the signals endpoint of the query profile for the experiment.
+8. Using signal data, an automatically-created Spark job periodically computes metrics for each experiment variant and writes the metrics to the `job_reports` collection.
+9. In the Fusion UI, an administrator can view reports about the experiment.
+10. Once the results of the experiment are conclusive, the Fusion administrator can stop the experiment and change the query profile to use the winning variant, or start a new experiment.
+
+## Information flow
+
+This diagram illustrates information flow through an experiment. Numbers correspond to explanations below the diagram.
+
+<Frame>![Information flow in an experiment](/assets/images/4.0/diagrams/experiment-info-flow.svg)</Frame>
+
+1. A user searches in a search app. For example, the user might search for `shirt`.
+2. The search app backend appends a `userId` or other unique ID that identifies the user, for example, `userId=123`, to the query and sends the query to the query profile endpoint for the experiment.
+3. Using information in the query profile and the value of the unique ID, Fusion routes the query through one of the experiment’s variants. In this example, Fusion routes the query through query pipeline 1.
+4. A query pipeline adds a `x-fusion-query-id` to the response header, for example, `x-fusion-query-id=abc`.
+5. Based on the query, Fusion obtains a search result from the index, which is stored in the primary collection. Fusion sends the search result back to the search app.
+6. Fusion sends a response signal to the signals collection.
+7. A different user might be routed through the other experiment variant shown here, and through query pipeline 2. This query pipeline has an enabled Boost with Signals stage, unlike query pipeline 1.
+8. The search user interacts with the search results, viewing them, possibly clicking on specific results, possibly buying things, and so forth. For example, the user might click the document with `docId=757`.
+9. Based on the interactions, the search app backend sends click signals to the signals endpoint for the query profile. Signals include the same query ID so Fusion can associate the signals with the experiment. Specifically, the click signal *must* include a field named `fusion_query_id` in the `params` object of the raw click signal whose value was returned in the response object in a header named `x-fusion-query-id`. If you are tracking queries and responses with App Studio, the `fusion_query_id` parameter will be passed with the click signal as long as you specify the appropriate response attribute in your `track:clicks` tag.
+10. Using information in the query profile, Fusion routes the signals to the `_signals_ingest` pipeline.
+11. The `_signals_ingest` pipeline stores signals in the `_signals` collection. Signals include the collection ID of the primary collection and experiment tracking information.
+
+## Metrics generation
+
+This diagram illustrates metrics generation:
+
+<Frame>![Metrics generation for an experiment](/assets/images/4.0/diagrams/experiment-metrics-generation.svg)</Frame>
+
+1. A Fusion administrator can configure which metrics are relevant for a given experiment and the frequency with which experiment metrics are generated. They can also generate metrics on demand.
+2. Using signal data, an automatically-created Spark job periodically runs in the background. It obtains signal data from the `COLLECTION_NAME_signals` collection, computes metrics for each experiment variant, and writes the metrics to the collection used for aggregated signals (`_signals_aggr`).
+3. In the Fusion UI, a Fusion administrator can view experiment metrics.
+4. These calculated metrics are used to display reports about the experiment.

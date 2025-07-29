@@ -1,0 +1,244 @@
+export const schema = {
+  "type": "object",
+  "title": "CSV",
+  "description": "Parse CSV content",
+  "required": [
+    "charset",
+    "ignoreBOM",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "148f584d-60b6-4381-8259-d6d7dff69ed0"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types for this Parser Stage",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "use default media types for this Parser Stage",
+      "description": "Indicates if parser stage should use the default media types.  Unchecking this box means that ONLY the manually configured media types will be parsed by the parser and you then MUST provide at least one media type.",
+      "default": true
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "charset": {
+      "type": "string",
+      "title": "Character Set",
+      "description": "Example: \"UTF-8\"",
+      "default": "detect"
+    },
+    "ignoreBOM": {
+      "type": "boolean",
+      "title": "Ignore BOM",
+      "description": "Ignore Byte-Order Mark (BOM) if present and always use the configured character set. When set to false a valid BOM character set overrides the configured default character set.",
+      "default": false
+    },
+    "delimiter": {
+      "type": "string",
+      "title": "Delimiter",
+      "description": "Delimiter character between fields. Any single character, including an escaped character, is valid, e.g. , (comma), \\t (tab), or | (pipe). Default is comma if auto-detection is disabled",
+      "minLength": 1
+    },
+    "quote": {
+      "type": "string",
+      "title": "Quote",
+      "description": "Quote character, default is a double quote (\") if auto-detection is disabled",
+      "maxLength": 1
+    },
+    "quoteEscape": {
+      "type": "string",
+      "title": "Quote escape",
+      "description": "Quote escape character, default is a double quote (\") if auto-detection is disabled ",
+      "maxLength": 1
+    },
+    "autoDetect": {
+      "type": "boolean",
+      "title": "Auto-detect CSV Format",
+      "description": "Attempt to guess the delimiter, quote, quote escape, and comment characters",
+      "default": true
+    },
+    "trimWhitespace": {
+      "type": "boolean",
+      "title": "Trim whitespace",
+      "description": "Trim off leading and trailing whitespace from columns, default true",
+      "default": true
+    },
+    "hasHeaders": {
+      "type": "boolean",
+      "title": "Headers in file",
+      "description": "Treat the first row as column headers, default true",
+      "default": true
+    },
+    "headers": {
+      "type": "array",
+      "title": "Header list",
+      "description": "List of column headers, overrides file headers if present",
+      "items": {
+        "type": "string"
+      }
+    },
+    "skipEmptyLines": {
+      "type": "boolean",
+      "title": "Skip empty lines",
+      "description": "Skip any empty lines encountered, default true",
+      "default": true
+    },
+    "lineSeparator": {
+      "type": "string",
+      "title": "Line Separator",
+      "description": "Line separator character",
+      "minLength": 1
+    },
+    "nullValue": {
+      "type": "string",
+      "title": "Null value",
+      "description": "A string value to replace nulls with, no default"
+    },
+    "emptyValue": {
+      "type": "string",
+      "title": "Empty string replacement",
+      "description": "A string value to replace empty strings with, no default"
+    },
+    "includeRowNumber": {
+      "type": "boolean",
+      "title": "Include row number",
+      "description": "Include the row number (line number) in the emitted documents, default true",
+      "default": true
+    },
+    "comment": {
+      "type": "string",
+      "title": "Comment character",
+      "description": "Character at start of row to indicate a comment, default is hash (#) if auto-detection is disabled",
+      "maxLength": 1
+    },
+    "commentHandling": {
+      "type": "string",
+      "title": "Comment Handling",
+      "description": "How to handle comments: ignore, add as field to next document, or add a separate documents, default ignore",
+      "enum": [
+        "ignore",
+        "as_field",
+        "as_document"
+      ],
+      "default": "ignore"
+    },
+    "maxRowLength": {
+      "type": "integer",
+      "title": "Maximum line length",
+      "description": "Maximum number of characters to allow for a single read line, default 10MB",
+      "default": 10485760,
+      "maximum": 2147483647,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "maxNumColumns": {
+      "type": "integer",
+      "title": "Maximum number of columns",
+      "description": "Maximum number of columns to allow for a single row, default 1000",
+      "default": 1000,
+      "maximum": 2147483647,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "maxColumnChars": {
+      "type": "integer",
+      "title": "Maximum number or characters per column",
+      "description": "Maximum number of characters a single column value can have, default 10MB",
+      "default": 10485760,
+      "maximum": 2147483647,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "columnHandling": {
+      "type": "string",
+      "title": "Column mismatch handling",
+      "description": "What to do when a row has too many or too few columns: Can throw an error, align the column, or do nothing special (default)",
+      "enum": [
+        "error",
+        "align",
+        "default"
+      ],
+      "default": "default"
+    },
+    "fillValue": {
+      "type": "string",
+      "title": "Column fill value",
+      "description": "A string value to use when aligning the columns (when Column Mismatch Handling is \"align\")",
+      "default": "<FILL>"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "csv"
+      ],
+      "default": "csv"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1
+}

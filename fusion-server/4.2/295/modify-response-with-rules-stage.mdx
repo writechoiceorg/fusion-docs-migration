@@ -1,0 +1,19 @@
+---
+title: "Modify Response with Rules Stage"
+permalink: "295"
+---
+
+Most rules operate on the request, but some [rule types](/fusion-ai/4.2/489/query-rewriting#strategies), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+See [Rules](/fusion-ai/4.2/489/query-rewriting) for additional details about how to configure this set of features.
+
+TIPS:
+
+* The [Apply Rules](/fusion-server/4.2/292/apply-rules-stage) stage must be enabled as a prerequisite for this stage.
+* This stage has no configuration keys; simply enable or disable the stage.
+* Although this stage is available without a Fusion AI license, it is only effective after creating [rules](/fusion-ai/4.2/490/business-rules) in Fusion AI.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/modify-response-with-rules.mdx";
+
+<SchemaParamFields schema={schema}/>

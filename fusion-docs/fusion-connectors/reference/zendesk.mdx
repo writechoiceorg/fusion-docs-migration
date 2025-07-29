@@ -1,0 +1,89 @@
+---
+title: "Zendesk V1"
+description: "Connector Configuration Reference"
+permalink: "46"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Zendesk connector uses the [Zendesk REST API](https://developer.zendesk.com/rest_api/docs/zendesk-apis/resources) to retrieve tickets and their associated comments and attachments from a Zendesk repository.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+It retrieves all tickets with all fields (such as customer, assignee, priority, status, and so on) as well as access restrictions for users and groups. ACLs can be used for security trimming at query time.
+The types of items retrieved are:
+
+* tickets and their associated metrics: for example, time elapsed until first response, time to close.
+* ticket comment counts, comment IDs
+* ticket comment attachment URLs
+
+Items retrieved are returned as individual Solr documents, therefore, for a given Zendesk ticket, there will be multiple documents:
+
+* the Zendesk ticket itself
+* one document per comment
+* one document per comment attachment
+
+Documents have fields for Zendesk type and reference field to parent documents. For example, a comment document will have field `ticket_id` pointing back to the Zendesk ticket.
+
+Incremental recrawls allow updates to the Fusion collection to add new tickets and record further changes to existing tickets without having
+to retrieve the entire Zendesk repository contents.
+
+## Prerequisites
+
+The Zendesk user must have administrator privileges to retrieve all tickets and associated information.
+All communication with the Zendesk API is encrypted with SSL.
+
+A Zendesk data source must be configured with the following properties:
+
+* **Authentication Key.** The username or email.
+* **Authentication Value.** The password or API token.
+* **Token Auth.** A flag to indicate whether the auth key/value should be treated as username/password or email/token
+* **Base URL.** The API URL to an instance of the Zendesk API
+* **Organization ID.** Set to restrict indexing to only tickets that belong to the Organization
+
+## Description
+
+It retrieves all tickets with all fields (such as customer, assignee, priority, status, and so on) as well as access restrictions for users and groups. ACLs can be used for security trimming at query time.
+The types of items retrieved are:
+
+* tickets and their associated metrics: for example, time elapsed until first response, time to close.
+* ticket comment counts, comment IDs
+* ticket comment attachment URLs
+
+Items retrieved are returned as individual Solr documents, therefore, for a given Zendesk ticket, there will be multiple documents:
+
+* the Zendesk ticket itself
+* one document per comment
+* one document per comment attachment
+
+Documents have fields for Zendesk type and reference field to parent documents. For example, a comment document will have field `ticket_id` pointing back to the Zendesk ticket.
+
+Incremental recrawls allow updates to the Fusion collection to add new tickets and record further changes to existing tickets without having
+to retrieve the entire Zendesk repository contents.
+
+## Configuration Properties
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-zendesk.mdx";
+
+<SchemaParamFields schema={schema}/>
+

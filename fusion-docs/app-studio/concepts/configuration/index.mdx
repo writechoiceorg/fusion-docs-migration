@@ -1,0 +1,22 @@
+---
+title: "Configuration"
+permalink: "3093"
+---
+
+The articles in this section describe how to configure a search application.
+
+* [Basic Configuration](/fusion/5.9/3089/basic-configuration)
+
+    Appkit gives you full flexibility to customize your search application, whilst providing sensible default settings out of the box. A typical search page consists of two parts: *preparation of the data model* (preparing a query, configuring one or more search platforms, and submitting the search query), and *presentation of the search results*. Both the data model and all UI components are configured through JSP tags, which allows for rapid prototyping and agile development.
+    
+* [Configuration Files](/fusion/5.9/3092/configuration-files)
+* [Externalising Configuration Files](/fusion/5.9/3088/externalising-configuration)
+
+    A commonly asked question is whether you can obtain configuration files from a location external to the application, that is, somewhere else on the file system. The answer is yes.
+    
+* [Localization Keys](/fusion/5.9/996/localization-keys)
+* [Overlaying Configuration Values](/fusion/5.9/3090/overlaying-configuration-values)
+
+    To fine-tune your configuration hierarchy prior to production, Appkit has added the ability to overlay configuration hierarchies via the Jetty Maven plugin. While developing an application, you can experiment with a partial configuration and add/update only those properties that you actually must update without touching the application’s main configuration. When the application starts these changes are merged with the application’s main configuration hierarchy.
+    
+* [Structure of a Web Application](/fusion/5.9/3091/structure-of-a-web-application)

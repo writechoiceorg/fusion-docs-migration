@@ -1,0 +1,66 @@
+---
+title: "Index Stages API"
+description: "Managed Fusion Indexing APIs"
+permalink: "jcabbn"
+---
+
+The Index Stages API provides endpoints to list index stage configuration properties.
+
+For more information, [view the API specification.](?open-api=true)
+
+An index pipeline is comprised of index stages.
+Each index stage has a name and a type.
+The name identifies the stage instance, and the type identifies its class.
+Every stage type has a number of properties, which can be configured for a particular index stage instance.
+See the section [Index Pipeline Stages](/managed-fusion/5.9/50yh1o/index-pipeline-stages) for a taxonomy of index stage types.
+
+*View the configuration properties for index stage type "regex-extractor":*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-stages/schema/regex-extractor
+
+```
+
+**RESPONSE**
+
+```json
+{
+  "type" : "object",
+  "title" : "Regex Field Extraction",
+  "description" : "This stage allows you to extract entities using regular expressions",
+  "properties" : {
+    "rules" : {
+      "type" : "array",
+      "title" : "Regex Rules",
+      "items" : {
+        "type" : "object",
+        "required" : [ "pattern" ],
+        "properties" : {
+          "source" : {
+            "type" : "array",
+            "title" : "Source Fields",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "target" : {
+            "type" : "string",
+            "title" : "Target Field"
+          },
+          "pattern" : {
+            "type" : "string",
+            "title" : "Regex Pattern",
+            "format" : "regex"
+          },
+          "annotateAs" : {
+            "type" : "string",
+            "title" : "Annotation Name"
+          }
+        }
+      }
+    }
+  }
+}
+```

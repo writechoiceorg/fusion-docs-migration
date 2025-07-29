@@ -1,0 +1,62 @@
+---
+title: "Index Pipeline Stages"
+description: "Configuration specifications"
+permalink: "0m6vl6"
+---
+
+Index Pipeline stages are used to create and modify [PipelineDocument objects](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/common/pipeline/pipelinedocument). Use the [Index Workbench](/managed-fusion/5.9/g4oud0/index-workbench) to configure stages in a pipeline and preview the results.
+
+The detailed configuration article about each Managed Fusion index pipeline stage is provided in this section.
+
+Configuration details are found for each pipeline stage in this section.
+
+To configure an index pipeline stage, sign in to Managed Fusion and click **Indexing > Index Workbench**. Then click **Load** to load a datasource, click **Add a Stage**, and select the stage you want to configure. The stages are displayed under these categories:
+
+* **Document Transformation.** This section displays options that let you configure stages such as Asynchronous Field Parser and XML Transformation.
+* **Document Filtering and Enrichment.** This section displays options that let you configure stages such as Detect Language, Exclude Documents, Include Documents, and Format Signals.
+* **Field Transformation.** This section displays options that let you configure stages such as Date Parsing, Field Mapping, and Geoip Lookup.
+* **Natural Language Processing.** This section displays the option that lets you configure the Gazetteer Lookup Extraction stage.
+* **Indexing.** This section displays options that let you configure stages such as Solr Indexer and Update Related Document.
+* **Troubleshooting.** This section displays the option that lets you configure the Logging stage.
+* **Advanced.** This section displays options that let you configure stages such as Call Data Model Pipeline, Data Model Mapping, Exclusion Filter, and Set Property.
+* **Custom.** This section displays the option that lets you configure the JavaScript stage.
+* **AI.** This section displays options that let you configure stages such as LWAI Prediction, LWAI Vectorize Field, and Machine Learning.
+
+For information about how to configure stages in an index pipeline, see [Index Workbench](/managed-fusion/5.9/g4oud0/index-workbench).
+
+For conceptual information, see [Index Pipeline Stages](/managed-fusion/5.9/50yh1o/index-pipeline-stages).
+
+## Global pipeline stage properties
+
+**Required**
+        * **type:** The type of the pipeline stage. This must be one of the defined Managed Fusion pipeline stage types, such as `index-logging`. If the Managed Fusion UI is used to define the stage, this property is filled in automatically.
+
+**Optional**
+        * **label:** A string field with a maximum length of 255 characters. The label is displayed on the Managed Fusion UI.
+        * **skip:** A boolean value. If true, pipeline processing bypasses this stage. The default is false.
+        * **condition:** A JavaScript expression that evaluates to true (1) or false (0). If this condition evaluates to false, this stage is skipped. The default is true.
+
+## Pipeline Condition Expression
+
+The JavaScript expression specified in the condition property of a pipeline stage has access the pipeline objects.
+
+### Index Pipeline Stage Condition Example
+
+An index PipelineDocument has two available variables: `doc` and `ctx`.
+
+To check whether pipeline document contains a named field:
+
+```
+doc.hasField("acl_ss")
+```
+
+### Query pipeline stage Condition Example
+
+To process a query based the query request object:
+
+```
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter `fusion-user-name` is present and has the value `SuperUser`. The second condition checks that the request parameter `isFusionPluginQuery` is not present.

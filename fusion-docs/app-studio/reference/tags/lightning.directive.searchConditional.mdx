@@ -1,0 +1,84 @@
+---
+title: "search:conditional"
+permalink: "1143"
+---
+
+## Description
+
+The search conditional directive
+
+## Usage
+
+as element:
+
+```xml
+<search:conditional
+       [test="{string}"]
+       [response="{object}"]>
+</search:conditional>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| test  *(optional)* | **string** | The expression to test conditional logic for. Only render the contents tag if this evaluates to true. |
+| response  *(optional)* | **object** | A Response object to check, the tag will render the body if the Response is not null. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_test-attribute">Test Attribute</h3>
+<search:conditional test="test1 > 100">
+    <p>False don't display</p>
+</search:conditional>
+
+<search:conditional test="test1 >= 100">
+    <p>True! test1 is greater than or equal to 100</p>
+</search:conditional>
+
+<search:conditional test="test2">
+    <p>True! test2 is true</p>
+</search:conditional>
+
+<search:conditional test="test3 == 'Foo'">
+    <p>False don't display</p>
+</search:conditional>
+
+<search:conditional test="test3 == 'foo'">
+    <p>True test3 does equal foo</p>
+</search:conditional>
+
+<hr/>
+
+<h3 id="example_response-attribute">Response Attribute</h3>
+
+<search:conditional response="response">
+    <p>True! Response does exist.</p>
+</search:conditional>
+
+<search:conditional response="response2">
+    <p>False! Response2 does not exist.</p>
+</search:conditional>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','ResponseService', function($scope,ResponseService) {
+            $scope.test1 = 100;
+            $scope.test2 = true;
+            $scope.test3 = 'foo'
+
+            ResponseService.setResponse('response', {foo:'bar'});
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchConditional.png)</Frame>

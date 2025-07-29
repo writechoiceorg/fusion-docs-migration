@@ -1,0 +1,365 @@
+---
+title: "Catalog API"
+permalink: "329"
+---
+
+
+The Fusion Catalog is a collection of one or more analytics projects, and each project is a collection of data assets, such as tables or relations. Fusion comes with a built-in project called "fusion".
+
+The Fusion Catalog API provides access to assets by data analysis applications that can perform SQL or Solr queries. It includes endpoints for finding, retrieving, and manipulating projects and assets using basic keyword and metadata-driven search.
+
+By default, non-admin Fusion users do not have access to Catalog objects. However, the Catalog API itself does not enforce any permissions, so a user who bypasses the auth proxy has full access to all projects and assets. An admin can grant permissions to Catalog endpoints for users; see
+[Access Control](/fusion-server/4.2/124/access-control).
+
+## Intra-shard splits
+
+If your Spark cluster has more available executor slots than the number of shards, then you can increase parallelism when reading from Solr by splitting each shard into sub-ranges using a split field. The sub range splitting enables faster fetching from Solr by increasing the number of tasks in Solr. This should only be used if there are enough computing resources in the Spark cluster.
+
+Shard splitting is enabled by default, with two sub-ranges per shard. See [Configuration options](#options) below for shard splitting parameters.
+
+## Body attributes
+
+For PUT and POST requests, these are valid JSON body attributes:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `projectId` | String | The project name |
+| `name` | String | The asset name |
+| `assetType` | DataAssetType | One of: + * project * table * relation * field * udf * metric |
+| `description` | String | A string describing this asset |
+| `sourceUri` | String | A URI to the data source |
+| `owner` | String | The user that owns the asset |
+| `ownerEmail` | String | The owner’s email address |
+| `tags` | Set\<String> | A set of arbitrary category strings |
+| `format` | String | The format of the underlying data source |
+| `options` | List\<String> | A list of options for the underlying data source. See [Configuration options](#options) below for valid options. |
+| `filters` | List\<String> | A set of Solr query parameters to filter the request |
+| `sql` | String | A SQL statement to execute |
+| `cacheOnLoad` | boolean | 'True' to cache the dataset in Spark on catalog project initialization |
+| `dependsOn` | List\<String> | A list of other assets to load before initializing this data asset |
+| `createdOn` | Date | The asset’s creation date, in ISO-8601 format; otherwise the current timestamp is used |
+
+## Configuration options
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Name</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+      <th class="tableblock halign-left valign-top">Default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>collection</code></td>
+      <td class="tableblock halign-left valign-top"><p>The Solr collection name.</p></td>
+      <td class="tableblock halign-left valign-top">None</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>zkhost</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          A ZooKeeper connect string is the list of all servers and ports for the current ZooKeeper cluster. For example, if running a single-node Fusion developer deployment with embedded ZooKeeper, the connect string is <code>fusion-host:9983/lwfusion/3.1.0/solr</code>. If you have an external 3-node ZooKeeper cluster running on servers <code>zk1.acme.com</code>, <code>zk2.acme.com</code>, <code>zk3.acme.com</code>, all listening on port 2181, then the connect string is <code>zk1.acme.com:2181,zk2.acme.com:2181,zk3.acme.com:2181</code>.
+        </p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p>The <code>connectString</code> of the default search cluster.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>query</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>A Solr query that limits the rows to load into Spark. For example, to only load documents that mention "solr":</p>
+
+        ```
+        options("query","body_t:solr")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top"><code>*:*</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>fields</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>A subset of fields to retrieve for each document in the results, such as:</p>
+
+        ```
+        options("fields","id,author_s,favorited_b,…")
+        ```
+
+        <p>You can also specify an alias for a field using Solr’s field alias syntax, such as <code>author:author_s</code>. If you want to invoke a function query, such as <code>rord()</code>, then you’ll need to provide an alias, such as <code>ord_user:ord(user_id)</code>. If the return type of the function query is something other than <code>int</code> or <code>long</code>, then you’ll need to specify the return type after the function query, such as:</p>
+
+        ```
+        foo:div(sum(x,100),max(y,1)):double
+        ```
+        <Tip>
+          If you request Solr function queries, then the library must use the `/select` Solr handler to make the request as exporting function queries through `/export` is not supported by Solr.
+        </Tip>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p>By default, all stored fields for each document are pulled back from Solr.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>rows</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          The number of rows to retrieve from Solr per request; do not confuse this with <code>max_rows</code> (see below). This is not the maximum number of rows to read from Solr. All matching rows on the backend are read. The rows parameter is the page size.
+        </p>
+        <p>
+          Behind the scenes, the implementation uses either deep paging cursors or Streaming API and response streaming, so it is usually safe to specify a large number of rows. By default, the implementation uses 1000 rows but if your documents are smaller, you can increase this to 10000. Using too large a value can put pressure on the Solr JVM’s garbage collector.
+        </p>
+        <p>Example:</p>
+        ```
+        options("rows","10000")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top"><code>1000</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>max_rows</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          The maximum number of rows; only applies when using the <code>/select</code> handler. The library will issue the query from a single task and let Solr do the distributed query processing.
+        </p>
+        <p>
+          No paging is performed, that is, the <code>rows</code> param is set to <code>max_rows</code> when querying. Consequently, this option should not be used for large <code>max_rows</code> values; rather you should retrieve all rows using multiple Spark tasks and then re-sort with Spark if needed.
+        </p>
+        <p>Example:</p>
+        ```
+        options("max_rows","100")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">None</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>request_handler</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          Set the Solr request handler for queries. This option can be used to export results from Solr via the <code>/export</code> handler which streams data out of Solr. See Exporting Result Sets for more information.
+        </p>
+        <p>
+          The <code>/export</code> handler needs fields to be explicitly specified. Please use the fields option or specify the fields in the query.
+        </p>
+        <p>Example:</p>
+        ```
+        options("request_handler","/export")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top"><code>/select</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>splits</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>Enable shard splitting on default field <em>version</em>.</p>
+        <p>Example:</p>
+        ```
+        options("splits","true")
+        ```
+        <p>The above option is equivalent to:</p>
+        ```
+        options("split_field","version")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">False</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>split_field</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>The field to split on can be changed using the split_field option.</p>
+        <p>Example:</p>
+        ```
+        options("split_field","id")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top"><em>version</em></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>splits_per_shard</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          Split the shard into evenly-sized splits using filter queries. You can also split on a string-based keyword field but it should have sufficient variance in the values to allow for creating enough splits to be useful. In other words, if your Spark cluster can handle 10 splits per shard, but there are only 3 unique values in a keyword field, then you will only get 3 splits.
+        </p>
+        <p>
+          Keep in mind that this is only a hint to the split calculator and you may end up with a slightly different number of splits than what was requested.
+        </p>
+        <p>Example:</p>
+        ```
+        options("splits_per_shard","30")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">20</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>flatten_multivalued</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>Flatten multi-valued fields from Solr.</p>
+        <p>Example:</p>
+        ```
+        options("flatten_multivalued","false")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">true</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>dv</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>Fetch the docValues that are indexed but not stored by using function queries. Should be used for Solr versions lower than 5.5.0.</p>
+        <p>Example:</p>
+        ```
+        options("dv","true")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">false</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>sample_seed</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>
+          Read a random sample of documents from Solr using the specified seed. This option can be useful if you just need to explore the data before performing operations on the full result set. By default, if this option is provided, a 10% sample size is read from Solr, but you can use the <code>sample_pct</code> option to control the sample size.
+        </p>
+        <p>Example:</p>
+        ```
+        options("sample_seed","5150")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">None</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>sample_pct</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>The size of a random sample of documents from Solr; use a value between 0 and 1.</p>
+        <p>Example:</p>
+        ```
+        options("sample_pct","0.05")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">0.1</td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><code>skip_non_dv</code></td>
+      <td class="tableblock halign-left valign-top">
+        <p>Skip all fields that are not docValues.</p>
+        <p>Example:</p>
+        ```
+        options("skip_non_dv","true")
+        ```
+      </td>
+      <td class="tableblock halign-left valign-top">false</td>
+    </tr>
+  </tbody>
+</table>
+
+## Examples
+
+**Define a "movielens" project:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type:application/json"\
+ -d '{
+  "name": "movielens",
+  "assetType": "project",
+  "description": "tables and views for the movielens project",
+  "tags": ["movies","users"],
+  "cacheOnLoad": false
+}' "https://FUSION_HOST:6764/api/catalog"
+```
+
+**Add a "ratings" table to the "movielens" project:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type:application/json" -d '{
+  "name": "ratings",
+  "assetType": "table",
+  "projectId": "movielens",
+  "description": "movie ratings data",
+  "tags": ["movies"],
+  "format": "solr",
+  "cacheOnLoad": true,
+  "options": ["collection -> movielens_ratings", "fields -> user_id,movie_id,rating,rating_timestamp"]
+}' "https://FUSION_HOST:6764/api/catalog/movielens/assets"
+```
+
+**Issue a SQL statement against the "ratings" table:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type:application/json" -d '{
+  "name": "ratings",
+  "assetType": "table",
+  "projectId": "movielens",
+  "description": "movie ratings data",
+  "tags": ["movies"],
+  "format": "solr",
+  "cacheOnLoad": true,
+  "options": ["collection -> movielens_ratings", "fields -> user_id,movie_id,rating,rating_timestamp"]
+}' "https://FUSION_HOST:6764/api/catalog/movielens/query"
+```
+
+**Issue a SQL query against the "movielens" project:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type:application/json" -d '{
+"sql":"SELECT m.title as title, solr.aggCount as aggCount FROM movies m INNER JOIN (SELECT movie_id, COUNT(*) as aggCount FROM ratings WHERE rating >= 4 GROUP BY movie_id ORDER BY aggCount desc LIMIT 10) as solr ON solr.movie_id = m.movie_id ORDER BY aggCount DESC"
+}' https://FUSION_HOST:6764/api/catalog/movielens/query
+```
+
+**Load a catalog table from a Postgres database:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type:application/json" -d '{
+ "projectId": "nyc_taxi",
+ "assetType": "table",
+ "name": "trips",
+ "sourceUri": "http://www.nyc.gov/html/tlc/html/about/trip_record_data.shtml",
+ "owner": "Joe Example",
+ "ownerEmail": "examplejoe@gmail.com",
+ "description": "The NYC taxi trip data stored in Postgres using tools provided by https://github.com/toddwschneider/nyc-taxi-data",
+ "tags": ["nyc", "taxi", "postgres", "trips"],
+ "format": "jdbc",
+ "cacheOnLoad": true,
+ "options": ["url -> ${nyc_taxi_jdbc_url}","dbtable -> trips","partitionColumn -> id","numPartitions -> 4","lowerBound -> 0", "upperBound -> $MAX(id)", "fetchSize -> 1000"],
+ "filters": ["pickup_latitude >= -90 AND pickup_latitude <= 90 AND pickup_longitude >= -180 AND pickup_longitude <= 180", "dropoff_latitude >= -90 AND dropoff_latitude <= 90 AND dropoff_longitude >= -180 AND dropoff_longitude <= 180"],
+ "sql": "SELECT id,cab_type_id,vendor_id,pickup_datetime,dropoff_datetime,store_and_fwd_flag,rate_code_id,passenger_count,trip_distance,fare_amount,extra,mta_tax,tip_amount,tolls_amount,ehail_fee,improvement_surcharge,total_amount,payment_type,trip_type, concat_ws(',',pickup_latitude,pickup_longitude) as pickup, concat_ws(',',dropoff_latitude,dropoff_longitude) as dropoff FROM trips"
+}' "https://FUSION_HOST:6764/api/catalog/nyc_taxi/assets"
+```
+
+**Create a data asset using a streaming expression:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type:application/json" -d '{
+  "name": "movie_ratings",
+  "assetType": "table",
+  "projectId": "movielens",
+  "description": "movie ratings data",
+  "tags": ["movies"],
+  "format": "solr",
+  "cacheOnLoad": true,  "options": ["collection -> movielens_ratings", "expr -> hashJoin(search(movielens_ratings,q=\"*:*\",fl=\"movie_id,user_id,rating\",sort=\"movie_id asc\",qt=\"\/export\",partitionKeys=\"movie_id\"),hashed=search(movielens_movies,q=\"*:*\",fl=\"movie_id,title\",sort=\"movie_id asc\",qt=\"\/export\",partitionKeys=\"movie_id\"),on=\"movie_id\")"]
+}' "https://FUSION_HOST:6764/api/catalog/movielens/assets"
+```
+
+**Send a Solr query:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type:application/json" -d '{
+  "solr":"*:*",
+  "requestHandler":"/select",
+  "collection":"movielens_movies",
+  "params":{
+    "facet":"on",
+    "facet.field":"genre",
+    "rows":0
+  }
+}' https://FUSION_HOST:6764/api/catalog/movielens/query
+```
+
+**Send a Solr query using a streaming expression:**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type:application/json" --data-binary @streaming_join.json https://FUSION_HOST:6764/api/catalog/movielens/query
+
+{
+  "solr":"hashJoin(search(movielens_ratings, q=*:*, qt=\"/export\", fl=\"user_id,movie_id,rating\", sort=\"movie_id asc\", partitionKeys=\"movie_id\"), hashed=search(movielens_movies, q=*:*, fl=\"movie_id,title\", qt=\"/export\", sort=\"movie_id asc\",partitionKeys=\"movie_id\"),on=\"movie_id\")",
+  "collection":"movielens_ratings",
+  "requestHandler":"/stream"
+}
+```
+

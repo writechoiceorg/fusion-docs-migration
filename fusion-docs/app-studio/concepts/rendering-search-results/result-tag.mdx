@@ -1,0 +1,74 @@
+---
+title: "Result tags"
+permalink: "3094"
+---
+
+The Result tag renders if results are available. It outputs a single result, and must be nested within a Result List tag. The No Results tag renders if no results are available.
+
+## Result tag
+
+The Result tag renders if results are available. It outputs a single result, and must be nested within a Result List tag.
+
+```xml
+<search:result-list response="response">
+    <search:result>
+        <search:field name="title"></search:field>
+        <search:field name="description"></search:field>
+    </search:result>
+</search:result-list>
+```
+
+See the [`search:result`](/fusion/5.9/1085/search-result) tag doc for all available attributes.
+
+## Conditional result tag
+
+It is also possible to use the result tag to conditionally display a set of fields based on the value of a given field. This is useful when each result fit into a specific *category*.
+
+### Usage
+
+The syntax is as follows:
+
+```xml
+<search:result-list response="response">
+    <search:result a-field-name="fieldValue">
+        <search:field name="title"></search:field>
+        <search:field name="description"></search:field>
+    </search:result>
+    <search:result a-field-name="otherFieldValue">
+        <search:field name="otherTitle"></search:field>
+        <search:field name="otherDescription"></search:field>
+    </search:result>
+</search:result-list>
+```
+
+For example, if you had 2 types of results, documents and people, with different fields, you could display them in a single result list as follows:
+
+```xml
+<search:result-list response="response">
+    <search:result type="people">
+        <search:field name="name"></search:field>
+        <search:field name="date-of-birth"></search:field>
+    </search:result>
+    <search:result type="document">
+        <search:field name="title"></search:field>
+        <search:field name="author"></search:field>
+    </search:result>
+</search:result-list>
+```
+
+It is also possible to combine multiple conditions. All have to be met for the specific `<search:result>` tag to be selected. For example:
+
+```xml
+<search:result-list response="response">
+    <search:result type="people" country="Vietnam">
+        <h1>Vietnam</h1>
+        <search:field name="name"></search:field>
+        <search:field name="date-of-birth"></search:field>
+    </search:result>
+    <search:result type="people">
+        <h1>Rest of the World</h1>
+        <search:field name="name"></search:field>
+        <search:field name="date-of-birth"></search:field>
+    </search:result>
+</search:result-list>
+```

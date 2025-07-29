@@ -1,0 +1,266 @@
+---
+title: 'Quickstart'
+description: 'Start collecting user insights in 3 steps.'
+icon: 'rocket'
+---
+
+<Steps>
+  <Step title="Install the Signals Beacon" icon="code">
+    Grab the Signals Beacon embed script from your Lucidworks Analytics signals store on the **Integrations** page. Paste it in the `<head>` of your website.
+
+    <Frame caption="Signals Beacon script installation process.">
+      <img src="/images/yosemite.jpg" />
+    </Frame>
+  </Step>
+  <Step title="Customize the configuration" icon="paintbrush">
+    Every site works a little differently. The Signals Beacon is flexible, so you can set it up in the way that fits your site best.
+    
+    To get started, configure the Signals Beacon to collect these user insights:
+
+    <AccordionGroup>
+      <Accordion title="Queries">
+        When users search for products, they land on a search results page. They might use facets to narrow down what they see.
+
+        Capture the user's search query and selected facets. Map the query and facet parameters from the URL to the `query` field in the Signals Beacon configuration.
+
+        <CodeGroup>
+        ```html URL
+        https://example.com/search?q=USER_QUERY&fq=color:("red","pink")
+        ```
+
+        {/* ```html HTML highlight={1-2,5}
+        console.log("Hello World");
+        console.log("Hello World");
+        console.log("Hello World");
+        console.log("Hello World");
+        console.log("Hello World");
+        console.log("Hello World");
+        ```  */}
+
+        ```json Query Config highlight={22-30}
+        {
+          "attributes": {
+            "idQueryParam": "pid",
+            "numberTypeFields": [
+              "price",
+              "quantity",
+              "revenue"
+            ],
+            "productPath": ".resultsItem"
+          },
+          "cartAdd": {
+            "trigger": ".lw-cart-add-trigger"
+          },
+          "click": {},
+          "fields": {
+            "productId": ":scope .resultId @text",
+            "title": ":scope .itemTitle @text"
+          },
+          "purchase": {
+            "trigger": ".lw-purchase-trigger"
+          },
+          "query": {
+            "facets": {
+              "keyValueDelimiter": ":",
+              "queryParams": "fq",
+              "valueExtractorRegex": "/\\\"(.*)\\\"/",
+              "valuesDelimiter": ","
+            },
+            "queryParam": "q"
+          }
+        }
+        ```
+        </CodeGroup>
+
+      </Accordion>
+
+      <Accordion title="Clicks">
+        
+        When users find a product they like, they click on it.
+
+        Capture that interaction. Map the product ID from the HTML to the `click` and `fields` fields in the Signals Beacon configuration.
+
+        <Note>The `click` field inherits values from the `fields` field. It’s recommended to use the `fields` field directly.</Note>
+
+        <CodeGroup>
+        {/* ```html URL highlight={1}
+        https://example.com/search?q=USER_QUERY&fq=color:("red","pink")
+        ``` */}
+
+        ```html HTML highlight={3-4}
+        <div class="resultsItem">
+          <a href="/product.html?pid=12345" class="resultLink">
+            <div class="resultId">12345</div>
+            <div class="itemTitle">Wireless Noise-Canceling Headphones</div>
+          </a>
+        </div>
+        ```
+
+        ```json Click Config highlight={14-18}
+        {
+          "attributes": {
+            "idQueryParam": "pid",
+            "numberTypeFields": [
+              "price",
+              "quantity",
+              "revenue"
+            ],
+            "productPath": ".resultsItem"
+          },
+          "cartAdd": {
+            "trigger": ".lw-cart-add-trigger"
+          },
+          "click": {},
+          "fields": {
+            "productId": ":scope .resultId @text",
+            "title": ":scope .itemTitle @text"
+          },
+          "purchase": {
+            "trigger": ".lw-purchase-trigger"
+          },
+          "query": {
+            "facets": {
+              "keyValueDelimiter": ":",
+              "queryParams": "fq",
+              "valueExtractorRegex": "/\\\"(.*)\\\"/",
+              "valuesDelimiter": ","
+            },
+            "queryParam": "q"
+          }
+        }
+        ```
+        </CodeGroup>
+
+      </Accordion>
+
+      <Accordion title="Cart adds">
+        When users add a product to their shopping cart, that action shows strong interest and intent to buy.
+
+        Capture this interaction by mapping the click from your HTML to the `cartAdd` field in the Signals Beacon configuration. Tracking this helps you understand what products matter most and where users may drop off before purchasing.
+
+        <CodeGroup>
+        {/* ```html URL highlight={1}
+        https://example.com/search?q=USER_QUERY&fq=color:("red","pink")
+        ``` */}
+
+        ```html HTML highlight={7}
+        <div class="product-detail">
+          <div class="product-info">
+            <div class="resultId">12345</div>
+            <div class="itemTitle">Wireless Noise-Canceling Headphones</div>
+            <div class="price">199.99</div>
+          </div>
+          <button class="lw-cart-add-trigger" data-product-id="12345">Add to Cart</button>
+        </div>
+        ```
+
+        ```json Cart Add Config highlight={11-13}
+        {
+          "attributes": {
+            "idQueryParam": "pid",
+            "numberTypeFields": [
+              "price",
+              "quantity",
+              "revenue"
+            ],
+            "productPath": ".resultsItem"
+          },
+          "cartAdd": {
+            "trigger": ".lw-cart-add-trigger"
+          },
+          "click": {},
+          "fields": {
+            "productId": ":scope .resultId @text",
+            "title": ":scope .itemTitle @text"
+          },
+          "purchase": {
+            "trigger": ".lw-purchase-trigger"
+          },
+          "query": {
+            "facets": {
+              "keyValueDelimiter": ":",
+              "queryParams": "fq",
+              "valueExtractorRegex": "/\\\"(.*)\\\"/",
+              "valuesDelimiter": ","
+            },
+            "queryParam": "q"
+          }
+        }
+        ```
+        </CodeGroup>
+
+      </Accordion>
+
+      <Accordion title="Puchases">
+        One of the most important actions that drives your business is a user purchase. When users complete the checkout process, it confirms their decision to buy.
+
+        Make sure to capture this event. Map the relevant HTML to the purchase field in the Signals Beacon configuration. 
+
+        <CodeGroup>
+        {/* ```html URL highlight={1}
+        https://example.com/search?q=USER_QUERY&fq=color:("red","pink")
+        ``` */}
+
+        ```html HTML highlight={9}
+        <div class="order-confirmation">
+          <div class="purchased-item">
+            <div class="resultId">12345</div>
+            <div class="itemTitle">Wireless Noise-Canceling Headphones</div>
+            <div class="quantity">1</div>
+            <div class="price">199.99</div>
+            <div class="revenue">199.99</div>
+          </div>
+          <button class="lw-purchase-trigger">Complete Purchase</button>
+        </div>
+        ```
+
+        ```json Purchase Config highlight={19-21}
+        {
+          "attributes": {
+            "idQueryParam": "pid",
+            "numberTypeFields": [
+              "price",
+              "quantity",
+              "revenue"
+            ],
+            "productPath": ".resultsItem"
+          },
+          "cartAdd": {
+            "trigger": ".lw-cart-add-trigger"
+          },
+          "click": {},
+          "fields": {
+            "productId": ":scope .resultId @text",
+            "title": ":scope .itemTitle @text"
+          },
+          "purchase": {
+            "trigger": ".lw-purchase-trigger"
+          },
+          "query": {
+            "facets": {
+              "keyValueDelimiter": ":",
+              "queryParams": "fq",
+              "valueExtractorRegex": "/\\\"(.*)\\\"/",
+              "valuesDelimiter": ","
+            },
+            "queryParam": "q"
+          }
+        }
+        ```
+        </CodeGroup>
+
+      </Accordion>
+  </AccordionGroup>
+
+  </Step>
+  <Step title="Turn it on" icon="lightbulb-on">
+    When you're ready to start collecting user insights in Lucidworks Analytics using the Signals Beacon, activate it in the **Integrations** screen. Add your site to the list of **Allowed origins**.
+
+    <Frame caption="Sites added to the allowed origins with the Signals Beacon installed start collecting user insights instantly.">
+      <img src="/images/yosemite.jpg" />
+    </Frame>
+
+    Once added, the Signals Beacon starts sending user insights to Lucidworks Analytics. Your **Signals analytics** dashboard will begin to show key metrics.
+
+  </Step>
+</Steps>

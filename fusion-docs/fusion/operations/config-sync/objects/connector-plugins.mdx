@@ -1,0 +1,91 @@
+---
+title: "Connector plugins"
+permalink: "gxge5x"
+---
+
+ConfigSync enhances Fusion’s capabilities by allowing for the efficient management of both custom and standard connector plugins.
+This functionality is pivotal for extending the data integration and processing capabilities of Fusion.
+
+## Custom connectors
+
+Custom connectors are identified based on their presence and version compatibility with the connector repository.
+A connector is deemed custom if it:
+
+* Is not listed in the [Connector plugins repository](/fusion-connectors/3/find-your-connector).
+* Has a version that differs from what is available in the repository.
+  Furthermore, only connectors following the version 2 (v2) architecture, also known as non-classic connectors, are recognized as custom.
+
+### Connector repository
+
+Connectors such as "kaltura (v2)" and "solr (classic)" are available in the repository with specific versions and SDK compatibility.
+You can see this information at the `/api/connectors/repository` endpoint.
+
+```json
+[
+  {
+    "id": "lucidworks.kaltura",
+    "displayName": "kaltura (v2)",
+    "version": "0.0.1",
+    "sdkVersion": "4.1.3",
+    "location": "4.1.3/lucidworks.connector.kaltura/1.0.0/lucidworks.connector.kaltura-1.0.0.zip"
+  },
+  {
+    "id": "lucid.solr",
+    "displayName": "solr (classic)",
+    "version": "5.5.1",
+    "sdkVersion": "5.5.1",
+    "location": "/classic/apps/connectors/repository-plugins/lucidworks.solr-5.5.1.zip"
+  }
+]
+```
+
+### Deployed connectors
+
+Examples include `lucidworks.workday`, `lucidworks.kaltura`, and `lucid.solr` marked as `DEPLOYED` in Fusion’s connectors list.
+You can see this information at the `/api/connectors/plugins` endpoint.
+
+```json
+[
+  {
+    "type": "lucidworks.workday",
+    "state": "DEPLOYED"
+  },
+  {
+    "type": "lucidworks.kaltura",
+    "state": "DEPLOYED"
+  },
+  {
+    "type": "lucid.solr",
+    "state": "DEPLOYED"
+  }
+]
+```
+
+### Custom connector criteria
+
+* `lucidworks.kaltura` is custom due to its unique developmental version `0.1.0-dev.565.uncommitted+kaltura.5.4.nwm.1217913` not matching the repository’s version `0.0.1`.
+* `lucidworks.workday` qualifies as custom because it is absent in the repository.
+* `lucid.solr` is not considered custom as it is a classic connector.
+* https://fusion-host/api/connectors/plugins/lucidworks.kaltura
+
+```json
+{
+  "id": "EC0oe4dWRX",
+  "name": "lucidworks.kaltura",
+  "pluginVersion": "0.1.0-dev.565.uncommitted+kaltura.5.4.nwm.1217913",
+  "sdkVersion": "4.0.0",
+  "schema": {}
+}
+```
+
+### Storage of custom connectors
+
+Custom connectors are systematically stored in the `_lw_system/connectors-plugins` folder within the config-sync repository.
+
+## Standard connectors
+
+ConfigSync facilitates the automatic installation of non-custom connectors.
+When creating or migrating a data source associated with a non-custom connector that is not yet installed, ConfigSync employs Fusion’s default mechanism to install the latest version from the repository.
+This ensures seamless data source integration.
+
+If a commit introduces a data source linked to an uninstalled non-custom connector, ConfigSync automatically proceeds with its installation.

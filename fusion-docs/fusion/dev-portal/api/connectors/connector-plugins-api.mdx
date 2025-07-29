@@ -1,0 +1,165 @@
+---
+title: "Connector Plugins API"
+description: "Fusion Connectors APIs"
+permalink: "356"
+---
+
+Use the Connector Plugins API to install connectors and update configurations.
+
+<Note>
+When you install a connector or plug-in on Fusion 5.x.x, you do not need to supply the `.zip` file. The installation obtains the `.zip` file from the repository.
+</Note>
+
+Each connector has one or more plugin types. After querying for the list of installed connectors, you can use the connector names to get the list of plugins for each one. Querying a specific plugin returns its configuration schema.
+
+How does this differ from the [Connector Plugins Repository API](/fusion/5.9/354/connector-plugins-repository-api-reference)?
+
+This API is used to list plugins that are already installed on your Fusion cluster and list their configuration properties.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+### Get all available connectors
+
+#### Request
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/connectors/plugins
+```
+
+#### Response
+
+```json
+[ "lucid.twitter.search", "lucid.push", "lucid.hadoop.mapr", "lucid.azure.table", "lucid.anda", "lucid.hadoop.cloudera", "lucid.azure.blob", "lucid.hortonworks", "lucid.mongodb", "lucid.hadoop", "lucid.hadoop.apache2", "lucid.fs", "lucid.hadoop.apache1", "lucid.jdbc", "lucid.hadoop.intel", "lucid.twitter.stream", "lucid.solrxml" ]
+```
+
+### List property specifications
+
+List all the property specifications for the "file" type of the "lucid.fs" connector (the output has been truncated for space):
+
+#### Request
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/connectors/plugins/lucid.fs/types/file
+```
+
+#### Response
+
+```json
+{
+  "props" : [ {
+    "description" : "general",
+    "name" : "---"
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.collection",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "collection",
+    "type" : "string",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : false,
+    "description" : "datasource.debug",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "debug",
+    "type" : "boolean",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.initial_mapping",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "initial_mapping",
+    "type" : "map",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.db",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "db",
+    "type" : "map",
+    "required" : false
+  }, {
+    "description" : "root path",
+    "name" : "---"
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.path",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "path",
+    "type" : "string",
+    "required" : true
+  }, {
+    "description" : "Filesystem URL",
+    "name" : "---"
+  }, {
+    "read_only" : true,
+    "default_value" : null,
+    "description" : "datasource.url",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "url",
+    "type" : "string",
+    "required" : false
+  },
+...
+] }
+```
+
+### Install plugins
+
+#### Successful plugin installation
+
+```bash
+curl -u USERNAME:PASSWORD -X POST "{cluster}/connectors/plugins?id=lucidworks.fs"
+{
+  "pluginId" : "lucidworks.fs",
+  "status" : {
+    "action" : "INSTALL",
+    "status" : "SUCCESS",
+    "message" : "Plugin lucidworks.fs was installed successfully."
+  }
+}
+```
+
+#### Update connector
+
+To update a connector, run the install `curl` command again. If the connector is already installed, the output will include `"action" : "UPDATE"`.
+
+```bash
+curl -u USERNAME:PASSWORD -X POST "{cluster}/connectors/plugins?id=lucidworks.fs"
+{
+  "pluginId" : "lucidworks.fs",
+  "status" : {
+    "action" : "UPDATE",
+    "status" : "SUCCESS",
+    "message" : "Plugin lucidworks.fs was installed successfully."
+  }
+}
+```
+
+#### Unsuccessful plugin installation
+
+If an installation is unsuccessful, the output will include `"status" : "NOOP"` and a reason for the failure. In the example below, an invalid connector `id` was given.
+
+```bash
+curl -u USERNAME:PASSWORD -X POST "{cluster}/connectors/plugins?id=lucidworks.asd"
+{
+  "pluginId" : "lucidworks.asd",
+  "status" : {
+    "action" : "INSTALL",
+    "status" : "NOOP",
+    "message" : "Plugin not found in repository: lucidworks.asd"
+  }
+}
+```

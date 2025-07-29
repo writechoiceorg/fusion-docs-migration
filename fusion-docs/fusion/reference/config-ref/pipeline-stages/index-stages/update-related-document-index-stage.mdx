@@ -1,0 +1,21 @@
+---
+title: "Update Related Document Stage"
+permalink: "231"
+---
+
+This index pipeline stage performs a Solr atomic update on an existing document using data pulled from the current document being processed by the pipeline.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+In the **Find Related Document (RTG)** field, enter the Solr query to look up the related document to update using a real-time `GET` request. The query needs to uniquely identify the document to be updated in an `id=<value>` format. For more information, see the [Solr’s RealTime Get documentation](https://solr.apache.org/guide/solr/latest/configuration-guide/realtime-get.html).
+
+In the **Find Related Document (Query)** field, enter the Solr query to look up the related document to update. Only the first document returned in the results is used. The query can contain any `field:<value>` and needs to uniquely identify the document to be updated. The `id:<value>` field is one example.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/update-related-document.mdx";
+
+<SchemaParamFields schema={schema}/>

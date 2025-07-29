@@ -1,0 +1,37 @@
+---
+title: "Use Case API"
+description: "Lucidworks AI"
+permalink: "0stpyb"
+---
+
+View API specification
+
+The Lucidworks AI Use Case API returns a list of each use case and the available models that support each use case. This API serves as a central repository of the most current use cases and models that Lucidworks AI supports, including custom models.
+
+As Lucidworks AI adds new use cases or models, the Use Case API returns the new use cases and models as soon as they’re available, eliminating the need to manually check another resource to view what is currently available.
+
+You can enter the values returned in the response of the Use Case API in the:
+
+* [LWAI Prediction API](/lw-platform/ai/8bx4m9/prediction-api) use case requests
+* [Lucidworks AI Async Prediction API](/lw-platform/ai/55ug0f/async-prediction-api) use case requests
+
+For a list of models that Lucidworks supports, see [Pre-trained embedding models](/lw-platform/ai/3vqfxe/pre-trained-embedding-models) and [Generative AI models](/lw-platform/ai/r7ai90/generative-ai#generative-ai-models). For the types of custom models that you can train in Lucidworks AI, see [Custom embedding model training](/lw-platform/ai/k1zkfn/custom-embedding-model-training).
+
+<Note>
+
+To view the full configuration specification for an API, click the **View API specification** button.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+Alternatively, [click here to open the API spec](?open-api=true).
+
+</Note>
+
+
+
+## Prerequisites
+
+To use this API, you need:
+
+* The unique `APPLICATION_ID` for your Lucidworks AI application. For more information, see [credentials to use APIs](/lw-platform/platform/oqzogo/apis-and-credentials#credentials).
+* A bearer token generated with a scope value of `machinelearning.predict`. For more information, see [Authentication API](/lw-platform/ai/oa96k5/authentication-api).

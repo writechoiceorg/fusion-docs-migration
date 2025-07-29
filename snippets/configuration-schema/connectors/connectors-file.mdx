@@ -1,0 +1,733 @@
+export const schema = {
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Connector for filesystems locally mounted to the Fusion server.",
+  "properties": {
+    "category": {
+      "default": "Filesystem",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description for this datasource.",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Datasource ID",
+      "type": "string"
+    },
+    "parserId": {
+      "default": "_system",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting",
+      "title": "Parser",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1,
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Datasource configuration properties",
+      "properties": {
+        "aliasExpiration": {
+          "default": 1,
+          "description": "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Alias expiration",
+          "type": "integer"
+        },
+        "chunkSize": {
+          "default": 1,
+          "description": "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch batch size",
+          "type": "integer"
+        },
+        "collection": {
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Collection",
+          "type": "string"
+        },
+        "commitAfterItems": {
+          "default": 10000,
+          "description": "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Commit After This Many Items",
+          "type": "integer"
+        },
+        "crawlDBType": {
+          "default": "on-disk",
+          "description": "The type of crawl database to use, in-memory or on-disk.",
+          "enum": [
+            "in-memory",
+            "on-disk"
+          ],
+          "hints": [
+            "advanced"
+          ],
+          "title": "Crawl database type",
+          "type": "string"
+        },
+        "db": {
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "properties": {
+            "aliases": {
+              "default": false,
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "title": "Process Aliases?",
+              "type": "boolean"
+            },
+            "inlinks": {
+              "default": false,
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "title": "Process Inlinks?",
+              "type": "boolean"
+            },
+            "inv_aliases": {
+              "default": false,
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "title": "Process Inverted Aliases?",
+              "type": "boolean"
+            },
+            "type": {
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "minLength": 1,
+              "title": "Implementation Class Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "Connector DB",
+          "type": "object"
+        },
+        "dedupe": {
+          "default": false,
+          "description": "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Dedupe documents",
+          "type": "boolean"
+        },
+        "dedupeField": {
+          "description": "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Dedupe field",
+          "type": "string"
+        },
+        "dedupeSaveSignature": {
+          "default": false,
+          "description": "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Save dedupe signature",
+          "type": "boolean"
+        },
+        "dedupeScript": {
+          "description": "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "Dedupe script",
+          "type": "string"
+        },
+        "delete": {
+          "default": true,
+          "description": "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Delete dead URIs",
+          "type": "boolean"
+        },
+        "deleteErrorsAfter": {
+          "default": -1,
+          "description": "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch failure allowance",
+          "type": "integer"
+        },
+        "depth": {
+          "default": -1,
+          "description": "Number of levels in a directory or site tree to descend for documents.",
+          "title": "Max crawl depth",
+          "type": "integer"
+        },
+        "diagnosticMode": {
+          "default": false,
+          "description": "Enable to print more detailed information to the logs about each request.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Diagnostic mode",
+          "type": "boolean"
+        },
+        "emitThreads": {
+          "default": 5,
+          "description": "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "title": "Emit threads",
+          "type": "integer"
+        },
+        "excludeExtensions": {
+          "description": "File extensions that should not to be fetched. This will limit this datasource to all extensions except this list.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Excluded file extensions",
+          "type": "array"
+        },
+        "excludeRegexes": {
+          "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclusive regexes",
+          "type": "array"
+        },
+        "f.addFileMetadata": {
+          "default": true,
+          "description": "Set to true to add information about documents found in the filesystem to the document, such as document owner, group, or ACL permissions.",
+          "title": "Add file metadata",
+          "type": "boolean"
+        },
+        "f.index_items_discarded": {
+          "default": false,
+          "description": "Enable to index discarded document metadata",
+          "title": "Index discarded document metadata",
+          "type": "boolean"
+        },
+        "f.maxSizeBytes": {
+          "default": 4194304,
+          "description": "Maximum size (in bytes) of documents to fetch or -1 for unlimited file size.",
+          "title": "Maximum file size (bytes)",
+          "type": "integer"
+        },
+        "f.minSizeBytes": {
+          "default": 0,
+          "description": "Minimum size, in bytes, of documents to fetch.",
+          "title": "Minimum file size (bytes)",
+          "type": "integer"
+        },
+        "failFastOnStartLinkFailure": {
+          "default": true,
+          "description": "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fail crawl if start links are invalid",
+          "type": "boolean"
+        },
+        "fetchDelayMS": {
+          "default": 0,
+          "description": "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch delay",
+          "type": "integer"
+        },
+        "fetchThreads": {
+          "default": 5,
+          "description": "The number of threads to use during fetching. The default is 5.",
+          "title": "Fetch threads",
+          "type": "integer"
+        },
+        "forceRefresh": {
+          "default": false,
+          "description": "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Force recrawl",
+          "type": "boolean"
+        },
+        "forceRefreshClearSignatures": {
+          "default": true,
+          "description": "If true, signatures will be cleared if force recrawl is enabled.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Clear signatures",
+          "type": "boolean"
+        },
+        "includeExtensions": {
+          "description": "File extensions to be fetched. This will limit this datasource to only these file extensions.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Included file extensions",
+          "type": "array"
+        },
+        "includeRegexes": {
+          "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Inclusive regexes",
+          "type": "array"
+        },
+        "initial_mapping": {
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "hints": [
+            "advanced"
+          ],
+          "properties": {
+            "condition": {
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ],
+              "title": "Condition",
+              "type": "string"
+            },
+            "label": {
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255,
+              "title": "Label",
+              "type": "string"
+            },
+            "mappings": {
+              "default": [
+                {
+                  "operation": "move",
+                  "source": "charSet",
+                  "target": "charSet_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "fetchedDate",
+                  "target": "fetchedDate_dt"
+                },
+                {
+                  "operation": "move",
+                  "source": "lastModified",
+                  "target": "lastModified_dt"
+                },
+                {
+                  "operation": "move",
+                  "source": "signature",
+                  "target": "dedupeSignature_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "length",
+                  "target": "length_l"
+                },
+                {
+                  "operation": "move",
+                  "source": "mimeType",
+                  "target": "mimeType_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "parent",
+                  "target": "parent_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "owner",
+                  "target": "owner_s"
+                },
+                {
+                  "operation": "move",
+                  "source": "group",
+                  "target": "group_s"
+                }
+              ],
+              "description": "List of mapping rules",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "properties": {
+                  "operation": {
+                    "default": "copy",
+                    "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                    "enum": [
+                      "copy",
+                      "move",
+                      "delete",
+                      "set",
+                      "add",
+                      "keep"
+                    ],
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Operation",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "The name of the field to be mapped.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Source Field",
+                    "type": "string"
+                  },
+                  "target": {
+                    "description": "The name of the field to be mapped to.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Target Field",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "type": "object"
+              },
+              "title": "Field Mappings",
+              "type": "array"
+            },
+            "reservedFieldsMappingAllowed": {
+              "default": false,
+              "hints": [
+                "advanced"
+              ],
+              "title": "Allow System Fields Mapping?",
+              "type": "boolean"
+            },
+            "skip": {
+              "default": false,
+              "description": "Set to true to skip this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "title": "Skip This Stage",
+              "type": "boolean"
+            },
+            "unmapped": {
+              "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+              "hints": [
+                "advanced"
+              ],
+              "properties": {
+                "operation": {
+                  "default": "copy",
+                  "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                  "enum": [
+                    "copy",
+                    "move",
+                    "delete",
+                    "set",
+                    "add",
+                    "keep"
+                  ],
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Operation",
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The name of the field to be mapped.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Source Field",
+                  "type": "string"
+                },
+                "target": {
+                  "description": "The name of the field to be mapped to.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Target Field",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source"
+              ],
+              "title": "Unmapped Fields",
+              "type": "object"
+            }
+          },
+          "title": "Initial field mapping",
+          "type": "object",
+          "unsafe": false
+        },
+        "maxItems": {
+          "default": -1,
+          "description": "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "title": "Max items",
+          "type": "integer"
+        },
+        "refreshAll": {
+          "default": true,
+          "description": "Set to true to always recrawl all items found in the crawldb.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl all items",
+          "type": "boolean"
+        },
+        "refreshErrors": {
+          "default": false,
+          "description": "Set to true to recrawl items that failed during the last crawl.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl errors",
+          "type": "boolean"
+        },
+        "refreshIDPrefixes": {
+          "description": "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Recrawl ID prefixes",
+          "type": "array"
+        },
+        "refreshIDRegexes": {
+          "description": "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Recrawl ID regexes",
+          "type": "array"
+        },
+        "refreshOlderThan": {
+          "default": -1,
+          "description": "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl age",
+          "type": "integer"
+        },
+        "refreshScript": {
+          "description": "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "Recrawl script",
+          "type": "string"
+        },
+        "refreshStartLinks": {
+          "default": false,
+          "description": "Set to true to recrawl items specified in the list of start links.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Recrawl start links",
+          "type": "boolean"
+        },
+        "restrictToTree": {
+          "default": true,
+          "description": "If true, only documents found in a tree below the start links will be fetched. By default, this means limiting the crawl to the domain of the start links. For example, if the start link is 'http://host.com/US' then only links to the 'host.com' domain will be followed. Further options are available for modifying this behavior.",
+          "title": "Restrict crawl to start-link tree",
+          "type": "boolean"
+        },
+        "retainOutlinks": {
+          "default": false,
+          "description": "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Retain links in the crawldb",
+          "type": "boolean"
+        },
+        "retryEmit": {
+          "default": true,
+          "description": "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Retry emits",
+          "type": "boolean"
+        },
+        "rewriteLinkScript": {
+          "description": "A Javascript function 'rewriteLink(link) { }' to modify links to documents before they are fetched.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ],
+          "title": "URI rewrite script",
+          "type": "string"
+        },
+        "startLinks": {
+          "description": "One or more paths to files or directories to index, e.g. /path/to/folder, or /path/to/file.txt",
+          "items": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "title": "Start Links",
+          "type": "array"
+        },
+        "trackEmbeddedIDs": {
+          "default": true,
+          "description": "Track IDs produced by splitters to enable dedupe and deletion of embedded content?",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Track embedded IDs?",
+          "type": "boolean"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "f.maxSizeBytes",
+            "f.minSizeBytes",
+            "f.addFileMetadata",
+            "f.index_items_discarded",
+            "restrictToTree",
+            "depth",
+            "maxItems",
+            "includeExtensions",
+            "includeRegexes",
+            "excludeExtensions",
+            "excludeRegexes"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "chunkSize",
+            "fetchThreads",
+            "fetchDelayMS",
+            "emitThreads",
+            "retryEmit",
+            "failFastOnStartLinkFailure"
+          ]
+        },
+        {
+          "label": "Dedupe",
+          "properties": [
+            "dedupe",
+            "dedupeSaveSignature",
+            "dedupeField",
+            "dedupeScript"
+          ]
+        },
+        {
+          "label": "Recrawl Rules",
+          "properties": [
+            "delete",
+            "deleteErrorsAfter",
+            "refreshAll",
+            "refreshStartLinks",
+            "refreshErrors",
+            "refreshOlderThan",
+            "refreshIDPrefixes",
+            "refreshIDRegexes",
+            "refreshScript",
+            "forceRefresh",
+            "forceRefreshClearSignatures"
+          ]
+        },
+        {
+          "label": "Crawl History",
+          "properties": [
+            "retainOutlinks",
+            "aliasExpiration",
+            "commitAfterItems",
+            "crawlDBType"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ],
+      "required": [
+        "startLinks"
+      ],
+      "title": "Properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Datasource Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "Connector for filesystems locally mounted to the Fusion server.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "title": "Local Filesystem",
+  "type": "object",
+  "unsafe": false
+}

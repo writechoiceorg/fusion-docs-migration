@@ -1,0 +1,18 @@
+---
+title: "Analytics Catalog"
+description: "Query pipeline stage configuration specifications"
+permalink: "ybfh52"
+---
+
+The Analytics Catalog query pipeline stage lets you define views of data stored in Managed Fusion collections. You can query the objects in the Analytics Catalog using SQL, [Solr Streaming Expressions](https://cwiki.apache.org/confluence/display/solr/Streaming+Expressions), or regular Solr queries.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/analytics-catalog-query.mdx";
+
+<SchemaParamFields schema={schema}/>

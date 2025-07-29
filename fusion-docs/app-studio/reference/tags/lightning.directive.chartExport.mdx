@@ -1,0 +1,107 @@
+---
+title: "chart:export"
+permalink: "1101"
+---
+
+## Description
+
+To give users the option to export a chart include the Chart Export tag
+within the Chart Display tag. Adding the tag will enable exporting
+without adding any attributes. This tag must be nested in the
+[Chart Display tag](/app-studio/4.2/1056/chart-display).
+
+## Usage
+
+as element:
+
+```xml
+<chart:export
+       [file-name="{string}"]
+       [url="{string}"]>
+</chart:export>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| file-name  *(optional)* | **string** | Custom name for the file when downloaded, if nothing is entered it will default to 'chart'. |
+| url  *(optional)* | **string** | Url of the export server, if left blank it will use the providers export server. |
+
+## Example
+
+#### Source
+
+```xml
+<chart:display response="response" facet-name="test" type="column">
+    <chart:export file-name="column"></chart:export>
+</chart:display>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    test: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'dsp1',
+                                    act: 1
+                                },
+                                count: 1,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'dsp2',
+                                    act: 2
+                                },
+                                count: 2,
+                            }
+
+                        ]
+                    },
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                label: 'label1',
+                                value: 1
+                            }
+                        },
+
+                    },
+                    {
+                        result: {
+                            fields: {
+                                label: 'label2',
+                                value: 2
+                            }
+                        },
+
+                        hits: {
+                            act: ['Hits', 264]
+                        }
+                    }]
+            }
+
+            ResponseService.setResponse('response',$scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/chartExport.png)</Frame>

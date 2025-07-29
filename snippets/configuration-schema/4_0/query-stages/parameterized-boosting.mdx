@@ -1,0 +1,92 @@
+export const schema = {
+  "type": "object",
+  "title": "Parameterized Boosting",
+  "description": "Boosting stage that can boost based on context params or results from sub-query stage.",
+  "required": [
+    "key",
+    "boostFieldName",
+    "boostingMethod",
+    "boostingParam"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "key": {
+      "type": "string",
+      "title": "Context Key",
+      "description": "The key name to read from context for boost id and values."
+    },
+    "boostFieldName": {
+      "type": "string",
+      "title": "Boost Field",
+      "description": "The field name to boost the values on."
+    },
+    "boostingMethod": {
+      "type": "string",
+      "title": "Boost Method",
+      "description": "The boost method to use. query-parser should be chosen if defType!=edismax for main query.",
+      "enum": [
+        "query-param",
+        "query-parser"
+      ],
+      "default": "query-param"
+    },
+    "boostingParam": {
+      "type": "string",
+      "title": "Boost Param",
+      "description": "’Boost' multiplies scores by the boost values whereas 'bq' adds optional clauses to main query.",
+      "enum": [
+        "boost",
+        "bq"
+      ],
+      "default": "boost"
+    },
+    "scaleRange": {
+      "type": "object",
+      "title": "Scale Boosts",
+      "description": "Scale the boost values to a [min,max] range",
+      "required": [
+        "scaleMin",
+        "scaleMax"
+      ],
+      "properties": {
+        "scaleMin": {
+          "type": "number",
+          "title": "Minimum value of the scale range"
+        },
+        "scaleMax": {
+          "type": "number",
+          "title": "Maximum value of the scale range"
+        }
+      }
+    }
+  },
+  "category": "Results Relevancy",
+  "categoryPriority": 5
+}

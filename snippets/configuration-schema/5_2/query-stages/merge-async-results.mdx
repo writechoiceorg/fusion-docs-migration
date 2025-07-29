@@ -1,0 +1,71 @@
+export const schema = {
+  "type": "object",
+  "title": "Merge Async Results",
+  "description": "Wait for previous asynchronous stages to complete and merge their results into the active request",
+  "required": [
+    "timeoutMs",
+    "asyncStageIds",
+    "strictAsyncIds",
+    "failFast"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "timeoutMs": {
+      "type": "integer",
+      "title": "Timeout",
+      "description": "Maximum amount of time (in milliseconds) that this stage will wait for completion of the configured asynchronous stages. If this timeout is reached and not all asynchronous stages have completed, it will abort the unfinished ones",
+      "default": 1000,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "asyncStageIds": {
+      "type": "array",
+      "title": "Async IDs",
+      "items": {
+        "type": "string"
+      }
+    },
+    "strictAsyncIds": {
+      "type": "boolean",
+      "title": "Strict Async IDs",
+      "description": "Throw an error if one of the reference Async IDs is missing from the context.",
+      "default": true
+    },
+    "failFast": {
+      "type": "boolean",
+      "title": "Fail Fast",
+      "description": "Sets the fail-fast behavior. If selected, will abort any asynchronous calls we are waiting for after the first failure.",
+      "default": false
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 6,
+  "unsafe": false
+}

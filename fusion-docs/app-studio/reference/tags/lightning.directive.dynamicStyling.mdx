@@ -1,0 +1,58 @@
+---
+title: "dynamic:styling"
+permalink: "1184"
+---
+
+## Description
+
+Works the same as the styling directive but watches for updates. This
+should only be used if it is required that the styling classes are
+updated after their initial value to improve performance.
+
+## Usage
+
+as attribute
+
+```xml
+<ANY dynamic-styling="{string}">
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| dynamicStyling | **string** | separated string of styles to apply to the element |
+
+## Example
+
+#### Source
+
+```xml
+<layout:box dynamic-styling="{{styles}}">
+    <button styling="button" ng-click="toggleStyles()">Toggle box styling</button>
+</layout:box>
+```
+
+```js
+angular.module('lightning')
+roller('ExampleController', ['$scope', function($scope) {
+
+            $scope.styles = 'bg-raspberry text-raspberry-dark';
+
+            $scope.toggleStyles = function () {
+                if ($scope.styles == 'bg-raspberry text-raspberry-dark') {
+                    $scope.styles = 'bg-sunflower text-sunflower-dark';
+                } else {
+                    $scope.styles = 'bg-raspberry text-raspberry-dark';
+                }
+
+            };
+
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/dynamicStyling.png)</Frame>

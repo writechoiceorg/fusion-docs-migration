@@ -1,0 +1,333 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to identify statistically significant phrases in your content.",
+  "properties": {
+    "analyzerConfig": {
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "description": "The style of text analyzer you would like to use.",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "title": "Lucene Text Analyzer",
+      "type": "string"
+    },
+    "attachPhrases": {
+      "default": false,
+      "description": "Checking this will cause the job to associate extracted phrases from each source doc. and write them back to the output collection. If input data is signals, it is suggested to turn this option off. Also, currently it is not allowed to check this option while attempting to write to a _query_rewrite_staging collection.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Extract Key Phrases from Input Text",
+      "type": "boolean"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "minLength": 1,
+      "title": "Data format",
+      "type": "string"
+    },
+    "dataOutputFormat": {
+      "default": "solr",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Data output format",
+      "type": "string"
+    },
+    "enableAutoPublish": {
+      "default": false,
+      "description": "If true, automatically publishes rewrites for rules. Default is false to allow for initial human-aided reviewing",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Enable auto-publishing",
+      "type": "boolean"
+    },
+    "fieldToVectorize": {
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1,
+      "title": "Field to Vectorize",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "minLikelihood": {
+      "description": "Phrases below this threshold will not be written in the output of this job.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Minimum Likelihood Score",
+      "type": "number"
+    },
+    "minmatch": {
+      "default": 100,
+      "description": "The number of times a phrase must exist to be considered. NOTE: if input is non signal data, please reduce the number to e.g. 5.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Minimum Count",
+      "type": "integer"
+    },
+    "ngramSize": {
+      "default": 3,
+      "description": "The number of words in the ngram you want to consider for the sips.",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "maximum": 5,
+      "minimum": 2,
+      "title": "Ngram Size",
+      "type": "integer"
+    },
+    "outputCollection": {
+      "description": "Solr Collection to store extracted phrases; defaults to the query_rewrite_staging collection for the associated app.",
+      "title": "Output Collection",
+      "type": "string"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "partitionCols": {
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Partition fields",
+      "type": "string"
+    },
+    "randomSeed": {
+      "default": 8180,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "sparkPartitions": {
+      "default": 200,
+      "description": "Spark will re-partition the input to have this number of partitions. Increase for greater parallelism",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Set minimum Spark partitions for input",
+      "type": "integer"
+    },
+    "sparkSQL": {
+      "default": "SELECT * from spark_input",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Spark SQL filter query",
+      "type": "string"
+    },
+    "stopwordsList": {
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "List of stopwords",
+      "type": "array"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to use when loading training data if using Solr",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Training data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "sip",
+      "enum": [
+        "sip"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "minmatch",
+        "ngramSize"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "analyzerConfig",
+    "type"
+  ],
+  "title": "Phrase Extraction",
+  "type": "object"
+}

@@ -1,0 +1,45 @@
+---
+title: "Ground Truth Jobs"
+permalink: "567"
+---
+
+Ground truth or gold standard datasets are used in the ground truth jobs and query relevance metrics to define a specific set of documents.
+
+Ground truth jobs estimate ground truth queries using click signals and query signals, with document relevance per query determined using a click/skip formula.
+
+Use this job along with the [Ranking Metrics job](/fusion/5.9/575/ranking-metrics-jobs) to calculate relevance metrics, such as Normalized Discounted Cumulative Gain (nDCG).
+
+To create a ground truth job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Experiment Evaluation Jobs section, select **Ground Truth**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes the **Signals collection** field, which is the Solr collection that contains click signals and its associated search log identifier. This is the `signalsCollection` field in the configuration file. Required field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use in this job. This is the `sparkConfig` field in the configuration file.
+* **Additional Options.** This section includes the following options:
+
+  + **Search logs pipeline.** The pipeline ID associated with search log entries. This is the `searchLogsPipeline` field in the configuration file.
+  + **Join key (query signals).** The common key that joins the query signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Join key (click signals).** The common key that joins the click signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Search logs and options.** This section lets you enter `property name:property value` options to when loading the search logs collection. This is the `searchLogsAddOpts` field in the configuration file.
+  + **Additional signals options.** This section lets you enter `property name:property value` options when loading the signals collection. This is the `signalsAddOpts` field in the configuration file.
+  + **Filter queries.** The `array[string]` filter query to apply when selecting top queries from the query signals in the signals collection. This is the `filterQueries` field in the configuration file.
+  + **Top queries limit.** The total number of queries to select for ground truth calculations when this job is run. This is the `topQueriesLimit` field in the configuration file.
+
+For more information, see [Ground truth query rewrite API configurations](/fusion/5.9/7m6pv9/ground-truth-query-rewrite-api-configurations).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/ground-truth.mdx";
+
+<SchemaParamFields schema={schema}/>

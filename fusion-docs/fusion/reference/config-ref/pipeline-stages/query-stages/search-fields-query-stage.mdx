@@ -1,0 +1,63 @@
+---
+title: "Query Fields Stage"
+permalink: "289"
+---
+
+The Query Fields query pipeline stage defines common Solr query parameters for the [edismax query parser](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser). If using a less-than sign (\<) with DisMax, it must be escaped using a backslash.
+An alternative to this stage is the
+[Additional Query Parameters stage](/fusion/5.9/294/additional-query-parameters-stage).
+
+## Collapsing results
+
+In Fusion 5.9.13 and up, you can configure this stage to collapse search results based on a field, such as `product_id`, to group all variations of each item into a single search result.
+This is useful for ecommerce sites where you want to show a single product with multiple SKUs or variations.
+
+{/* Unresolved directive in \<stdin> - include::collapse-enable.asciidoc[] */}
+
+For additional collapse options, see the configuration reference below.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/query-fields.mdx";
+
+<SchemaParamFields schema={schema}/>

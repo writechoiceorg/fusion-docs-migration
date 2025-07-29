@@ -1,0 +1,158 @@
+---
+title: "Fusion 5.11.0"
+permalink: "dmayvi"
+---
+
+Released on January 3, 2024, this [rapid release](/policies/7shln5/lucidworks-version-support-lifecycle#rapid-release-support-policy) includes new features and improvements, including the App Manager API that generates information for Consumption Dashboard and updates to Solr and Kubernetes.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.27
+* **Microsoft Azure Kubernetes Service (AKS):** 1.27
+* **Amazon Elastic Kubernetes Service (EKS):** 1.27
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.27. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+## Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.11.0  *(based on Solr 9.4.0)* |
+| **ZooKeeper** | 3.9.0 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## New Features
+
+### Fusion
+
+* The [App Manager API](/fusion/5.11/xjhjxq/apps-manager-api) provides programmatic access to information about your Fusion license, entitlements, and usage data. This data is also used to generate usage statistics in the [Consumption Dashboard](/fusion/5.11/0m5ml4/consumption-dashboard).
+
+    For example, send a request to the `/apps-manager/entitlements/current` endpoint to retrieve general entitlements usage data:
+
+    **Input**
+
+    ```bash
+    curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/apps-manager/entitlements/current
+    ```
+    
+
+    **Output**
+
+    ```json
+    {
+        "contractDuration":{
+            "years":3,
+            "months":0,
+            "days":0
+        },
+        "info":{
+            "start":"2022-12-23",
+            "end":"2023-12-23",
+            "requests":10000000,
+            "records":5000000
+        },
+        "usage":{
+            "requests":2863,
+            "requestsPercentage":0,
+            "records":565672,
+            "recordsPercentage":11
+        }
+    }
+    ```
+
+## Improvements
+
+### Fusion
+
+* Solr has been upgraded to 9.4. For details about changes in Solr 9.4, see [Apache Solr Release Notes](https://solr.apache.org/guide/solr/latest/upgrade-notes/major-changes-in-solr-9.html#solr-9-4).
+
+* Fusion now supports Kubernetes 1.27. This applies to GKE, AKS, and EKS. It also applies to Rancher (RKE) and OpenShift 4 versions that are compatible with Kubernetes 1.27. Refer to Kubernetes documentation at [Kubernetes v1.27](https://kubernetes.io/blog/2023/04/11/kubernetes-v1-27-release/) for more information.
+
+* Fusion safeguards against indexing overload with an ingestion flow control system. This system prevents timeouts by:
+
+    + Logging all Kafka topics used for indexing to aid in diagnosing performance issues.
+    + Monitoring the rate of data production and consumption for each Kafka topic across all indexing jobs.
+    + Automatically throttling producers to ensure consumers can keep up.
+
+* The [Consumption Dashboard](/fusion/5.11/0m5ml4/consumption-dashboard) has been updated to restore three charts.
+
+* The Fusion UI is updated with improved messaging around Fusion license renewal and expiration dates.
+
+    License details
+
+    <Frame>![Fusion license update](/assets/images/5.11/fusion-license-update.png)</Frame>
+
+    License expiration notice
+
+    <Frame>![Fusion license expiration](/assets/images/5.11/fusion-license-expiring.png)</Frame>
+
+* The Fusion API Gateway now includes an optional Kubernetes health check. To enable this check, edit your `values.yaml` file, and add `-Dspring.cloud.kubernetes.loadbalancer.mode=POD` to the API Gateway’s `javaToolOptions`. For example:
+
+    ```yaml
+    fusion:
+
+      api-gateway:
+        javaToolOptions: "-Dspring.cloud.kubernetes.loadbalancer.mode=POD"
+    ```
+
+  When enabled, if the health check fails during pod discovery, Kubernetes will restart the pod.
+
+* The fusion-solr Helm chart now accepts user-defined system properties that are set in `values.yaml`. In the `values.yaml` file, populate the `solrEnvExtra` array with entries for each desired variable. Each variable requires a name and either a direct value or a value source (`valueFrom`). These variables will be included in the final configuration in the order you provide them, following any variables dynamically generated by the Helm chart templates. For more information on Kubernetes environment variables, see [Define Dependent Environment Variables](https://kubernetes.io/docs/tasks/inject-data-application/define-interdependent-environment-variables/).
+
+* The Fusion migration script is updated to align with changes from the Solr upgrade. The migration script:
+
+  + Removes the unused configuration, `<circuitBreaker>`, from `solrconfig.xml`. Solr no longer supports this configuration.
+  + Detects if `StatelessScriptUpdateProcessorFactory` is found in `solrconfig.xml`. The migration script will update the configuration, if possible, and provide guidance on actions you must take.
+
+## Fusion connectors
+
+* The default number of fetch threads for V2 connectors is now 5. Previously, the default was 20. This default setting was reduced because some Fusion environments experienced failed datasource crawls as a result of too many requests in a short period of time.
+
+## Bug Fixes
+
+* The [Configurations](/fusion/5.11/342/configurations-api) and [ZooKeeper Import/Export](/fusion/5.11/320/zoo-keeper-import-export-api) APIs are now accessible only to authorized users from within your Fusion cluster or through Kubernetes port forwarding.
+
+* The Fusion API realm can now authenticate when an API key is passed via an `apiKey` query parameter. Previously, this only worked via the `x-api-key` header.
+
+* The ZooKeeper Docker image is updated to use [Logback](https://logback.qos.ch/) for logging instead of log4j. This change fixes a bug that forced all Zookeeper log messages to use the DEBUG level.
+
+* Fixed a bug that sometimes resulted in an HTTP 431 error when using the Fusion admin UI.
+
+* Fixed a bug that sometimes resulted in an HTTP 414 error when using the Rules UI.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#deprecations).
+
+* Fusion has deprecated the Webapps service. In previous versions of Fusion, you could use this service to deploy an App Studio WAR file into Fusion. As of Fusion 5.11.0, you should instead [deploy App Studio manually](/how-to/6nsbym/deploy-app-studio-enterprise-to-a-fusion-5-cluster-gke).
+
+## Removals
+
+For full details on removals, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#removals).
+
+* The previously non-functional Subscriptions UI has been removed. This is related to the removal of the [Subscriptions API](/fusion/5.11/mme9fq/fusion-5-6-0#removals) in Fusion 5.6.0.
+
+* MLeap is removed from the ml-model service. MLeap was deprecated in Fusion 5.2.0 and was no longer used by Fusion.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

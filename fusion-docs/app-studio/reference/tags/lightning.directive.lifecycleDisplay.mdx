@@ -1,0 +1,47 @@
+---
+title: "lifecycle:display"
+permalink: "1197"
+---
+
+## Description
+
+Display an element for a period of time
+
+## Usage
+
+as element:
+
+```xml
+<lifecycle:display
+       time="{string}">
+</lifecycle:display>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| time | **string** | The time in ms to display the elements |
+
+## Example
+
+#### Source
+
+```xml
+<p>A message will disappear after 5 seconds.</p>
+<lifecycle:display time="5000">
+    <search:alert style="alertbox-negative">Alert - I disappear after 5 seconds.</search:alert>
+</lifecycle:display>
+<p>A message will disappear after 10 seconds has passed.</p>
+<lifecycle:display time="10000">
+    <search:alert style="alertbox-warning">Alert - I disappear after 10 seconds.</search:alert>
+</lifecycle:display>
+<p>A message will disappear after 20 seconds has passed.</p>
+<lifecycle:display time="20000">
+    <search:alert style="alertbox-positive">Alert - I disappear after 20 seconds.</search:alert>
+</lifecycle:display>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/lifecycleDisplay.png)</Frame>

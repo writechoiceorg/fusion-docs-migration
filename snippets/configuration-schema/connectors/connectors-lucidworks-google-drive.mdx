@@ -1,0 +1,643 @@
+export const schema = {
+  "type": "object",
+  "title": "Google Drive (v2)",
+  "description": "Connector for Google Drive",
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipeline"
+  ],
+  "properties": {
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "connector": {
+      "title": "Connector Type",
+      "description": "Connector type.",
+      "minLength": 1,
+      "type": "string",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default": 0,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection",
+              "default": false
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection",
+              "default": false
+            },
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default": 20,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Connector for Google Drive",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Google Drive properties",
+      "description": "Plugin specific properties.",
+      "required": [],
+      "properties": {
+        "userAccount": {
+          "type": "object",
+          "title": "User account settings",
+          "description": "Configure the connector to index a single Google Drive account",
+          "required": [],
+          "properties": {
+            "auth": {
+              "type": "object",
+              "title": "Single account OAuth credentials",
+              "description": "Credentials to index directories and files from a single account",
+              "required": [],
+              "properties": {
+                "clientId": {
+                  "type": "string",
+                  "title": "User client ID",
+                  "description": "Google OAuth client id of the account to be indexed"
+                },
+                "clientSecret": {
+                  "type": "string",
+                  "title": "User client secret",
+                  "description": "Google OAuth client secret of the account to be indexed.",
+                  "hints": [
+                    "secret"
+                  ]
+                },
+                "refreshToken": {
+                  "type": "string",
+                  "title": "OAuth refresh token",
+                  "description": "OAuth Refresh Token to allow re-authorization of the connector to the Drive API.",
+                  "hints": [
+                    "secret"
+                  ]
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.useraccount.GoogleDriveUserAccountConfig"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.googledrive.config.useraccount.UserAccountConfig"
+          ]
+        },
+        "serviceAccount": {
+          "type": "object",
+          "title": "Service account settings",
+          "description": "Configure the connector to index multiple Google Drive accounts",
+          "required": [],
+          "properties": {
+            "auth": {
+              "type": "object",
+              "title": "Service account credentials",
+              "description": "The service account credentials allow to index multiple drives from users in the G Suite",
+              "required": [],
+              "properties": {
+                "jsonCredential": {
+                  "type": "string",
+                  "title": "Service account JSON credential",
+                  "description": "The full private key file in JSON format. This file was downloaded from the Google API console when the service account was created",
+                  "hints": [
+                    "secret"
+                  ]
+                },
+                "managementAccount": {
+                  "type": "string",
+                  "title": "Management account",
+                  "description": "This account should have permissions to list users and groups"
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.serviceaccount.GoogleDriveServiceAccountConfig"
+              ]
+            },
+            "folders": {
+              "type": "object",
+              "title": "Users to index for service account",
+              "description": "A list of filters to be applied when listing users.",
+              "required": [],
+              "properties": {
+                "userFilters": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "excludedUsers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.serviceaccount.ServiceAccountFoldersConfig"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.googledrive.config.serviceaccount.ServiceAccountConfig"
+          ]
+        },
+        "itemRetryProperties": {
+          "type": "object",
+          "title": "Item retry settings",
+          "description": "Options to configure the retry operation for items.",
+          "required": [],
+          "properties": {
+            "maxRetries": {
+              "type": "number",
+              "title": "Max retry attempts",
+              "description": "The maximum number of attempts for a failed item",
+              "default": 3,
+              "maximum": 20,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "retryDelayInSeconds": {
+              "type": "number",
+              "title": "Retry delay",
+              "description": "The amount of time, in seconds, before process again a failed item",
+              "default": 30,
+              "maximum": 600,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connectors.components.config.ItemRetryConfig$Properties"
+          ],
+          "hints": [
+            "advanced"
+          ]
+        },
+        "limitDocuments": {
+          "type": "object",
+          "title": "Limit Documents",
+          "required": [],
+          "properties": {
+            "indexFolders": {
+              "type": "boolean",
+              "title": "Index folders",
+              "description": "When enabled, folders will be indexed as documents to the content collection",
+              "default": false
+            },
+            "userAccountFolderIdList": {
+              "type": "object",
+              "title": "Folder ID list(User account only)",
+              "description": "For user account only. A list of the folder IDs to be indexed",
+              "required": [],
+              "properties": {
+                "idsList": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.useraccount.UserAccountFolderConfig"
+              ]
+            },
+            "mimeTypeProperties": {
+              "type": "object",
+              "title": "MIME Types",
+              "description": "Options for including or excluding items, based on MIME types.",
+              "required": [],
+              "properties": {
+                "excludedMimeTypes": {
+                  "type": "array",
+                  "title": "Excluded mime types",
+                  "description": "A list of the Mime types to exclude from this crawl. NOTE: This is only used if the \"Mime Type Includes\" field is empty.",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "includedMimeTypes": {
+                  "type": "array",
+                  "title": "Included mime types",
+                  "description": "A list of the Mime types to include in this crawl. Note: If you specify includes, the exclude mime types property will be ignored.",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.fusion.connector.checker.config.MimeTypeConfig$Properties"
+              ]
+            },
+            "sizeLimitProperties": {
+              "type": "object",
+              "title": "Item Size Limits",
+              "description": "Options for including or excluding items based on size, in bytes.",
+              "required": [],
+              "properties": {
+                "maxSizeBytes": {
+                  "type": "number",
+                  "title": "Maximum",
+                  "description": "Used for excluding items when the item size is larger than the configured value.",
+                  "default": -1,
+                  "maximum": 2147483647,
+                  "exclusiveMaximum": false,
+                  "minimum": -2147483648,
+                  "exclusiveMinimum": false,
+                  "multipleOf": 1
+                },
+                "minSizeBytes": {
+                  "type": "number",
+                  "title": "Minimum",
+                  "description": "Used for excluding items when the item size is smaller than the configured value.",
+                  "default": -1,
+                  "maximum": 2147483647,
+                  "exclusiveMaximum": false,
+                  "minimum": -2147483648,
+                  "exclusiveMinimum": false,
+                  "multipleOf": 1
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.GoogleDriveSizeLimitConfig$Properties",
+                "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig$Properties"
+              ]
+            },
+            "extensionConfig": {
+              "type": "object",
+              "title": "File Extension rules",
+              "description": "These properties apply for binary files only",
+              "required": [],
+              "properties": {
+                "includedFileExtensions": {
+                  "type": "array",
+                  "title": "Included file extensions",
+                  "description": "Set of file extensions to be fetched. If specified, all non-matching files will be discarded.",
+                  "default": [],
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "excludedFileExtensions": {
+                  "type": "array",
+                  "title": "Excluded file extensions",
+                  "description": "A set of all file extensions to be skipped from the fetch.",
+                  "default": [],
+                  "items": {
+                    "type": "string",
+                    "minLength": 1
+                  }
+                },
+                "regexCacheSize": {
+                  "type": "number",
+                  "title": "Regex Cache Size",
+                  "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+                  "default": 10000,
+                  "maximum": 2147483647,
+                  "exclusiveMaximum": false,
+                  "minimum": -2147483648,
+                  "exclusiveMinimum": false,
+                  "multipleOf": 1
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.googledrive.config.GoogleDriveExtensionConfig$Properties",
+                "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties",
+                "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.googledrive.config.LimitDocumentsConfig",
+            "com.lucidworks.connector.plugins.googledrive.config.GoogleDriveSizeLimitConfig",
+            "com.lucidworks.fusion.connector.checker.config.MimeTypeConfig",
+            "com.lucidworks.connector.plugins.googledrive.config.GoogleDriveExtensionConfig"
+          ]
+        },
+        "requestSettings": {
+          "type": "object",
+          "title": "Request Settings",
+          "required": [],
+          "properties": {
+            "drivePageSize": {
+              "type": "number",
+              "title": "Files page size",
+              "description": "The maximum number of files to return per page. This property also controls the page size when retrieving changes.",
+              "default": 1000,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 1000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "directoryPageSize": {
+              "type": "number",
+              "title": "Users page size",
+              "description": "The maximum number of users and groups to return per page",
+              "default": 500,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "activitiesPageSize": {
+              "type": "number",
+              "title": "Activities page size",
+              "description": "For service account only. The maximum number of activities to return per page.",
+              "default": 1000,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 1000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "reportsPageSize": {
+              "type": "number",
+              "title": "Reports page size",
+              "description": "The maximum number of admin audit log entries to return per page",
+              "default": 500,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "readTimeoutMs": {
+              "type": "number",
+              "title": "Read timeout",
+              "description": "The timeout in milliseconds to read data from an established connection",
+              "default": 60000,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 300000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "connectTimeoutMs": {
+              "type": "number",
+              "title": "Connection timeout",
+              "description": "The timeout in milliseconds to establish a connection",
+              "default": 60000,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 180000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.googledrive.config.RequestSettingsConfig"
+          ],
+          "hints": [
+            "advanced"
+          ]
+        },
+        "security": {
+          "type": "object",
+          "title": "Security filtering configuration",
+          "required": [],
+          "properties": {
+            "enabled": {
+              "type": "boolean",
+              "title": "Enable security trimming",
+              "description": "Enable query-time security-trimming",
+              "default": true
+            },
+            "collectionId": {
+              "type": "string",
+              "title": "ACL collection id",
+              "description": "Id of the collection to be used for storing ACL records. If not specified, ACL collection name will be generated automatically using pattern '<datasource_id>_access_control_hierarchy'."
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig$Properties",
+            "com.lucidworks.fusion.connector.plugin.api.config.security.SecurityFilteringProperties",
+            "com.lucidworks.fusion.connector.plugin.api.config.security.AccessControlConfig$Properties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.connector.plugins.googledrive.config.GoogleDriveConfig$Properties",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.plugin.api.config.security.StaticSecurityConfig",
+        "com.lucidworks.connectors.components.config.ItemRetryConfig"
+      ]
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Connector for Google Drive",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    }
+  },
+  "category": "Repository",
+  "categoryPriority": 1
+}

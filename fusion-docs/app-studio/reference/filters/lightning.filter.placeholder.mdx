@@ -1,0 +1,28 @@
+---
+title: "placeholder"
+permalink: "1005"
+---
+
+## Description
+
+Renders a placeholder while a field is null.
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ placeholder_expression | placeholder:placeholder }}
+```
+
+### In JavaScript
+
+```js
+$filter('placeholder')(input, placeholder)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| input | string | The input to check if it is null |
+| placeholder | string | The value to display while input is null |

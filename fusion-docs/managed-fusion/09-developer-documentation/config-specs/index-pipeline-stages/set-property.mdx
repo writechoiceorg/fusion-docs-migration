@@ -1,0 +1,21 @@
+---
+title: "Set Property"
+description: "Index pipeline stage configuration specifications"
+permalink: "9fqkkx"
+---
+
+The Set Property Index Stage is used to set a value on a document, or into the Pipeline Context for downstream consumption
+by specifying a series of simple matching conditions.
+These conditions match against whether a field exists, and simple substring matches on the field contents.
+For more complex logic, use a [JavaScript Index Stage](/managed-fusion/5.9/x6nldc/java-script-index-stage).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/set-property.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,86 @@
+---
+title: "Messaging and Alerting"
+permalink: "135"
+---
+
+Fusion’s messaging services provide implementations to send messages and alerts to any application or device capable of displaying the supported message types. Read a primer on Fusion’s messaging services on our
+[blog](https://lucidworks.com/post/alerts-lucidworks-fusion//).
+
+## Supported Message Types
+
+Fusion supports these types of messages and alerts:
+
+* **logging**
+
+    This service logs any message sent to it in the configured logger. You can use it in an [index pipeline](/fusion-server/4.2/208/write-log-message-index-stage) or a [query pipeline](/fusion-server/4.2/287/logging-stage).
+* **Slack**
+
+    [Slack](http://www.slack.com) is a team messaging service with document integration and a focus on collaborative communication. See the [Slack Index Stage](/fusion-server/4.2/237/send-slack-message-index-stage) and the [Slack Query Stage](/fusion-server/4.2/290/send-slack-message-stage).
+* **SMTP**
+
+    Email, via the Simple Mail Transfer Protocol. See the [Email Index Stage](/fusion-server/4.2/218/send-smtp-email-index-stage) and the [Email Query Stage](/fusion-server/4.2/253/send-smtp-email-stage).
+* **PagerDuty**
+
+    Alerting and monitoring. See the [Pagerduty Index Stage](/fusion-server/4.2/206/send-pager-duty-message-index-stage) and the [PagerDuty Query Stage](/fusion-server/4.2/273/send-pager-duty-message-stage).
+
+## Messaging Service Configuration
+
+The Message Services as a whole can be configured via the [Configurations API](/fusion-server/4.2/342/configurations-api) with these attributes:
+
+| Attribute | Description |
+| --- | --- |
+| `rateLimit` | The time, in milliseconds, to wait between sending messages on a per-second basis. This does not synchronize throttling between requests. |
+| `storeAllMessages` | Boolean flag that indicates whether messages should be indexed and stored. By default, only scheduled messages are stored, as they need to be retrieved by the scheduler at a later time. Storing all messages can be useful for auditing the system, but it will have an impact on the system storage requirements. |
+
+### Enabling Messaging Services
+
+The logging service is enabled by default, but messaging services must be explicitly enabled.
+
+You can do this through the UI at **System > System > Messaging Services**, or through the [Messaging API](/fusion-server/4.2/306/messaging-api).
+
+**How to see which messaging services are currently enabled:**
+
+```bash
+curl -u USERNAME:PASSWORD http://localhost:8764/api/messaging/service
+```
+
+### String Templates
+
+String templates are libraries used for structured text generation outputs. They are a powerful way of doing variable substitution into a provided template using values contained in documents, requests, and contexts. String templates are made available in the Messaging Service System setup, where users can fill in these portions with document or query values from the working system.
+
+See [Messaging Services Templates](/fusion-server/4.2/397/messaging-services-template-expression-variables) for details.
+
+## Triggering Messages and Alerts
+
+The messaging services can be invoked in several ways:
+
+* Via the [Scheduler API](/fusion-server/4.2/330/scheduler-api) to send messages at designated intervals.
+* Via the [Messaging API](/fusion-server/4.2/306/messaging-api).
+* Through an index or query pipeline; see [Messaging and Alerting Pipeline Stages](#messaging-and-alerting-pipeline-stages) below.
+
+<Note>
+By default, only scheduled messages are stored. To configure Fusion to store all messages, see [Messaging Service Configuration](#messaging-service-configuration) above. The default collection for message storage is system_messages, which is created on startup.
+</Note>
+
+### Messaging and Alerting Pipeline Stages
+
+The Messaging Service supports these pipeline stages:
+
+* [Email Message Query Stage](/fusion-server/4.2/253/send-smtp-email-stage)
+* [Email Message Index Stage](/fusion-server/4.2/218/send-smtp-email-index-stage)
+* [PagerDuty Message Query Stage](/fusion-server/4.2/273/send-pager-duty-message-stage)
+* [PagerDuty Message Index Stage](/fusion-server/4.2/206/send-pager-duty-message-index-stage)
+* [Slack Message Query Stage](/fusion-server/4.2/290/send-slack-message-stage)
+* [Slack Message Index Stage](/fusion-server/4.2/237/send-slack-message-index-stage)
+* [SetPropertyIndex Stage](/fusion-server/4.2/239/set-property-index-stage)
+
+The pipeline stages above send messages and alerts when specific conditions are met. Conditions can be specified using regular expressions, database lookups, and more. Any upstream stage can affect how Fusion behaves when a match occurs, so pay special attention to the order in which stages occur.
+
+Additionally, the Set Property Index Stage allows conditions to be specified before messages are sent.
+
+### Setting Properties Upstream
+
+Fusion includes two index pipeline stages that are useful for setting properties on indexed documents so that you can evaluate those properties in one of the messaging stages, either downstream in the index pipeline or in a query pipeline:
+
+* The [Set Property Index Stage](/fusion-server/4.2/239/set-property-index-stage) can be used to set a property on a document, or a context, by evaluating one or more simple conditions. It is an index-only, conditional stage that allows the setting of properties without the use of JavaScript.
+* The [JavaScript Index Stage](/fusion-server/4.2/243/java-script-index-stage) provides a more sophisticated means of setting properties upstream from the messaging stages.

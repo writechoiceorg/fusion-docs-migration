@@ -1,0 +1,90 @@
+---
+title: "ML Model API"
+description: "Fusion Machine Learning Model API"
+permalink: "st3vbc"
+---
+
+The Machine Learning (ML) Model service is a model prediction API for MLeap/Spark-ML models, as well as pass-through to Seldon Core-based models.
+Use this API to list the deployed ML models in Fusion and generate predictions.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+Get the list of deployed models
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST/api/ai/ml-models
+```
+
+Response:
+
+```json
+{
+    "models": [
+        {
+            "model_id": "lucidworks-sentiment",
+            "type": "mleap",
+            "last_modified": "2024-09-13T19:43:20Z"
+        },
+        {
+            "model_id": "opennlp",
+            "type": "open-nlp",
+            "last_modified": "2024-09-13T19:43:15Z"
+        },
+        {
+            "model_id": "sentiment-reviews",
+            "type": "seldon",
+            "last_modified": "2024-09-13T20:29:05Z"
+        }
+    ]
+}
+```
+
+Check that a deployed model is working
+
+```bash
+curl -u USERNAME:PASSWORD -X POST https://FUSION_HOST/api/ai/ml-models/sentiment-reviews/prediction \
+-d '{"text": "Hello world.  How are you doing today?"}'
+```
+
+Response:
+
+```json
+{
+    "score": [
+        "0.8543054461479187"
+    ],
+    "label": [
+        "positive"
+    ],
+    "_rawJsonResponse": "{\n  \"names\": [\"label\", \"score\", \"tokens\", \"attention_weights\"],\n  \"ndarray\": [[\"positive\"], [\"0.8543054461479187\"]]\n}"
+}
+```
+
+A `500` server error indicates that either the model is not properly deployed, the model ID is wrong, or the input fields are wrong.
+
+## Additional resources
+
+* [Machine Learning Jobs](/fusion/5.12/494/machine-learning-jobs)
+* [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Machine Learning Demystified** focuses on key concepts in machine learning, plus the available Fusion machine learning jobs and pipeline stages:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/machine-learning-demystified" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/ml-demystified.jpg" alt="Machine Learning Demystified" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

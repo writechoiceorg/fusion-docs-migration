@@ -1,0 +1,251 @@
+---
+title: "chart:tooltip"
+permalink: "1103"
+---
+
+## Description
+
+##### Tooltip Tag
+
+Tooltips display information when you hover over a point or area of the
+chart, tooltips can be set across the whole chart or specifically to a
+series using the Chart Tooltip tag. This tag must be nested in the
+[Chart Display tag](/app-studio/4.2/1056/chart-display) or the series
+tags ([Series Facet Tag](/app-studio/4.2/1165/series-facet),
+[Series Result List Tag](/app-studio/4.2/1083/series-result-list) or
+[Series Time Tag](/app-studio/4.2/1110/series-time)) if the tooltip
+is specific to a series.
+
+Shared Tooltip
+
+If you are rendering more then one series you can set the tooltip to be
+shared, this means it will display information about all the series for
+the point you’ve hovered over.
+
+## Usage
+
+as element:
+
+```xml
+<chart:tooltip
+       [header-format="{string}"]
+       [point-format="{string}"]
+       [shared="{boolean}"]>
+</chart:tooltip>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| header-format  *(optional)* | **string** | Custom formatting of the data point tooltips header. Can make use of expressions '\{point.name}','\{point.x}' and '\{point.y}'. For example: '\{point.x} cm, \{point.y} kg'. |
+| point-format  *(optional)* | **string** | Custom formatting of the data point tooltips. Can make use of expressions '\{point.name}', '\{point.x}' and '\{point.y}'. For example: '\{point.x} cm, \{point.y} kg'. |
+| shared  *(optional)* | **boolean** | Whether the tooltip should show the point details of evert series (only work when placed within the Chart Display tag). |
+
+## Example
+
+#### Source
+
+```xml
+<div ng-controller="ExampleController">
+    <h3 id="example_tooltip-tag">Tooltip Tag</h3>
+    <p>
+        When setting a tooltip you have access to two objects called <a href="http://api.highcharts.com/highcharts/Point" target="_blank">Point</a> and <a href="http://api.highcharts.com/highcharts/Series" target="_blank">Series</a>.
+        These can be used by wrapping them in '{}' eg. `{series.name} - {point.y}`.
+    </p>
+    <tk-example>
+        <chart:display response="response" title="Files Indexed" subtitle="Per Day">
+            <series:facet name="test1" type="column" title="First Pass"></series:facet>
+            <series:facet name="test2" type="column" title="Second Pass"></series:facet>
+            <chart:tooltip point-format="{series.name}: <b>{point.y}</b><br/>"></chart:tooltip>
+        </chart:display>
+    </tk-example>
+    <tk-code-wrapper>
+        <code hljs>
+<chart:display response="response" title="Files Indexed" subtitle="Per Day">
+    <series:facet name="test1" type="column" title="First Pass"></series:facet>
+    <series:facet name="test2" type="column" title="Second Pass"></series:facet>
+    <chart:tooltip point-format="{series.name}: <b>{point.y}</b><br/>"></chart:tooltip>
+</chart:display>
+        </code>
+    </tk-code-wrapper>
+
+    <hr/>
+    <h3 id="example_shared-tooltip">Shared Tooltip</h3>
+    <p>If you are rendering more then one series you can set the tooltip to be shared, this means it will display information about all the series for the point you've hovered over.</p>
+    <tk-example>
+        <chart:display response="response" title="Files Indexed" subtitle="Per Day">
+            <series:facet name="test1" type="column" title="First Pass"></series:facet>
+            <series:facet name="test2" type="column" title="Second Pass"></series:facet>
+            <chart:tooltip point-format="{series.name}: <b>{point.y} </b><br/>" shared="true"></chart:tooltip>
+        </chart:display>
+    </tk-example>
+    <tk-code-wrapper>
+        <code hljs>
+<chart:display response="response" title="Files Indexed" subtitle="Per Day">
+    <series:facet name="test1" type="column" title="First Pass"></series:facet>
+    <series:facet name="test2" type="column" title="Second Pass"></series:facet>
+    <chart:tooltip point-format="{series.name}: <b>{point.y} </b><br/>" shared="true"></chart:tooltip>
+</chart:display>
+        </code>
+    </tk-code-wrapper>
+
+    <hr/>
+
+    <h3 id="example_percentages">Percentages</h3>
+    <p>If you are rendering data within a pie or donut chart you can user `{point.percentage} %` to show the percentage of the segment you have selected in the chart.</p>
+    <tk-example>
+        <chart:display response="response" title="Files Indexed">
+            <series:facet name="test1" type="pie" title="First Pass"></series:facet>
+            <chart:tooltip point-format="{series.name}: <b>{point.percentage:.1f} %</b><br/>"></chart:tooltip>
+        </chart:display>
+    </tk-example>
+    <tk-code-wrapper>
+        <code hljs>
+<chart:display response="response" title="Files Indexed">
+    <series:facet name="test1" type="pie" title="First Pass"></series:facet>
+    <chart:tooltip point-format="{series.name}: <b>{point.percentage:.1f} %</b><br/>"></chart:tooltip>
+</chart:display>
+        </code>
+    </tk-code-wrapper>
+
+    <hr/>
+
+    <h3 id="example_adding-colour">Adding Colour</h3>
+    <p>You can add the colour of the series to your highcharts tooltip by adding the following snippet:-
+    <code>&lt;span class='highcharts-color-{point.colorIndex}'&gt;●&lt;/span&gt;</code>
+        To do this you will need to use single quotes for your point-format eg. point-format='<span class="my-class">Hello World</span>'. As the highcharts point format will not render classes within double quotes.
+    </p>
+    <tk-example>
+        <chart:display response="response" title="Files Indexed">
+            <series:facet name="test1" type="pie" title="First Pass"></series:facet>
+            <chart:tooltip point-format='<span class="highcharts-color-{point.colorIndex}">●</span> {series.name}: <b>{point.percentage:.1f} %</b><br/>'></chart:tooltip>
+        </chart:display>
+    </tk-example>
+    <tk-code-wrapper>
+        <code hljs hljs-no-escape>
+&lt;chart:display response="response" title="Files Indexed"&gt;
+    &lt;series:facet name="test1" type="pie" title="First Pass"&gt;&lt;/series:facet&gt;
+    &lt;chart:tooltip point-format='&lt;span class=&quot;highcharts-color-{point.colorIndex}&quot;&gt;●&lt;/span&gt; {series.name}: &lt;b&gt;{point.percentage:.1f} %&lt;/b&gt;&lt;br/&gt;'&gt;&lt;/chart:tooltip&gt;
+&lt;/chart:display&gt;
+        </code>
+    </tk-code-wrapper>
+
+    <hr/>
+
+    <h3 id="example_different-tooltips">Different Tooltips</h3>
+    <p>If for you need the tooltips to be different for each series you can add the chart:tooltip tag inside your series to apply the tooltip to just that series.</p>
+    <tk-example>
+        <chart:display response="response" title="Files Indexed" subtitle="Per Day">
+            <series:facet name="test1" type="column" title="First Pass">
+                <chart:tooltip point-format='{series.name}: <b>{point.y} Files Indexed By Steve </b><br/>'></chart:tooltip>
+            </series:facet>
+            <series:facet name="test2" type="column" title="Second Pass">
+                <chart:tooltip point-format='{series.name}: <b>{point.y} Files Indexed By Mike </b><br/>'></chart:tooltip>
+            </series:facet>
+        </chart:display>
+    </tk-example>
+    <tk-code-wrapper>
+        <code hljs>
+<chart:display response="response" title="Files Indexed" subtitle="Per Day">
+    <series:facet name="test1" type="column" title="First Pass">
+        <chart:tooltip point-format='{series.name}: <b>{point.y} Files Indexed By Steve </b><br/>'></chart:tooltip>
+    </series:facet>
+    <series:facet name="test2" type="column" title="Second Pass">
+        <chart:tooltip point-format='{series.name}: <b>{point.y} Files Indexed By Mike </b><br/>'></chart:tooltip>
+    </series:facet>
+</chart:display>
+        </code>
+    </tk-code-wrapper>
+</div>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    test1: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+
+                                },
+                                count: 100,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 200,
+                            }
+
+                        ]
+                    },
+                    test2: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 20,
+                            }
+
+                        ]
+                    },
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                label: 'label1',
+                                value: 1
+                            }
+                        },
+
+                    },
+                    {
+                        result: {
+                            fields: {
+                                label: 'label2',
+                                value: 2
+                            }
+                        },
+
+                        hits: {
+                            act: ['Hits', 264]
+                        }
+                    }]
+            }
+            ResponseService.setResponse('response',$scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/chartTooltip.png)</Frame>

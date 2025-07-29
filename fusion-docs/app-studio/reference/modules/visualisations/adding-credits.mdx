@@ -1,0 +1,19 @@
+---
+title: "Adding Credits"
+permalink: "3147"
+---
+
+To display credits on the chart in the bottom right hand corner, use the Chart Credit tag with the `text` and `href` attributes.
+
+This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+```xml
+<chart:display response="response" title="Current Products" type="column" facet-name="current_products">
+	<chart:credit href="http://twigkit.com" text="twigkit.com"></chart:credit>
+</chart:display>
+```
+
+<Frame>![Credit Chart](/assets/images/appkit/4.2/highchart-credit.png)</Frame>
+
+To see all related attributes, see the [chart:credit](/fusion/5.9/1127/chart-credit) tag documentation.
+{/* link:/fusion/5.9/reference/tags/lightning.directive */}

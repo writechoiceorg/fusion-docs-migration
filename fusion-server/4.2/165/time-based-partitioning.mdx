@@ -1,0 +1,18 @@
+---
+title: "Time-Based Partitioning"
+permalink: "165"
+---
+
+A Fusion collection can be configured to map to multiple Solr collections, known as partitions in this context, where each partition contains data from a specific time range. An example is time-based partitioning for logs:
+
+<Frame>![time based partitioning](/assets/images/common/time_based_partitioning.png)</Frame>
+
+Once a collection is configured for time-base partitioning, Fusion automatically ages out old partitions and creates new ones, using the configured partition sizes, expiration intervals, and so on. No manual maintenance is needed.
+
+This feature is not enabled by default. Enable it for each collection using the
+[Collection Features API](/fusion-server/4.2/333/collection-features-api).
+
+<Note>
+Fusion cannot retroactively partition data that has already been indexed. It can only perform time-based partitioning on incoming data.
+</Note>
+

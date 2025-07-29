@@ -1,0 +1,69 @@
+---
+title: "BPR Recommender"
+description: "Job configuration specifications"
+permalink: "ec8fkn"
+---
+
+Use this job when you want to compute user recommendations or item similarities using a Bayesian Personalized Ranking (BPR) recommender algorithm.
+
+|  |  |
+| --- | --- |
+| **Default job name** | `COLLECTION_NAME_bpr_item_recs` |
+| **Input** | [Aggregated signals](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs) (the `COLLECTION_NAME_recs_aggr` collection by default) |
+| **Output** | * [Items-for-item recommendations](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations) (the `COLLECTION_NAME_bpr_item_recs` collection by default)<br/> * [Items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations) (the `COLLECTION_NAME_bpr_user_recs` collection by default) |
+
+
+
+This job assumes that your signals collection contains the preferences of many users. It uses this collection of preferences to predict another user’s preference for an item that the user has not yet seen:
+
+* **User.** Use **Training Collection User Id Field** to specify the name of the user ID field, usually `user_id_s`.
+* **Item.** Use **Training Collection Item Id Field** to specify the name of the item ID field, usually `item_id_s`.
+* **Interaction-value.** Use **Training Collection Counts/Weights Field** to specify the name of the interaction value field, usually `aggr_count_i`.
+
+BPR-based recommenders compare a pair of recommendations for a user.
+
+<Note>
+You can also configure this job to read from or write to cloud storage. See [Configure An Argo-Based Job to Access GCS](/how-to/8864/configure-an-argo-based-job-to-access-gcs) and [Configure An Argo-Based Job to Access S3](/how-to/8870/configure-an-argo-based-job-to-access-s-3).
+</Note>
+
+
+
+BPR collaborative recommendations dataflow
+
+<Frame>![BPR dataflow](/assets/images/5.2/bpr-dataflow-diagram.png)</Frame>
+
+<Note>
+If using Solr as the training data source, ensure that the source collection contains the `random_*` dynamic field defined in its managed-schema. This field is required for sampling the data. If it is not present, add the following entry to the managed-schema alongside other dynamic fields `<dynamicField name="random_*" type="random"/>` and  alongside other field types.
+</Note>
+
+## Tuning tips
+
+The BPR Recommender job has a few unique tuning parameters compared to the ALS Recommender job:
+
+* **Training Data Filtered By Popular Items**
+
+  By setting the minimum number of user interactions required for items to be included in training and recommendations, you can suppress items that do not yet have enough signals data for meaningful recommendations.
+* **Filter already clicked items**
+
+  This feature produces only "fresh" recommendations, by omitting items the user has already clicked. (It also increases the job’s running time.)
+* **Perform approximate nearest neighbor search**
+
+  This option reduces the job’s running time significantly, with a small decrease in accuracy. If your training dataset is very small, then you can disable this option.
+* **Evaluate on test data**
+
+  This feature samples the original dataset to evaluate how well the trained model predicts unseen user interactions. The clicks that are sampled for testing are not used for training. For example, with the default configuration, users who have at least three total clicks are selected for testing. For each of those users, one click is used for testing and the rest are used for training. The trained model is applied to the test data, and the evaluation results are written to the log.
+* **Metadata fields for item-item evaluation**
+
+  These fields are used during evaluation to determine whether pairs belong to the same category.
+
+## Query pipeline setup
+
+* For [items-for-item recommendations](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations), [download the `APPName_item_item_rec_pipelines_bpr.json`](/assets/attachments/pipelines/APPName_item_item_rec_pipelines_bpr.json) file and [import it](/how-to/o0svh6/migrate-managed-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output. See [Fetch Items-for-Item Recommendations (Collaborative/BPR Method)](/how-to/ztbm89/fetch-items-for-item-recommendations-collaborative-bpr-method) for details.
+* For [items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations), [download the `APPName_item_user_rec_pipelines_bpr.json`](/assets/attachments/pipelines/APPName_item_user_rec_pipelines_bpr.json) file and [import it](/how-to/o0svh6/migrate-managed-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output. See [Fetch Items-for-User Recommendations (Collaborative/BPR Method)](/how-to/3hvc5u/fetch-items-for-user-recommendations-collaborative-bpr-method) for details.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/bpr-recommender.mdx";
+
+<SchemaParamFields schema={schema}/>

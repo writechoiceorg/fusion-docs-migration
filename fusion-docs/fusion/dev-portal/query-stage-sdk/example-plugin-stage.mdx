@@ -1,0 +1,55 @@
+---
+title: "Example Query Stage Plugin"
+permalink: "oul9n8"
+---
+
+The example query stage plugin contains an example of how a plugin can be implemented as well as information on how to build and deploy the plugin. You’ll find it in the [`examples/sample-plugin-stage` directory](https://github.com/lucidworks/query-stage-sdk/tree/master/examples/sample-plugin-stage).
+
+The sample plugin stage is an example project with two simple querying stages:
+
+* [Update request](src/main/java/com/lucidworks/sample/request/UpdateRequestStage.java) - Add a new query parameter with a specific value to each query request.
+* [Update response](src/main/java/com/lucidworks/sample/response/UpdateResponseStage.java) - Add a new field with a specific value to each query response.
+
+This is also a demonstration of a basic `gradle` project that assembles a Fusion query stage plugin `.zip`.
+
+## 1. Build the plugin stage
+
+From the main folder, call:
+
+```
+./gradlew -p examples/sample-plugin-stage assemblePlugin
+```
+
+Substitute the path to your project.
+
+This creates a plugin `.zip` file (with required manifest file) inside the `build/libs` folder.
+
+## 2. Deploy the stage
+
+You can choose from several different ways to deploy the sample plugin stage:
+
+* [Upload it to the blob store](#upload)
+* [Use gradle](#gradle)
+* [Use the REST API](#api)
+
+After successful deployment, new stages should be visible in the `Stages` list in the Fusion Query Pipelines UI.
+
+### Upload it to the blob store
+
+1. Navigate to **System** > **Blobs**.
+2. Click **Add**.
+3. Select **Query Stage Plugin**.
+4. Click **Browse…​** and select your plugin file.
+5. Click **Upload**
+
+### Deploy it using gradle
+
+```
+./gradlew -p examples/sample-plugin-stage deploy -PfusionUser=[user] -PfusionPassword=[password]
+```
+
+### Deploy it with the REST API
+
+```bash
+curl -u [user]:[password] -X PUT -H "Content-Type:application/zip" --data-binary @sample-plugin-stage-0.0.1.zip https://<fusion-host>/api/query-stage-plugins
+```

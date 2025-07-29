@@ -1,0 +1,23 @@
+---
+title: "Table Result List tag"
+permalink: "3103"
+---
+
+The Table Result List tag displays the results for a given search response in a table. The body of the Table Result List tag contains a [Header](/fusion/5.9/3102/header-tag) tag which outputs the top header of the table, and a [Body](/fusion/5.9/3099/table-body-tag) tag, which specifies the format of the rows of the table.
+
+## Usage
+
+This example shows how to display all results in a search response in a table.
+
+```xml
+<table:result-list response="response">
+    <table:header>
+        ...
+    </table:header>
+    <table:body>
+        ...
+    </table:body>
+</table:result-list>
+```
+
+For a complete list of attributes, see the [`table:result-list`](/fusion/5.9/1153/table-result-list) tag doc.

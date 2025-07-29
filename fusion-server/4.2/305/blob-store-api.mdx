@@ -1,0 +1,159 @@
+---
+title: "Blob Store API"
+permalink: "305"
+---
+
+
+The Blob Store REST API allows storing binary objects in Solr. The primary use case for this is to store entity extraction models, lookup lists or exclusion lists for use in [index pipelines](/fusion-server/4.2/161/index-pipeline-stages). This may include the entity extraction models and lookup lists included with Fusion in the `https://FUSION_HOST:FUSION_PORT/data/nlp` directory, or files that you have created on your own.
+
+You can also work with blobs in the Fusion UI using the [blob manager](/fusion-server/4.2/153/blob-storage#the-blob-manager).
+
+Blobs uploaded to Solr with this REST API are stored in the `system_blobs` collection.
+
+## Blob Types
+
+A `resourceType` query parameter can be used to specify the a blob type. For example, specify `plugin:connector` when uploading a connector, like this:
+
+```bash
+curl -H 'content-type:application/zip' -X PUT 'fusion-host:8764/api/blobs/myplugin?resourceType=plugin:connector' --data-binary @myplugin.zip
+```
+
+The complete list of valid values for `resourceType` is below:
+
+| Type | Description |
+| --- | --- |
+| `banana` | A Banana [dashboard](/fusion-server/4.2/139/dashboards) |
+| `catalog` | An [analytics catalog](/fusion-server/4.2/329/catalog-api) |
+| `driver:jdbc` | A [JDBC driver](/how-to/916/upload-a-jdbc-driver-to-fusion-server) |
+| `file:js-index` | A JavaScript file for use with a [Managed Javascript index stage](/fusion-server/4.2/217/managed-java-script-index-stage). |
+| `file:js-query` | A JavaScript file for use with a [Managed Javascript query stage](/fusion-server/4.2/258/managed-java-script-stage). |
+| `file` | Any uploaded file, such as from the [Quickstart](/how-to/660/quickstart) or the [Index Workbench](/fusion-server/4.2/158/index-workbench). |
+| `model:ml-model` | A [machine learning model](/fusion-ai/4.2/492/machine-learning-models-in-fusion) (Fusion AI only) |
+| `model:open-nlp` | An [OpenNLP model](/fusion-ai/4.2/542/open-nlp-ner-extraction-index-stage) (Fusion AI only) |
+| `other` | A blob of unknown type  If no `resourceType` is specified on upload, "other" is assigned by default. |
+| `plugin:connector` | A [connector plugin](/how-to/8813/install-a-connector-fusion-4-x) |
+
+## Examples
+
+### Upload a JavaScript file to the blob store
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: text/javascript' --data-binary @query-pipeline-js-stage.js https://FUSION_HOST:8764/api/blobs/query-pipeline-js-stage.js?resourceType=file:js-query
+```
+
+The response is empty.
+
+### Verify that the JavaScript blob was uploaded
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/blobs?resourceType=file:js-query
+```
+
+**RESPONSE**
+
+```json
+[{
+  "id": "query-pipeline-js-stage.js",
+  "path": "/query-pipeline-js-stage.js",
+  "dir": "/",
+  "filename": "query-pipeline-js-stage.js",
+  "contentType": "text/javascript",
+  "size": 0,
+  "modifiedTime": "2018-09-11T16:23:17.743Z",
+  "version": 1611328911094841344,
+  "md5": "d41d8cd98f00b204e9800998ecf8427e",
+  "metadata": {
+    "resourceType": "file:js-query"
+  }
+}]
+```
+
+### Upload an OpenNLP sentence model binary file to the blob store
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @data/nlp/models/en-sent.bin -H 'Content-type: application/octet-stream' https://FUSION_HOST:8764/api/blobs/sentenceModel.bin
+```
+
+<Note>
+In this example, we have changed the name of the blob during upload by giving it a different ID. The file is named 'en-sent.bin' but we have defined the ID of this to 'sentenceModel.bin'. When we use this blob in an index pipeline, we would refer to it by the ID we have given it.
+</Note>
+
+
+
+### Get the manifest for a sentence OpenNLP model we have previously saved in the blob store
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X HEAD https://FUSION_HOST:8764/api/blobs/sentenceModel.bin
+```
+
+**RESPONSE**
+
+```json
+{
+  "name": "sentenceModel.bin",
+  "contentType": "application/octet-stream",
+  "size": 98533,
+  "modifiedTime": "2014-09-08T18:50:07.559Z",
+  "version": 1478704189996531712,
+  "md5": "3822c5f82cb4ba139284631d2f6b7fde"
+}
+```
+
+### Upload a JDBC driver, using slashes in the blob name
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @postgresql-42.0.0.jar -H 'Content-length: 6' -H 'Content-type: application/octet-stream' https://FUSION_HOST:8764/api/blobs/good/to/go/jdbcDriverFile?resourceType=driver:jdbc
+```
+
+**RESPONSE**
+
+```json
+{
+  "name": "good/to/go/jdbcDriverFile",
+  "contentType": "application/octet-stream",
+  "size": 6,
+  "modifiedTime": "2017-04-04T15:58:32.856Z",
+  "version": 0,
+  "md5": "b1946ac92492d2347c6235b4d2611184",
+  "metadata": {
+    "subtype": "driver:jdbc",
+    "resourceType": "driver:jdbc"
+  }
+}
+```
+
+### Get the JDBC driver that was uploaded
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/blobs?resourceType=driver:jdbc
+```
+
+**RESPONSE**
+
+```json
+[{
+  "name": "good/to/go/jdbcDriverFile",
+  "contentType": "application/octet-stream",
+  "size": 6,
+  "modifiedTime": "2017-04-04T06:21:53.465Z",
+  "version": 1563727666574524416,
+  "md5": "b1946ac92492d2347c6235b4d2611184",
+  "metadata": {
+    "subtype": "driver:jdbc",
+    "resourceType": "driver:jdbc"
+  }
+}]
+```
+

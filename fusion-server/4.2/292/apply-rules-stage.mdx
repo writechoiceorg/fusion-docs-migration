@@ -1,0 +1,29 @@
+---
+title: "Apply Rules Stage"
+permalink: "292"
+---
+
+This stage looks up rules that have been deployed to the [response rewriting](/fusion-ai/4.2/449/response-rewriting) are applied by the [Modify Response with Rules](/fusion-server/4.2/295/modify-response-with-rules-stage) stage later in the pipeline.
+
+See [Rules](/fusion-ai/4.2/490/business-rules) for additional details about how to configure this set of features.
+
+This stage supports [asynchronous processing](/fusion-server/4.2/173/query-pipelines#async).
+
+<Note>
+Although this stage is available without a Fusion AI license, it is only effective after creating rules in Fusion AI.
+</Note>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/apply-rules.mdx";
+
+<SchemaParamFields schema={schema}/>

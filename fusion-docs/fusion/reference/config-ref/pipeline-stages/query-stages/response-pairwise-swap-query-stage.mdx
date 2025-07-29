@@ -1,0 +1,54 @@
+---
+title: "Response Pairwise Swap Stage"
+permalink: "510"
+---
+
+This is a [response rewriting](/fusion/5.9/449/response-rewriting) stage that helps "de-bias" results by swapping the search results at any two positions, such as positions 1 and 2, positions 3 and 4, and so on. This stage must be used *after* the [Solr Query stage](/fusion/5.9/265/solr-query-stage) in your pipeline.
+
+This stage is especially useful when combined with [experiments](/fusion/5.9/460/experiments), where a small percentage of traffic is given swapped results to minimize position bias when using click signals for ranking. The [Response Shuffle stage](/fusion/5.9/524/response-shuffle-stage) provides an another method for minimizing this bias.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/response-pairwise-swap.mdx";
+
+<SchemaParamFields schema={schema}/>

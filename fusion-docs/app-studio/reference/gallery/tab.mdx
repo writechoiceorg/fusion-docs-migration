@@ -1,0 +1,163 @@
+---
+title: "Tabs and Toggle Panes"
+permalink: "1036"
+---
+
+## Default
+
+The standard toggle pane tabs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs01.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="panes"></toggle:controls>
+<toggle:panes id="panes">
+  <toggle:pane>
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Line
+
+Underlined tabs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs02.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="line" styling="line"></toggle:controls>
+<toggle:panes id="line">
+  <toggle:pane>
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Pills
+
+Rounded tabs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs03.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="pills" styling="pill"></toggle:controls>
+<toggle:panes id="pills">
+  <toggle:pane visible="true">
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Simple
+
+No styling
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs04.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="simple" styling="simple"></toggle:controls>
+<toggle:panes id="simple">
+  <toggle:pane visible="true">
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Bordered
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs05.png)</Frame>
+
+```xml
+<toggle:panes id="bordered">
+<toggle:pane visible="true">
+    <h2>Pane 1</h2>
+</toggle:pane>
+<toggle:pane>
+    <h2>Pane 2</h2>
+</toggle:pane>
+<toggle:pane>
+    <h2>Pane 3</h2>
+</toggle:pane>
+</toggle:panes>
+```
+
+## Line Bordered
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs06.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="line-b" styling="line bordered"></toggle:controls>
+<toggle:panes id="line-b">
+  <toggle:pane visible="true">
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Pills Bordered
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs07.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="pills-b" styling="pill bordered"></toggle:controls>
+<toggle:panes id="pills-b">
+  <toggle:pane visible="true">
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```
+
+## Simple Bordered
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/tabs08.png)</Frame>
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="simple-b" styling="simple bordered"></toggle:controls>
+<toggle:panes id="simple-b" visible="true">
+  <toggle:pane visible="true">
+    <h2>Pane 1</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 2</h2>
+  </toggle:pane>
+  <toggle:pane>
+    <h2>Pane 3</h2>
+  </toggle:pane>
+</toggle:panes>
+```

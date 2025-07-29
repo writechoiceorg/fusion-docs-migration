@@ -1,0 +1,35 @@
+---
+title: "Cloudera V1"
+description: "Connector Configuration Reference"
+permalink: "74"
+---
+
+Compatible with Fusion version: 4.0.0 through 4.2.6
+
+The Cloudera Connector is a MapReduce-enabled crawler that is compatible with [Cloudera CDH v4.x and v5.x](http://www.cloudera.com/products/apache-hadoop/key-cdh-components.html).
+
+<Note>
+
+Deprecation and removal notice
+
+This connector is deprecated as of Fusion 4.2 and is removed or expected to be removed as of Fusion 5.0.
+
+For more information about deprecations and removals, including possible alternatives, see [Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+
+</Note>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-hadoop-cloudera.mdx";
+
+<SchemaParamFields schema={schema}/>
+

@@ -1,0 +1,61 @@
+---
+title: "JS-based stages in pipelines"
+permalink: "jjg5pb"
+---
+
+When working with Fusion’s pipelines, you might come across stages that use JavaScript (JS) for custom logic.
+These are known as JS-based stages and are identified by their type, which includes either `javascript-query` or `javascript-index`.
+To make life easier when dealing with these stages, ConfigSync adopts a smart approach.
+
+## Storing JS scripts separately
+
+Instead of embedding JS scripts directly within the pipeline configuration, ConfigSync saves the script content to separate files.
+This setup not only makes it easier to view and edit the scripts but also keeps your pipeline configurations clean and manageable.
+
+## Where JS files are stored
+
+* All JS files related to pipelines are stored in a `/js` folder within the specific pipeline folder.
+  For index pipelines, this would be `/index-pipelines/js`, and for query pipelines, `/query-pipelines/js`.
+* Within the `/js` folder, there’s a subfolder named after the pipeline to which the scripts belong.
+  This helps keep everything organized and easy to find.
+* The name of the JS file can vary and is typically based on the stage label used within ConfigSync.
+  However, it’s crucial that these files are correctly linked to their corresponding pipeline stages.
+
+## Linking JS files to pipeline stages
+
+This linking is achieved through a meta-file, which maps each stage ID to its JS filename.
+Here’s how it works:
+
+* If your pipeline configuration is stored at `app/index-pipelines/pipeline.json`,
+* Then your meta-file is located at `app/.metadata/index-pipelines/pipeline.json`.
+  The pattern here is simple: just add `/.metadata` before the pipeline folder in the path.
+* This applies to both index and query pipelines.
+
+## The meta-file structure
+
+The meta-file itself is a JSON file that contains mappings from stage IDs to JS filenames.
+For example:
+
+```json
+{
+  "js": {
+    "stage-id": "JS-Script-Name.js",
+    ...
+  }
+}
+```
+
+Basically, ConfigSync manages this file but in some rare cases such as if you want to rename the JS file you have to also reflect that in the mappings meta-file.
+
+You can make changes in both pipeline-JSON or JS files but if both pipeline-JSON and JS files have been changed JS file changes always win.
+
+This structure ensures that each JS script is correctly associated with its stage in the pipeline, facilitating easy updates and management.
+
+## Managing changes
+
+ConfigSync is designed to handle updates to these mappings, but there might be times when you need to manually adjust them, like if you’re renaming a JS file.
+In such cases, remember to update the meta-file to reflect the changes.
+
+When making edits, it’s possible to update both the pipeline configuration (the JSON file) and the JS files.
+If there are conflicting changes, the updates made to the JS files take precedence.
+This ensures that your custom logic in JS always reflects your latest intentions.

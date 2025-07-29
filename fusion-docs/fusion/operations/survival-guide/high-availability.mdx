@@ -1,0 +1,10 @@
+---
+title: "Multiple Zones for High Availability"
+permalink: "151"
+---
+
+Fusion relies on ZooKeeper to keep quorum. As a result, you need at least three ZooKeeper pods in an ensemble. ZooKeeper deploys as a StatefulSet in the Fusion Helm chart. With GKE, you can launch a [regional cluster](https://cloud.google.com/kubernetes-engine/docs/concepts/regional-clusters) that distributes nodes across three availability zones. With a multi-zone setup, your cluster can withstand the loss of one zone without experiencing downtime. However, you may experience degraded performance from losing one third of your total compute capacity, assuming your pods are evenly distributed. The multi-zone cluster also ensures higher availability for the Kubernetes control plane services.
+
+Lucidworks provides affinity rules to ensure multiple pods per service get distributed across multiple zones. See [Configure Pod Affinity](/how-to/795/configure-pod-affinity) for details on configuring.
+
+When running in a multi-zone cluster, each Solr node has a `solr_zone` system property set to the zone it is running in, such as `-Dsolr_zone=us-west1-a`. This guide covers how to use the `solr_zone` property to distribute replicas across zones in the [Solr Auto-scaling Policy](/how-to/931/deploy-fusion-at-scale#solr-autoscaling) section. Setting the `solr_zone` property for Solr pods requires the Solr service account to have a ClusterRoleBinding that allows it to get node metadata from the Kubernetes API service.

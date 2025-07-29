@@ -1,0 +1,61 @@
+---
+title: "Index pipeline stages"
+permalink: "50yh1o"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+An Index Pipeline takes content and transforms it into a document suitable for indexing by Solr via a series of modular operations called stages.
+The objects sent from stage to stage are PipelineDocument objects.
+Managed Fusion provides many specialized index stages as well as a [JavaScript Index stage](/managed-fusion/5.9/x6nldc/java-script-index-stage) that allows for custom processing via a JavaScript program. The general outline of the Extract/Transform/Load processing performed by an index pipeline is:
+
+* Raw content is parsed into one or more PipelineDocument objects.
+* Any number of intermediate stages operate on the document fields directly, or, in the case of specialized NLP tools, add annotations to a document.
+* Finally, the PipelineDocument is sent to Solr for indexing.
+
+A pipeline stage definition associates a unique ID with a set of properties.
+Pipeline definitions are stored in ZooKeeper for reuse across pipelines and search applications.
+The Managed Fusion UI provides stage-specific panels used to define and configure each pipeline stage.
+Alternatively, JSON can be used to specify the sequence of pipeline stages and registered via the Managed Fusion REST API.
+Some stages require additional resources, e.g., text files that contain lists of names, synonyms, places, or binary files which NLP language models.
+These resources can be uploaded via the Managed Fusion UI or the REST API.
+
+<Tip>
+The [Index Pipeline Stages Reference](/managed-fusion/5.9/0m6vl6/index-pipeline-stages) section contains articles that detail the configuration for each of the Managed Fusion index pipeline stages. The configuration information includes field names and values, as well as examples and other key reference information.
+</Tip>
+
+## Pipeline stage JSON editor
+
+The pipeline stage JSON editor gives the ability to create and copy pipeline stages by pasting JSON objects in the Managed Fusion UI. Only JSON is supported, and JSON validation is included to prevent the user from saving an invalid object.
+
+Navigate to your pipelines, select a pipeline stage, and click the **JSON View** button to open the editor:
+
+<Frame>![JSON View button](/assets/images/5.2/pipeline-stage-json-edit.png)</Frame>
+
+Existing stages are considered **READ-ONLY**. They will have only a copy button which can be used to create stages. New stages will have the option to copy or paste valid JSON. Changes are applied to the stage with the **Apply** button.
+
+<Note>
+Users will still need to **Save** the stage for the changes made in the editor to be saved.
+</Note>
+
+The editor has several elements worth noting:
+
+| Elements | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.2/json-editor/copy.png"/> | Copies the JSON to the clipboard. |
+| <InlineImage src="/assets/images/5.2/json-editor/paste.png"/> | Pastes the clipboard into the editor. Only valid JSON is accepted. |
+| <InlineImage src="/assets/images/5.2/json-editor/expand.png"/> | Expands the editor to a fullscreen view. |
+| <InlineImage src="/assets/images/5.2/json-editor/condense.png"/> | Condenses the editor to a compact view. |
+| <InlineImage src="/assets/images/5.2/json-editor/apply.png"/> | Applies the JSON in the editor and updates the stage. The stage must be saved to preserve the changes. |
+| <InlineImage src="/assets/images/5.2/json-editor/reset.png"/> | Resets changes made since the last time changes were applied. |
+
+For instructions, see [Use the Pipeline Stage JSON Editor](/how-to/3294/use-the-pipeline-stage-json-editor).
+
+## JavaScript selector
+
+Now your pipeline definitions can include your choice of JavaScript engine, either Nashorn or OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>

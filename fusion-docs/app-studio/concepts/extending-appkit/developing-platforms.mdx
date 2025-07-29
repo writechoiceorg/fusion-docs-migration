@@ -1,0 +1,83 @@
+---
+title: "Developing Platforms"
+permalink: "3109"
+---
+
+*Platforms* wrap the underlying search platform; creating a unified abstraction layer for major platform operations such as search, load, delete and store. You can add your own Platform implementation that wrap arbitrary data providers with a few simple lines of code and configurations.
+
+## Process Flow
+
+At a high level the process flow for search operations is simple: A Query is submitted to a Platform, which it turns into a request to the underlying data repository. The Platform implementation then turns that into an Appkit Response and returns.
+
+```java
+public class SomePlatform implements Platform {
+
+    public Response search(Query query) {
+        ...
+    }
+}
+```
+
+## Configurability
+
+Typically the platform will require configuration and initialisation parameters, which can be passed on for example, using the Generic Platform tag. A simple way of achieving this with your platform is to extend the AbstractPlatform class:
+
+```java
+package acme;
+public class SomePlatform extends AbstractPlatform {
+
+    public Response search(Query query) {
+        if (hasParameter("foo")) {
+            String foo = getParameterStringValue("foo");
+            ...
+        }
+    }
+}
+```
+
+This means that the platform can be instantiated using the configuration framework or in the user interface JSP page with:
+
+```xml
+<search:platform className="acme.SomePlatform" foo="bar" />
+```
+
+For a more complex or flexible implementation, the process of adapting source queries and responses is typically encapsulated in distinct components, using an Adapter Pattern.
+
+In this case a Platform implementation is injected with a Query Adapter and a Response Adapter which will handle the mapping of Appkit queries to underlying search platform queries (for example, a SolrQuery) and source responses (for example, a Solr QueryResponse) to an Appkit Response.
+
+```java
+public class SomePlatform extends AbstractPlatform {
+
+    @Inject
+    public SomePlatform(@SomePlatform QueryAdapter<SomeQuery> queryAdapter, @SomePlatform ResponseAdapter<SomeResponse> responseAdapter) {
+        ...
+    }
+
+    public Response search(Query query) {
+        Response response = new Response();
+        SomeQuery sq = queryAdapter.map(this, query);
+        ...
+        Response response = responseAdapter.map(this, query, response, someResponse);
+
+        return validate(query, response);
+    }
+}
+```
+
+The AbstractPlatform also provides a comprehensive set of validation procedures for dealing with spelling suggestions, auto-corrections, and other aspects of the query/response lifecycle. Furthermore, the `twigkit.platform.AbstractQueryAdapter`and`twigkit.platform.AbstractResponseAdapter` classes help you to ensure that you map all of the critical components, so that the Appkit widgets can effectively work with the new data source.
+
+After you have done this, your platform is a fully fledged member of the framework which will act and behave like any other supported platform, meaning that it will support the full range of features and can be plugged into any Appkit application, federated to, etc.
+
+### Deploying your Platform
+
+You can refer to your platform by fully qualified class name in the Platform tag, as long as it is present on the application’s classpath.
+
+A more efficient method would be to package it so that it will be automatically instantiated and provided by Guice. To do that use for example, Maven to create a jar file for the platform, making sure this folder and file structure is included:
+
+```
+/META-INF/
+    /services/
+        twigkit.platform.Platform <-- this is a file
+```
+
+The `twigkit.platform.Platform` file should contain a line delimited list of fully qualified class names of all the platforms in your jar. Doing this means that on start-up Appkit will dynamically load all available platforms and make them available for use via Guice injection.

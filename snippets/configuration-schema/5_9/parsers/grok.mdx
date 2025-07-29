@@ -1,0 +1,136 @@
+export const schema = {
+  "type": "object",
+  "title": "Grok",
+  "description": "Parses semi structured content using Grok patterns (like Regex, see https://github.com/thekrakken/java-grok).  This is often ideal for understanding log files, but can be used for other purposes.",
+  "required": [
+    "charset",
+    "ignoreBOM",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "97f7c69f-91d7-4dc3-a475-79d591ec7994"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types to match",
+      "description": "Documents with a media type on this list will be matched by this parser stage. See inheritMediaTypes / use default media types for more.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "Match default media types in this Parser Stage",
+      "description": "Each parser stage has a built-in list of media types it handles by default. If this setting is true, that list will be used along with any optional additional types provided in the mediaTypes list. If this setting is false, this stage will only be selected for media types in the mediaTypes list, and the mediaTypes list becomes a mandatory property which must have at least one valid media type.",
+      "default": true
+    },
+    "ignoredMediaTypes": {
+      "type": "array",
+      "title": "Media Types to ignore",
+      "description": "Documents with a media type on this list will be not be processed by this parser stage.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "charset": {
+      "type": "string",
+      "title": "Character Set",
+      "description": "Example: \"UTF-8\"",
+      "default": "detect"
+    },
+    "ignoreBOM": {
+      "type": "boolean",
+      "title": "Ignore BOM",
+      "description": "Ignore Byte-Order Mark (BOM) if present and always use the configured character set. When set to false a valid BOM character set overrides the configured default character set.",
+      "default": false
+    },
+    "grokDefinition": {
+      "type": "string",
+      "title": "Grok Definition",
+      "description": "Custom Grok definition",
+      "hints": [
+        "code/javascript"
+      ]
+    },
+    "grokPattern": {
+      "type": "string",
+      "title": "Grok Pattern",
+      "description": "Grok parsing pattern",
+      "hints": [
+        "code/javascript"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "grok"
+      ],
+      "default": "grok"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

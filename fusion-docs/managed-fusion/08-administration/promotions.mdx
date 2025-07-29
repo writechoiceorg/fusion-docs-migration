@@ -1,0 +1,149 @@
+---
+title: "Promotion to Production"
+permalink: "4n1x54"
+---
+
+Promotion is the process of publishing the latest changes from a pre-production environment to production.
+You must thoroughly test your changes in your pre-production environment before submitting them for promotion to the production environment.
+
+To promote your changes, you submit a promotion request to the Lucidworks Managed Services team.
+It is highly recommended that you halt any work on the components being promoted for the entire time the promotion request is being addressed.
+
+The team will aim to complete the promotion within three (3) business days of your request unless you request a specific date and time within your SLA.
+When your changes are live in production, the Managed Services team notifies you.
+
+The Managed Services team provides detailed guidance about how to submit a promotion request that includes all of the information they need to act on the request promptly.
+See [Submit a Managed Fusion promotion request for a Production environment](https://support.lucidworks.com/hc/en-us/articles/360052984674-Submit-a-Managed-Fusion-promotion-request-for-a-Production-environment) in the knowledge base for the latest guidance.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Managed Fusion: Application Promotion** focuses on how to submit an application promotion ticket in Zendesk:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/managed-fusion-application-promotion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/mf-app-promotion.jpg" alt="Managed Fusion: Application Promotion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Submit a promotion request
+
+When you have changes that are ready for production, submit a promotion request as explained below.
+For efficient and timely promotion, be sure to make your request as detailed as possible.
+
+1. Sign in to the [Support Portal](https://support.lucidworks.com/).
+2. Click **Submit a Request**.
+3. Select **Managed Fusion Promotion Request** as the request type.
+4. Fill in the required fields.
+
+   * Specify all components that need to be promoted, including the names of specific apps, pipelines, datasources, collections, and so on.
+
+     <Note>
+     If Managed Services finds components that are not identified in your promotion request, the team will request confirmation about how to proceed with the promotion.
+     The promotion may be delayed in order to work through the concerns.
+     </Note>
+   * Confirm in your request that you have tested the changes in your pre-production environment, and describe your testing process.
+   * State whether this is a partial promotion, such as a change to a pipeline stage rather than a whole pipeline.
+   * Specify whether you performed load testing on these changes and whether the changes impact performance.
+
+   See ["Special considerations"](#special-considerations) and ["Schema updates"](#schema-updates) below for additional information about how to handle certain types of changes.
+
+## Special considerations
+
+Certain types of changes may affect the promotion process.
+Check the following list to see whether your changes might require special handling.
+
+* Certain requests might not fit the criteria for promotions and could require a formal handoff to Support and Managed Services:
+
+  + **Full App promotions** - These may impact performance of the current environment and need to be reviewed by Cloud Operations.
+  + **Promotion of multiple new collections and/or pipelines** - Better described as a partial app promotion.
+  + **Large code promotions** - Possibly part of a Phase 2 implementation or include multiple pipelines that considerably alter the current functionality.
+* **Clearing a collection** - A request to clear collection without an outage may require scheduling the delete for off-hours depending on how long it would take to repopulate the collection.
+* **Changes to datasources** - If requesting a change to a datasource that will cause changes to an existing collection (such as an updated start link, SQL query, and so on) please specify if that change will cause an increase in the number of processed documents which may impact current infrastructure.
+* **Off-hours promotion** - If there is a special request to do a promotion request during "off-hours", please specify the desired time window. The Managed Services team will do its best to accommodate the request given that promotions are typically not done outside of business hours.
+* **Environments out of sync** - If the environments (staging and production) are out of sync, Managed Services will typically need confirmation for the promotion. This promotion may be delayed so that Managed Services can verify that the proper components are being promoted and that the changes were properly tested.
+* **Large sets of changes** - If the request is a large promotion with multiple changes to multiple pipelines, datasources, and collections, or part of a new feature implementation, Managed Services will reach out and alert that the promotion may be delayed because it may require more time to review the changes before merging.
+* **Schema field type changes** - If the request includes a schema field type change, this needs to be specifically called out. See ["Schema updates"](#schema-updates) below.
+* **Risky code changes** - If Managed Services identifies code that may cause risk to the environment, we may choose to delay the promotion to discuss such risk.
+
+<Note>
+On rare occasions, a promotion may cause issues in the environment that require troubleshooting and time to resolve.
+</Note>
+
+## Schema updates
+
+In general, you should clear and re-index the complete collection after any schema update that modifies or deletes a field.
+Below are some additional guidelines for changing existing field definitions to avoid schema incompatibility in cases where the index is not properly cleared.
+
+### Adding or deleting a field
+
+This is a simple change, and Managed Services can promote the change after confirming that it has been tested in lower environments.
+We recommend fully re-indexing the data since old documents will not have the new field, which can cause unexpected results.
+
+Adding documents with the new field without full re-indexing typically should not produce any Solr error.
+
+### Changing a field or field type
+
+There are two recommended approaches to changing a field:
+
+Approach 1: If you are using collections in applications without aliases
+
+1. Add a new field in the schema.
+2. Verify that the new field is indexing the field value as expected.
+3. Retire the old field.
+4. Re-index all documents for this datasource.
+
+Approach 2: If you are using collection aliasing in applications
+
+1. Create a new collection with the updated schema.
+2. Fully index all data to the new collection.
+3. Verify that the new collection is populated with the expected data.
+4. Point the collection alias to the new collection.
+
+Approach 3: If the two previous approaches are not available
+
+This approach also requires fully re-indexing the data to ensure no traces of fields with old definition exist in the index.
+To ensure proper re-indexing of documents, we recommend the following steps:
+
+1. Clear the collection by deleting all documents.
+2. Perform a hard commit.
+3. Apply updated schema with schema changes and reload schema.
+4. Index a few sample documents and ensure that the new fields are properly indexed in Solr.
+
+## Special notes for 4 9s clients
+
+4 9s Managed Fusion is a high-availability search engine system designed to provide uninterrupted access and efficient query processing, utilizing a hot-warm cluster architecture across two regions.
+
+This cluster architecture uses the auto-sync feature, which is the background CrossDC Replication function in Solr. When you index documents, change schemas, or update Zookeeper (zk) configs on the "hot" primary cluster, those changes stream over Kafka to the "warm" secondary cluster so both remain identical. For example, Region A hosts the primary ("hot") cluster responsible for real-time data indexing and query processing, while Region B hosts the secondary ("warm") cluster, acting as a backup for historical data and disaster recovery. The primary and secondary clusters are automatically kept in sync for proper failover in case the primary cluster becomes unavailable.
+
+If you are a 4 9s client, the promotion process entails disabling auto-sync on the primary cluster while promotion takes place on the secondary cluster.
+
+The details of this promotion process are described below.
+
+<Danger>
+During the promotion process, refrain from making any changes to the primary cluster until Lucidworks notifies you that the promotion process is complete.
+</Danger>
+
+<Frame>![4 9s promo process](/assets/images/diagrams/4-9s-promo-process.png)</Frame>
+
+1. Make your desired changes on the staging cluster.
+2. [Submit a promotion request](#submit-a-promotion-request) as described above.
+3. Lucidworks promotes your changes from staging to the secondary cluster:
+
+   1. The auto-sync feature is temporarily disabled for the primary cluster.
+   2. The requested changes are promoted to the secondary cluster only.
+   3. The Managed Services team notifies you when your changes are ready for review.
+4. You validate the changes on the secondary cluster.
+   Optionally, you can request that some of your traffic be routed to the secondary cluster for validation.
+5. When validation on the secondary cluster is complete, you sign off on the promoted changes.
+6. The auto-sync feature is re-enabled, allowing the promotion to go live in the primary cluster.

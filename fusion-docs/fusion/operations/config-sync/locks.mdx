@@ -1,0 +1,17 @@
+---
+title: "Branch locks"
+permalink: "srm7fz"
+---
+
+ConfigSync uses locks to prevent concurrent access to the same repository from multiple ConfigSync instances.
+The lock is a file named `.lock` in the root of the repository.
+The lock file contains a UUID that is generated when the lock is acquired.
+
+Each time on startup, ConfigSync checks if the lock file exists in the repository and the file contents match the UUID
+in the `config-sync.branch-lock` Fusion configuration property (stored in ZooKeeper).
+
+* If the lock file does not exist, ConfigSync creates it and writes the UUID to the file.
+* If the Fusion configuration property is not set, ConfigSync sets the UUID in the `config-sync.branch-lock` property to the UUID in the lock file.
+* If the lock file exists and the UUID in the file matches the UUID in the `config-sync.branch-lock` Fusion configuration, ConfigSync continues to work with the repository; otherwise it fails to start.
+
+If you encounter an error like `App lock <SOME-UUID> doesn’t match git lock <SOME-OTHER-UUID>`, see [Delete the ConfigSync lock file](/how-to/config-sync/7hd7pv/delete-the-config-sync-lock-file).

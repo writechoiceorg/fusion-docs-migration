@@ -1,0 +1,52 @@
+---
+title: "progress:bar"
+permalink: "1193"
+---
+
+## Description
+
+Creates a horizontal progress bar.
+
+## Usage
+
+as element:
+
+```xml
+<progress:bar
+       percentage="{string}">
+</progress:bar>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| percentage | **string** | The percentage progress |
+
+## Example
+
+#### Source
+
+```xml
+<label for="value">Value</label>
+<input id="value" type="number" placeholder="Value" ng-model="value"><br />
+<button ng-click="generateNewNumber()" style="button">Generate Random Percentage</button>
+<hr />
+<h3 id="example_default-progress-bar">Default Progress bar</h3>
+<progress:bar percentage="value"></progress:bar>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+            $scope.value = 20;
+
+            $scope.generateNewNumber = function(){
+            $scope.value = Math.floor(Math.random() * (100 - 0 + 1));
+            };
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/progressBar.png)</Frame>

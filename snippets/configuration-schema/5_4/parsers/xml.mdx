@@ -1,0 +1,136 @@
+export const schema = {
+  "type": "object",
+  "title": "XML",
+  "description": "Parse xml content with optional splitting",
+  "required": [
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "1d574c75-c42f-4037-9135-75082c4f6eb9"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types to match",
+      "description": "Documents with a media type on this list will be matched by this parser stage. See inheritMediaTypes / use default media types for more.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "Match default media types in this Parser Stage",
+      "description": "Each parser stage has a built-in list of media types it handles by default. If this setting is true, that list will be used along with any optional additional types provided in the mediaTypes list. If this setting is false, this stage will only be selected for media types in the mediaTypes list, and the mediaTypes list becomes a mandatory property which must have at least one valid media type.",
+      "default": true
+    },
+    "ignoredMediaTypes": {
+      "type": "array",
+      "title": "Media Types to ignore",
+      "description": "Documents with a media type on this list will be not be processed by this parser stage.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "rootPaths": {
+      "type": "array",
+      "title": "Root paths",
+      "description": "Read XML elements that can be found on specified XML paths and parse them into separate documents",
+      "default": [
+        "/"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "maxSize": {
+      "type": "integer",
+      "title": "Maximum output size for each document",
+      "description": "Maximum number of XML characters, excluding extra whitespace, that will be processed from each source document node to produce an output document",
+      "default": 65536
+    },
+    "listHandling": {
+      "type": "string",
+      "title": "XML List handling",
+      "description": "Create a single multivalued field containing all items, or a separate index-numbered field per list item?",
+      "enum": [
+        "multivalued",
+        "index_numbered"
+      ],
+      "default": "multivalued",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "xml"
+      ],
+      "default": "xml"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

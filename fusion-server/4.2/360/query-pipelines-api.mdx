@@ -1,0 +1,165 @@
+---
+title: "Query Pipelines API"
+permalink: "360"
+---
+
+The Query Pipelines API allows you to define parameters that should be applied to all queries processed by the system. A query pipeline consists of one or more stages. Query pipeline stages can be defined with the [Query Stages API](/fusion-server/4.2/362/query-stages-api). See the [Query Language Cheat Sheet](/fusion-server/4.2/394/solr-query-language-cheat-sheet) for help constructing queries to send through a query pipeline.
+
+## Query Pipeline Definition Properties
+
+| Property | Description |
+| --- | --- |
+| id  *Required* | Required only when creating a new pipeline. |
+| stages  *Required* | A JSON map of the stages to include with the pipeline. The stages can exist already or they can be defined while defining the pipeline.  The stage must include the stage definitions:  * **id.** the ID of the stage to include. * **stageParams.** Any parameters for the stage. These are only required for a stage that has been pre-defined and you wish to modify the properties. * **type.** The stage type. You can define a stage directly on a pipeline, or you can use a pre-existing stage. If you use a pre-existing stage, you must use "ref", as a reference to an existing stage. * **skip.** If the stage should be skipped during pipeline processing. By default, this is 'false', and does not need to be defined unless you would like to skip a stage in the future.  If the stage supports setting other properties, as defined in the section [Query Pipeline Stages](/fusion-server/4.2/169/query-pipeline-stages), then those can be defined while defining the stage within the pipeline. |
+
+## Examples
+
+*Get the definition for the default query pipeline:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/query-pipelines/default
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "default",
+  "stages" : [ {
+    "type" : "recommendation",
+    "id" : "recommendation",
+    "numRecommendations" : 10,
+    "useFq" : true,
+    "numSignals" : 100,
+    "aggrType" : "click@doc_id_s-query_s-filters_s",
+    "skip" : false
+  }, {
+    "type" : "solr-query",
+    "id" : "solr",
+    "skip" : false
+  } ]
+}
+```
+
+*Create a new query pipeline, specifying a facet stage that is new and a solr-query stage that was previously defined:*
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion-server/4.2/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d '{"id":"my-pipeline", "stages":[{"type":"facet", "id":"myFacets", "fieldFacets":[{"field":"data_source_s"},{"field":"author_s", "minCount":5, "missing":true},{"field":"isRetweet_b"}], "skip":false}, {"id":"mySolr", "type":"ref", "skip":false}]}' https://FUSION_HOST:8764/api/query-pipelines
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "my-pipeline",
+  "stages" : [ {
+    "type" : "facet",
+    "id" : null,
+    "fieldFacets" : [ {
+      "field" : "data_source_s",
+      "prefix" : null,
+      "sort" : null,
+      "limit" : null,
+      "offset" : null,
+      "missing" : null,
+      "method" : null,
+      "threads" : null,
+      "minCount" : null,
+      "enumCacheMinDf" : null
+    }, {
+      "field" : "author_s",
+      "prefix" : null,
+      "sort" : null,
+      "limit" : null,
+      "offset" : null,
+      "missing" : true,
+      "method" : null,
+      "threads" : null,
+      "minCount" : 5,
+      "enumCacheMinDf" : null
+    }, {
+      "field" : "isRetweet_b",
+      "prefix" : null,
+      "sort" : null,
+      "limit" : null,
+      "offset" : null,
+      "missing" : null,
+      "method" : null,
+      "threads" : null,
+      "minCount" : null,
+      "enumCacheMinDf" : null
+    } ],
+    "skip" : false
+  }, {
+    "type" : "solr-query",
+    "id" : null,
+    "skip" : false
+  } ]
+}
+```
+
+*Query a pipeline named 'default' and a collection named "docs" for the term "solr". Also limit the response to only document 'titles' and return it in JSON format:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/query-pipelines/default/collections/docs/select?q=solr&fl=title&wt=json
+```
+
+**RESPONSE**
+
+```json
+{
+    "response": {
+        "numFound": 106,
+        "start": 0,
+        "docs": [
+            {
+                "title": [
+                    "Solr and SolrAdmin APIs - Fusion Documentation - Lucidworks"
+                ]
+            },
+            {
+                "title": [
+                    "Solr and SolrAdmin APIs - Fusion Documentation - Lucidworks"
+                ]
+            },
+            {
+                "title": [
+                    "Search Clusters - Fusion Documentation - Lucidworks"
+                ]
+            },
+            {
+                "title": [
+                    "Search Clusters - Fusion Documentation - Lucidworks"
+                ]
+            },
+            {
+                "title": [
+                    "Searching - Fusion Documentation - Lucidworks"
+                ]
+            }
+        ]
+    },
+    "responseHeader": {
+        "status": 0,
+        "QTime": 1,
+        "params": {
+            "fl": "title",
+            "lw.pipelineId": "default",
+            "q": "solr",
+            "wt": "json",
+            "rows": "5",
+            "defType": "edismax"
+        }
+    }
+}
+```

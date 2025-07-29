@@ -1,0 +1,150 @@
+---
+title: "Index data"
+permalink: "uwmzgu"
+---
+
+With Managed Fusion, your data is indexed in a set of collections in Managed Fusion’s Solr core.
+
+A *primary collection* holds your searchable content, such as your product catalog, knowledge base, blog articles, product reviews, and so on.
+
+A set of *secondary collections* are associated with your primary collection to hold related data that Managed Fusion can use to enhance the relevancy of your search results.
+
+This topic shows you how different types of data flow through Managed Fusion to be indexed in your primary and secondary collections.
+
+## 1. Index your content
+
+No matter where your content is located, Managed Fusion can index it. The Managed Fusion collection where your searchable content is indexed is called the primary collection. Secondary collections are automatically created to hold related data, such as signals, machine learning job output, and so on.
+
+There are a few ways to index your searchable content to the primary collection:
+
+* [Lucidworks Connectors](/fusion-connectors/2/fusion-connectors)
+
+  Lucidworks has a wide variety of connectors for many types of data sources.
+
+  Once the connector fetches your data, [parsers](/managed-fusion/5.9/8ds9gm/parsers) read it before passing it to the [index pipeline](/managed-fusion/5.9/4mm52v/index-pipelines).
+
+  + The gRpc remote framework is configured on the client side and only works with V2 type connectors.
+  + V1 classic connectors support ingesting data using IP white lists, VPN tunnels, and public channels.
+* The [Parallel Bulk Loader (PBL)](/managed-fusion/5.10/08y8k0/parallel-bulk-loader)
+
+  The PBL can send your data to an index pipeline *or* directly to the primary collection, depending on whether the data requires transformation before indexing. It does not support parsers and is not recommended for production environments.
+* [Index profiles](/how-to/5qfjgg/import-data-with-the-rest-api#push-documents-to-fusion-using-index-profiles)
+
+  Send your content to an index profile using the Managed Fusion REST API. Index profiles are saved configurations of parsers and index pipelines.
+
+Indexing your content
+
+<Frame>![Index your content](/assets/images/5.9/diagrams/indexing-dataflow.png)</Frame>
+
+The [index pipeline](/managed-fusion/5.9/4mm52v/index-pipelines) consists of one or more configurable [index pipeline stages](/managed-fusion/5.9/50yh1o/index-pipeline-stages), each performing a different type of transformation on the incoming data. Each connector has a default index pipeline, but you can modify these or create new ones.
+
+The last stage in any index pipeline should be the [Solr Indexer](/managed-fusion/5.9/0e45zf/solr-indexer-stage) stage, which submits the documents to Solr for indexing.
+
+## 2. Index your signals
+
+Signals are event records that provide historical data about user behavior, such as clicks, likes, purchases, and so on. You don’t need to index signals about query responses; Managed Fusion indexes response signals automatically by default. If you are using [App Studio](/fusion/5.9/963/fusion-app-studio) or [App Insights](/managed-fusion/5.9/kxeqkj/app-insights), then you need to index request signals. Learn more about [signal types and required fields](/managed-fusion/5.9/lvj31z/signals-types-and-structures).
+
+To index your signals, you send them to Managed Fusion using the [Signals API](/managed-fusion/5.9/qkr054/signals-api), which points to the hidden index pipeline designed especially for signals.
+
+Indexing your signals
+
+<Frame>![Index your signals](/assets/images/5.4/diagrams/index-your-signals.png)</Frame>
+
+Raw signals are indexed in a secondary collection called `COLLECTION_NAME_signals`. For example, if your primary collection is called `Products`, then the raw signals collection is `Products_signals`.
+
+## 3. Managed Fusion jobs that index signals-related data
+
+When you [enable signals](/how-to/2bsby3/enable-or-disable-signals), Managed Fusion creates jobs and secondary collections for analyzing and aggregating your raw signals. Some of this data enables [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) and [automatic boosting](/managed-fusion/5.9/y9max1/boost-with-signals), while other data becomes useful when you enable [recommendations](/managed-fusion/5.9/k90ww9/recommendations).
+
+Managed Fusion jobs that index signals-related data
+
+<Frame>![Enable signals jobs](/assets/images/5.4/diagrams/enable-signals-jobs.png)</Frame>
+
+* The [`_session_rollup` job](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs#collection_session_rollup) creates session signals from your raw signals and adds them to the `_signals` collection.
+* [Automatic query rewrites](/managed-fusion/5.9/tw7rlx/query-rewriting) are created by [several jobs](/managed-fusion/5.9/tw7rlx/query-rewriting#spark-jobs) and indexed in the `_query_rewrite_staging` collection for review before they are published to the `_query_rewrite` collection.
+* The [`_head_tail` job](/managed-fusion/5.9/14bjqz/head-tail-analysis-jobs) sends [rewrites for underperforming queries](/managed-fusion/5.9/tw7rlx/query-rewriting#head-tail) to the the `_query_rewrite_staging` collection. It also sends analytics tables to the `_job_reports` collection.
+* The `_signals_aggr` collection stores unique combinations of query, document ID, and filters found in your raw signals, each with a timestamp, weight, and count. These are generated by the [`_click_signals_aggregation` job](/managed-fusion/5.9/78vsm6/aggregation-jobs) and the [`_user_query_history_agg` job](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs#history).
+* The [`user_item_prefs_agg` job](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs#prefs) identifies unique pairs of document IDs and user IDs, assigns a timestamp, weight, and count to each pair, and indexes it in the `_recs_aggr` collection.
+
+## 4. Managed Fusion jobs that index recommendations
+
+When you [enable recommendations](/managed-fusion/5.9/y3kiwa/get-started), another set of jobs and secondary collections is created.
+
+Managed Fusion jobs that index recommendations
+
+<Frame>![Enable recommendations jobs](/assets/images/5.4/diagrams/enable-recommendations.png)</Frame>
+
+The default recommendation jobs read data from different collections depending on the type of recommendations being generated:
+
+* [Content-based recommendations](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations#content-based-items-for-item-recommendations) are produced by the [`_content_recs` job](/managed-fusion/5.9/g02utf/content-based-recommender-jobs-experimental) by analyzing your primary collection.
+* [Queries-for-query recommendations](/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations) are produced by the [`_query_recs` job](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs) by analyzing your raw signals.
+* BPR-based [items-for-item](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations#collaborative-items-for-item-recommendations) and [items-for-user](/managed-fusion/5.9/pbwiub/items-for-user-recommendations) recommendations are produced by the [`_bpr_item_recs` job](/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs) by analyzing aggregated signals.
+
+<Tip>
+For more recommendations, try [configuring the Trending Recommender job](/how-to/i3n2wk/identify-trending-documents-or-products).
+</Tip>
+
+## What’s next?
+
+See [Query data](/managed-fusion/5.9/s3j1mi/query-data) to learn about querying your content and recommendations.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Indexing Menu Tour** focuses on the Indexing Menu features and functionality along with a brief description of each screen available in the menu:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/indexing-menu-tour-quick-learning" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/indexing-menu.png" alt="Indexing Menu Tour" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Anatomy of Indexing** focuses on the Fusion objects that work together to index your data:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/anatomy-of-indexing" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/anatomy-of-indexing.png" alt="Anatomy of Indexing" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Ingesting Data** focuses on understanding connectors and how to configure datasources, parsers, and index pipelines:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/ingesting-data" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/ingesting-data.png" alt="Ingesting Data" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>

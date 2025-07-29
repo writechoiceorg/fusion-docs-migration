@@ -1,0 +1,143 @@
+---
+title: "search:message-list"
+permalink: "1188"
+---
+
+## Description
+
+Output Messages and QuerySuggestions such as spellchecking or synonyms.
+
+Custom messages within a message-list **must be wrapped in another html
+tag!** - see
+[Example
+Custom](/app-studio/4.2/1188/search-message-list#example_custom)
+
+## Usage
+
+as element:
+
+```xml
+<search:message-list
+       response="{string}"
+       [type="{string}"]
+       [title="{string}"]
+       [first="{number}"]
+       [last="{number}"]>
+</search:message-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response containing the messages to display. |
+| type  *(optional)* | **string** | The type of Message to display. Default is to include all messages irrespective of type. |
+| title  *(optional)* | **string** | Add a title to appear with this element. |
+| first  *(optional)* | **number** | First message to output from this result set (1 based). |
+| last  *(optional)* | **number** | Last message to output from this result set. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_all-messages">All messages</h3>
+<tk-example>
+    <search:message-list response="response" title="My Messages"></search:message-list>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs language="html">
+        <search:message-list response="response" title="My Fuzzy Results"></search:message-list>
+    </code>
+</tk-code-wrapper>
+
+<hr />
+
+<h3 id="example_only-messages-of-selected-type">Only messages of selected type</h3>
+<tk-example>
+    <search:message-list response="response" type="fuzzy-results" title="My Fuzzy Results"></search:message-list>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs language="html">
+        <search:message-list response="response" type="fuzzy-results" title="My Fuzzy Results"></search:message-list>
+    </code>
+</tk-code-wrapper>
+
+<hr />
+
+<h3 id="example_first-and-last-messages">First and Last Messages</h3>
+<tk-example>
+    <search:message-list response="response" first="1" last="2" title="My Messages"></search:message-list>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs language="html">
+        <search:message-list response="response" first="1" last="2" title="My Messages"></search:message-list>
+    </code>
+</tk-code-wrapper>
+
+<hr />
+
+<h3 id="example_custom">Custom</h3>
+<tk-example>
+    <search:message-list response="response" title="My Fuzzy Results">
+        <p><strong>{{message.type}}</strong> - <span ng-bind-html="message.value"></span> <small>({{message.count}})</small></p>
+    </search:message-list>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs language="html">
+        <search:message-list response="response" title="My Fuzzy Results">
+            <p>
+                <strong>{{message.type}}</strong> - <span ng-bind-html="message.value"></span> <small>({{message.count}})</small>
+            </p>
+        </search:message-list>
+    </code>
+</tk-code-wrapper>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','ResponseService', function($scope,ResponseService) {
+        $scope.response = {
+            "query": {
+              "filters": [],
+            },
+            "hits": {
+              "act": [
+                "Long",
+                0
+              ]
+            },
+            "page": 2,
+            "results": [],
+            "facets": {},
+            "facts": {},
+            "time": 19,
+            "messages": [
+              {
+                "type": "fuzzy-results",
+                "value": "<em>Lorem</em> ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+                "count": 20
+              },
+              {
+                "type": "not-fuzzy-results",
+                "value": "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+                "count": 100
+              },
+              {
+                "type": "fuzzy-results",
+                "value": "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+                "count": 0
+              }
+            ]
+          }
+          ResponseService.setResponse('response',$scope.response);
+      }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchMessageList.png)</Frame>

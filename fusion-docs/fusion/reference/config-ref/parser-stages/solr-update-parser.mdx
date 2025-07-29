@@ -1,0 +1,23 @@
+---
+title: "Solr Update Parser Stage"
+permalink: "368"
+---
+
+The Solr Update Parser stage parses Solr’s "update" messages and transforms them into Fusion [PipelineDocuments](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/common/pipeline/pipelinedocument). This makes it possible to integrate with existing datasets that happen to be in Solr’s "update" format and send them to an index pipeline.
+
+This parser stage supports XML, JSON, CSV and JavaBin.
+
+<Tip>
+When parsing CSV files, consider using the [CSV parser](/fusion/5.9/375/csv-parser-stage), which provides more options than the Solr Update Parser. All CSV files are treated the same in terms of structure and schema.
+</Tip>
+
+The `https://FUSION_HOST:FUSION_PORT/apps/solr-dist/example/exampledocs/` directory contains many of these "update" format documents. Fusion also ships with a `https://FUSION_HOST:FUSION_PORT/apps/solr-dist/bin/post` utility which is used to index documents from the file system. However, the `post` utility has no way of integrating with Fusion; its output is sent directly to Solr.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/solr-update.mdx";
+
+<SchemaParamFields schema={schema}/>

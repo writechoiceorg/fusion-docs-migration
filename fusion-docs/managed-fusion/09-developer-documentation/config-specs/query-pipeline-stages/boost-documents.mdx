@@ -1,0 +1,43 @@
+---
+title: "Boost Documents"
+description: "Query pipeline stage configuration specifications"
+permalink: "ucape1"
+---
+
+The Boost Documents query pipeline stage adds boosting parameters to matched documents based on user-defined rules. Boosts are defined with a term value to boost and the boost factor to add. The boosting parameters are added to the `bq` Solr query parameter.
+
+The Boost Documents rule consists of the following elements:
+
+* `field`. The document field to filter on.
+* `keywords`. The words, phrases, or regex used as the filter.
+* `mode`. Filtering logic applied to keywords, one of:
+
+  + `exact`. The keyword and the query must match exactly. This is case-sensitive.
+  + `phrase`. The phrase matching on the items in the keywords list.
+  + `regex`. Treat items in the keywords list as a regex.
+  + `match`. Must match every item in the keyword list, but does not require phrase matching.
+* `boosts`. Consists of a list of pairs.
+
+  + `value`. One or more terms used for boosting.
+  + `boost`. The numeric boost value. Default `100`.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+## Boost calculation
+
+Numbers entered into boosts are *multiplied* with the score.
+
+As a result of multiplication:
+
+* Negative boosts are not possible. You must use fractional values to deprioritize the score. For example, a boost value of 0.5 decreases the score by half.
+* Do not use values such as 100. If those values are entered, document scores are boosted to an unrealistically high level.
+* Managed Fusion generates an error when a query is executed on a pipeline that uses negative boost values.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/boost-documents.mdx";
+
+<SchemaParamFields schema={schema}/>

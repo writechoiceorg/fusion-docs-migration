@@ -1,0 +1,169 @@
+---
+title: "Synonym Detection"
+description: "Job configuration specifications"
+permalink: "a2jy7t"
+---
+
+Use this job to generate pairs of synonyms and pairs of similar queries. Two words are considered potential synonyms when they are used in a similar context in similar queries.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Resolving Underperforming Queries** focuses on tips for tuning, running, and cleaning up Fusion’s query rewrite jobs:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/resolving-underperforming-queries-with-query-rewriting-jobs" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/resolving-underperforming-queries.png" alt="Resolving Underperforming Queries" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+|  |  |
+| --- | --- |
+| **Default job name** | `COLLECTION_NAME_synonym_detection` |
+| **Input** | * Aggregated signals (the `COLLECTION_NAME_signals_aggr` collection by default)<br/> * Spell Correction job output (the `COLLECTION_NAME_query_rewrite_staging` collection by default)<br/> * Phrase Extraction job output (the `COLLECTION_NAME_query_rewrite_staging` collection by default) |
+| **Output** | Synonyms (the `COLLECTION_NAME_query_rewrite_staging` collection by default) |
+
+<Note>
+For best job speed and to avoid memory issues, use [aggregated signals](/managed-fusion/5.9/78vsm6/sql-aggregation) instead of raw signals as input for this job.
+</Note>
+
+Output from the [Token and Phrase Spell Correction job](/managed-fusion/5.9/9pf532/token-and-phrase-spell-correction-job) and the [Phrase Extraction job](/managed-fusion/5.9/xzyz7w/phrase-extraction-jobs) can be used as input for this job.
+
+To:
+
+* Review, edit, deploy, or delete output from this job, see [Query Rewriting UI](/managed-fusion/5.9/tw7rlx/query-rewriting#ui)
+* Review, edit, or add synonyms, see [Use Synonym Detection](/how-to/swedwo/use-synonym-detection-5x)
+
+## Input
+
+This job takes one or more of the following as input:
+
+* [Signal data](#signals) (required)
+* [Misspelling job results](#spelling)
+* [Phrase detection job results](#phrases)
+* [Keywords](#keywords)
+* [Custom synonyms](#synonyms)
+
+### Signal data
+
+This input is required; additional input is optional. [Signal data](/managed-fusion/5.9/ws4w2h/signals) can be either raw or aggregated. The job runs faster using [aggregated signals](/managed-fusion/5.9/78vsm6/aggregation-jobs). When raw signals are used as input, this job performs the aggregation.
+
+Use the `trainingCollection`/**Input Collection** parameter to specify the collection that contains the signal data.
+
+### Misspelling job results
+
+[Token and Phrase Spell Correction job](/managed-fusion/5.9/9pf532/token-and-phrase-spell-correction-job) results can be used to avoid finding mainly misspellings, or mixing synonyms with misspellings.
+
+Use the `misspellingCollection`/**Misspelling Job Result Collection** parameter to specify the collection that contains these results.
+
+### Phrase detection job results
+
+[Phrase Extraction job](/managed-fusion/5.9/xzyz7w/phrase-extraction-jobs) results can be used to find synonyms with multiple tokens, such as "lithium ion" and "ion battery".
+
+Use the `keyPhraseCollection`/**Phrase Extraction Job Result Collection** parameter to specify the collection that contains these results.
+
+### Keywords
+
+A keywords list in the [blob store](/managed-fusion/5.9/03ti2e/blob-storage) can serve as a blacklist to prevent common attributes from being identified as potential synonyms.
+
+The list can include common attributes such as color, brand, material, and so on. For example, by including color attributes you can prevent "red" and "blue" from being identified as synonyms due to their appearance in similar queries such as "red bike" and "blue bike".
+
+The keywords file is in CSV format with two fields: `keyword` and `type`. You can add your custom keywords list here with the `type` value "stopwords". An example file is shown below:
+
+```
+keyword,type
+cu,stopword
+ft,stopword
+mil,stopword
+watt,stopword
+wat,stopword
+foot,stopword
+feet,stopword
+gal,stopword
+unit,stopword
+lb,stopword
+wt,stopword
+cc,stopword
+cm,stopword
+kg,stopword
+km,stopword
+oz,stopword
+nm,stopword
+qt,stopword
+sale,stopword
+on sale,stopword
+for sale,stopword
+clearance,stopword
+gb,stopword
+gig,stopword
+color,stopword
+blue,stopword
+white,stopword
+black,stopword
+ivory,stopword
+grey,stopword
+brown,stopword
+silver,stopword
+light blue,stopword
+light ivory,stopword
+light grey,stopword
+light brown,stopword
+light silver,stopword
+light green,stopword
+
+```
+
+Use the `keywordsBlobName`/**Keywords Blob Store** parameter to specify the name of the blob that contains this list.
+
+### Custom Synonyms
+
+For some deployments, there might be a need to use existing synonym definitions. You can import existing synonyms into the Synonym Detection Jobs as a text file. Upload your synonyms text file to the blob store and reference that file when creating the job.
+
+## Output
+
+The output collection contains two tables distinguished by the `doc_type` field.
+
+### The similar queries table
+
+If `query` leads to clicks on documents 1, 2, 3, and 4, and `similar_query` leads to clicks on documents 2, 3, 4, and 5, then there is sufficient overlap between the two queries to consider them similar.
+
+A statistic is constructed to compute similarities based on overlap counts and query counts. The resulting table consists of documents whose `doc_type` value is "query_rewrite" and `type` value is "simq".
+The similar queries table contains similar query pairs with these fields:
+
+|  |  |
+| --- | --- |
+| `query` | The first half of the two-query pair. |
+| `similar_query` | The second half of the two-query pair. |
+| `similarity` | A score between 0 and 1 indicating how similar the two queries are.  All `similarity` values are greater than or equal to the configured Query Similarity Threshold to ensure that only high-similarity queries are kept and used as input to find synonyms. |
+| `query_count` | The number of clicks received by the `query_count` query.  To save computation time, only queries with at least as many clicks as the configured Query Clicks Threshold parameter are kept and used as input to find synonyms. |
+| `similar_query_count` | The number of clicks received by the `similar_query_count` query. |
+
+### The synonyms table
+
+The synonyms table consists of documents whose `doc_type` value is "query_rewrite" and `type` value is "synonym":
+
+|  |  |
+| --- | --- |
+| `surface_form` | The first half of the two-synonym pair. |
+| `synonym` | The second half of the two-synonym pair. |
+| `context` | If there are more than two words or phrases with the same meaning, such as "macbook, apple mac, mac", then this field shows the group to which this pair belongs. |
+| `similarity` | A similarity score to measure confidence. |
+| `count` | The number of different contexts in which this synonym pair appears. <Tip> The bigger the number, the higher the quality of the pair. </Tip> |
+| `suggestion` | The algorithm automatically selects `context`, synonym words or phrases, or the `synonym_group`, and puts it in this field. <Tip> Use this field as the field to review. </Tip> |
+| `category` | Whether the synonym is actually a misspelling. |
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/synonym-detection.mdx";
+
+<SchemaParamFields schema={schema}/>

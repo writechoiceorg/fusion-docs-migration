@@ -1,0 +1,28 @@
+---
+title: "numberFormat"
+permalink: "1018"
+---
+
+## Description
+
+Renders a number in the format specified.
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ numberFormat_expression | numberFormat[:format] }}
+```
+
+### In JavaScript
+
+```js
+$filter('numberFormat')(number[, format])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| number | number | The number to format. |
+| format *(optional)* | string | string for the numbers used using the Java DecimalFormat pattern. Default: '#,##0.###' |

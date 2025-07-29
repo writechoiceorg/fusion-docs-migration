@@ -1,0 +1,666 @@
+/* 
+Company colors:
+
+#1C2140 Primary dark blue
+#1F66E5 Primary bright blue
+#2B3C79 Primary medium blue
+#A4C6F7 Secondary light blue
+#44578D Secondary muted blue
+#ED308B Accent pink
+#16C5BB Accent teal
+#3D96D8 Accent blue
+#FFC700 Accent yellow 
+*/
+
+/* Add body class for when modal is open to prevent background scrolling */
+body.lw-modal-open {
+  overflow: hidden;
+}
+
+.lw-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #2C313666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  overflow: hidden;
+  /* Prevent overlay scrolling */
+}
+
+.lw-modal-container {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 860px;
+  /* Increased from 640px to provide more horizontal space */
+  box-shadow: 0 0 30px rgba(28, 33, 64, 0.4);
+  display: flex;
+  flex-direction: column;
+  transition: height 0.2s ease;
+  overflow: hidden;
+  /* Control overflow at the container level */
+  padding: 32px;
+  box-sizing: border-box;
+  max-height: 80vh;
+  /* Ensure consistent max height */
+}
+
+.lw-modal-container.collapsed {
+  height: 128px;
+}
+
+.lw-modal-container.expanded {
+  height: 80vh;
+}
+
+.lw-search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+/* Search toggle container (in search entry) */
+.lw-search-toggle-container {
+  position: absolute;
+  left: 20px;
+  /* Adjusted position to prevent overlap */
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.lw-search-icon-container {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+}
+
+.lw-search-icon {
+  color: #44578D;
+  font-size: 20px;
+}
+
+/* Define CSS variables for toggle dimensions */
+:root {
+  --toggle-width: 75px; /* Increased by 25% from 60px */
+  --toggle-height: 43px; /* Increased by 25% from 34px */
+  --toggle-padding: calc(var(--toggle-width) + 25px); /* Adjusted for new size */
+  --results-toggle-width: 350px; /* Increased by 25% from 280px */
+  --results-toggle-height: 40px; /* Increased by 25% from 32px */
+}
+
+.lw-search-input {
+  flex: 1;
+  padding: 15px; /* Increased by 25% from 12px */
+  padding-left: var(--toggle-padding);
+  font-size: 20px; /* Increased by 25% from 16px */
+  border: 1px solid #D7DBDF;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+  font-family: 'Inter', sans-serif;
+  line-height: 35px; /* Increased by 25% from 28px */
+  font-weight: normal;
+  background: #F9FAFB;
+}
+
+.lw-search-input:focus {
+  border-color: #1F66E5;
+}
+
+/* Base toggle switch styles */
+.lw-toggle-switch {
+  position: relative;
+  display: inline-block;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.lw-toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Search toggle switch (in search entry) */
+.lw-search-toggle-switch {
+  width: calc(var(--toggle-width) + 2px);
+  height: calc(var(--toggle-height) + 2px);
+}
+
+.lw-search-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: white;
+  border-radius: var(--toggle-height);
+}
+
+.lw-search-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 30px; /* Increased by 25% from 24px */
+  width: 30px; /* Increased by 25% from 24px */
+  top: 50%;
+  left: calc(var(--toggle-height) * 0.1);
+  transform: translateY(-50%);
+  background-color: white;
+  border-radius: 50%;
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/a-z-icon-blue.svg');
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.lw-search-toggle-slider:after {
+  position: absolute;
+  content: "";
+  height: 30px; /* Increased by 25% from 24px */
+  width: 30px; /* Increased by 25% from 24px */
+  top: 50%;
+  right: calc(var(--toggle-height) * 0.1);
+  transform: translateY(-50%);
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/ai-icon-dark-gray.svg');
+  background-size: 60%;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+input:checked+.lw-search-toggle-slider {
+  background-color: none;
+}
+
+input:checked+.lw-search-toggle-slider:before {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/a-z-icon-gray.svg');
+  background-size: 60%;
+}
+
+input:checked+.lw-search-toggle-slider:after {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/ai-icon-blue.svg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 60%;
+  border: 1px solid #1F66E5;
+  border-radius: 50%;
+
+}
+
+input+.lw-search-toggle-slider {
+  border: 1px solid #9fa0a2;
+}
+
+input+.lw-search-toggle-slider:before {
+  border: 1px solid #1F66E5;
+  border-radius: 50%;
+}
+
+input:checked+.lw-search-toggle-slider:before {
+  border: unset;
+}
+
+/* Segmented toggle for results */
+.lw-results-segmented-toggle {
+  /* display: inline-block; */
+  /* width: var(--results-toggle-width); */
+  height: var(--results-toggle-height);
+  /* border-radius: calc(var(--results-toggle-height) / 2); */
+  overflow: hidden;
+  position: relative;
+}
+
+.lw-results-segment {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 15px; /* Increased by 25% from 12px */
+  font-weight: 500;
+  color: #6b7280;
+  position: relative;
+  z-index: 2;
+  transition: color 0.3s ease;
+  padding: 4px 8px 4px 28px;
+  vertical-align: middle;
+  height: var(--results-toggle-height);
+  line-height: calc(var(--results-toggle-height) - 10px); /* Adjusted for new size */
+  box-sizing: border-box;
+}
+
+.lw-results-segment.active {
+  color: #1F66E5;
+}
+
+.lw-results-segment-keyword {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/a-z-icon-blue.svg');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  border-radius: 100px;
+}
+
+.lw-results-segment-keyword.active {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/a-z-icon-blue.svg');
+  border: 1px solid #1F66E5;
+  box-shadow: 2px 2px 4px 0px #0000001F;
+}
+
+.lw-results-segment-keyword:not(.active) {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/a-z-icon-gray.svg');
+}
+
+.lw-results-segment-conversation {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/ai-icon-blue.svg');
+  background-size: 16px;
+  background-repeat: no-repeat;
+  background-position: 8px center;
+  border-radius: 100px;
+}
+
+.lw-results-segment-conversation.active {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/ai-icon-blue.svg');
+  border: 1px solid #1F66E5;
+  box-shadow: 2px 2px 4px 0px #0000001F;
+}
+
+.lw-results-segment-conversation:not(.active) {
+  background-image: url('https://storage.googleapis.com/docs-downloads/mintlify-site/ai-icon-gray.svg');
+}
+
+.lw-results-segment-slider {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: auto;
+  left: 2px;
+  right: 2px;
+  background-color: white;
+  border-radius: calc((var(--results-toggle-height) - 4px) / 2);
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.lw-results-segment-slider:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: calc((var(--results-toggle-height) - 4px) / 2);
+  z-index: -1;
+  /* border: 1px solid #1F66E5; */
+
+}
+
+.lw-results-segmented-toggle.ai-active .lw-results-segment-slider {
+  transform: translateX(0);
+}
+
+.lw-search-toggle-container {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.lw-results-toggle-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+  padding: 5px;
+  border: 1px solid #9fa0a2;
+  border-radius: 100px;
+}
+
+.lw-search-input-container {
+  position: relative;
+  width: 100%;
+}
+
+#lucidworks-search-results-wrapper {
+  display: flex;
+  flex-direction: row;
+  /* Change to row to place facets on left */
+  flex: 1;
+  overflow: hidden;
+  /* Prevent wrapper scrolling */
+  margin-top: 16px;
+  gap: 16px;
+  /* Add spacing between facets and results */
+  height: calc(100% - 80px);
+  /* Adjust for input and buttons */
+}
+
+.lw-main-results-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.lw-results-header {
+  position: relative;
+  height: auto;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.lw-query-heading {
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  color: #1C2140;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  flex: 1;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  margin-right: 300px;
+}
+
+.lw-results-container {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.lw-result-item {
+  margin-bottom: 16px;
+}
+
+.lw-result-title {
+  display: inline-block;
+  font-weight: 600;
+  color: #1F66E5;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.lw-result-title:hover {
+  text-decoration: underline;
+}
+
+.lw-result-description {
+  font-family: Public Sans;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 140%;
+  letter-spacing: 0%;
+
+}
+
+.lw-pagination {
+  margin-top: 12px;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.lw-page-button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border: 1px solid #44578d;
+  background-color: #F8F9FC;
+  color: #1C2140;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.lw-page-button:hover {
+  background-color: #E6EFFD;
+}
+
+.lw-skeleton {
+  background-color: rgba(31, 102, 229, 0.12);
+  border-radius: 4px;
+  animation: pulse 1.2s ease-in-out infinite;
+  margin-bottom: 16px;
+  height: 48px;
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.lw-ai-switch {
+  font-size: 14px;
+  font-weight: 500;
+  color: #44578d;
+  text-align: left;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.lw-mode-toggle-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #44578d;
+  /* Visible default background */
+  color: white;
+}
+
+.lw-mode-toggle-button:hover {
+  background-color: #2B3C79;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.lw-mode-toggle-button.search-button {
+  background-color: #44578d;
+  color: white;
+}
+
+.lw-mode-toggle-button.search-button:hover {
+  background-color: #2B3C79;
+}
+
+.lw-mode-toggle-button.ai-button {
+  background-color: #ED308B;
+  color: white;
+}
+
+.lw-mode-toggle-button.ai-button:hover {
+  background-color: #C51D73;
+}
+
+.lw-mode-toggle-button svg {
+  margin-right: 8px;
+  height: 18px;
+  width: 18px;
+}
+
+.lw-no-results {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-size: 16px;
+  margin-bottom: 20px;
+  border: 1px dashed #44578d;
+  border-radius: 6px;
+  background-color: #F9FAFB;
+}
+
+.lw-sources-heading {
+  font-weight: 600;
+  margin-top: 24px;
+  margin-bottom: 8px;
+  padding-top: 16px;
+  color: #2C3136;
+  font-size: 14px;
+}
+
+.lw-sources-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  /* 3-column grid */
+  gap: 16px;
+  /* Spacing between grid items */
+}
+
+/* Sources container grid layout */
+.lw-source-item {
+  background-color: white;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.lw-source-link {
+  font-size: 14px;
+  color: #1F66E5;
+  text-decoration: none;
+}
+
+.lw-source-link:hover {
+  text-decoration: underline;
+}
+
+/* Facet styles */
+.lw-facets-container {
+  width: 200px;
+  /* Increased from 180px for better readability */
+  flex-shrink: 0;
+  padding: 0 12px 8px 0;
+  /* Increased right padding */
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 120px); /* Subtract header and pagination space */
+  overflow-y: auto; /* Enable vertical scrolling */
+  margin-top: 80px; /* Match the results header height to align with results container */
+}
+
+.lw-facets-title {
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 14px;
+  color: #44578D;
+}
+
+.lw-facets-list {
+  display: flex;
+  flex-direction: column;
+  /* Display facets in a vertical list */
+  gap: 6px;
+}
+
+/* Facet styles with increased specificity */
+.lw-facet-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+  padding: 3px 0 3px 2px;
+  /* Add padding to the entire item for extra spacing */
+  gap: 10px;
+  /* Use gap for spacing between checkbox and label */
+}
+
+/* Multiple techniques to override the problematic rule */
+.lw-facets-container .lw-facets-list .lw-facet-item .lw-facet-checkbox {
+  margin: 0 !important;
+  /* Reset any default margins */
+}
+
+/* Create a visual separator instead of depending on margin */
+.lw-facet-item::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  flex-shrink: 0;
+}
+
+/* Set checkbox size explicitly */
+.lw-facet-checkbox {
+  min-width: 14px;
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: 1.5px solid #646F7A
+}
+
+/* Force some space for the label */
+.lw-facet-label {
+  font-family: Public Sans;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+
+}
+
+/* Update AI toggle button to span full width */
+#lw-ai-toggle-btn-container {
+  margin-top: 8px;
+  /* Reduce from 16px since we added margin to input */
+  margin-bottom: 16px;
+  display: block;
+  /* Ensure it's a block element */
+  width: 100%;
+  /* Full width */
+}
+
+/* AI-specific results container styling */
+.lw-results-ai {
+  background-color: rgba(31, 102, 229, 0.06);
+  /* #1F66E5 with 6% opacity */
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.lw-sources-container .lw-result-item {
+  background-color: white;
+  border-radius: 12px;
+  padding: 16px 12px;
+
+}
+
+.lw-sources-container .lw-result-item a {
+  font-family: Public Sans;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  vertical-align: middle;
+  color: #2C3136;
+}

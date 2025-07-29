@@ -1,0 +1,508 @@
+---
+title: "Block List Rule API Configurations"
+description: "Managed Fusion Query Rewrite APIs"
+permalink: "uzcs6o"
+---
+
+This rule type is used in the [Query Rewrite API](/managed-fusion/5.9/8ee4m8/query-rewrite-api).
+
+For a complete list of rule and rewrite types in the Query Rewrite API, see [Query Rewrite API Configurations](/managed-fusion/5.9/dyazfo/query-rewrite-api-configurations).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Block List
+
+The Block List action blocks the associated values from appearing in the search results.
+
+For example, a workplace may block documents that the user does not have permission to view.
+
+### General information
+
+* Endpoint: `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/schema/RULE_TYPE`
+* Required parameters are:
+
+  + name
+  + field_name
+  + field_values
+  + type
+* The values for the `hints` parameter include:
+
+  + `hidden`: Do not display in the Fusion UI, but can be read and written in the schema.
+  + `readonly`: Cannot be set by the user. If attempted, an error is generated and the operation fails.
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Schema</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="2"><strong>type</strong></td>
+    </tr>
+    <tr>
+      <td><strong>type</strong></td>
+      <td>string</td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>properties</strong></td>
+    </tr>
+
+    <tr>
+      <td><strong>id</strong></td>
+      <td>
+        ```json
+        {
+          "id": {
+            "type": "string",
+            "title": "ID",
+            "description": "The ID for this Rule. Used in the API to reference this query rewrite rule. Allowed characters: a-z, A-Z, 0-9, dash (-) and underscore (_)",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_\\-]+$"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>source</strong></td>
+      <td>
+        ```json
+        {
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "The source for this query rewrite rule, such as a Spark Job.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>sourceType</strong></td>
+      <td>
+        ```json
+        {
+          "sourceType": {
+            "type": "string",
+            "title": "Source Type",
+            "description": "Source type",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>createdOn</strong></td>
+      <td>
+        ```json
+        {
+          "createdOn": {
+            "type": "string",
+            "title": "Created Date/Time",
+            "description": "Date/Time this rule was created.",
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>updatedOn</strong></td>
+      <td>
+        ```json
+        {
+          "updatedOn": {
+            "type": "string",
+            "title": "Updated Date/Time",
+            "description": "Date/Time this rule was last updated.",
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>reviewer</strong></td>
+      <td>
+        ```json
+        {
+          "reviewer": {
+            "type": "string",
+            "title": "Reviewer",
+            "description": "Who reviewed this rewrite rule.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>reviewedOn</strong></td>
+      <td>
+        ```json
+        {
+          "reviewedOn": {
+            "type": "string",
+            "title": "Reviewed Date/Time",
+            "description": "Date/Time this rule was last reviewed.",
+            "hints": ["hidden"],
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>review</strong></td>
+      <td>
+        ```json
+        {
+          "review": {
+            "type": "string",
+            "title": "Review",
+            "enum": ["approved", "denied"],
+            "default": "approved",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>deployed</strong></td>
+      <td>
+        ```json
+        {
+          "deployed": {
+            "type": "boolean",
+            "title": "Deployed Flag",
+            "description": "Flag to indicate if this rewrite rule has been deployed.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>tags</strong></td>
+      <td>
+        ```json
+        {
+          "tags": {
+            "type": "array",
+            "title": "Tags",
+            "description": "Conditional tags to restrict the triggering of this query rewrite rule.",
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <strong>name</strong><br/>
+        <strong>Required</strong>
+      </td>
+      <td>
+        ```json
+        {
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "User-friendly name for this rule."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>description</strong></td>
+      <td>
+        ```json
+        {
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "description": "Short description of what this rule does."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>enabled</strong></td>
+      <td>
+        ```json
+        {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "description": "Set to false to disable this rule.",
+            "default": true
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>matching</strong></td>
+      <td>
+        ```json
+        {
+          "matching": {
+            "type": "string",
+            "title": "Match Query Using",
+            "description": "Defines how the specified search terms will be compared to the user's query to determine whether this rule applies. 'keywords' means the query must match the keywords of the search terms value exactly. 'phrase' means the search query must contain one of the search terms values as a subphrase. 'text' means that at least one of the search terms values must match the query, but unlike 'phrase', the query only needs to match part of the value.",
+            "enum": ["keywords", "text", "phrase"],
+            "default": "keywords"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>groups</strong></td>
+      <td>
+        ```json
+        {
+          "groups": {
+            "type": "string",
+            "title": "Rule Group",
+            "description": "Group for this rule."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>effective_range</strong></td>
+      <td>
+        ```json
+        {
+          "effective_range": {
+            "type": "array",
+            "title": "Effective Range",
+            "description": "Time range when this rule is in effect.",
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>priority</strong></td>
+      <td>
+        ```json
+        {
+          "priority": {
+            "type": "integer",
+            "title": "Precedence",
+            "description": "Used when multiple rules could take effect for a given query - higher number means higher precedence. For example, a rule with precedence of 10 will take effect before a rule with precedence of 3. Ties on precedence are broken based on creation time - the more recently created rule will take effect before the older rule."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>search_terms</strong></td>
+      <td>
+        ```json
+        {
+          "search_terms": {
+            "type": "array",
+            "title": "Search Terms",
+            "description": "Search terms that trigger this rule.",
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>filters</strong></td>
+      <td>
+        ```json
+        {
+          "filters": {
+            "type": "array",
+            "title": "Filters",
+            "description": "Filters used to determine if this rule triggers",
+            "items": {
+              "type": "object",
+              "required": ["key","value"],
+              "properties": {
+                "key": { "type": "string", "title": "Field Name" },
+                "value": { "type": "string", "title": "Field Value" }
+              }
+            }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>response_values</strong></td>
+      <td>
+        ```json
+        {
+          "response_values": {
+            "type": "array",
+            "title": "Set Response Values",
+            "description": "Key/Value pairs to set in the fusion section of the response.",
+            "hints": ["hidden"],
+            "items": {
+              "type": "object",
+              "required": ["key","value"],
+              "properties": {
+                "key": { "type": "string", "title": "Field Name" },
+                "value": { "type": "string", "title": "Field Value" }
+              }
+            }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>query_profile_id_ss</strong></td>
+      <td>
+        ```json
+        {
+          "query_profile_id_ss": {
+            "type": "array",
+            "title": "Query Profile ID",
+            "description": "Query Profile that triggers this rule",
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <strong>banner_url</strong><br/>
+        <strong>Required</strong>
+      </td>
+      <td>
+        ```json
+        {
+          "banner_url": {
+            "type": "string",
+            "title": "Banner URL",
+            "description": "URL to a banner, typically an HTML file"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>zone</strong></td>
+      <td>
+        ```json
+        {
+          "zone": {
+            "type": "string",
+            "title": "Banner Zone",
+            "description": "Zone for the banner in the search UI"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+        <strong>type</strong><br/>
+        <strong>Required</strong>
+      </td>
+      <td>
+        ```json
+        {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "enum": ["banner"],
+            "default": "banner",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>doc_type</strong></td>
+      <td>
+        ```json
+        {
+          "doc_type": {
+            "type": "string",
+            "title": "Doc Type",
+            "enum": ["rule"],
+            "default": "rule",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>display_type</strong></td>
+      <td>
+        ```json
+        {
+          "display_type": {
+            "type": "string",
+            "title": "Display Type",
+            "enum": ["Banner"],
+            "default": "Banner",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>additionalProperties</strong></td>
+    </tr>
+    <tr>
+      <td><strong>additionalProperties</strong></td>
+      <td>
+        ```json
+        {
+          "additionalProperties": true
+        }
+        ```
+      </td>
+    </tr>
+  </tbody>
+</table>

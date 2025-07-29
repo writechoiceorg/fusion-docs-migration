@@ -1,0 +1,32 @@
+---
+title: "search:result"
+permalink: "1085"
+---
+
+## Description
+
+The Result directive.
+
+## Usage
+
+as element:
+
+```xml
+<search:result
+       [result="{object}"]
+       [when="{string}"]
+       [equals="{string}"]>
+</search:result>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| result  *(optional)* | **object** | A result object |
+| when  *(optional)* | **string** | The result will only be rendered if this field exists |
+| equals  *(optional)* | **string** | The result will only be rendered if this is the value of the when field |

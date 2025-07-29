@@ -1,0 +1,57 @@
+---
+title: "Overlaying Configuration Values"
+permalink: "3090"
+---
+
+To fine-tune your configuration hierarchy prior to production, Appkit has added the ability to overlay configuration hierarchies via the Jetty Maven plugin. While developing an application, you can experiment with a partial configuration and add/update only those properties that you actually must update without touching the application’s main configuration. When the application starts these changes are merged with the application’s main configuration hierarchy.
+
+## Example
+
+To illustrate this, consider this snippet of (default) configuration for an application that in this case is using the Google Search Appliance (GSA):
+
+```
+/src
+    /main
+        /resources
+            /conf
+                /platforms
+                    /gsa
+                        gsa.conf
+                    platforms.conf
+                /services
+                    /suggestions
+                        static.conf
+                    services.conf
+```
+
+Typically, this configuration hierarchy will contain settings relating to a production environment. However, while the application is being developed, you might want to use different values for some of the configurations or introduce new values to test whether they can be moved over to the application’s configuration hierarchy.
+
+To facilitate this workflow, you can now configure your own hierarchy, which by default, can be placed in `src/dev/resources/conf`. Now, say, you want to use a different GSA host while developing your application but did not want to change the application’s default configuration. To do this you could create this configuration hierarchy:
+
+```
+/src
+    /dev
+        /resources
+            /conf
+                /platforms
+                    /gsa
+                        gsa.conf
+```
+
+As stated, you can use the default location for your own configuration hierarchy. However, this location can be overridden at the command line, if needed, when launching the application, for example:
+
+```sh
+mvn clean jetty:run -Dtwigkit.conf.overlay="file://src/dev/my_resources/conf”
+```
+
+<Note>
+You do not must fully populate your configuration hierarchy because this partial configuration will be merged with the application’s configuration on application startup.
+</Note>
+
+
+
+If the path to the user’s configuration hierarchy cannot be found (for example, there is a mismatch between what is stated at the command line and what is actually in the project) then the application’s default configuration hierarchy will be used.
+
+## Troubleshooting
+
+If you are having issues loading your configuration hierarchy, try changing the logging level (in `src/main/resources/logback.xml`) to TRACE. Then look for entries in the log relating to the configuration hierarchy. Entries include `Secondary fig .. not found. Falling back to primary.` and likewise `Primary fig .. not found. Falling back to secondary`. The figs here refer to the application (primary) configuration hierarchy and your own (secondary) configuration hierarchy.

@@ -1,0 +1,193 @@
+---
+title: "ZooKeeper Import/Export API"
+description: "Fusion Admin APIs"
+permalink: "320"
+---
+
+[Apache ZooKeeper](https://zookeeper.apache.org/) is a distributed configuration service, synchronization service, and naming registry.
+Fusion uses ZooKeeper to configure and manage all Fusion components in a single Fusion deployment.
+
+The ZooKeeper Import/Export API provides methods to upload or download information from Fusion’s ZooKeeper service.
+This service provides an alternative to the ZooKeeper clients `zkCli.sh` and `zk-shell` which are part of
+the Apache Zookeeper distribution included as part of the Fusion distribution.
+
+The ZKImportExport service may be used to export ZooKeeper data for any Fusion release.
+It can be used to import configuration data into the ZooKeeper service for a new or existing Fusion deployment.
+
+* For details on using this script during the Fusion upgrade procedure, see
+  [Upgrading Fusion](/how-to/616/upgrade-to-fusion-4-x).
+* For details on using this script to migrate Fusion configurations from one deployment to another, see
+  [Migrating Fusion Objects by Hand](/how-to/0imnej/migrate-fusion-objects).
+
+The REST API only supports requests to export ZooKeeper configurations.
+The Fusion distribution includes a utility script `zkImportExport.sh` which can be used to import ZooKeeper configuration as well as to export it from arbitrary Fusion instances.
+
+For more information, [view the API specification.](?open-api=true)
+
+See the official [ZooKeeper documentation](https://zookeeper.apache.org/doc/current/) for details about using and managing a ZooKeeper service.
+
+## Utility script `zkImportExport.sh`
+
+This script is located in the top-level Fusion `scripts` directory.
+The script takes the following command-line arguments:
+
+```sh
+-c,--cmd <arg>        Command, one of: 'export', 'import', 'update', 'delete'.
+
+-e,--encode <arg>     Type of encoding for znodes. Valid options:
+                      'none', 'utf-8', 'base64', default is 'base64'.
+                      Option 'none' will not return any data from the znodes.
+
+-ep,--exclude <arg>   Exclude znode paths, followed by list of paths.
+                      Can only be used to exclude nodes one level below the root node.
+
+-eph,--ephemeral      Include ephemeral nodes while exporting znodes, boolean, default false.
+
+-f,--filename <arg>   Name of file containing import/export data.
+
+-h,--help             Display help page.
+
+-ip,--include <arg>   Include znode paths to include, followed by a list of paths.
+                      Can only be used to include nodes one level below the root node.
+
+-nr,--non-recursive   Do not perform recursive operations on znodes.
+
+-o,--overwrite        Overwrite data for existing znodes. Valid only with 'update' command.
+
+-p,--path <arg>       Path from ZooKeeper root node, e.g. '/lucid/query-pipelines'.
+
+-r,--recursive        Perform recursive operations on znodes.
+
+-z,--zkhost <arg>     ZooKeeper Connect string, required.
+```
+
+Required arguments are:
+* -c, --cmd : operation to perform.
+* -z, --zkhost : the ZooKeeper Connect string.
+
+### Examples
+
+*Export all data from a local single-node ZooKeeper service, save data to a file:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd export -path / -filename znode_dump.json
+```
+
+*Export all Fusion configurations from a local single-node ZooKeeper service, save data to a file:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd export -path /lucid -filename znode_lucid_dump.json
+```
+
+*Export Fusion user databases, groups, roles, and realms configurations from a local single-node ZooKeeper service, save data to a file:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd export -path /lucid-apollo-admin -filename znode_lucid_admin_dump.json
+```
+
+*Initial import of saved Fusion configuration into a new ZooKeeper:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd import -filename znode_lucid_dump.json
+```
+
+Note that the above command will fail if there is conflict between existing znode structures
+or contents between the ZooKeeper service and the dump file.
+
+*Update information for Fusion’s ZooKeeper service:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd update -filename znode_lucid_dump.json
+```
+
+*Remove a znode from Fusion’s ZooKeeper service:*
+
+```sh
+zkImportExport.sh -zkhost FUSION_HOST:9983 -cmd delete -path /lucid/test
+```
+
+## Fusion REST API service ZKImportExport
+
+The Fusion REST API can only be used to download information from ZooKeeper, via the 'GET' method
+with the following configuration:
+
+```json
+  "zk-import-export::v1" : {
+    "name" : "com.lucidworks.apollo.resources.ZKImportExportResource",
+    "uri" : "/zk/export",
+    "methods" : [ {
+      "uri" : "/zk/export/{path:.*}",
+      "name" : "getNodeInfo",
+      "verb" : "GET",
+      "pathParams" : [ {
+        "name" : "path",
+        "type" : "String"
+      } ],
+      "queryParams" : [ {
+        "name" : "recursive",
+        "type" : "Boolean"
+      }, {
+        "name" : "excludePaths",
+        "type" : "List"
+      }, {
+        "name" : "includePaths",
+        "type" : "List"
+      }, {
+        "name" : "encodeValues",
+        "type" : "String"
+      } ],
+      "hasEntity" : false
+    } ]
+  }
+```
+
+*GET data from path `/lucid/query-pipelines`*
+
+```bash
+curl -u USERNAME:PASSWORD -X GET https://FUSION_HOST:FUSION_PORT/api/zk/export/lucid/query-pipelines
+
+{
+  "path" : "/lucid/query-pipelines",
+  "children" : [ {
+    "path" : "/lucid/query-pipelines/default",
+    "data" : "ewogICJpZCIgOiAiZGVmYXVsdCIsCiAgInN0YWdlcyIgOiBbIHsKICAgICJ0eXBlIiA6ICJzZWFyY2gtZmllbGRzIiwKICAgICJpZCIgOiAiMzc1NmI1ZDctY2MwMC00MDAyLWJiOWQtNTQzNjQ4NzVjMjgyIiwKICAgICJyb3dzIiA6IDEwLAogICAgInN0YXJ0IiA6IDAsCiAgICAic2tpcCIgOiBmYWxzZSwKICAgICJsYWJlbCIgOiAic2VhcmNoLWZpZWxkcyIsCiAgICAidHlwZSIgOiAic2VhcmNoLWZpZWxkcyIKICB9LCB7CiAgICAidHlwZSIgOiAiZmFjZXQiLAogICAgImlkIiA6ICI3MTFmZWM1Ni03MzRmLTRiYTAtOWY1NS0wZTQ4YmU2NTllM2UiLAogICAgInNraXAiIDogZmFsc2UsCiAgICAibGFiZWwiIDogImZhY2V0IiwKICAgICJ0eXBlIiA6ICJmYWNldCIKICB9LCB7CiAgICAidHlwZSIgOiAic29sci1xdWVyeSIsCiAgICAiaWQiIDogIjYwNDU1YjU2LTdkN2MtNDZjYi1iN2QzLTIxOWU1N2U3MWNjMyIsCiAgICAiaHR0cE1ldGhvZCIgOiAiUE9TVCIsCiAgICAic2tpcCIgOiBmYWxzZSwKICAgICJsYWJlbCIgOiAic29sci1xdWVyeSIsCiAgICAidHlwZSIgOiAic29sci1xdWVyeSIKICB9IF0KfQ=="
+  } ],
+  "data" : ""
+}
+```
+
+*Get info for node `/lucid/query-pipelines`. Do not expand the znodes*
+
+```bash
+curl -u USERNAME:PASSWORD -X GET https://FUSION_HOST:FUSION_PORT/api/zk/export/lucid/query-pipelines?recursive=true&encodeValues=none
+{
+  "path" : "/lucid/query-pipelines",
+  "children" : [ {
+    "path" : "/lucid/query-pipelines/default"
+  } ]
+}
+```
+
+*Get info for node `/lucid/query-pipelines`. encode in `utf-8`*
+
+```bash
+curl -u USERNAME:PASSWORD -X GET https://FUSION_HOST:FUSION_PORT/api/zk/export/lucid/query-pipelines?recursive=true&encodeValues=utf-8
+{
+  "path" : "/lucid/query-pipelines",
+  "children" : [ {
+    "path" : "/lucid/query-pipelines/default",
+    "data" : "{\n  \"id\" : \"default\",\n  \"stages\" : [ {\n    \"type\" : \"search-fields\",\n    \"id\" : \"3756b5d7-cc00-4002-bb9d-54364875c282\",\n    \"rows\" : 10,\n    \"start\" : 0,\n    \"skip\" : false,\n    \"label\" : \"search-fields\",\n    \"type\" : \"search-fields\"\n  }, {\n    \"type\" : \"facet\",\n    \"id\" : \"711fec56-734f-4ba0-9f55-0e48be659e3e\",\n    \"skip\" : false,\n    \"label\" : \"facet\",\n    \"type\" : \"facet\"\n  }, {\n    \"type\" : \"solr-query\",\n    \"id\" : \"60455b56-7d7c-46cb-b7d3-219e57e71cc3\",\n    \"httpMethod\" : \"POST\",\n    \"skip\" : false,\n    \"label\" : \"solr-query\",\n    \"type\" : \"solr-query\"\n  } ]\n}"
+  } ],
+  "data" : ""
+}
+```
+
+*Get info for node `/lucid/query-pipelines`. Exclude path `/lucid/query-pipelines/default`*
+
+```bash
+curl -u USERNAME:PASSWORD -X GET https://FUSION_HOST:FUSION_PORT/api/zk/export/lucid/query-pipelines?recursive=true&encodeValues=utf-8&excludePaths=/lucid/query-piplines/default
+{
+  "path" : "/lucid/query-pipelines",
+  "data" : ""
+}
+```

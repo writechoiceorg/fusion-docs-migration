@@ -1,0 +1,30 @@
+---
+title: "Apps filter"
+permalink: "7p74hf"
+---
+
+You can configure which apps to synchronize using the `sync.apps` config setting in the `fusion-config-sync` section of the Helm chart.
+Apps can either be excluded or included.
+For instance, to exclude application `app1` from synchronization, use the following configuration:
+
+```yaml
+cfg:
+  sync:
+    apps: "-app1"
+```
+
+To include only `app1` and `app2` for synchronization, use the following
+
+```yaml
+cfg:
+  sync:
+    apps: "app1,app2"
+```
+
+To include all apps for synchronization, use the following
+
+```yaml
+cfg:
+  sync:
+    apps: "*"
+```

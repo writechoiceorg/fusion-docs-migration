@@ -1,0 +1,105 @@
+---
+title: "Deprecations and Removals"
+permalink: "dv9ib2"
+---
+
+This document provides a comprehensive list of deprecated and removed features in Fusion, organized by version. It includes details on the deprecation and expected removal of various features, along with notes on alternatives or replacements where applicable. The document also contains links to relevant documentation for further information.
+
+The deprecations section lists features scheduled for removal in future releases, and the removals section lists features already removed in past releases. Each entry includes the feature name, the version in which it was deprecated or removed, and relevant notes or recommended replacements.
+
+The deprecation schedule outlined in this document applies exclusively to Fusion 5. Other major versions of Fusion have separate deprecation schedules not covered by this document.
+
+<Tip>
+**Fusion Connectors deprecations and removals**
+
+Deprecation and removal details for Fusion Connectors are found at [Fusion Connectors Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+</Tip>
+
+## Deprecations
+
+Deprecated features in Fusion 5 are scheduled for removal in a future release. The following table lists each deprecated feature with an expected removal value, either a version number or a date. When a version number is specified, the feature will be removed in that specific release. When a date is specified, it represents the earliest possible day the feature will remain available. Removal will not occur before that date.
+
+<Danger>
+**FAQ**
+
+When were these features originally deprecated?
+
+If a feature was originally deprecated in a prior version, the original deprecation version is noted as a footnote in the **Deprecated** column.
+</Danger>
+
+
+
+| Feature | Deprecated | Expected Removal | Notes |
+| --- | --- | --- | --- |
+| [Hybrid Query (5.9.9 and earlier)](/managed-fusion/5.9/23oiz7/hybrid-query-stage): A stage to perform hybrid lexical-semantic search that combines BM25-type lexical search with KNN dense vector search via Solr. | 5.9.13 | TBD | Use [Neural Hybrid Query (5.9.10 and later)](/managed-fusion/5.9/4xm0li/neural-hybrid-query-stage) instead to benefit from updates and improvements to the search capabilities of the stage. |
+| [App Insights](/managed-fusion/5.9/kxeqkj/app-insights): A tool within the Fusion workspace that provides real-time, searchable reports and visualizations from signals data. | 5.9.13[[1](#_footnotedef_1 "View footnote.")] | TBD or no earlier than October 22, 2025 | - |
+| [Parsers Indexing CRUD API](/managed-fusion/5.9/hqxqm1/parsers-api): The Parsers API provides CRUD operations for parsers, allowing users to create, read, update, and delete parsers. | 5.9.11[[1](#_footnotedef_1 "View footnote.")] | TBD or no earlier than September 4, 2025 | A new API introduced in Fusion 5.12.0, [Async Parsing API](/managed-fusion/5.9/3uszuk/async-parsing-api), replaces the Parsers Indexing CRUD API and is available in Fusion 5.9.11. This API provides improved functionality and aligns with Fusion’s updated architecture, ensuring consistency across versions. |
+| [Smart Answers Coldstart Training job](/managed-fusion/5.9/8dacf9/smart-answers-coldstart-training): The Smart Answers Coldstart Training job in Fusion is designed to help train models when there is no historical training data available. | 5.9.13[[1](#_footnotedef_1 "View footnote.")] | TBD or no earlier than October 22, 2025 | Use pre-trained models or the supervised training job instead of the Smart Answers Coldstart Training job. Pre-trained models eliminate the need for manual training when historical data is unavailable, while supervised training jobs offer greater flexibility in model customization. |
+| [Data Augmentation Job](/managed-fusion/5.9/js2bk5/data-augmentation): The Data Augmentation Job is designed to enhance training and testing data for machine learning models by increasing data quantity and introducing textual variations. It performs tasks such as backtranslation, synonym substitution, keystroke misspelling, and split word tasks. | 5.9.13[[1](#_footnotedef_1 "View footnote.")] | TBD or no earlier than October 22, 2025 | - |
+| Webapps Service: The Webapps service provides an embedded instance of App Studio within each Fusion instance, simplifying the deployment process. | 5.9.10[[2](#_footnotedef_2 "View footnote.")] | Version TBD, but no earlier than August 20, 2025 | Deploy App Studio Enterprise using the [Fusion 5 Cluster (GKE) deployment guide](/how-to/6nsbym/deploy-app-studio-enterprise-to-a-fusion-5-cluster-gke) instead of relying on the Webapps service. This method improves scalability and provides a more robust deployment approach for enterprise environments. |
+| [Hybrid Query (5.9.9 and earlier)](/managed-fusion/5.9/23oiz7/hybrid-query-stage): A stage to perform hybrid lexical-semantic search that combines BM25-type lexical search with KNN dense vector search via Solr. | 5.9.13 | TBD | Use [Neural Hybrid Query (5.9.10 and later)](/managed-fusion/5.9/4xm0li/neural-hybrid-query-stage) instead to benefit from updates and improvements to the search capabilities of the stage. |
+| [Support for Nashorn Javascript engine](/managed-fusion/5.9/rddj0k/custom-java-script-stages-for-index-pipelines#the-javascript-engine-used-by-managed-fusion): Fusion uses the Nashorn engine JavaScript engine for the JavaScript index and query stages. | 5.9.8 | TBD or no earlier than July 7, 2025 | Use the OpenJDK Nashorn JavaScript engine instead of the deprecated Nashorn JavaScript engine in Fusion. This ensures continued JavaScript execution compatibility in pipeline configurations. You can select the engine from a dropdown in the pipeline views or in the workbenches. |
+| [Milvus Ensemble Query Stage](/managed-fusion/5.9/w4qysk/milvus-ensemble): The Milvus Ensemble Query stage is used to enhance search results by incorporating vector-based similarity scoring. | 5.9.5 | TBD or no later than May 4, 2025 | Replace the Milvus Ensemble Query Stage with [Seldon](/managed-fusion/5.9/4engao/seldon-vectorize-query-stagee) or [Lucidworks AI vector query stages](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query). These alternatives improve vector search integration and support within Fusion’s evolving AI and machine learning capabilities. |
+| [Milvus Query Stage](/managed-fusion/5.9/up29ml/milvus): The Milvus Query stage performs vectors similarity search in Milvus, an open source vector similarity search engine integrated into Fusion to streamline its deep learning capabilities and reduce the workload on Solr. | 5.9.5 | TBD or no later than May 4, 2025 | Replace the Milvus Ensemble Query Stage with [Seldon](/managed-fusion/5.9/4engao/seldon-vectorize-query-stage) or [Lucidworks AI vector query stages](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query). These options enhance query efficiency and provide broader support for machine learning-driven search. |
+| [Milvus Response Update Query Stage](/managed-fusion/5.9/w9kztn/milvus-response-updatee): The Milvus Response Update stage is designed to update response documents with vectors similarity and ensemble scores. | 5.9.5 | TBD or no later than May 4, 2025 | Replace the Milvus Ensemble Query Stage with [Seldon](/managed-fusion/5.9/4engao/seldon-vectorize-query-stage) or [Lucidworks AI vector query stages](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query). These alternatives improve performance when updating response documents with vector similarity data. |
+| [Domain-Specific Language (DSL)](/managed-fusion/5.9/0bvcy0/domain-specific-language): The Domain Specific Language (DSL) in Fusion is designed to simplify the complexity of crafting search queries. It allows users to express complex search queries without needing to understand the intricate syntax required by the legacy Solr parameter format. | 5.9.4 | TBD | Avoid using the Domain-Specific Language (DSL) feature, as it may cause performance degradation. Instead, use the [DSL to Legacy Parameters](/managed-fusion/5.9/y2mquo/dsl-to-legacy-parameters) query pipeline stage to convert DSL requests to the legacy Solr format while maintaining compatibility. |
+| [Security Trimming Query Stage](/managed-fusion/5.9/hnw5gy/security-trimming): The Security Trimming query pipeline stage in Fusion is designed to restrict query resultsby matching security ACL metadata, ensuring that users only see results they are authorized to access. | 5.9.0 | TBD | Replace the Security Trimming Query Stage with the [Graph Security Trimming Query Stage](/managed-fusion/5.9/nm4b2l/graph-security-trimming). The new method uses a single filter query across all data sources. |
+| [Field Parser Index Stage](/managed-fusion/5.9/3flw71/field-parser): The Field Parser index pipeline stage in Fusion is designed to parse content embedded within fields of documents. This stage operates separately from the parsers that handle whole documents. | All versions of 5.9.x[[3](#_footnotedef_3 "View footnote.")] | TBD | Use the [Tika Asynchronous Parser](/managed-fusion/5.9/ve1qvp/asynchronous-tika-parsing) instead. Asynchronous Tika parsing performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents. |
+| [Tika Server Parser](/managed-fusion/5.9/cy28u3/apache-tika-server): Apache Tika Server is a versatile parser that supports parsing many document formats designed for Enterprise Search crawls. This stage is not compatible with asynchronous Tika parsing. | All versions of 5.9.x[[3](#_footnotedef_3 "View footnote.")] | 5.9.12 | Use the [Tika Asynchronous Parser](/managed-fusion/5.9/ve1qvp/asynchronous-tika-parsing) instead. Asynchronous Tika parsing performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents. |
+| [Apache Tika Parser](/managed-fusion/5.9/fi9zfy/apache-tika): The Apache Tika Parser is a versatile tool designed to support the parsing of numerous unstructured document formats. | All versions of 5.9.x[[3](#_footnotedef_3 "View footnote.")] | TBD | Use the [Tika Asynchronous Parser](/managed-fusion/5.9/ve1qvp/asynchronous-tika-parsing) instead. Asynchronous Tika parsing performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents. |
+| [Logistic Regression Classifier Training Jobs](/managed-fusion/5.9/0yxzwn/logistic-regression-classifier-training-jobs): This job trains a logistic regression model with regularization to classify text into different categories. | All versions of 5.9.x[520] | TBD | Replace Logistic Regression Classifier Training Jobs with the [Classification job](/managed-fusion/5.9/seo2hq/classification). This alternative provides expanded configuration options and improved logging capabilities. |
+| MLeap deployments of SpaCy and SparkNLP | 5.9.10[520] | 5.9.12 | Use [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) instead. |
+| MLeap in Machine Learning models | 5.9.10[520] | 5.9.12 | - |
+| [Query-to-Query Collaborative Similarity Job](/managed-fusion/5.9/43a5xr/query-to-query-collaborative-similarity): This job uses SparkML’s Alternating Least Squares (ALS) to analyze past queries and find similarities between them. It helps recommend related queries or suggest relevant items based on previous searches. | All versions of 5.9.x[520] | TBD | Switch to [Query-to-Query Session-Based Similarity jobs](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity) instead of the Query-to-Query Collaborative Similarity Job. The new method improves performance and increases the coverage of query similarity calculations. |
+| [Random Forest Classifier Training Jobs](/managed-fusion/5.9/5hkk17/random-forest-classifier-training-jobs): This job trains a machine learning model using a random forest algorithm to classify text into different categories. | All versions of 5.9.x[520] | TBD | Use the [Classification job](/managed-fusion/5.9/seo2hq/classification) instead of Random Forest Classifier Training Jobs. This alternative provides enhanced configurability and better logging for improved model training. |
+| [Time-based partitioning](/managed-fusion/5.9/j6rvui/collection-features-api): Time-based partitioning in Fusion collections allows mapping to multiple Solr collections or partitions based on specific time ranges. | All versions of 5.9.x[520] | TBD | - |
+| [Word2Vec Model Training Jobs](/managed-fusion/5.9/jem3fe/word-2-vec-model-training-jobs): The Word2Vec model training job trains a shallow neural model to generate vector embeddings for text data and stores the results in a specified output collection. It supports configurable parameters for input data, model tuning, featurization, and output settings. | 5.9.11[520] | TBD or no earlier than September 4, 2025 | - |
+| Connectors fetcher property `AccessControlFetcher`: Connectors that support security filtering previously used separate fetchers for content and access control. One fetcher type is now used for both content and security fetching. `AccessControlFetcher` has been deprecated. | All versions of 5.9.x[[4](#_footnotedef_4 "View footnote.")] | TBD | Fetcher implementations that use `AccessControlFetcher` should instead use `ContentFetcher`. |
+| Messaging Stage Configs | All versions of 5.9.x[[4](#_footnotedef_4 "View footnote.")] | TBD | - |
+| [Logistic Regression Classifier Training Jobs](/managed-fusion/5.9/0yxzwn/logistic-regression-classifier-training-jobs): This job trains a logistic regression model with regularization to classify text into different categories. | All versions of 5.9.x[520] | TBD | Replace Logistic Regression Classifier Training Jobs with the [Classification job](/managed-fusion/5.9/seo2hq/classification). This alternative provides expanded configuration options and improved logging capabilities. |
+| MLeap deployments of SpaCy and SparkNLP | 5.9.10[520] | 5.9.12 | Use [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) instead. |
+| [Query-to-Query Collaborative Similarity Job](/managed-fusion/5.9/43a5xr/query-to-query-collaborative-similarity): This job uses SparkML’s Alternating Least Squares (ALS) to analyze past queries and find similarities between them. It helps recommend related queries or suggest relevant items based on previous searches. | All versions of 5.9.x[520] | TBD | Switch to [Query-to-Query Session-Based Similarity jobs](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity) instead of the Query-to-Query Collaborative Similarity Job. The new method improves performance and increases the coverage of query similarity calculations. |
+| [Random Forest Classifier Training Jobs](/managed-fusion/5.9/5hkk17/random-forest-classifier-training-jobs): This job trains a machine learning model using a random forest algorithm to classify text into different categories. | All versions of 5.9.x[520] | TBD | Use the [Classification job](/managed-fusion/5.9/seo2hq/classification) instead of Random Forest Classifier Training Jobs. This alternative provides enhanced configurability and better logging for improved model training. |
+| [Time-based partitioning](/managed-fusion/5.9/j6rvui/collection-features-api): Time-based partitioning in Fusion collections allows mapping to multiple Solr collections or partitions based on specific time ranges. | All versions of 5.9.x[520] | TBD | - |
+| [Word2Vec Model Training Jobs](/managed-fusion/5.9/jem3fe/word-2-vec-model-training-jobs): The Word2Vec model training job trains a shallow neural model to generate vector embeddings for text data and stores the results in a specified output collection. It supports configurable parameters for input data, model tuning, featurization, and output settings. | 5.9.11[520] | TBD or no later than September 4, 2025 | - |
+| Connectors fetcher property `AccessControlFetcher`: Connectors that support security filtering previously used separate fetchers for content and access control. One fetcher type is now used for both content and security fetching. `AccessControlFetcher` has been deprecated. | All versions of 5.9.x[[4](#_footnotedef_4 "View footnote.")] | TBD | Fetcher implementations that use `AccessControlFetcher` should instead use `ContentFetcher`. |
+| Messaging Stage Configs | All versions of 5.9.x[[4](#_footnotedef_4 "View footnote.")] | TBD | - |
+
+## Removals
+
+This section lists features that have been removed in past releases of Fusion. Each entry includes the feature name, the version in which it was removed, and any relevant notes or replacement recommendations.
+
+| Feature | Removed | Notes |
+| --- | --- | --- |
+| **Fusion 5.11** | | |
+| MLeap | 5.11.0 | Use [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) instead. This method provides a more flexible and modern approach to deploying machine learning models. |
+| Subscriptions UI | 5.11.0 | - |
+| **Fusion 5.10** | | |
+| Forked Apache Tika Parser | 5.10.0 | The Forked Apache Tika Parser was replaced by the [Tika Asynchronous Parser](/managed-fusion/5.9/fi9zfy/apache-tika-container). The asynchronous parser improves performance by handling document parsing more efficiently and scaling better for enterprise workloads. |
+| Analytics Catalog Query Stage | 5.10.0 | - |
+| **Fusion 5.7** | | |
+| NLP Annotator Index Stage | 5.7.0 | To implement similar functionality, see the [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) guide, which provides an adaptable example. |
+| NLP Annotator Query Stage | 5.7.0 | To implement similar functionality, see the [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) guide, which provides an adaptable example. |
+| OpenNLP NER Extraction Index Stage | 5.7.0 | To implement similar functionality, see the [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) guide, which provides an adaptable example. |
+| **Fusion 5.9** | | |
+| [Tika Server Parser](/fusion/5.9/khf5gb/apache-tika-server-stage) | 5.9.12 | Use the [Tika Asynchronous Parser](/fusion/5.9/lo9hdj/asynchronous-tika-parsing) instead. Asynchronous Tika parsing performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents. |
+| MLeap in Machine Learning models | 5.9.12 | - |
+| **Fusion 5.6** | | |
+| Fusion SQL | 5.6.1 | - |
+| Apache Pulsar | 5.6.0 | Apache Pulsar was removed in Fusion 5.6.0 and replaced with Kafka. Kafka offers better scalability, reliability, and industry support for message streaming. |
+| Log Viewer & DevOps Center UI panel | 5.6.0 | These features were removed in Fusion 5.6.0 as they depended on Apache Pulsar, which has been replaced by Kafka. Users should transition to Kafka-based logging and monitoring solutions. |
+| Subscriptions API | 5.6.0 | - |
+| Send to Message Bus Index Stage | 5.6.0 | - |
+| **Fusion 5.5** | | |
+| Jupyter | 5.5.2 | - |
+| Superset | 5.5.2 | - |
+
+---
+
+[1](#_footnoteref_1). Originally deprecated in Fusion 5.12.0.
+
+[2](#_footnoteref_2). Originally deprecated in Fusion 5.11.0.
+
+[3](#_footnoteref_3). Originally deprecated in Fusion 5.8.0.
+
+[4](#_footnoteref_4). Originally deprecated in Fusion 5.1.2.

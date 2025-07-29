@@ -1,0 +1,60 @@
+---
+title: "Access Control"
+permalink: "124"
+---
+
+## User Authentication and Authorization
+
+Fusion provides application security by restricting access to known [users](/fusion/5.9/125/users)
+via a two-stage process consisting of:
+
+* **Authentication.** users must sign on using a username and password.
+* **Authorization.** each username is associated with one or more permissions which specify the Fusion UI components and REST API requests that user has access to.
+  [Permissions](/fusion/5.9/123/permissions) can be restricted to specific endpoints and path parameters.
+  [Roles](/fusion/5.9/126/roles) are named sets of permissions which provide access to a specific function.
+
+The access control component runs in the same process as the Fusion UI.
+It referred to as the "auth proxy" because it handles authentication and authorization for all requests to the Fusion REST API services.
+
+All requests to Fusion must be authenticated, as described in section [User Access Request Params](/how-to/623/user-access-request-parameters).
+
+## User Account Administration
+
+A Fusion [Security Realm](/fusion/5.9/127/security-realms) encapsulates a user database together with specific authentication and authorization mechanisms.
+This information is stored in [ZooKeeper](http://zookeeper.apache.org/) so that is it always available to all Fusion components across the deployment.
+
+Fusion’s native security realm manages both authentication and authorization directly.
+All user information is stored in ZooKeeper: usernames, hashes of passwords, roles, and permissions.
+Passwords are hashed using [bcrypt](https://en.wikipedia.org/wiki/Bcrypt).
+Authentication compares a hash of the entered login password with the stored password hash.
+The native realm is the home of the Fusion admin user and is the default realm type.
+
+Fusion can be configured to use the host domain’s security mechanism for user administration.
+The following configurations are possible:
+
+* **LDAP.** Fusion stores a local user record in ZooKeeper.
+  Authentication is performed by the LDAP server.
+  LDAP group membership can be used to assign Fusion permissions.
+* **Kerberos.** Fusion stores a local user record in ZooKeeper.
+  [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is used for authentication via Kerberos.
+* **Kerberos authentication and LDAP authorization.** Fusion stores a local user record in ZooKeeper.
+  [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is used for authentication via Kerberos.
+  LDAP group membership can be used to assign Fusion permissions.
+* **SAML.** Fusion stores a local user record in ZooKeeper. The SAML 2.0 protocol is used to provide web-browser single sign-on.
+* **JWT.** JSON Web token.
+
+## Video tutorial
+
+<Frame>
+<iframe width="640" height="480" src="https://www.youtube.com/embed/w5LtUm3mflo" title="Fusion Learners - Configuring Permissions and Security Realms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</Frame>
+
+## More information
+
+These additional topics explain how to configure the supported authentication methods:
+
+* [Configure Fusion for JWT](/fusion/5.9/cvrcam/configure-fusion-for-jwt)
+* Configure Fusion for Kerberos in [Unix](/how-to/741/configure-fusion-for-kerberos-in-unix) and [Windows](/how-to/674/configure-fusion-for-kerberos-in-windows)
+* [Configure Fusion for LDAP](/how-to/dr4445/configure-fusion5-x-for-ldap)
+* [Configure Fusion for SAML](/how-to/863/configure-fusion-for-saml)
+* [Configure Fusion for SSO](/how-to/816/configure-fusion-for-sso)

@@ -1,0 +1,34 @@
+---
+title: "Index Pipelines"
+permalink: "162"
+---
+
+Index pipelines transform incoming data into `PipelineDocument` objects for indexing by Fusion-managed Solr service.
+An index pipeline consists of a series of configurable
+[index pipeline stages](/fusion-server/4.2/161/index-pipeline-stages),
+each performing a different transformation on the data before passing the result to the next stage in the pipeline.
+The final stage is the
+[Solr Indexer stage](/fusion-server/4.2/227/solr-indexer-stage),
+which transforms the PipelineDocument into a Solr document and submits it to Solr for indexing in a specific
+[Collection](/fusion-server/4.2/166/collections).
+
+Each configured datasource has an associated index pipeline and uses a
+[connector](/fusion-connectors/63/configuration-reference)
+to fetch data to parse and then input into the index pipeline.
+
+<Frame>![ingest](/assets/images/common/ingest.png)</Frame>
+
+Alternatively, documents can be submitted directly to an index pipeline or profile with the REST API; see
+[Importing Data with the REST API](/how-to/865/import-data-with-the-rest-api).
+
+A pipeline can be reused across multiple collections. Fusion provides a set of built-in pipelines. You can use the Index Workbench or the
+[Index Pipelines API](/fusion-server/4.2/351/index-pipelines-api)
+to develop custom index pipelines to suit any datasource or application.
+
+<Frame>![index pipeline](/assets/images/common/index-pipeline.png)</Frame>
+
+When a Fusion collection is created using the Fusion UI, a pair of index and query pipelines are created to that pipeline, where the pipeline name is the collection name with the suffix "-default". This pipeline consists of a
+[Field Mapping index stage](/fusion-server/4.2/224/field-mapping-index-stage).
+
+Although default pipelines are created when a Fusion collection is created, they are not deleted when the collection is deleted.
+This is because pipelines can be used across collections, so a named pipeline, although originally associated with a collection, can be used by several collections.

@@ -1,0 +1,56 @@
+---
+title: "Nodes API"
+permalink: "345"
+---
+
+
+The Nodes API allows users to check active services according to their hosts.
+
+## Examples
+
+*Show each service:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/nodes/up
+```
+
+**RESPONSE**
+
+```json
+{
+  "history::v1" : [ "https://FUSION_HOST:8984/connectors/v1/history", "https://FUSION_HOST:8764/api/history" ],
+  "query-pipelines::v1" : [ "https://FUSION_HOST:8764/api/query-pipelines", "https://FUSION_HOST:8764/api/query-pipelines" ],
+  "solrconfig::v1" : [ "https://FUSION_HOST:8764/api/collections//solr-config" ],
+  "solrAdmin::v1" : [ "https://FUSION_HOST:8764/api/solrAdmin", "https://FUSION_HOST:8984/connectors/v1/solrAdmin" ],
+  "stopwords::v1" : [ "https://FUSION_HOST:8764/api/stopwords" ],
+  "collections::v1" : [ "https://FUSION_HOST:8764/api/collections" ],
+  "index-stages::v1" : [ "https://FUSION_HOST:8984/connectors/v1/index-stages", "https://FUSION_HOST:8764/api/index-stages" ],
+  "nodes::v1" : [ "https://FUSION_HOST:8984/connectors/v1/nodes", "https://FUSION_HOST:8764/api/nodes" ],
+  "index-profiles::v1" : [ "https://FUSION_HOST:8764/api/collections//index-profiles", "https://FUSION_HOST:8984/connectors/v1/collections//index-profiles" ],
+  "schema::v1" : [ "https://FUSION_HOST:8764/api/collections//schema" ],
+  "solr::v1" : [ "https://FUSION_HOST:8984/connectors/v1/solr", "https://FUSION_HOST:8764/api/solr" ],
+  "query-stages::v1" : [ "https://FUSION_HOST:8764/api/query-stages" ],
+  "blobs::v1" : [ "https://FUSION_HOST:8764/api/blobs" ],
+  "connectors::v1" : [ "https://FUSION_HOST:8984/connectors/v1/connectors" ],
+  "recommend::v1" : [ "https://FUSION_HOST:8764/api/recommend" ],
+  "configurations::v1" : [ "https://FUSION_HOST:8764/api/configurations", "https://FUSION_HOST:8984/connectors/v1/configurations" ],
+  "system::v1" : [ "https://FUSION_HOST:8764/api/system", "https://FUSION_HOST:8984/connectors/v1/system" ],
+  "index-pipelines::v1" : [ "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8984/connectors/v1/index-pipelines", "https://FUSION_HOST:8984/connectors/v1/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines", "https://FUSION_HOST:8764/api/index-pipelines" ],
+  "query-pipeline-templates::v1" : [ "https://FUSION_HOST:8764/api/pipeline-templates/query" ],
+  "registration::v1" : [ "https://FUSION_HOST:8984/connectors/v1/registration", "https://FUSION_HOST:8764/api/registration" ],
+  "searchLogs::v1" : [ "https://FUSION_HOST:8764/api/searchLogs" ],
+  "scheduler::v1" : [ "https://FUSION_HOST:8764/api/scheduler" ],
+  "aggregator::v1" : [ "https://FUSION_HOST:8764/api/aggregator" ],
+  "query-profiles::v1" : [ "https://FUSION_HOST:8764/api/collections//query-profiles" ],
+  "usage::v1" : [ "https://FUSION_HOST:8764/api/usage", "https://FUSION_HOST:8984/connectors/v1/usage" ],
+  "introspect::v1" : [ "https://FUSION_HOST:8764/api/introspect", "https://FUSION_HOST:8984/connectors/v1/introspect" ],
+  "searchCluster::v1" : [ "https://FUSION_HOST:8764/api/searchCluster", "https://FUSION_HOST:8984/connectors/v1/searchCluster" ],
+  "features::v1" : [ "https://FUSION_HOST:8764/api/features" ],
+  "index-pipeline-templates::v1" : [ "https://FUSION_HOST:8984/connectors/v1/pipeline-templates/index", "https://FUSION_HOST:8764/api/pipeline-templates/index" ],
+  "synonyms::v1" : [ "https://FUSION_HOST:8764/api/synonyms" ],
+  "reports::v1" : [ "https://FUSION_HOST:8764/api/reports" ],
+  "signals::v1" : [ "https://FUSION_HOST:8764/api/signals" ]
+}
+```

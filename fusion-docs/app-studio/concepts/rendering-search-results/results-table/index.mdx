@@ -1,0 +1,25 @@
+---
+title: "Results Table"
+permalink: "3101"
+---
+
+The Table tag library is a collection of JSP tags for rendering search results in table format.
+
+To display a list of search results in a table, add the [`table:result-list`](/fusion/5.9/1153/table-result-list) tag on your search page, passing in a reference to the `twigkit.model.Response` object that contains your search results:
+
+```xml
+<table:result-list response="response">
+    <table:header>
+        <table:header-cell name="full_name" label="Name" sort="true"></table:cell>
+        <table:header-cell name="address" label="Address" sort="true"></table:cell>
+        <table:header-cell name="dob" label="Date of birth" sort="true"></table:cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="full_name" query="query"></table:cell>
+            <table:cell name="address"></table:cell>
+            <table:cell name="dob" date-format="dd/MM/yyyy"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+```

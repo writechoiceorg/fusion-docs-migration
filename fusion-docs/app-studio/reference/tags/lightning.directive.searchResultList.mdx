@@ -1,0 +1,169 @@
+---
+title: "search:result-list"
+permalink: "1200"
+---
+
+## Description
+
+The Result List directive.
+
+### Accessing result index
+
+Within a search result you can access the index of the result by doing
+`{{$parent.index}}`. The index is zero-based so for result 1 the index
+will be 0.
+
+## Usage
+
+as element:
+
+```xml
+<search:result-list
+       response="{object}"
+       results="{array}"
+       [infinite-scroll="{string}"]
+       [query="{string}"]
+       [platform="{string}"]
+       [load-more="{boolean}"]>
+</search:result-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object (Use response or results not both) |
+| results | **array** | A list of results (Use response or results not both) |
+| infinite-scroll  *(optional)* | **string** | Whether infinite scrolling should be enabled (query and platform is required for this functionality to be enabled).  Valid values:  * **false**  Disables infinite scrolling.  **(default)**  * **true**  Enables infinite-scrolling in **window** mode (see below).  * **window**  When the window is scrolled to the bottom of the result list new results will be loaded.  * **parent**  When the parent element is scrollable when this element is scrolled to the bottom new results will load. |
+| query  *(optional)* | **string** | The name of the query object used for infinite scrolling or load more. |
+| platform  *(optional)* | **string** | The name of the platform object used for infinite scrolling or load more. |
+| load-more  *(optional)* | **boolean** | Whether to have a clickable link to load more results. |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block>
+        <h3 id="example_accessing-the-index-of-a-result">Accessing the index of a result ($parent.index)</h3>
+    </layout:block>
+    <search:result-list response="response" styling="cards-sm-1 cards-md-2">
+        <search:result>
+            <layout:block>
+                <div class="tk-stl-card">
+                    <search:field name="name" styling="title" urlfield="url"></search:field>
+                    <div class="field tk-rgrid-g tk-stl-label-left">
+                        <p class="tk-rgrid-u-1 tk-rgrid-u-md-1-3 tk-stl-label">Index</p>
+                        <div class="tk-rgrid-u-1 tk-rgrid-u-md-2-3">
+                            <p><span class="value">{{$parent.index}}</span></p>
+                        </div>
+                    </div>
+                    <search:field name="age" styling="label-left" label="Age"></search:field>
+                    <search:field name="date" styling="label-left" label="Created Date" date-format="dd/MM/yy"></search:field>
+                    <search:field name="blank" styling="label-left" label="Contact Number" default-value="No Contact Number on File."></search:field>
+                    <search:field name="number" styling="label-left" label="Worth" number-format="£#,###.##"></search:field>
+                    <search:field name="madeup" styling="label-left" label="Test"></search:field>
+                    <search:field name="longstring" styling="label-left" label="Long String" max-characters="40" show-more></search:field>
+                </div>
+            </layout:block>
+        </search:result>
+    </search:result-list>
+</layout:grid>
+<layout:grid>
+    <layout:block>
+</layout:grid>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                hits:{
+                    act:['long','1234']
+                },
+                facets: {
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Testing Tester']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 35]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2014-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[123456789]
+                                },
+                                longstring:{
+                                    name:'longstring',
+                                    val:['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.']
+                                }
+                            },
+                        },
+                    },
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Foo (Bar)']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 26]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2015-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[-123456789]
+                                }
+                            },
+                        },
+                    },
+                ],
+            }
+            $scope.results = $scope.response.results;
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchResultList.png)</Frame>

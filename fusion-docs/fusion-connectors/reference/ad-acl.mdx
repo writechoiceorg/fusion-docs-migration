@@ -1,0 +1,25 @@
+---
+title: "Active Directory for ACLs V1"
+description: "Connector Configuration Reference"
+permalink: "45"
+---
+
+Compatible with Fusion version: 4.2.6 through 4.2.6
+
+The Active Directory Connector for ACLs indexes Access Control List (ACL) information into a configured "sidecar" Solr collection, so that it can be used by other connectors.
+
+For information on using the collection, see [Use The Active Directory ACL Collection (V1)](/how-to/842/use-the-active-directory-acl-collection-v-1).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-ldap-acls.mdx";
+
+<SchemaParamFields schema={schema}/>
+

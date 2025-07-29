@@ -1,0 +1,129 @@
+---
+title: "Chunking"
+permalink: "u1gxz0"
+---
+
+Chunking breaks down large documents into manageable pieces.
+Each chunk generates its own vector, resulting in multiple vectors that collectively represent a field from a single parent document.
+This is useful for large documents that exceed maximum vector dimensions.
+
+Chunking helps search because smaller pieces of text are easier to match accurately with a user’s query. When the AI searches through chunks instead of whole documents, it avoids irrelevant content and focuses only on the most relevant parts. This reduces noise, improves precision, and increases the chances of finding the exact answer or context the user needs.
+
+Chunking helps retrieval augmented generated (RAG) by giving the system smaller, focused pieces of information to choose from when answering a question. Instead of pulling in a whole document, RAG can retrieve just the chunks that are most relevant. This makes the answer more accurate because the model is only looking at the parts that actually match the question. It also reduces the chance of including unrelated or confusing content in the final response.
+
+<Note>
+This feature is only available in Fusion 5.9.x for versions 5.9.12 and later.
+</Note>
+
+## How chunking works
+
+Chunking works by limiting the context length to 512 tokens.
+Ideally, a chunk represents a complete thought or idea and is usually a sentence or two in length.
+Chunking should also balance computational efficiency.
+For example, you should be careful to not generate too many chunks per document, because each chunk is represented by a vector of O(1000) floats, which can affect performance and resource usage.
+
+<Note>
+There are limits to both the request and response payloads sent to the LWAI Chunker from Fusion. Currently Fusion truncates the body of text sent to Lucidworks AI for chunking to 50,000 characters (O(100) pages).
+</Note>
+
+## Chunking in Neural Hybrid Search
+
+You can set up Neural Hybrid Search to index, rank, and retrieve documents based on a combination of lexical and chunked vectors.
+
+To use chunking in Neural Hybrid Search, you must use Lucidworks AI. Chunking is not supported for Ray or Seldon implementations. For more information, see the [Lucidworks AI Async Chunking API](/lw-platform/ai/fpqd94/async-chunking-api).
+
+In order to set up the Lucidworks AI index and query stages, you need to first set up your [Lucidworks AI Gateway integration](/how-to/y6euxl). This guide also assumes that you’ve set up and configured a datasource.
+
+Setting up chunking in Neural Hybrid Search is similar to a standard [Neural Hybrid search](/how-to/jk43nv/configure-neural-hybrid-search) implementation, except that the LWAI Chunker Stage replaces the [LWAI Vectorize Field stage](/fusion/5.9/t16i6m/lwai-vectorize-field) and the [Chunking Neural Hybrid Query stage](/fusion/5.9/4klbo6/chunking-neural-hybrid-query-stage) replaces the [Neural Hybrid Query](/fusion/5.9/mb500k/neural-hybrid-query-stage) or [Hybrid Query](/fusion/5.9/fgbib5/hybrid-query-stage) stages.
+
+Click **Get Started** below to see how to enable chunking in Fusion:
+
+<iframe src="https://app.supademo.com/embed/cmbjyucmh00j9xu0j0vmhkoum?embed_v=2" loading="lazy" title="Enable chunking in Fusion" allow="clipboard-write" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+
+### Set up LWAI Chunker index pipeline stage
+
+1. Sign into Fusion, go to **Indexing** > **Index Pipelines**, then select an existing pipeline or create a new one.
+2. Click **Add a new pipeline stage**, then select **LWAI Chunker Stage**. For reference information, see [LWAI Chunker Index Stage](/fusion/5.9/dm5m4e/lwai-chunker-index-stage).
+3. In the **Account Name** field, select the Lucidworks AI API account name defined in [Lucidworks AI Gateway](/lw-platform/ai/41gdb7/lucidworks-ai-gateway).
+4. In the **Chunking Strategy** field, select the [strategy](/lw-platform/ai/fpqd94/async-chunking-api#chunking-strategies-chunkers) to use. For example, `sentence`.
+5. In the **Model for Vectorization** field, select the Lucidworks AI model to use for encoding. For more information, see:
+
+   * [Pre-trained embedding models](/lw-platform/ai/3vqfxe/pre-trained-embedding-models)
+   * [Custom embedding model training](/lw-platform/ai/k1zkfn/custom-embedding-model-training). To use a custom model, you must obtain the deployment ID from the deployments screen, or from the [Lucidworks AI Models API](/lw-platform/ai/e63rmi/models-api) and enter that in the Model field.
+6. In the **Input context variable** field, enter the variable in context to be used as input. This field supports template expressions.
+7. In the **Source** field, enter the name of the string field where the value should be submitted to the model for encoding. If the field is blank or does not exist, this stage is not processed. Template expressions are supported.
+8. In the **Destination Field Name & Context Output** field, enter the name of the field where the vector value from the model response is saved.
+
+   <Note>
+   This field must contain `chunk_vector` and must be a dense vector field type. This field is used to populate two things with the prediction results:
+
+   1. The field name in the document that will contain the prediction.
+   2. The name of the context variable that will contain the prediction.
+   </Note>
+
+
+9. In the **Destination Field Name for Text Chunks (not the vectors)** field, enter the field name that will contain the text chunks that are generated by the chunker. For example, `body_chunks_ss`.
+10. In the **Chunker Configuration** section, click the **+** sign to enter the parameter name and value for additional chunker keys to send to Lucidworks AI. For example, to limit the chunk size to two sentences, enter `chunkSize` and `2`, respectively.
+11. In the **Model Configuration** section, click the **+** sign to enter the parameter name and value for additional model configurations to send to Lucidworks AI. Several `modelConfig` parameters are common to generative AI use cases.
+12. In the **API Key** field, enter the secret associated with the model. For example, for OpenAI models, the value would start with `sk-`.
+13. In the **Maximum Asynchronous Call Tries** field, enter the maximum number of attempts to issue an asynchronous Lucidworks AI API call. The default value is `3`.
+14. Select the **Fail on Error** checkbox to generate an exception if an error occurs while generating a prediction for a document.
+15. Click **Save**.
+
+### Set up Solr Partial Update Indexer stage
+
+Fusion’s asynchronous chunking process is optimized for efficiency and reliability.
+To achieve this, it leverages the [Solr Partial Update Indexer](/fusion/5.9/233/solr-partial-update-indexer-stage) stage and a single index pipeline visited twice.
+
+1. In the same pipeline, click **Add a new pipeline stage**, then select **Solr Partial Update Indexer**.
+2. Select the checkboxes to disable **Map to Solr Schema**, **Enable Concurrency Control**, and **Reject Update if Solr Document is not Present**.
+3. Select the checkbox to enable **Process All Pipeline Doc Fields**.
+4. Select the checkbox to enable **Allow reserved fields**.
+5. Click **Save**.
+
+Index data using the new pipeline.
+
+### Set up LWAI Vectorize Query stage
+
+1. Go to **Querying > Query Pipelines**, then select an existing pipeline or create a new one.
+2. To vectorize text, click **Add a new pipeline stage**.
+3. Click **Add a new pipeline stage**, then select **LWAI Vectorize Query**.
+4. In the **Account Name** field, select the name of the Lucidworks AI account.
+5. In the **Model** field, select the Lucidworks AI model to use for encoding.
+6. In the **Query Input** field, enter the location from which the query is retrieved.
+7. In the **Output context variable** field, enter the name of the variable where the vector value from the response is saved.
+8. In the **Use Case Configuration** section, click the **+** sign to enter the parameter name and value to send to Lucidworks AI. The `useCaseConfig` parameter that is common to generative AI and embedding use cases is `dataType`, but each use case may have other parameters. The value for the query stage is `query`.
+9. In the **Model Configuration** section, click the **+** sign to enter the parameter name and value to send to Lucidworks AI. Several `modelConfig` parameters are common to generative AI use cases. For more information, see [Prediction API](/lw-platform/ai/8bx4m9/prediction-api).
+10. Select the **Fail on Error** checkbox to generate an exception if an error occurs during this stage.
+11. Click **Save**.
+
+### Set up Chunking Neural Hybrid Query pipeline stage
+
+1. In the same query pipeline where you configured LWAI Vectorize Query stage, click **Add a new pipeline stage**, then select **Chunking Neural Hybrid Query Stage**. For reference information, see [Chunking Neural Hybrid Query Stage](/fusion/5.9/4klbo6/chunking-neural-hybrid-query-stage).
+2. In the **Lexical Query Input** field, enter the location from which the lexical query is retrieved. For example, `<request.params.q>`. Template expressions are supported.
+3. In the **Lexical Query Weight** field, enter the relative weight of the lexical query. For example, `0.3`. If this value is `0`, no re-ranking will be applied using the lexical query scores.
+4. In the **Lexical Query Squash Factor** field, enter a value that will be used to squash the lexical query score. For this value, Lucidworks recommends entering the inverse of the lexical maximum score across all queries for the given collection.
+5. In the **Vector Query Field**, enter the name of the Solr field for k-nearest neighbor (KNN) vector search. For example, `body_chunk_vector_384v`.
+6. In the **Vector Input** field, enter the location from which the vector is retrieved. Template expressions are supported. For example, a value of `<ctx.vector>` evaluates the context variable resulting from the LWAI Vectorize Query stage.
+7. In the **Vector Query Weight** field, enter the relative weight of the vector query. For example, **0.7**.
+8. In the **Min Return Vector Similarity** field, enter the minimum vector similarity value to qualify as a match from the Vector portion of the hybrid query.
+9. In the **Min Traversal Vector Similarity** field, enter the minimum vector similarity value to use when walking through the graph during the Vector portion of the hybrid query.
+10. Select the checkbox to enable the **Compute Vector Similarity for Lexical-Only Matches** setting. When enabled, this setting computes vector similarity scores for documents in lexical search results but not in the initial vector search results.
+11. Select the checkbox to enable the **Block pre-filtering** setting. When enabled, this setting prevents pre-filtering that can interfere with facets and cause other issues.
+12. Click **Save**.
+
+### Validate chunking in the Query Workbench
+
+Once configured, go to the Query Workbench to run some queries and check that vectorization and chunking are working properly.
+
+If you facet by the vector query field (in this example, `body_chunk_vector_384v`) you see your indexed documents have vectors.
+
+<Frame>![fusion chunking vectors](/assets/images/5.9/5.9.12/chunking/fusion-chunking-vectors.png)</Frame>
+
+<Note>
+If you have a large dataset with thousands of docs, you should set this field to `stored=false`. Storing vectors in Solr for that many docs can results in memory issues. Refer to the [Solr documentation on override properties](https://solr.apache.org/guide/solr/latest/indexing-guide/fields.html#optional-field-type-override-properties) for more information.
+</Note>
+
+If you facet by `_lw_chunk_root`, you see `body_chunk_ss`. In this example, the chunk size is limited to two sentences, so this document has 29 chunks of two sentences each.
+
+<Frame>![fusion chunking response](/assets/images/5.9/5.9.12/chunking/fusion-chunking-response.png)</Frame>

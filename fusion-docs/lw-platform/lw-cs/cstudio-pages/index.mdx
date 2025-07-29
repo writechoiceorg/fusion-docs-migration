@@ -1,0 +1,153 @@
+---
+title: "Pages"
+permalink: "t968bf"
+---
+
+Pages let you create and customize screens that align Commerce Studio with your website’s search experience. These pages are a valuable tool to create, test, and refine how users interact with your site.
+
+To test search scenarios using the pages, you can set up and manage rules in [Ranking Rules](/lw-platform/cs/ravw5k/ranking-rules) and [Visual Editor](/lw-platform/cs/l6f36o/visual-editor). Then, you can test your customer’s search experience in both Visual Editor and [Live Site Simulator](/lw-platform/cs/93f8tp/live-site-simulator).
+
+## Key pages to build
+
+The number and types of pages you build depends on your business and use case.
+In general, it’s helpful to create the following pages:
+
+* **A landing page.** What do customers see when they arrive on your website?
+* **Category pages.** How are your products organized?
+* **Campaign pages.** Does your website have pages for sales, bestselling items, or special promotions?
+
+Experiment with different versions of the same page.
+For example, create multiple landing pages to try out new product layouts and see how that affects discoverability.
+
+## Manage pages
+
+To get started working with pages, navigate to the Pages screen.
+
+### Configure Typeahead
+
+You can configure typeahead settings for all pages.
+
+1. Click **Typeahead Settings > Create Typeahead**.
+2. In the **Query Profile** field, enter the existing Fusion query profile name that points your search application to the specified static endpoint.
+3. Click the **Layout and Item Fields > Add Field**.
+
+<Frame>![Create Commerce Studio Instance](/assets/images/lw-platform/commerce-studio/lw-cs-create-typeahead.png)</Frame>
+
+4. In the **Field Name**, enter the field name from your site that is searched to match customer search terms.
+5. Select a **Field Style** of `price`, `url` of the data, or `generic` text.
+6. Click **Create**.
+
+### Create a page
+
+A page is comprised of Facets, Recommendations, and Results Lists.
+
+1. Click **Create New Page** and enter a **Name** for the page. If desired, enter an optional **Description** to identify the page and then click **Next**.
+2. Click **Add New Sections** and select an option from the menu:
+
+   * **Facets**
+   * **Recommendations**
+   * **Result List**
+
+This example adds **Facets**, but the same fields are required if you add Recommendations or Result List.
+
+<Frame>![Create facet](/assets/images/lw-platform/commerce-studio/lw-cs-create-facet.png)</Frame>
+
+3. In the **Name** field, enter a name for the section.
+4. In the **Query Profile** field, enter the existing Fusion query profile name that points your search application to the specified static endpoint.
+
+To view the steps for a specific page section, click the title tab.
+
+Facets
+Recommendations
+Result List
+
+1. Click the **Facets Field** tab and then click **Add Facets**.
+
+Here is an example adding a product color facet.
+
+<Frame>![Create facet](/assets/images/lw-platform/commerce-studio/lw-cs-create-facet-fields.png)</Frame>
+
+2. In the **Facet Field**, enter the field name and a **Facet Type** of a single **Field** or enter a **Range** that adds the range to the lower boundary.
+3. Click **Advanced** to specify what the facet displays such as single or multiple selection, sort order, what is included in the response and what is boosted, buried, or suppressed. You can also set multiple response value.
+4. Complete one of the following:
+
+   * If you want to add another section, click **Add New Sections**, select the type of section (Recommendations or Result List), and use the steps outlined for that type to create that section.
+   * If you have added all of the page’s sections, click **Next**. If you want to change the order of the sections, click and hold the section to move, and drag it to the correct place. Click **Create New Page**.
+
+1. Click the **Layout and Item Fields** tab and then click **Add Field**.
+
+<Frame>![Create recommendations](/assets/images/lw-platform/commerce-studio/lw-cs-create-recommendation-field.png)</Frame>
+
+2. Enter the **Field Name** used for the recommendation.
+3. Select a **Field Style** of `price`, `url` of the data, or `generic` text.
+4. Enter a **Field Display Name.** For example, the Field Display Name for the `product_title_s` field is `Product Name`. If you add the `price_s` field, the Field Display Name can be any text such as `Price`.
+5. Click **Inline Analytics** to configure the metrics on each item card such as the amount of time calculated in the metrics, the signal document field that stores metrics, and types of metrics (ATC, RPV, and CVR). If this is not selected, metrics do not display on the items.
+6. Complete one of the following:
+
+   * If you want to add another section, click **Add New Sections**, select the type of section (Facets or Result List), and use the steps outlined for that type to create that section.
+   * If you have added all of the page’s sections, click **Next**. If you want to change the order of the sections, click and hold the section to move, and drag it to the correct place. Click **Create New Page**.
+
+1. Click the **Layout and Item Fields** tab and enter the **Field Name** for the result list.
+
+<Frame>![Create result list](/assets/images/lw-platform/commerce-studio/lw-cs-create-result-list.png)</Frame>
+
+2. Select a **Field Style** from the menu. The options are `Image` and `Title`.
+3. Select **Show Variants** to enter an alternative **Field Name**, **Field Style** and **Variant SKU ID** .
+4. Optional: Click **Add Field** to enter additional entries in **Field Name**, **Field Style**, and **Field Display Name.** For example, the Field Display Name for the `product_title_s` field is `Product Name`. If you add the `price_s` field, the Field Display Name can be any text such as `Price`.
+5. Click **Inline Analytics** to configure the metrics on each item card such as the amount of time calculated in the metrics, the signal document field that stores metrics, and types of metrics (ATC, RPV, and CVR). If this is not selected, metrics do not display on the items.
+6. Complete one of the following:
+
+   * If you want to add another section, click **Add New Sections**, select the type of section (Facets or Recommendations), and use the steps outlined for that type to create that section.
+   * If you have added all of the page’s sections, click **Next**. If you want to change the order of the sections, click and hold the section to move, and drag it to the correct place. Click **Create New Page**.
+
+### Edit a page
+
+To edit a page, hold the pointer over the entry and click the pencil icon. Enter the changes for the specific page and click **Edit Page**.
+
+<Note>
+To edit the section order of a page, you must edit a field first.
+</Note>
+
+
+
+### Delete a page
+
+1. Select the checkbox of the page to delete.
+2. Click the trash can icon.
+
+You can also delete the page if you hold the pointer over the page and click the trash can icon.
+
+To delete multiple pages, select the checkbox for each of the pages to delete and then click the trash can icon.
+
+<Warning>
+**Caution**
+
+Pages are deleted permanently. There is no way to undo this action.
+
+</Warning>
+
+
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Creating pages in Commerce Studio** focuses on how to customize the contents of the Visual Editor:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/creating-pages-in-commerce-studio" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/creating-pages-in-commerce-studio.jpg" alt="Creating pages in Commerce Studio" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+

@@ -1,0 +1,26 @@
+---
+title: "Send SMTP Email Stage"
+permalink: "253"
+---
+
+This stage sends an SMTP message from Fusion, for alerting, reporting, and more, using Fusion’s [Messaging Services](/fusion-server/4.2/135/messaging-and-alerting).
+
+## Enabling Email Messaging
+
+Before you can use the Email pipeline stage, you must enable Email messaging in Fusion:
+
+1. Click **Applications > System > Messaging Services**.
+2. Select **SMTP Message Service** from the drop-down menu.
+3. Verify that the default settings are sufficient.
+4. Click **Save message service**.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/send-smtp-email.mdx";
+
+<SchemaParamFields schema={schema}/>

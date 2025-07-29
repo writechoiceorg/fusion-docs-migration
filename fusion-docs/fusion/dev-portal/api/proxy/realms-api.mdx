@@ -1,0 +1,141 @@
+---
+title: "Realms API"
+description: "Fusion Proxy APIs"
+permalink: "337"
+---
+
+Realms are used to authenticate users across several different user access control systems.
+
+For more information, [view the API specification.](?open-api=true)
+
+There are seven realm types currently supported:
+
+* [Native](/fusion/5.9/127/security-realms#native), which uses Fusion itself to manage users and passwords.
+* [LDAP](/fusion/5.9/127/security-realms#ldap), which uses an LDAP server as the source of truth for usernames and passwords.
+* [Kerberos](/fusion/5.9/127/security-realms#kerberos), where Fusion can be configured to use Kerberos for authentication.
+* [SAML](/fusion/5.9/127/security-realms#saml), which uses the SAML 2.0 protocol to provide single sign-on.
+* [SSO Trusted HTTP](/fusion/5.9/127/security-realms#sso-trusted-http), which can be configured to return a list of group names, and then map the groups to Fusion roles in the security realm definition.
+* [JSON Web Token (JWT)](/fusion/5.9/127/security-realms#jwt), where you can configure Fusion to use a shared secret key to encrypt the JWT payload.
+* [OpenID Connect](/fusion/5.9/127/security-realms#openid-connect), which is an identity authorization layer that supplements the OAuth 2.0 protocol.
+  See [Security Realms](/fusion/5.9/127/security-realms) for more information about each realm type.
+
+Authenticating users with an LDAP system creates a user record in Fusion, which includes a property for the realm the user belongs to. This Fusion user record is used by administrators to grant users access permissions for the UI or REST API services.
+
+## Create, Update, Delete or List Realms
+
+The path for this request is:
+
+`/api/realm-configs/<id>`
+
+where *\<id>* is the ID of a realm. The ID is optional for a GET request and omitted from a POST request.
+
+A GET request returns the configured realms. If ID is omitted, all realms will be returned.
+
+A POST request creates a new realm. If the request is successful, a new ID will be generated.
+
+A PUT request updates a realm.
+
+A DELETE request removes the realm.
+
+### Input
+
+| Parameter | Description |
+| --- | --- |
+| name  *Required* | The name of the realm. This name will appear on the login screen of the UI, and will appear in user records to identify the realm they belong to. |
+| realmType  *Required* | String value for realm type. |
+| enabled  *Required* | If **true**, the realm is available for users to use with system authentication. |
+| ephemeralUsers | Prevents ephemeral users from being created in ZooKeeper during login. Enabling this property negates `config.autoCreateUsers`. |
+| config.autoCreateUsers | Enables/disables the auto-creation of Fusion user accounts after users successfully authenticate for the first time. |
+| roleNames | Indicates which roles are dynamically applied to users in the realm. |
+
+#### Additonal Properties per Realm Type
+
+Each realm type requires additional properties for configuration, which should be specified within the `config` object field.
+
+See the following documentation for each realm type:
+
+* **Native.** Native is a preconfigured security realm and Fusion manages all authentication and permissions information directly.
+* **LDAP.** [Configure Fusion 5.x for LDAP](/how-to/dr4445/configure-fusion-5-x-for-ldap)
+* **Kerberos.** [Configure Fusion for Kerberos in Unix](/how-to/741/configure-fusion-for-kerberos-in-unix), [Configure Fusion for Kerberos in Windows](/how-to/674/configure-fusion-for-kerberos-in-windows)
+* **SAML.** [Configure Fusion for SAML](/how-to/863/configure-fusion-for-saml)
+* **SSO Trusted HTTP.** [Configure Fusion for SSO](/how-to/816/configure-fusion-for-sso)
+* **JWT.** [Configure Fusion for JWT](/how-to/835/configure-fusion-for-jwt)
+* **OpenID Connect.** [Configure OpenID Connect Authentication](/how-to/650/configure-open-id-connect-authentication)
+
+### Output
+
+When creating a new realm, the output will include the properties for the realm just created, or an error to indicate a problem with the entry.
+
+For a GET request, the output will include all defined properties of the realm.
+
+For a DELETE or a PUT request, no output will be returned.
+
+### Examples
+
+*Get details of the default 'native' realm:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/realm-configs/86df9b5b-4a1c-4b0b-bc10-25aee55fef63
+```
+
+RESPONSE
+
+```json
+{
+    "enabled": true,
+    "id": "86df9b5b-4a1c-4b0b-bc10-25aee55fef63",
+    "name": "native",
+    "realmType": "native"
+}
+```
+
+*Create a realm to support LDAP authentication:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{
+    "realmType": "ldap",
+    "name": "dev-ldap3",
+    "enabled": true,
+    "roleNames": ["developer","admin"],
+    "config": {
+        "autoCreateUsers": true,
+        "host": "FUSION_HOST",
+        "ssl": true,
+        "port": 10636,
+        "ephemeralUsers": false,
+        "login": {
+            "bindDnTemplate": "uid={},ou=users,dc=security,dc=example,dc=com"
+        }
+    }
+}' https://FUSION_HOST:FUSION_PORT/api/realm-configs
+```
+
+RESPONSE
+
+```json
+{
+    "realmType": "ldap",
+    "id": "fd90a918-1e5c-4f27-952c-fd81a068ee85",
+    "name": "dev-ldap3",
+    "enabled": true,
+    "createdAt": "2021-07-28T15:15:04Z",
+    "config": {
+        "autoCreateUsers": true,
+        "host": "FUSION_HOST",
+        "ssl": true,
+        "port": 10636,
+        "ephemeralUsers": false,
+        "login": {
+            "bindDnTemplate": "uid={},ou=users,dc=security,dc=example,dc=com"
+        }
+    },
+    "roleNames": [
+        "developer",
+        "admin"
+    ]
+}
+```

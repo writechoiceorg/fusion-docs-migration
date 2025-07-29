@@ -1,0 +1,31 @@
+---
+title: "Spark Components"
+permalink: "191"
+---
+
+This diagram shows the Spark components available from Fusion:
+
+<Frame>![Spark components in Fusion](/assets/images/common/spark-processes.png)</Frame>
+
+## Spark components in Fusion
+
+* **Application.** An active SparkContext in the Spark Master web UI, which consists of a classpath and a configuration.
+
+  Jobs submitted to the cluster always run as classes in a specific application, that is, using the application’s classpath and configuration.
+* **SparkDriver.** The Spark driver program, a JVM process launched by the Fusion API service to execute Fusion jobs in Spark
+  SparkDriver creates and manages SparkContext for the Fusion application, and stops SparkContext when it is no longer needed.
+* **Spark master** (`spark-master`): Agent-managed Fusion service that coordinates worker processes and applications in a Spark cluster.
+
+  You should run at least 2 spark-master processes per cluster to achieve high-availability.
+  ZooKeeper determines which spark-master process is the leader and handles fail-over.
+* **Spark worker** (`spark-worker`): Agent-managed Fusion service that launches executors for Spark applications.
+  Spark-workers communicate with the master to launch executors for an application.
+* **SQL service** (`sql`): Agent-managed Fusion service that runs Spark’s thrift-based SQL engine.
+  It provides JDBC access to a Spark cluster.
+* **Spark shell** (`spark-shell`): Wrapper script provided with Fusion to launch the Spark Scala REPL shell with the correct master URL (pulled from Fusion’s API) and a shaded Fusion JAR added.
+* **Custom script job.** A Fusion job that executes a custom Scala script using the Spark shell.
+* **Spark Job Workbench.** A toolkit provided by Lucidworks to help build custom Spark jobs using Scala, Java, or Python. See [Spark Job Workbench](https://github.com/lucidworks/fusion-spark-job-workbench).
+* **CoarseGrainedExecutorBackend.** Executor process(es) launched by a spark-worker to execute the tasks for a specific application, such as the spark-shell.
+* **Shaded JAR.** The Fusion API service creates an assembly jar (also call an uber jar) that contains all of the dependencies needed to use spark-solr and Fusion classes within a Spark job.
+
+  Classes that conflict with classes on Spark’s classpath are shaded to ensure that Fusion classes use the correct version.

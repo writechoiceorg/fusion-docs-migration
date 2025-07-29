@@ -1,0 +1,154 @@
+export const schema = {
+  "type": "object",
+  "title": "Ground Truth",
+  "description": "Use this job when you want to estimate ground truth queries using click and query signals with document relevance per query determined using a click/skip formula. Pair this job with ranking metrics job to calculate relevance metrics, such as nDCG",
+  "required": [
+    "id",
+    "signalsCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "signalsCollection": {
+      "type": "string",
+      "title": "Signals collection",
+      "description": "Collection containing click signals and the associated search log identifier",
+      "minLength": 1
+    },
+    "searchLogsAddOpts": {
+      "type": "object",
+      "title": "Search Logs and Options",
+      "description": "Additional options to use while loading search logs collection",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "signalsAddOpts": {
+      "type": "object",
+      "title": "Additional Signals Options",
+      "description": "Additional options to use while loading signals collection",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "searchLogsPipeline": {
+      "type": "string",
+      "title": "Search Logs Pipeline",
+      "description": "Pipeline id associated with search log entries",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "joinKeySearchLogs": {
+      "type": "string",
+      "title": "Join Key (Query Signals)",
+      "description": "Join key of query signals in the signals collection",
+      "default": "id",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "joinKeySignals": {
+      "type": "string",
+      "title": "Join Key (Click Signals)",
+      "description": "Join key of click signals in the signals collection",
+      "default": "fusion_query_id",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "filterQueries": {
+      "type": "array",
+      "title": "Filter Queries",
+      "description": "Filter queries to apply while choosing top queries from query signals in signals collection",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "topQueriesLimit": {
+      "type": "integer",
+      "title": "Top Queries Limit",
+      "description": "Total number of queries to pick for Ground truth calculations",
+      "default": 100,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "ground_truth"
+      ],
+      "default": "ground_truth",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "signalsCollection"
+      ]
+    },
+    {
+      "label": "Additional Options",
+      "properties": [
+        "searchLogsPipeline",
+        "joinKeySearchLogs",
+        "joinKeySignals",
+        "searchLogsAddOpts",
+        "signalsAddOpts",
+        "filterQueries",
+        "topQueriesLimit"
+      ]
+    }
+  ]
+}

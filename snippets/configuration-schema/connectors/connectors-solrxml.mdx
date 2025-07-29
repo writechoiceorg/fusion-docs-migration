@@ -1,0 +1,359 @@
+export const schema = {
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Connector to index XML files formatted according to Solr's XML structure. This connector can only index SolrXML formatted documents and is not a generic XML file crawler. Per the Solr standard, all XML files must include the <add> tag in order for the documents to be added to the index.",
+  "properties": {
+    "category": {
+      "default": "Filesystem",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description for this datasource.",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Datasource ID",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1,
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Datasource configuration properties",
+      "properties": {
+        "collection": {
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Collection",
+          "type": "string"
+        },
+        "commit_on_finish": {
+          "default": true,
+          "description": "Set to true for a request to be sent to Solr after the last batch has been fetched to commit the documents to the index.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Solr commit on finish",
+          "type": "boolean"
+        },
+        "db": {
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "properties": {
+            "aliases": {
+              "default": false,
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "title": "Process Aliases?",
+              "type": "boolean"
+            },
+            "inlinks": {
+              "default": false,
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "title": "Process Inlinks?",
+              "type": "boolean"
+            },
+            "inv_aliases": {
+              "default": false,
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "title": "Process Inverted Aliases?",
+              "type": "boolean"
+            },
+            "type": {
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "minLength": 1,
+              "title": "Implementation Class Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "Connector DB",
+          "type": "object"
+        },
+        "exclude_paths": {
+          "default": [],
+          "description": "An array of regular expression patterns that indicate documents to be excluded from the index. Multiple expressions can be separated by commas.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclude paths",
+          "type": "array"
+        },
+        "generate_unique_key": {
+          "default": true,
+          "description": "If true, a unique identifier will be added to each document. In most cases, this is an 'id' field, unless it was changed in your implementation. If your documents already include an ID field, you can set this to false.",
+          "title": "Generate unique key?",
+          "type": "boolean"
+        },
+        "include_datasource_metadata": {
+          "default": true,
+          "description": "Set True to add '_lw_data_source_s' and '_lw_data_source_type_s' fields to each document in addition to fields found in the file. These fields will ensure these documents are associated with this datasource for faceting, information shown in the UI, or later document removal.",
+          "title": "Include datasource metadata?",
+          "type": "boolean"
+        },
+        "include_paths": {
+          "default": [
+            ".*\\.xml"
+          ],
+          "description": "An array of regular expression patterns that indicate documents to be included in the index. Multiple expressions can be separated by commas.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Include paths",
+          "type": "array"
+        },
+        "initial_mapping": {
+          "category": "Field Transformation",
+          "categoryPriority": 6,
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "hints": [
+            "advanced"
+          ],
+          "properties": {
+            "condition": {
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ],
+              "title": "Condition",
+              "type": "string"
+            },
+            "label": {
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255,
+              "title": "Label",
+              "type": "string"
+            },
+            "mappings": {
+              "description": "List of mapping rules",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "properties": {
+                  "operation": {
+                    "default": "copy",
+                    "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                    "enum": [
+                      "copy",
+                      "move",
+                      "delete",
+                      "set",
+                      "add",
+                      "keep"
+                    ],
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Operation",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "The name of the field to be mapped.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Source Field",
+                    "type": "string"
+                  },
+                  "target": {
+                    "description": "The name of the field to be mapped to.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Target Field",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "type": "object"
+              },
+              "title": "Field Mappings",
+              "type": "array"
+            },
+            "reservedFieldsMappingAllowed": {
+              "default": false,
+              "hints": [
+                "advanced"
+              ],
+              "title": "Allow System Fields Mapping?",
+              "type": "boolean"
+            },
+            "skip": {
+              "default": false,
+              "description": "Set to true to skip this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "title": "Skip This Stage",
+              "type": "boolean"
+            },
+            "unmapped": {
+              "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+              "hints": [
+                "advanced"
+              ],
+              "properties": {
+                "operation": {
+                  "default": "copy",
+                  "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                  "enum": [
+                    "copy",
+                    "move",
+                    "delete",
+                    "set",
+                    "add",
+                    "keep"
+                  ],
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Operation",
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The name of the field to be mapped.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Source Field",
+                  "type": "string"
+                },
+                "target": {
+                  "description": "The name of the field to be mapped to.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Target Field",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source"
+              ],
+              "title": "Unmapped Fields",
+              "type": "object"
+            }
+          },
+          "title": "Initial field mapping",
+          "type": "object",
+          "unsafe": false
+        },
+        "max_docs": {
+          "default": -1,
+          "description": "The maximum number of documents to crawl. Use -1 to index all documents found.",
+          "title": "Max documents",
+          "type": "integer"
+        },
+        "path": {
+          "description": "Name of the file to read, or directory containing files to read.",
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "url": {
+          "description": "Read-only value that shows the absolute path.",
+          "hints": [
+            "readonly",
+            "hidden"
+          ],
+          "minLength": 1,
+          "title": "URL",
+          "type": "string"
+        },
+        "verify_access": {
+          "default": true,
+          "description": "Set to true to require successful connection to the filesystem before saving this datasource.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Validate access",
+          "type": "boolean"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "include_paths",
+            "exclude_paths"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ],
+      "required": [
+        "path"
+      ],
+      "title": "Properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Datasource Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "Connector to index XML files formatted according to Solr's XML structure. This connector can only index SolrXML formatted documents and is not a generic XML file crawler. Per the Solr standard, all XML files must include the <add> tag in order for the documents to be added to the index.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "title": "SolrXML",
+  "type": "object",
+  "unsafe": false
+}

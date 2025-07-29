@@ -1,0 +1,153 @@
+---
+title: "Items-for-Item Recommendations Configuration (ALS)"
+permalink: "539"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+## Basic job configuration
+
+For items-for-item and items-for-user recommendations, the basic fields for configuring the `COLLECTION_NAME_item_recommendations` job are described below. To refine this job further, see [Advanced job configuration](#advanced).
+
+* `numRecs`/**Number of User Recommendations to Compute**
+
+  This is the number of recommendations that you want to return *per item* (for items-for-item recommendations) or *per user* (for items-for-user recommendations) in your dataset.
+
+  Increasing this number up to 1000 will not cost too much computationally because the intensive work of computing the matrix decomposition (involving optimization) is already done by the time these recommendations are generated.
+
+  Think of this as generating a matrix where the rows are the users and the columns are the recommendations. If we choose 1000 items to recommend, the size of the matrix will be `(number of users) x (number of items to recommend)`. For instance, if there are 10,000 users and 1000 recommendations, then the size of the matrix will be `10,000x1000`.
+
+### Input/output parameters
+
+* `trainingCollection`/**Recommender Training Collection**
+
+  Usually this should point to the `COLLECTION_NAME_recs_aggr` collection. If you are using another aggregated signals collection, verify that this field points to the correct collection name.
+* `outputItemSimCollection`/**Item-to-item Similarity Collection**
+
+  Usually this should point to the
+  `COLLECTION_NAME_items_for_item_recommendations` collection.
+  `COLLECTION_NAME_items_for_user_recommendations` collection.
+  This collection will store the `N` most similar items for every item in the collection, where `N` is determined by the `numSims`/**Number of Item Similarities to Compute** field described below. Fusion can query this collection after the job to determine the most similar items to recommend based on an item choice.
+
+  <Note>
+  You can only specify a secondary collection of the collection with which this job is associated. For example, if you have a `Movies` collection and a `Films` collection and this job is associated with the `Movies` collection, then you cannot specify the `Films_items_for_item_recommendations` collection here.
+  </Note>
+
+### Model tuning parameters
+
+* `numSims`/**Number of Item Similarities to Compute**
+
+  This is similar to `numRecs`/**Number of User Recommendations to Compute** in the sense that this number of similar items are found for each item in the collection. Think of it as a matrix of size: `(number of items) x (number of item similarities to compute)`.
+
+  This is not computationally expensive because it is just a similarity calculation (which involves no optimization). A reasonable value would be 30–250. It will also depend on the number of items displayed in your search application.
+* `implicitRatings`/**Implicit Preferences**
+
+  The concept of Implicit preferences is explained in [Implicit vs explicit signals](/fusion/5.9/469/signals#implicit-signals-vs-explicit-signals).
+
+  In this tutorial it is assumed that we submit no information about the items and the users (think of user and item features) but simply rely on the user-item interaction as a means to recommend similar products. That is the power of using implicit signals: we don’t need to know information about the user or the item, just how much they interact with each other.
+
+  If explicit ratings values are used (such as ratings from the user) then this box can be unchecked.
+* `deleteOldRecs`/**Delete Old Recommendations**
+
+  If you have reasons not to draw on old recommendations, then check this box. If this box is unchecked, then old recommendations will not be deleted but new recommendations will be appended with a different job ID. Both sets of recommendations will be contained within the same collection.
+
+## Advanced job configuration
+
+You can achieve higher accuracy, and often reduce the training time too, by tuning the `COLLECTION_NAME_item_recommendations` job using the advanced configuration keys described here. In the job configuration panel, click **Advanced** to display these additional fields.
+
+* `excludeFromDeleteFilter`/**Exclude from Delete Filter**
+
+  If you have selected `deleteOldRecs`/**Delete Old Recommendations** but you do not want to completely delete all old recommendations, this field allows you to input a query that captures the data you want keep and removes the rest.
+* `numUserRecsPerItem`/**Number of Users to Recommend to each Item**
+
+  This setting indicates which users (from the known user group) are most likely to be interested in a particular item. The setting allows you to choose how many of the most interested users you would like to precompute and store.
+
+  If one thinks of an estimated user-item matrix (after optimization), an item is a single column from the matrix, so if we wanted the top 100 users per item, we would sort the interest values in that column in descending order and take the top 100 row indexes which would correspond to individual users.
+* `maxTrainingIterations`/**Maximum Training Iterations**
+
+  The Alternating Least Squares algorithm involves optimization to find the two matrices `(user x latent factor and latent factor x item)` that best approximate the original user-item matrix (formed from the signals aggregation).
+
+  The optimization occurs at the matrix entry level (every non-zero element) and it is iterative. Therefore, the more iterations that are allowed during optimization, the lower the cost function value, meaning more accurate hyperparameters which lead to better recommendations.
+
+  However, the bigger the data, the longer the job takes to run because the number of constraints to satisfy have increased. A value of 10 iterations usually leads to effective results. Above a value of 15, the job will begin to slow dramatically for above 25 million signals.
+
+### Training data settings
+
+* `trainingDataFilterQuery`/**Training Data Filter Query**
+
+  This query setting is useful when the main signals collection does not have the [recommended fields](/fusion/5.9/469/signals#important-fields-for-signals). The two most important fields are `doc_id` and `user_id` because the job must have a user-item pairing. Note that depending on how the signals are collected the names `doc_id` and `user_id` can be different, but the concept remains the same.
+
+  There are times when not all the signals have these fields. In this case we can add a query to select a subset of data that does have a user-item pairing. It is done with the following query:
+
+  ```
+  +doc_id:[* TO *] +user_id:[* TO *]
+  ```
+
+  This query returns all signals documents that have a `user_id` and `doc_id` field. Each query is separated by a space. The plus (`+`) sign is a positive request for the field of interest, meaning return signals with `doc_id` instead of signals without `doc_id` (negated or opposite queries are returned by prefixing with a negative (`-`) sign).
+* `popularItemMin`/**Training Data Filter By Popular Items**
+
+  The underlying assumption of this parameter is that the more users that view an item, the more popular that item is. Therefore, this value signifies the minimum number of interactions that must occur with the item for it to be considered a training data point.
+
+  The higher the number, the smaller amount of data available for training because it is unlikely that many users interacted with all of the items. However, the quality of the data will be higher.
+
+  One way to speed up training is to increase this number along with the training data sampling fraction. A reasonable number is between 10 and 20 depending on the application and user base. For instance, a song may be played much more than a movie and both may have more interaction than purchasing an item.
+* `trainingSampleFraction`/**Training Data Sampling Fraction**
+
+  This value is the percentage of the signal data or training data that you want to use for training the recommender job. It is advised to set this value to 1 and reduce the training data size (while increasing quality) by increasing the **Training Data Filter By Popular Items** as well as increasing the weight threshold in the **Training Data Filter Query**.
+* `userIdField`/**Training Collection User Id Field**
+
+  The ALS algorithm needs users, items, and a score of their interaction. The user ID field is the field name within the signal data that represents a user ID.
+* `itemIdField`/**Training Collection Item Id Field**
+
+  The item ID field is the field name within the aggregated signal data that represents the item or documents of interest.
+* `weightField`/**Training Collection Weight Field**
+
+  The weight field contains the score representing the interest of the user in an item.
+* `initialBlocks`/**Training Block Size**
+
+  In [Spark](/fusion/5.9/495/machine-learning), the training data is split amongst the executors in unchangeable blocks. This parameter sets the size of these blocks for training, but it requires advanced knowledge of Spark internals. We recommend leaving this setting at -1.
+
+### Model settings
+
+* `modelId`/**Recommender Model ID**
+
+  The **Recommender Model ID** is assigned the field `modelId` in the `COLLECTION_NAME_items_for_item_recommendations` and `COLLECTION_NAME_items_for_user_recommendations` recommendations collections. This allows you to filter the recommendations by the recommender model ID. When the recommender job runs, a job ID is also assigned; therefore, you can see the results from different runs of the same job parameters. If you want to experiment with different parameters, it is advised to change the recommender model ID to reflect the parameters so that you can find the best parameters.
+* `saveModel`/**Save Model in Solr**
+
+  Saving the model in Solr adds the parameters to the `COLLECTION_NAME_recommender_models` collection as a document. Using this method allows you to track all the recommender configurations.
+* `modelCollection`/**Model Collection**
+
+  This is the collection to store the experiment configurations (`_recommender_models` by default).
+* `alwaysTrain`/**Force model re-training**
+
+  When the job runs, it checks to see whether the model ID for the job already exists in the model collection. If the model does exist, it uses the pre-existing model to get the recommendations. Otherwise, if the box is checked it will re-run the recommender job and redo the optimization from scratch. Unless you need to maintain this ID name, it is advisable to create a separate model ID for each new combination of parameters.
+
+### Grid search settings
+
+* `initialRank`/**Recommender Rank**
+
+  The recommender rank is the number of latent factors into which to decompose the original user-item matrix. A reasonable range is 50-200. Above 200, the performance of the optimization can degrade dramatically depending on computing resources.
+* `gridSearchWidth`/**Grid Search Width**
+
+  Grid search is an automatic way to determine the best parameters for the recommender model. It tries different combinations of parameters of equally spaced units within a parameter domain and takes the model that has the lowest cost function value. This is a long process because a single run can take several hours depending on the computing resources, so trying multiple combinations can take some time. Depending on the size of your training data, it is better to do a manual grid search to reduce the number of runs needed to find a suitable recommender model.
+* `initialAlpha`/**Implicit Preference Confidence**
+
+  The implicit preference confidence is an approximation of how confident you are that the implicit data does indeed represent an accurate level of interest of a user in an item. Typical values are 1-100, with 100 being more confident in the training data representing the interest of the user. This parameter is used as a regularizer for optimization. The higher the confidence value, the more the optimization is penalized for a wrong approximation of the interest value.
+* `initialLambda`/**Initial Lambda**
+
+  Lambda is another optimization parameter that prevents overfitting. Remember we are decomposing the user-item matrix by estimating two matrices. The values in these matrices can be any number, large or small, and have a wide spread in the values themselves. To keep the scale of the value consistent or reduce the spread of the values, we use a regularizer. The higher the lambda, the smaller the values in the two estimated matrices. A smaller lambda gives the algorithm more freedom to estimate an answer which can result in overfitting. Typical values are between 0.01 and 0.3.
+* `randomSeed`/**Random Seed**
+
+  When the two matrices are first being estimated, their values are set randomly as an initialization. As the optimization proceeds the values are changed according to the error in the optimization. When training it is important to keep the initialization the same in order to determine the effect of different values of parameters in the model. Keep this value the same across all experiments.
+
+### Item metadata settings
+
+* `itemMetadataCollection`/**Item Metadata Collection**
+
+  The main collection has very detailed information about each item, much of which is not necessary for training the recommender system. All that is important to train the recommender are the document IDs and the known users. If you have this metadata in a different collection than the main collection, enter that collection’s name here. Once the training is complete, the document ID of the relevant documents can be used to retrieve detailed information from the item catalog. The point is to train on small data per item and retrieve the detailed information for only relevant documents.
+* `itemMetadataJoinField`/**Item Metadata Join Field**
+
+  This is the field that is common to the aggregated signal data and the original data. It is used to join each document from the recommender collection to the original item in the main collection. Usually this is the `id` field.
+* `itemMetadataFields`/**Item Metadata Fields**
+
+  These are fields from the main collection that should be returned with each recommendation. You can add fields here by clicking the **Add** <InlineImage src="/assets/images/4.0/icons/add-icon.png"/> icon. To ensure that this works correctly, verify that `itemMetadataJoinField`/**Item Metadata Join Field** has the correct value.

@@ -1,0 +1,71 @@
+---
+title: "Fusion 5.6.1"
+permalink: "5hi7ax"
+---
+
+**Release date:** September 20, 2022
+
+<Tip>
+**Important**
+
+Fusion 5.6.1 is available only to Managed Fusion customers.
+</Tip>
+
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | 8.11.1 |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.1 |
+| **Kubernetes** | GKE, AKS, EKS 1.23  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.23  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New Features
+
+### Fusion Connectors
+
+* Fusion 5.6.1 adds a new connector, the [Web V2 Connector](/fusion-connectors/tq6l3z/). This brings our Web connector from the classic framework to our V2 framework.
+
+    The Web V2 connector retrieves data from a Web site using HTTP and starting from a specified URL.
+
+* As part of our transition from Pulsar to Kafka, 5.6.1 returns the ability to [Remotely Launch a Plugin](/how-to/o9xois/remotely-launch-a-plugin).
+
+## Bug Fixes
+
+### Fusion
+
+* The [blocked rule form](/fusion/5.6/259/block-documents-stage) now validates the "Parameter Name" when closing the modal. This fixes an error where blocked parameters in the Query Workbench could not be deleted via the UI.
+
+* User with read-only access no longer see the [Quickstart](/how-to/660/quickstart) splash page, as they are unable to use it to create applications or other Fusion objects.
+
+### Fusion Connectors
+
+* The [AWS S3 V2 Connector](/fusion-connectors/8851/amazon-aws-s-3-v-2) connector is now able to crawl non-public buckets when the object key is not specified in the configuration.
+
+### Predictive Merchandiser
+
+* Rules page now displays correctly for users with only the [developer role](/fusion/5.6/126/roles#developer).
+
+## Removals
+
+Fusion SQL was removed as of Fusion 5.6.1. It is available for Fusion releases 5.5 and earlier.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.
+
+* A bug was discovered in the Spark 3.2.x component that prevents signal aggregation for signals stored in the cloud in Parquet format. For more information about the issue, see the [Spark bug report](https://issues.apache.org/jira/browse/SPARK-38318).
+
+    <Note>
+    This issue is fixed in Fusion 5.7.1.
+    </Note>
+
+* The link to the [Banana dashboards](/fusion/5.6/139/banana-dashboards) in the Fusion UI does not work. You can access Banana dashboards using a direct link at `https://FUSION_HOST:FUSION_PORT/admin/banana/index.html#/dashboard/`.
+
+    <Note>
+    This issue is fixed in Fusion 5.7.0.
+    </Note>

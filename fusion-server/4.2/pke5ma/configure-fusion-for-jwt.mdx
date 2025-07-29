@@ -1,0 +1,179 @@
+---
+title: "Configure Fusion for JWT"
+permalink: "pke5ma"
+---
+
+You can configure Fusion Server to use JSON Web Tokens (JWTs) for user authentication and authorization. Fusion can also use a shared secret key between the issuer and Fusion to encrypt the JWT payload.
+
+<Danger>
+Fusion [4.1.0](/fusion-server/4.2/release-notes/4.1.0-release-notes.html#known-issues) and [4.1.1](/fusion-server/4.2/release-notes/4.1.1-release-notes.html#known-issues) have known issues with JWT signature validations. If you are using either of these versions and want to utilize JWT, consider [upgrading to the latest version](/how-to/616/upgrade-to-fusion-4-x) of Fusion.
+</Danger>
+
+## How the JWT realm works
+
+A JWT is comprised of three distinct parts: the header, payload, and signing key. Each of these parts are separately encoded using Base64url encoding.
+
+* The **header** identifies the algorithm used to generate the token.
+
+   <Note>
+   Fusion uses both the HS256 and RS256 signature algorithms.
+   </Note>
+
+
+* The **payload** consists of data that will be passed with the token.
+* The **signing key** validates the integrity of the token by using a "secret" to ensure the header and payload being submitted in the token match the header and payload stored in the signing key.
+
+Within Fusion, the JWT realm uses an *authorization header* in the request to authenticate the user and the data inside the JWT token for the authorization. This authorization header uses the following format:
+
+```
+Bearer <jwt-token>
+```
+
+Upon receiving the authorization header, Fusion authenticates the token and emits a response accordingly.
+
+## Configure JWT for Fusion
+
+### Create a JWT token
+
+Using the tool you use to validate users, create a JWT token. The token requires the following properties:
+
+* `iss`: Issuer value. If the issuer value does not match the value configured in Fusion, the user will be denied access.
+* `iat`: A JSON numeric date value. This value is calculated by counting the number of seconds between 1970-01-01T00:00:00Z UTC and the specified UTC date/time, ignoring leap seconds.
+* `sub`: Subject. The name/id of the user. The user is logged in by this name.
+* `groups`: The groups from the group-role mappings that this user belongs to. The groups key should match the one you specify while creating the JWT realm.
+
+Example data inside token:
+
+```json
+{
+"iss":"fusion-enterprise-app",
+"iat":"1562633069",
+"sub":"username",
+"groups": [“group-1”, “group-2”]
+}
+```
+
+### Create the Fusion JWT realm
+
+To create a Fusion realm, in the Fusion UI:
+
+1. Click **System > Access Control**.
+2. Click the **Security Realms** tab, then **Add Security Realm**.
+3. Enter a realm name. Under **type**, select **jwt**.
+4. Create the security realm with the following values:
+
+   <table class="tableblock frame-all grid-all stretch">
+      <thead>
+         <tr>
+            <th class="tableblock halign-left valign-top">Property</th>
+            <th class="tableblock halign-left valign-top">Description</th>
+         </tr>
+      </thead>
+      <tbody>
+         <tr>
+            <td class="tableblock halign-left valign-top"><p><strong>source</strong></p></td>
+            <td class="tableblock halign-left valign-top">
+            <p>The name of the source field. This will be the name of the field in the Pipeline document that should be mapped to another field. Java regular expressions can be used in the source field by surrounding the regular expression with forward slashes ('/'). For example, ``/(.*)text(.*)/`` is a valid expression that will find field names in the incoming document that contain the string 'text' between any number of preceding or succeeding characters. If a regular expression is not used, the value supplied for the source will be treated as a literal field name and will be matched ignoring the case (for example, "text" will match "tExt" or "Text", etc.).</p>
+            </td>
+         </tr>
+         <tr>
+            <td class="tableblock halign-left valign-top"><p><strong>target</strong></p></td>
+            <td class="tableblock halign-left valign-top">
+            <p>The name of the target field. If the value for the ``source`` was a regular expression, then this can also be a regular expression. It can also contain substitutions using references to capture groups (using <a href="http://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.html#replaceAll-java.lang.String-" target="_blank" rel="noopener">Java’s Matcher.replaceAll</a>). Otherwise, the source field name will be simply substituted by the value of target according to the operation rules described below.</p>
+            </td>
+         </tr>
+         <tr>
+            <td class="tableblock halign-left valign-top"><p><strong>operation</strong></p></td>
+            <td class="tableblock halign-left valign-top">
+            <p>What to do with the field during mapping. Several options are available:</p>
+            <ul>
+               <li><strong>copy.</strong> Content contained in fields matching ``source`` will be copied to ``target``.</li>
+               <li><strong>move.</strong> Content contained in fields matching ``source`` will be moved to ``target`` (it may also help to think of this as the field name being replaced by the value of ``target``).</li>
+               <li><strong>delete.</strong> Content contained in fields matching ``source`` will be dropped from the document and not indexed. In this case, the ``target`` can be null or not defined at all.</li>
+               <li><strong>add.</strong> The literal value of ``target`` will be added to the ``source`` if ``source`` is a regular expression. If ``source`` is not a regular expression, ``target`` will be added as a new field.</li>
+               <li><strong>set.</strong> The literal value of ``target`` will be set as the new value of the ``source`` if ``source`` is a regular expression. If ``source`` is not a regular expression, ``target`` will be set as a new field.</li>
+               <li><strong>keep.</strong> Content contained in fields matching ``source`` will be retained and unchanged, and the fields will be added to a list of known fields and they will not be affected by however the ``renameUnknown`` rule has been set.</li>
+            </ul>
+            </td>
+         </tr>
+      </tbody>
+      </table>
+
+5. Click **Save**.
+
+### Validate the new realm
+
+When you send a request to Fusion, you should receive a response. The request to Fusion looks like this:
+
+```bash
+curl http://127.0.0.1:8764/api/users -H 'authorization: Bearer <token-header>.<token-payload>.<token-signing-key>'
+```
+
+<Note>
+`Bearer` is case sensitive.
+</Note>
+
+If no signing key is used, truncate the JWT to read `…​ Bearer <token-header>.<token-payload>.`.
+
+## Enable diagnostic logs for debugging
+
+1. Navigate to your Fusion home directory, then open the **conf** folder.
+2. Edit the file `proxy-log4j2.xml`.
+3. In the `<Loggers>` element, add the following:
+
+   ```xml
+   <logger name="com.lucidworks.apollo-admin.models.realm-config" level="DEBUG" />
+   <logger name="com.lucidworks.apollo-admin.middleware.authc.jwt" level="DEBUG" />
+   ```
+   
+4. Restart proxy for this change to take effect: `bin/proxy restart`
+
+Now `var/log/proxy/proxy.log` will show some diagnostic logs to help you troubleshoot your issues.
+
+## Resources
+
+[JWT.io](https://jwt.io) is an excellent resource for learning about JWT, creating tokens, debugging tokens, and more.
+
+## Example of generating a JWT using PyJWT
+
+Typically, you will generate your JWT token from the application you are integrating with Fusion APIs.
+
+This example, however, uses Python to create a JWT token with the PyJWT Python egg.
+
+1. Install the PyJWT egg:
+
+   ```sh
+   pip install pyjwt
+   ```
+   
+2. Inside a Python console, run the following command using your realm configurations:
+
+   ```py
+   import jwt
+   from datetime import datetime, timedelta
+
+   key = '<signing key>'
+   jwt_issuer = '<jwt issuer>'
+   username = '<username>'
+   groups = ['<groups assigned to user>']
+   iat = datetime.utcnow()
+   exp = iat + timedelta(minutes=5)
+   payload = {'iss': jwt_issuer, 'iat': iat, 'exp': exp,'sub': username, 'groups': groups}
+
+   print (jwt.encode(payload, key, algorithm='HS256'))
+   ```
+
+   A Bearer token will be printed for use in API requests:
+
+   ```
+   eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJmdXNpb24tYXBwIiwiaWF0IjoxNTYyNjMzMDY5LCJzdWIiOiJhZG1pbiIsImdyb3VwcyI6WyJncm91cDEiXX0.HYyv_XlijDeO1zdZ1Cd_gifgcIAFiZ1ldkbgk0hnWro
+   ```
+
+3. You can now use this as a bearer token in an authorization header to authenticate to Fusion.
+
+   Test your Fusion API web service call with cURL. For example, if your role is an administrator, call:
+
+   ```bash
+   curl -H "Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmdXNpb24iLCJpYXQiOjE1MzY3ODI1MTc4NjQsInN1YiI6InRlc3QtZnVzaW9uIiwiZ3JvdXBzIjpbImdyb3VwLW9uZSIsImdyb3VwLXR3byJdfQ._ACGk4q3Y5g8QgvLFUUQIcMN2ynACypcpei2JmYFlzc" http://localhost:8764/api/roles
+   ```
+   

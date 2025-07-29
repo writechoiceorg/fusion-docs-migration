@@ -1,0 +1,35 @@
+---
+title: "Data Model Mapping Index Stage"
+permalink: "8840"
+---
+
+Data models simplify the process of getting started with Fusion by providing pre-configured objects to reduce the effort spent on basic starting tasks. This helps keep documents consistent between datasources and intuitive to the object’s type.
+
+The Data Model Mapping index stage is used to map the field values found in your documents to the data model fields.
+
+<Tip>
+**Important**
+
+
+This index stage must be placed *before* the **[Call Data Model Pipeline index stage](/fusion/5.9/8841/call-data-model-pipeline-index-stage)**.
+</Tip>
+
+## More information
+
+* [How to Configure a Data Model](/how-to/8868/configure-a-data-model)
+* [Data Models](/fusion/5.9/8829/data-models)
+* [Data Models API reference](/fusion/5.9/8824/data-models-api)
+* [Call Data Model Pipeline Index Stage reference](/fusion/5.9/8841/call-data-model-pipeline-index-stage)
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/data-model-mapping.mdx";
+
+<SchemaParamFields schema={schema}/>

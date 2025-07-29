@@ -1,0 +1,15 @@
+---
+title: "Template Expressions"
+permalink: "10911"
+---
+
+Template expressions are a way to map field values in a document. They are used to configure some Fusion pipeline stage and messaging services. When the value of a configuration parameter is a template expression, that expression is dynamically evaluated at runtime by the [StringTemplate](https://github.com/antlr/stringtemplate4/blob/master/doc/cheatsheet.md) library.
+
+Fusion template expressions are delimited by angle bracket characters `<` and `>`.
+The expression consists of the name of a variable in the scope of that component.
+
+Since these variables are Java objects, if object **foo** of type Foo has a field named **bar**, the expression **`<foo.bar>`** will evaluate to the string representation of the contents of field **bar**.
+
+For example, given a PipelineDocument where a field named **title** has a value of **Star Wars**, the template expression `<doc.title>` evaluates to **Star Wars**.
+
+See the reference guide for [index pipeline stage](/fusion-server/4.2/396/index-pipeline-stage-template-expression-variables), [query pipeline stage](/fusion-server/4.2/398/query-pipeline-stage-template-expression-variables), and [messaging service](/fusion-server/4.2/397/messaging-services-template-expression-variables) template expression variables.

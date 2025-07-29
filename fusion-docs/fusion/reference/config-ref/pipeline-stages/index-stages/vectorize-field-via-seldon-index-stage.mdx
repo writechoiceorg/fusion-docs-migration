@@ -1,0 +1,31 @@
+---
+title: "Ray/Seldon Vectorize Field Stage"
+permalink: "wpkxmb"
+---
+
+The Ray/Seldon Vectorize Field stage invokes a machine learning model to encode a string field to a vector representation. In Fusion 5.9.11 and earlier, this stage is called Seldon Vectorize Field.
+
+<Note>
+This feature is only available in Fusion 5.9.5 and later versions of Fusion 5.9.
+</Note>
+
+For more information on setting up vector search with Ray or Seldon, see [Configure Ray/Seldon vector search](/how-to/p4g61s/configure-ray-seldon-vector-search).
+
+<Tip>
+**Important**
+
+
+This index stage must be placed *before* the **[Solr Indexer stage](/fusion/5.9/227/solr-indexer-stage)**.
+</Tip>
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/ray---seldon-vectorize-field.mdx";
+
+<SchemaParamFields schema={schema}/>

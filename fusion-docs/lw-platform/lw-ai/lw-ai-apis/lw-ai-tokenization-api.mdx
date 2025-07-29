@@ -1,0 +1,173 @@
+---
+title: "Tokenization API"
+description: "Lucidworks AI Prediction API"
+permalink: "mpgw6g"
+---
+
+View API specification
+
+The Lucidworks AI Tokenization API returns [Prediction API `embedding` use case](/lw-platform/ai/dyl5lt/embedding-use-cases) tokens before being sent to any [pre-trained embedding model](/lw-platform/ai/3vqfxe/pre-trained-embedding-models) or [custom embedding model](/lw-platform/ai/k1zkfn/custom-embedding-model-training).
+
+This API is used to help debug `embedding` model tokens to ensure the input to the pre-trained or custom embedding model is valid, and within the model’s processing limits.
+
+<Note>
+Before the tokens are passed to the embedding model, it may be formatted, truncated, expanded, or modified in other ways to meet that model’s requirements so the API call is successful.
+</Note>
+
+
+
+These preprocessing steps are integral to deliver optimized tokens that generate coherent and relevant responses. By examining the tokenization after preprocessing, you can better understand how your input is being interpreted by the embedding models, which can help you refine your queries for more accurate and useful outputs.
+
+The input parameter keys and values are the same used in the [Prediction API `embedding` use cases](/lw-platform/ai/dyl5lt/embedding-use-cases).
+
+<Note>
+
+To view the full configuration specification for an API, click the **View API specification** button.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+Alternatively, [click here to open the API spec](?open-api=true).
+
+</Note>
+
+
+
+## Prerequisites
+
+To use this API, you need:
+
+* The unique `APPLICATION_ID` for your Lucidworks AI application. For more information, see [credentials to use APIs](/lw-platform/platform/oqzogo/index#credentials).
+* A bearer token generated with a scope value of `machinelearning.predict`. For more information, see [Authentication API](/lw-platform/ai/oa96k5/authentication-api).
+* The embedding model name in the `MODEL_ID` field for the request. The path is: `/ai/tokenization/MODEL_ID`. For more information about supported models, see [Embedding use cases](/lw-platform/ai/dyl5lt/embedding-use-cases).
+
+## Common parameters and fields
+
+Some parameters in the `/ai/tokenization/MODEL_ID` request are common to all of the Async Chunking API requests, such as the `modelConfig` parameter.
+Also referred to as hyperparameters, these fields set certain controls on the response.
+Refer to the [API spec](?open-api=true) for more information.
+
+### Vector quantization
+
+Quantization is implemented by converting float vectors into integer vectors, allowing for byte vector search using 8-bit integers.
+Float vectors, while very precise, are often a bit of a burden to compute and store, especially as they grow in dimensionality.
+One solution to this issue is to convert the vector floats into integers after inference, making byte vectors which are lower consumers of memory space and faster to compute with minimal loss in accuracy or quality.
+
+Byte vectors are available through all of the Lucidworks LWAI hosted embedding models, including custom trained models.
+
+Vector quantization methods are implemented through the `modelConfig` parameter, `vectorQuantizationMethod`. The methods are named `min-max` and `max-scale`.
+
+* The `min-max` method creates tensors of embeddings and converts them to uint8 by normalizing them to the range [0, 255].
+* The `max-scale` method finds the maximum absolute value along each embedding, normalizes the embeddings by scaling them to a range of -127 to 127, and returns the quantized embeddings as an 8-bit integer tensor.
+
+During testing, it was found that the `max-scale` method has no loss at the ten-thousandths place during evaluation against non-quantized vectors.
+However, other methods lose precision when evaluated against non-quantized vectors, with `min-max` losing the most precision.
+
+The syntax example is:
+
+```
+"modelConfig": {
+        "vectorQuantizationMethod": "max-scale"
+    }
+
+```
+
+### Matryoshka vector dimension reduction
+
+Vector dimension reduction is the process of making the default vector size of a model smaller. The purpose of this reduction is to lessen the burden of storing large vectors while still achieving the good quality of a larger model.
+
+The syntax example is:
+
+```
+"modelConfig": {
+        "dimReductionSize": 256
+    }
+
+```
+
+## Examples
+
+### Sample POST request
+
+The following example is a POST tokenization request. Replace the values in the `APPLICATION_ID`, `MODEL_ID`, and `ACCESS_TOKEN` fields with your information.
+
+```bash
+curl --request POST \
+--location 'https://{APPLICATION_ID}.applications.lucidworks.com/ai/tokenization/{MODEL_ID}' \
+--header 'charset: utf-8' \
+--header 'Cache-Control: no-cache' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer ACCESS_TOKEN' \
+--data '{
+    "batch": [
+        {
+            "text": "Mr. and Mrs. Dursley and O'\''Malley, of number four, Privet Drive, were proud to say that they were perfectly normal, thank you very much."
+        }
+    ],
+    "useCaseConfig": {
+        "dataType": "query"
+    },
+    "modelConfig": {
+        "vectorQuantizationMethod": "max-scale"
+    }
+}'
+
+```
+
+### Sample response
+
+Based on the request, the following example is the response for any of the embedding models:
+
+```json
+{
+    "generatedTokens": [
+        {
+            "tokens": [
+                "[CLS]",
+                "query",
+                ":",
+                "mr",
+                ".",
+                "and",
+                "mrs",
+                ".",
+                "du",
+                "##rs",
+                "##ley",
+                "and",
+                "o",
+                "'",
+                "malley",
+                ",",
+                "of",
+                "number",
+                "four",
+                ",",
+                "pri",
+                "##vet",
+                "drive",
+                ",",
+                "were",
+                "proud",
+                "to",
+                "say",
+                "that",
+                "they",
+                "were",
+                "perfectly",
+                "normal",
+                ",",
+                "thank",
+                "you",
+                "very",
+                "much",
+                ".",
+                "[SEP]"
+            ],
+            "tokensUsed": {
+                "inputTokens": 40
+            }
+        }
+    ]
+}
+
+```

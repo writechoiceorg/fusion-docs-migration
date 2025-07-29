@@ -1,0 +1,236 @@
+---
+title: "Methods"
+description: "Recommendations and boosting"
+permalink: "l0emoh"
+---
+
+This topic provides an overview of different methods for generating recommendations and boosts. "Content-based" and "collaborative" recommendations are two broad categories. More specific recommendation methods are also explained.
+
+## Content-based vs collaborative recommendations
+
+Recommendation methods can be divided into two broad categories: collaborative recommendations and content-based recommendations.
+
+Collaborative recommendations always require signals. Some also require a job that pre-computes a matrix of values that can be queried. When these values are used for boosting, then certain query pipeline stages are needed as well.
+
+<table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Requires aggregated signals</th>
+      <th>Required job</th>
+      <th>Boosting stage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="4">
+        <p><strong>Collaborative recommendations</strong></p>
+        <p>These methods analyze how users have interacted with documents.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/ft2bqg/items-for-item-recommendations">Items-for-item</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs">BPR Recommender</a></td>
+      <td><a href="/assets/attachments/pipelines/APPName_item_item_rec_pipelines_bpr.json"><code>APPName_item_item_rec_pipelines_bpr.json</code></a></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/pbwiub/items-for-user-recommendations">Items-for-user</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs">BPR Recommender</a></td>
+      <td><a href="/managed-fusion/5.9/e8ayom/recommend-items-for-user-stage">Recommend Items for User</a></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/g8cwr6/items-for-query-recommendations">Items-for-query</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs">Query-to-Query Session-Based Similarity jobs</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations">Queries-for-query</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs">Query-to-Query Session-Based Similarity jobs</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/y9max1/boost-with-signals">Boost with signals</a></td>
+      <td>✓</td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/ihes2t/boost-with-signals-stage">Boost with Signals</a></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/vu3an9/trending-items-and-queries">Trending items or queries</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/qdbucu/trending-recommender-jobs">Trending Recommender</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/elgvbt/users-for-item-recommendations">Users-for-item recommendations</a></td>
+      <td>✓</td>
+      <td><a href="/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs">BPR Recommender</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <p><strong>Content-based recommendations</strong></p>
+        <p>These methods analyze the content of documents or queries.</p>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="#items-for-item">Items-for-item</a></td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/g02utf/content-based-recommender-jobs-experimental">Content-Based Recommender</a></td>
+      <td><a href="/assets/attachments/pipelines/APPName_item_item_rec_pipelines_content.json" target="_blank" rel="noopener"><code>APPName_item_item_rec_pipelines_content.json</code></a></td>
+    </tr>
+    <tr>
+      <td><a href="#boost-docs">Boost documents</a></td>
+      <td></td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/ucape1/boost-documents-stage">Boost Documents</a></td>
+    </tr>
+    <tr>
+      <td><a href="#param-boosting">Parameterized boosting</a></td>
+      <td></td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/a02wny/parameterized-boosting-stage">Parameterized Boosting</a></td>
+    </tr>
+    <tr>
+      <td><a href="#more-like-this">More Like This</a></td>
+      <td></td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/uja4sz/solr-more-like-this-stage">Solr MoreLikeThis</a></td>
+    </tr>
+    <tr>
+      <td><a href="#rules">Business rules</a></td>
+      <td></td>
+      <td></td>
+      <td><a href="/managed-fusion/5.9/yx85m4/apply-rules-stage">Apply Rules</a></td>
+    </tr>
+  </tbody>
+</table>
+
+
+## Managed Fusion recommendation and boosting methods
+
+This section provides an overview of each method, with links to more detailed topics.
+
+<table>
+  <thead>
+    <tr>
+      <th>Collaborative recommendations</th>
+      <th>Content-based recommendations</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <div class="content">
+          <div class="ulist">
+            <ul>
+              <li><p><a href="#items-for-item">Items-for-item</a></p></li>
+              <li><p><a href="#items-for-user">Items-for-user</a></p></li>
+              <li><p><a href="#items-for-query">Items-for-query</a></p></li>
+              <li><p><a href="#queries-for-query">Queries-for-query</a></p></li>
+              <li><p><a href="#boost-with-signals">Boost with signals</a></p></li>
+              <li><p><a href="#trending-items">Trending items or queries</a></p></li>
+              <li><p><a href="#users-for-item">Users-for-item</a></p></li>
+            </ul>
+          </div>
+        </div>
+      </td>
+      <td>
+        <div class="content">
+          <div class="ulist">
+            <ul>
+              <li><p><a href="#items-for-item">Items-for-item</a></p></li>
+              <li><p><a href="#boost-docs">Boost Documents</a></p></li>
+              <li><p><a href="#param-boosting">Parameterized Boosting</a></p></li>
+              <li><p><a href="#more-like-this">More Like This</a></p></li>
+              <li><p><a href="#rules">Business rules</a></p></li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+When you [enable recommendations](/managed-fusion/5.9/y3kiwa/get-started), this automatically enables the items-for-user and items-for-item recommendation methods. To use additional recommendation methods, you must configure them separately.
+
+### Items-for-item recommendations
+
+Items-for-item recommendations present items that are similar to a specified item. For example, when the user is viewing a BMX bicycle, Managed Fusion can recommend other BMX bicycles. Similarity can be based on different criteria, such as click patterns, people who bought this also bought that, percentage match of document tags, and so on.
+
+See [Items-for-Item Recommendations](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations) for details.
+
+### Items-for-user recommendations
+
+Items-for-user recommendations use the [Recommend items for user](/managed-fusion/5.9/e8ayom/recommend-items-for-user-stage) query stage to present items that are similar to ones in which the user has previously shown interest, based on the user’s search history, browsing history, purchase history, and so on. This is one type of [collaborative recommendation](/managed-fusion/5.9/l0emoh/methods#content-based-vs-collaborative).
+
+See [Items-for-User Recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations) for details.
+
+### Items-for-query recommendations
+
+The Items for Query recommender is the primary algorithm that supports recommendations on the search results page.
+
+Items-for-query recommendations are based on how other users interacted with search results from the same query. This is one type of [collaborative recommendation](/managed-fusion/5.9/l0emoh/methods#content-based-vs-collaborative).
+
+For example, if users have searched for "titanic" in the past and many of them clicked on the search result for the DVD of the movie *Titanic* (as opposed to books or memorabilia), then this method boosts the DVD item on subsequent searches for "titanic".
+
+See [Items-for-Query Recommendations](/managed-fusion/5.9/g8cwr6/items-for-query-recommendations) for details.
+
+### Queries-for-query recommendations
+
+Queries-for-query recommendations are queries performed by other users who also performed the current query. For example, when a user searches for "madonna", your app may also suggest searches for "evita", "a league of their own", "lady gaga", and so on.
+
+See [Queries for Query](/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations) for details.
+
+### Boost with signals
+
+The Boost With Signals query pipeline stage performs automatic boosts based on the contents of the aggregated signals collection. For this type of boosting, signals must be enabled but recommendations need not be.
+
+See [Boost With Signals](/managed-fusion/5.9/y9max1/boost-with-signals) for details.
+
+### Trending items or queries
+
+The [Trending Recommender job](/managed-fusion/5.9/qdbucu/trending-recommender-jobs) analyzes signals to measure customer engagement over time. Use this job to identify spikes in popularity for specific items or queries, then display those items to your users or analyze the trends for business purposes. You can configure any time window, such as daily, weekly, or monthly.
+
+See [Trending items or queries](/managed-fusion/5.9/vu3an9/trending-items-and-queries) for details.
+
+### Users-for-item recommendations
+
+Users-for-item recommendations retrieve the set of users who have interacted with an item, weighted by the number of interactions. This can be useful for community-driven use cases or for marketing campaigns. For example, on your organization’s intranet, clicking a search result could display the item plus a list of colleagues who have interacted with the same item.
+
+See [Users-for-Item Recommendations](/managed-fusion/5.9/elgvbt/users-for-item-recommendations) for details.
+
+### Boost documents
+
+The Boost Documents query pipeline stage adds boosting parameters to matched documents based on user-defined rules. Boosts are defined with a term value to boost and the boost factor to add. The boosting parameters are added to the `bq` Solr query parameter.
+
+See [Boost Documents](/managed-fusion/5.9/ucape1/boost-documents-stage) for details.
+
+### Parameterized boosting
+
+The Parameterized Boosting query pipeline stage reads the `boostValues` (in `List<DocumentResult>` format) from the context variable (added by a [Rollup Aggregation stage](/managed-fusion/5.9/mz3o72/rollup-aggregation) or a [JavaScript stage](/managed-fusion/5.9/56khq2/java-script-stage)), and adds boosts to the main query using `bq` or `boost` based on the stage configuration. The weights for the boost values can also be scaled.
+
+See [Parameterized Boosting](/managed-fusion/5.9/a02wny/parameterized-boosting-stage) for details.
+
+### More like this
+
+This stage uses the content of the current document to query for similar documents, using Solr’s MoreLikeThis component.
+
+This stage provides content-based recommendations. For collaborative recommendations, use the [Recommend Items for Item stage](/managed-fusion/5.9/hq339y/recommend-items-for-item-stage).
+
+See [Solr MoreLikeThis](/managed-fusion/5.9/uja4sz/solr-more-like-this-stage) for details.
+
+### Business rules
+
+Business rules are manually-created formulas for rewriting queries. This is the most versatile strategy for creating custom query rewrites. It supports a variety of conditions and actions to address a wide range of use cases. When you need a very specific query rewrite, this is the best strategy.
+
+Business rules are applied in the [Apply Rules stage](/managed-fusion/5.9/yx85m4/apply-rules-stage) of the query pipeline.
+
+See [Business Rules](/managed-fusion/5.9/03vd0y/business-rules) to learn how to create, edit, and publish business rules. See [Query Rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) for additional query rewriting methods.
+
+## BPR algorithm
+
+The Bayesian Personalized Ranking (BPR) algorithm is used to configure items-for-item, items-for-user, or user-for-item recommendations. The BPR job generates effective results in a short run time. See the [BPR Recommender](/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs) for more information.

@@ -1,0 +1,40 @@
+---
+title: "Remote V2 Connectors"
+permalink: "8xhsoc"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 5.6 and later.
+
+</Note>
+
+
+
+Remote V2 connectors let you index data behind firewalls. Fusion uses gRPC over HTTP/2 communication to bridge between firewalled on-premises remote connectors and Fusion clusters. This page explains some of the concepts around remote connectors. For configuration, refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+## Connector compatibility
+
+Only V2 connectors are able to run remotely on-premises.
+You also need the remote connector client JAR file that matches your Fusion version.
+You can download the latest files at [V2 Connectors Downloads](https://doc.lucidworks.com/fusion-connectors/n0s114/v-2-connectors-downloads).
+
+<Note>
+Whenever you upgrade Fusion, you must also update your remote connectors to match the new version of Fusion.
+</Note>
+
+
+
+## Firewall configuration best practices
+
+You can use a forward proxy server to allow HTTP/2 communication into the Fusion cloud. A forward proxy server acts as an intermediary between the firewalled connector and Fusion and will only allow specified communication traffic and block unauthorized traffic.
+
+## Asynchronous parsing
+
+<Note>
+This feature is available in Fusion 5.9 and later.
+</Note>
+
+
+
+To separate document crawling from document parsing, [enable Tika Asynchronous Parsing](/how-to/5bk663/use-tika-asynchronous-parsing) on remote V2 connectors.

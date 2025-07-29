@@ -1,0 +1,20 @@
+---
+title: "Exporting a Chart"
+permalink: "3148"
+---
+
+To give users the option to export a chart, include the Chart Export tag within the Chart Display tag. Adding the tag will enable exporting without adding any attributes.
+
+This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+```xml
+<chart:display response="response" title="Current Products vs Recommended Products">
+	<series:facet name="current_products" type="column" title="Current Products" color="blue"></series:facet>
+	<series:facet name="recommended_products" type="line" title="Recommended Products" color="#006600"></series:facet>
+	<chart:export></chart:export>
+</chart:display>
+```
+
+<Frame>![Exporting Chart](/assets/images/appkit/4.2/highchart-export.png)</Frame>
+
+To see all related attributes, see the [chart:export](/fusion/5.9/1101/chart-export) tag documentation.

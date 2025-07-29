@@ -1,0 +1,163 @@
+---
+title: "widget:slider"
+permalink: "1189"
+---
+
+## Description
+
+Creates a slider
+
+## Usage
+
+as element:
+
+```xml
+<widget:slider
+       [response="{object}"]
+       [query="{string}"]
+       [facet-name="{string}"]
+       [facet="{string}"]
+       [field-name="{string}"]
+       [min="{number}"]
+       [max="{number}"]
+       [step="{number}"]
+       [button-label="{string}"]
+       [to-label="{string}"]
+       [prefix="{string}"]
+       [suffix="{string}"]
+       [invert-range="{boolean}"]
+       [multiplier="{number}"]
+       [date-format="{string}"]
+       [number-format="{string}"]
+       [sort="{boolean}"]>
+</widget:slider>
+
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response  *(optional)* | **object** | A response object |
+| query  *(optional)* | **string** | The name of the query to build links from. |
+| facet-name  *(optional)* | **string** | Facet name to use from the response object |
+| facet  *(optional)* | **string** | A facet object to display |
+| field-name  *(optional)* | **string** | The field name tells the slider which field to use when creating range filters. |
+| min  *(optional)* | **number** | The minimum value for the slider. (Defaults to 0, not required for facets) |
+| max  *(optional)* | **number** | The maximum value for the slider. (Defaults to 100, not required for facets) |
+| step  *(optional)* | **number** | The interval between each step of the slider. (Defaults to 1, not required for facets) |
+| button-label  *(optional)* | **string** | The text to be used for the 'Apply' button. |
+| to-label  *(optional)* | **string** | The string to be inserted in the filter’s display value between the 'from' and 'to' value. (Defaults to '-') |
+| prefix  *(optional)* | **string** | Add a string before the display value. Useful for currency symbols, for instance. |
+| suffix  *(optional)* | **string** | Add a string after the display value. Useful for adding units, such as “k” for thousands. |
+| invert-range  *(optional)* | **boolean** | When invertRange is set to true, the from and to values of the resulting range filter are swapped. |
+| multiplier  *(optional)* | **number** | The multiplier parameter accepts a number and multiplies the slider’s value by the multiplier when creating a filter. |
+| date-format  *(optional)* | **string** | How to format the date. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+| number-format  *(optional)* | **string** | Format string for the numbers used using the Java DecimalFormat pattern. Default: ',0.' |
+| sort  *(optional)* | **boolean** | Whether the data should be sort by the directive. Defaults to true. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_slider">Slider</h3>
+<widget:slider field-name="foo" min="0" max="100" step="1"></widget:slider>
+<hr />
+<h3 id="example_slider-with-date-formatting">Slider with Date Formatting</h3>
+<widget:slider response="response" facet-name="test1" date-format="fullDate"></widget:slider>
+<hr />
+<h3 id="example_facet-slider">Facet Slider</h3>
+<widget:slider response="response" facet-name="test2"></widget:slider>
+
+<hr />
+<chart:histogram facet="response | facet:'Last Modified'" show="100" show-count="true" date-format="MM-yyyy"></chart:histogram>
+<widget:slider response="response" facet-name="Last Modified" date-format="MM-yyyy"></widget:slider>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', 'ResponseService', function($scope,$timeout, ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50,
+                    filters:[]
+                },
+                facets: {
+                    test1: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 1288323623006,
+                                    act: 1288323623006,
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 1467882419615,
+                                    act: 1467882419615,
+                                },
+                                count: 20,
+                            }
+
+                        ],
+                        'max-count':20
+                    },
+                    test2: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: '- 1998-12-31',
+                                    act: {
+                                        type:'range',
+                                        to:'1998-12-31T00:00:00Z'
+                                    },
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: '1999-01-01 - 1999-12-31',
+                                    act: {
+                                        type:'range',
+                                        from:'1999-01-01T00:00:00',
+                                        to:'1999-12-31T00:00:00Z'
+                                    },
+                                },
+                                count: 20,
+                            },
+                            {
+
+                                val: {
+                                    dsp: '2000-01-01 - ',
+                                    act: {
+                                        type:'range',
+                                        from:'2000-01-01T00:00:00Z',
+                                    },
+                                },
+                                count: 20,
+                            }
+                        ],
+                        'max-count':20
+                    },
+                    'Last Modified':{"id":"Last Modified","field":"Last Modified","filters":[{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":294,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2001-01-01T00:00:00","to":"2002-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2001-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":403,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2002-01-01T00:00:00","to":"2003-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2002-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":592,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2003-01-01T00:00:00","to":"2004-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2003-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":488,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2004-01-01T00:00:00","to":"2005-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2004-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":1610,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2005-01-01T00:00:00","to":"2006-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2005-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":4947,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2006-01-01T00:00:00","to":"2007-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2006-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":4058,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2007-01-01T00:00:00","to":"2008-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2007-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":7837,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2008-01-01T00:00:00","to":"2009-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2008-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":6011,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2009-01-01T00:00:00","to":"2010-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2009-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":7584,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2010-01-01T00:00:00","to":"2011-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2010-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":6284,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2011-01-01T00:00:00","to":"2012-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2011-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":13003,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2012-01-01T00:00:00","to":"2013-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2012-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":32742,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2013-01-01T00:00:00","to":"2014-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2013-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":156357,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2014-01-01T00:00:00","to":"2015-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2014-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":42345,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2015-01-01T00:00:00","to":"2016-01-01T00:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2015-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]},{"field":"Last Modified","optional":"none","match":"exact","exclude":false,"count":53638,"weight":0,"facts":{},"grp":-1,"val":{"act":{"type":"range","from":"2016-01-01T00:00:00","to":"2017-01-01T08:00:00","fromExcluded":false,"toExcluded":true},"dsp":"2016-01-01T00:00:00Z"},"has-more-rel":false,"rel":[]}],"facts":{},"params":{},"display":"Last Modified","max-count":156357.0,"min-count":0.0,"sum-of-counts":338193.0},
+
+                },
+                results: []
+            };
+
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetSlider.png)</Frame>

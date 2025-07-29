@@ -1,0 +1,30 @@
+---
+title: "Backup and disaster recovery"
+permalink: "wgah7i"
+---
+
+Lucidworks backs up your full Managed Fusion environment and customer data on a regular basis in order to ensure consistent availability of your services.
+
+## Backups
+
+All backups are replicated across three independent region zones to protect against failure in any one region. Each zone has one or more data centers with independent networking, cooling, power, and other resources to provide fault tolerance against failure. Backup schedules are not configurable.
+
+Lucidworks performs the following backups to ensure availability of your services:
+
+|  | **Index data backup** | **Full Fusion configuration backup** | **Application and access logs backup** |
+| --- | --- | --- | --- |
+| **Frequency** | Every 24 hours | Every 5 minutes | Every 5 minutes |
+| **Retained** | 2 weeks | The length of your contract | 30 days in the frontend, 1 year in cloud logging |
+| **Content** | Collections, signals, customer data | API keys, field, roles, permissions, index profiles and pipelines, query profiles and pipelines, licenses, rules, etc. | Application and access logs |
+
+<Note>
+The exact time for data storage may vary depending on the terms of your agreement with Lucidworks.
+</Note>
+
+## Disaster recovery
+
+Lucidworks has a comprehensive disaster recovery program to support critical business operations for clients. The disaster recovery program is tested yearly.
+
+If you need to recover your Managed Fusion environment from a backup, [contact Lucidworks support](https://support.lucidworks.com/hc/en-us).
+
+In the event of a disaster that affects your Fusion environment data, Lucidworks will contact you as soon as we are aware of it.

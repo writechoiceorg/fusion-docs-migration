@@ -1,0 +1,91 @@
+---
+title: "Data augmentation"
+description: "Job configuration specifications"
+permalink: "js2bk5"
+---
+
+Use this job to augment training and/or testing data for use with other jobs, such as Smart Answer, Classification, Recommender.
+
+This job takes in data specified by the user, performs one or more of the specified augmentation tasks, and writes the output back to Solr or Cloud.
+
+## Benefits of augmentation tasks
+
+The augmentation tasks can improve the models trained on it by adding the augmented data back into the model, thereby increasing the quantity of training data when there isn’t enough.
+They can also allow you to test the robustness of the models by training them on the source data, then testing them on augmented data. Both introduce variation that will make the models
+better equipped to handle different types of text. For more details on this process, see [Data Augmentation](https://en.wikipedia.org/wiki/Data_augmentation).
+
+The amount of extra augmented data generated will depend on the task and the parameters used. In an ideal scenario with one task applied to one field and little to no record filtering,
+you can expect to double the amount of the original data.
+
+## Task description
+
+Each task supports a variety of languages. Refer to the description of each task for details.
+
+* **Backtranslation**
+
+  Translates the input data into one or more intermediate languages before translating it back to the source language. The process introduces changes in the syntax and
+  grammar of the input text without changing the semantics. Because this task uses a deep learning model, [Facebook’s M2M-100](https://arxiv.org/pdf/2010.11125.pdf), to perform
+  translations, a GPU is recommended for fast processing.
+
+  If the backtranslation is of poor quality, try increasing the beam size. However, this will consume more memory and take more time. You could also try changing the intermediate languages
+  to use languages that are similar to each other. For example, if your source language is Korean, translating to Chinese and/or Japanese and back might give you better results than
+  translating to Spanish.
+
+  Use the synonym substitution job as an alternative if you’re unable to provision the necessary hardware and/or this job is taking too long. Note that the synonym substitution job does not
+  support the same languages.
+
+  **Supported Languages:** Chinese, Dutch, English, French, German, Hebrew, Italian, Japanese, Korean, Polish, Spanish, Ukrainian
+
+<Note>
+Backtranslation with Korean text may result in errors if run on GKE with Kubernetes master version v1.16.15-gke.4901, Kernel version: 4.19.112+, and Container runtime version: docker://19.3.1 on Google’s Container Optimized OS for Docker. To resolve, upgrade to a higher version of K8s master, kernel, and container runtime.
+</Note>
+
+* **Synonym Substitution**
+
+  Takes in the input text and substitutes some words with synonyms derived from the included wordner/ppdb dictionaries or user-supplied dictionaries. The user-supplied dictionaries must be submitted in the lucene/solr synonym format as shown in the example below.
+
+  Example **synonyms.txt** file:
+
+  ```
+  #some test synonym mappings unlikely to appear in real input text
+  aaa => aaaa
+  bbb => bbbb1 bbbb2
+  ccc => cccc1,cccc2
+  a\=>a => b\=>b
+  a\,a => b\,b
+  fooaaa,baraaa,bazaaa
+
+  # Some synonym groups specific to this example
+  GB,gib,gigabyte,gigabytes
+  MB,mib,megabyte,megabytes
+  Television, Televisions, TV, TVs
+  #notice we use "gib" instead of "GiB" so any WordDelimiterFilter coming
+  #after us won't split it into two words.
+
+  # Synonym mappings can be used for spelling correction too
+  pixima => pixma
+  ```
+
+  **Supported Languages**: Chinese, Dutch, English, French, German, Hebrew, Italian, Japanese, Polish, Spanish
+
+<Note>
+Boosted synonyms are not supported. This synonym mapping file should be uploaded to the blob store, and a blob store path should then be passed to the job.
+</Note>
+
+* **Keystroke Misspelling**
+
+  Simulates typos one might make based on the layout of the keyboard. For example, if typing in English on a QWERTY keyboard layout, they might accidentally replace the “y” with a “t” while typing the word “keyboard” because ”y” and “t” are next to each other on the keyboard. Currently, only QWERTY keyboard layouts are supported.
+
+  The user can provide their own keyboard mapping as a JSON file uploaded to the fusion blob store. The JSON file should be in the following format: `{“a”:”x”, “b”:”v”, …​}`.
+
+  **Supported Languages**: Dutch, English, French, German, Hebrew, Italian, Polish, Spanish, Ukrainian
+* **Split word**
+
+  Randomly splits words by introducing a space `“ “` at some random point in the word.
+
+  **Supported Languages**: Dutch, English, French, German, Italian, Polish, Spanish
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/data-augmentation.mdx";
+
+<SchemaParamFields schema={schema}/>

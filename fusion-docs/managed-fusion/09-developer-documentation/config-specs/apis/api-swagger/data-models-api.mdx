@@ -1,0 +1,100 @@
+---
+title: "Data Models API"
+description: "Managed Fusion Admin APIs"
+permalink: "7c6m5v"
+---
+
+Manages data models.
+
+Data models simplify the process of getting started with Fusion by providing pre-configured objects to reduce the effort spent on basic starting tasks. This helps keep documents consistent between datasources and intuitive to the object’s type.
+
+For more information, [view the API specification.](?open-api=true)
+
+## UI fields configuration
+
+<table>
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Required</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Name of the Data Model</strong></td>
+      <td>✅</td>
+      <td><code>string</code><br/>A user-friendly name for the data model. This typically describes the object type.</td>
+      <td><code>person</code></td>
+    </tr>
+    <tr>
+      <td><strong>Index Pipeline</strong></td>
+      <td>✅</td>
+      <td><code>string</code><br/>The name of the index pipeline used for the data model.</td>
+      <td><code>companyDirectory-index-pipeline</code></td>
+    </tr>
+    <tr>
+      <td><strong>Query Pipeline</strong></td>
+      <td>✅</td>
+      <td><code>string</code><br/>The name of the query pipeline used for the data model.</td>
+      <td><code>companyDirectory-query-pipeline</code></td>
+    </tr>
+    <tr>
+      <td><strong>Field Name</strong></td>
+      <td>✅</td>
+      <td><code>string</code></td>
+      <td><code>first_name</code></td>
+    </tr>
+    <tr>
+      <td><strong>Required</strong></td>
+      <td>✘</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td colspan="4"><strong><em>Solr Fields</em> ↓</strong></td>
+    </tr>
+    <tr>
+      <td><strong>Solr Field Name</strong></td>
+      <td>✅</td>
+      <td><code>string</code></td>
+      <td><code>firstName_t</code></td>
+    </tr>
+    <tr>
+      <td><strong>Is Query Field</strong></td>
+      <td>✘</td>
+      <td><code>boolean</code></td>
+      <td><code>true</code></td>
+    </tr>
+    <tr>
+      <td><strong>Enable Phrase Match</strong></td>
+      <td>✘</td>
+      <td><code>boolean</code></td>
+      <td><code>false</code></td>
+    </tr>
+    <tr>
+      <td><strong>Boost Value</strong></td>
+      <td>✘</td>
+      <td><code>integer</code><br/>The amount of boost to give to the query.</td>
+      <td><code>1</code></td>
+    </tr>
+    <tr>
+      <td><strong>Phrase Boost</strong></td>
+      <td>✘</td>
+      <td><code>integer</code><br/>The amount of boost to give to the query, if it matches as an exact phrase.</td>
+      <td><code>2</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<Tip>
+The value you put in **Name of the Data Model** is automatically converted to lowercase for the `id` field in the backend. Use lowercase syntax for API calls. For a list of data models and their `id` values, visit `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/data-models`.
+</Tip>
+
+## More information
+
+* [How to Configure a Data Model](/how-to/8868/configure-a-data-model)
+* [Data Models](/managed-fusion/5.9/fq4sdx/data-models)
+* [Data Model Mapping Index Stage reference](/managed-fusion/5.9/04pnyx/data-model-mapping)
+* [Call Data Model Pipeline Index Stage reference](/managed-fusion/5.9/y7hw9u/call-data-model-pipeline)

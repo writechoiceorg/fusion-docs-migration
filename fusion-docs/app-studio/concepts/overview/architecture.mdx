@@ -1,0 +1,47 @@
+---
+title: "Architecture and Technology Stack"
+permalink: "3118"
+---
+
+Appkit is a stateless, modular, 100% Java Standard Edition software framework.
+
+## Architecture
+
+Appkit consists of:
+
+* A layer of [data-abstraction middleware](/fusion/5.9/3117/data-sources)
+* A collection of functional [modules](/fusion/5.9/3142/modules) for data manipulation
+* [User interface components](/fusion/5.9/3114/user-interface-components) for rendering and visualizing the data
+
+An Appkit search application consists of modular building blocks, which are pieced together through the use of special [Appkit tags](/fusion/5.9/3121/appkit-tags), which can be mixed in with standard HTML and JSP code.
+
+<Frame>![architecture diagram](/assets/images/appkit/4.2/architecture.png)</Frame>
+
+## Technology stack
+
+The Appkit stack is designed to be lightweight from the point of view of efficiency and ease of development. No programming or Java code is necessary to build a search application with Appkit.
+
+### Software that Appkit uses
+
+Appkit uses:
+
+* Maven for server side dependencies and build management
+* npm 9.0.2 for client side dependencies
+* Standard Java 1.8 Servlets and JSPs
+* Standards-compliant AngularJS, HTML, CSS, and JavaScript
+
+### What Appkit provides
+
+Appkit provides:
+
+* A self-service application generator for project generation
+* AngularJS based tag libraries for all framework components
+* Web services to expose all search functionality
+* Extension points for custom tags, JavaScript, and CSS
+
+### Deployment options
+
+Appkit applications can be:
+
+* Deployed locally in a development environment using the Maven Jetty plugin
+* Built to a standard WAR file for deployment on Tomcat (or any other servlet container/application server)

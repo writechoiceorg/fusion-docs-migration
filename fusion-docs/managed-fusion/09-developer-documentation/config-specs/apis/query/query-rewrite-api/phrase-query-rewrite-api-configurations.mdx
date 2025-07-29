@@ -1,0 +1,350 @@
+---
+title: "Phrase Query Rewrite API Configurations"
+description: "Managed Fusion Query Rewrite APIs"
+permalink: "w86srl"
+---
+
+This query rewrite configuration is used in the [Query Rewrite API](/managed-fusion/5.9/8ee4m8/query-rewrite-api).
+
+For a complete list of rule and rewrite types in the Query Rewrite API, see [Query Rewrite API Configurations](/managed-fusion/5.9/dyazfo/query-rewrite-api-configurations).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Phrase
+
+Phrase detection identifies phrases in your signals so that results with matching phrases can be boosted. This helps compensate for queries where phrases are not distinguished with quotation marks. For example, the query `ipad case` is rewritten as `“ipad case”~10^2`, meaning if `ipad` and `case` appear **within 10** terms (whitespace-delimited tokens) of each other, then boost the result by a factor of **2**.
+
+Phrases are applied in the [Text Tagger stage](/fusion/5.9/520/text-tagger-stage) of the query pipeline.
+
+### General information
+
+* Endpoint: `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/schema/RULE_TYPE`
+* Required parameter is: type
+* The values for the `hints` parameter include:
+
+  + `hidden`: Do not display in the Fusion UI, but can be read and written in the schema.
+  + `readonly`: Cannot be set by the user. If attempted, an error is generated and the operation fails.
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Schema</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="2"><strong>type</strong></td>
+    </tr>
+    <tr>
+      <td><strong>type</strong></td>
+      <td>string</td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>properties</strong></td>
+    </tr>
+
+    <tr>
+      <td><strong>confidence</strong></td>
+      <td>
+        ```json
+        {
+          "confidence": {
+            "type": "number",
+            "title": "Confidence",
+            "description": "Confidence score from the phrase job.",
+            "default": 1.0
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>id</strong></td>
+      <td>
+        ```json
+        {
+          "id": {
+            "type": "string",
+            "title": "ID",
+            "description": "The ID for this Rule. Used in the API to reference this query rewrite rule. Allowed characters: a-z, A-Z, 0-9, dash (-) and underscore (_)",
+            "maxLength": 128,
+            "pattern": "^[A-Za-z0-9_\\-]+$"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>source</strong></td>
+      <td>
+        ```json
+        {
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "The source for this query rewrite rule, such as a Spark Job.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>sourceType</strong></td>
+      <td>
+        ```json
+        {
+          "sourceType": {
+            "type": "string",
+            "title": "Source Type",
+            "description": "Source type",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>createdOn</strong></td>
+      <td>
+        ```json
+        {
+          "createdOn": {
+            "type": "string",
+            "title": "Created Date/Time",
+            "description": "Date/Time this rule was created.",
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>updatedOn</strong></td>
+      <td>
+        ```json
+        {
+          "updatedOn": {
+            "type": "string",
+            "title": "Updated Date/Time",
+            "description": "Date/Time this rule was last updated.",
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>reviewer</strong></td>
+      <td>
+        ```json
+        {
+          "reviewer": {
+            "type": "string",
+            "title": "Reviewer",
+            "description": "Who reviewed this rewrite rule.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>reviewedOn</strong></td>
+      <td>
+        ```json
+        {
+          "reviewedOn": {
+            "type": "string",
+            "title": "Reviewed Date/Time",
+            "description": "Date/Time this rule was last reviewed.",
+            "hints": ["hidden"],
+            "format": "date-time"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>review</strong></td>
+      <td>
+        ```json
+        {
+          "review": {
+            "type": "string",
+            "title": "Review",
+            "enum": ["approved", "denied"],
+            "default": "approved",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>deployed</strong></td>
+      <td>
+        ```json
+        {
+          "deployed": {
+            "type": "boolean",
+            "title": "Deployed Flag",
+            "description": "Flag to indicate if this rewrite rule has been deployed.",
+            "hints": ["hidden"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>tags</strong></td>
+      <td>
+        ```json
+        {
+          "tags": {
+            "type": "array",
+            "title": "Tags",
+            "description": "Conditional tags to restrict the triggering of this query rewrite rule.",
+            "items": { "type": "string" }
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>surface_form</strong></td>
+      <td>
+        ```json
+        {
+          "surface_form": {
+            "type": "string",
+            "title": "Surface Form",
+            "description": "The phrase itself"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>phrase_count</strong></td>
+      <td>
+        ```json
+        {
+          "phrase_count": {
+            "type": "integer",
+            "title": "Phrase Count",
+            "description": "Denotes how many times this phrase was found in the source."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>word_count</strong></td>
+      <td>
+        ```json
+        {
+          "word_count": {
+            "type": "integer",
+            "title": "Word Count",
+            "description": "Indicates how many words are included in the phrase."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>boost</strong></td>
+      <td>
+        ```json
+        {
+          "boost": {
+            "type": "number",
+            "title": "Boost Factor",
+            "description": "The factor to use to boost this phrase in matching queries."
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>slop</strong></td>
+      <td>
+        ```json
+        {
+          "slop": {
+            "type": "integer",
+            "title": "Slop Factor",
+            "description": "Phrase slop"
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>type</strong><br/><strong>Required</strong></td>
+      <td>
+        ```json
+        {
+          "type": {
+            "type": "string",
+            "title": "Type",
+            "enum": ["phrase"],
+            "default": "phrase",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td><strong>doc_type</strong></td>
+      <td>
+        ```json
+        {
+          "doc_type": {
+            "type": "string",
+            "title": "Doc Type",
+            "enum": ["query_rewrite"],
+            "default": "query_rewrite",
+            "hints": ["readonly"]
+          }
+        }
+        ```
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2"><strong>additionalProperties</strong></td>
+    </tr>
+    <tr>
+      <td><strong>additionalProperties</strong></td>
+      <td>
+        ```json
+        {
+          "additionalProperties": true
+        }
+        ```
+      </td>
+    </tr>
+  </tbody>
+</table>

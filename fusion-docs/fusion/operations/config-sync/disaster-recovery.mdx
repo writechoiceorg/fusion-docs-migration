@@ -1,0 +1,101 @@
+---
+title: "Data restoration"
+permalink: "0iq2cv"
+---
+
+ConfigSync restore operation allows you to restore the Fusion config to a specific state.
+To learn more about the ConfigSync repository and branches, see [Repo organization](/fusion/5.9/a6m3du/repo-organization).
+
+## Before you begin
+
+Please make sure that ConfigSync pod is up and running. You can check it by running the following command:
+
+```sh
+kubectl get pods | grep config-sync
+```
+
+## Restore from the specific branch
+
+To restore from the specific branch, use the `branch=<BRANCH_NAME>` request parameter.
+
+### HTTP request
+
+```http
+PUT https://<FUSION-URL>/config-sync/restore?branch=<BRANCH_NAME>
+Authorization: Basic <BASE64-ENCODED-AUTH>
+```
+
+### cURL request
+
+```bash
+curl -I -X PUT -u 'admin:<PASSWORD>' \
+  'https://<FUSION-URL>/config-sync/restore?branch=<BRANCH_NAME>'
+```
+
+## Restore from a specific commit
+
+First, get the commit SHA from the commit history.
+To find the commit you want to restore from:
+
+* Go to the Config Sync GitHub repository.
+* Select the branch you want to restore from.
+* Click on the `commits` link.
+* Find the commit you want to restore from and click on the commit message to view the commit details.
+* Copy the commit SHA from the commit details page or from the URL. Also, you could copy it from the commit history page.
+
+To restore from a specific commit, use the `commit=<COMMIT_SHA>` request parameter. For example:
+
+### HTTP request
+
+```http
+PUT https://<FUSION-URL>/config-sync/restore?commit=<COMMIT_SHA>
+Authorization: Basic <BASE64-ENCODED-AUTH>
+```
+
+### cURL request
+
+```bash
+curl -I -X PUT -u 'admin:<PASSWORD>' \
+  'https://<FUSION-URL>/config-sync/restore?commit=<COMMIT_SHA>'
+```
+
+## Restore from a specific date
+
+To restore from a specific date, use the `date=<DATE>` request parameter. The date should be in the `YYYY-MM-DDTHH:MM:SSZ` UTC format.
+For example: `2021-01-01T00:00:00Z`.
+In this case ConfigSync restores the config to the state it was at the specified date.
+Actually, it restores the config to the state it was at the last commit before the specified date.
+
+### HTTP request
+
+```http
+PUT https://<FUSION-URL>/config-sync/restore?date=<DATE>
+Authorization: Basic <BASE64-ENCODED-AUTH>
+```
+
+### cURL request
+
+```bash
+curl -I -X -u 'admin:<PASSWORD>' \
+  'https://<FUSION-URL>/config-sync/restore?date=<DATE>'
+```
+
+## Restore specific apps
+
+To restore specific apps, use the `apps=<APP1,APP2,…​>` request parameter. For example:
+
+```bash
+curl -I -X PUT -u 'admin:<PASSWORD>' \
+  'https://<FUSION-URL>/config-sync/restore?branch=<BRANCH_NAME>&apps=app1,app2'
+```
+
+or
+
+```bash
+curl -I -X PUT -u 'admin:<PASSWORD>' \
+  'https://<FUSION-URL>/config-sync/restore?commit=<COMMIT_SHA>&apps=app1,app2'
+```
+
+## Track the restore progress
+
+Each restore operation is asynchronous. You can track the restore progress by checking logs in the ConfigSync pod.

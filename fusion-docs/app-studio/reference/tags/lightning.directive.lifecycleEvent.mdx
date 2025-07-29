@@ -1,0 +1,51 @@
+---
+title: "lifecycle:event"
+permalink: "1105"
+---
+
+## Description
+
+Broadcasts an event
+
+## Usage
+
+as element:
+
+```xml
+<lifecycle:event
+       event="{string}"
+       global="{boolean}">
+</lifecycle:event>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| event | **string** | The name of the event to broadcast |
+| global | **boolean** | If true the event is broadcasted to the entire application, otherwise it will just broadcast to it’s children. (Default: true) |
+
+## Example
+
+#### Source
+
+```xml
+<p>An event called foo will broadcast in 5 seconds.</p>
+<lifecycle:delay delay="5000">
+    <lifecycle:event event="foo">
+        <search:alert style="alertbox-positive">Event foo has been broadcast</search:alert>
+    </lifecycle:event>
+</lifecycle:delay>
+<lifecycle:on event="foo">
+    <lifecycle:delay delay="1000">
+        <search:alert style="alertbox-positive">Event foo has been heard so I have appeared!</search:alert>
+    </lifecycle:delay>
+</lifecycle:on>
+<lifecycle:on event="foo" hide="true">
+    <search:alert style="alertbox-warning">When I hear the event foo I will hide!</search:alert>
+</lifecycle:on>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/lifecycleEvent.png)</Frame>

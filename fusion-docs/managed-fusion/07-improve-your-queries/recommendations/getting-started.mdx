@@ -1,0 +1,118 @@
+---
+title: "Get started"
+description: "Recommendations and boosting"
+permalink: "y3kiwa"
+---
+
+[Signals](/managed-fusion/5.9/ws4w2h/signals) provide the data that Managed Fusion uses to generate [collaborative recommendations](/managed-fusion/5.9/l0emoh/methods). The simplest way to get started is to enable signals and recommendations in one of your primary collections.
+
+Once you do this, Managed Fusion automatically creates a set of [default objects](#objects) and begins creating and updating collections of recommendations on a regular schedule.
+
+<Tip>
+[Content-based recommendations](/managed-fusion/5.9/l0emoh/methods) can be used without enabling signals or recommendations, but they require manual configuration.
+</Tip>
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Recommendations** focuses on how Fusion uses signals to automatically produce custom recommendations to offer users the items most relevant to their experience:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/recommendations-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/recommendations-course.png" alt="Recommendations" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Enable signals
+
+Signals are enabled by default for new collections when you have a Managed Fusion license installed. You can enable or disable signals for any collection at **Collections** > **Collections Manager**.
+
+<Frame>![Enable Signals](/assets/images/4.2/signals-enable.png)</Frame>
+
+Enabling signals automatically creates a set of [aggregation jobs](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-job) which create the input data for recommendations. See [Signals and Aggregations](/managed-fusion/5.9/ws4w2h/signals) for complete details.
+
+## Enable recommendations
+
+Recommendations are not enabled by default. You can enable recommendations in either of the following ways:
+
+* **Collections Manager.** Sign in to Managed Fusion and select your application. Then click **Collections** > **Collections Manager**. Click the gear icon of your collection and select **Enable Recommendations**.
+
+  <Frame>![Enable Recommendations](/assets/images/4.2/recommendations-enable.png)</Frame>
+* **Relevance.** Sign in to Managed Fusion and select your application. Then click **Relevance > Recommendations**.
+
+For either method, the system displays the Enable Recommendations dialog box. Click **Enable Recommendations** to automatically enable the [items-for-user](/managed-fusion/5.9/l0emoh/methods#items-for-user) and [items-for-item](/managed-fusion/5.9/l0emoh/methods#items-for-item) recommendation methods. To use additional [recommendation methods](/managed-fusion/5.9/l0emoh/methods), you must configure them separately.
+
+## Default objects for recommendations
+
+When recommendations are enabled, Managed Fusion automatically creates a default set of collections, jobs, schedules, and query pipelines that provide basic functionality for recommendations.
+
+You can tune the default jobs and pipelines as needed to refine the results, or create new ones, then configure your search application to request recommendations from the query pipelines.
+
+See also the default objects created when you [enable signals](/managed-fusion/5.9/ws4w2h/signals#enabling). These must already exist when you enable recommendations.
+
+### Collections
+
+* `COLLECTION_NAME_items_for_item_recommendations`
+
+  Collection to hold generated item-item similarities (by default 10 per item). No `user_id_s` data is present. A Recommend Items for Item query pipeline stage can use the similarities to return item recommendations. For example, a query in which `doc_id_s = docA` would return an ordered list of other `doc_id_s` values for documents that are similar to document `docA`, along with the similarities. For example: `[("docB", 0.83), ("docC", 0.55), ("docD", 0.43), …​, ("docK", 0.22)]`.
+* `COLLECTION_NAME_items_for_user_recommendations`
+
+  Collection to hold recommended items for a user. By default the job creates 10 recommendations per user.
+* `COLLECTION_NAME_recs_aggr`
+
+  Collection to hold the output of recommender aggregation jobs.
+* `COLLECTION_NAME_bpr_user_recs` and `COLLECTION_NAME_bpr_item_recs`
+
+  Collections for Bayesian Personalized Ranking (BPR) recs, user-item, and item-item (respectively).
+* `COLLECTION_NAME_content_recs`
+
+  Collection for content-based recommender recs.
+* `COLLECTION_NAME_recommender_models`
+
+  Collection that stores ALS models.
+* `COLLECTION_NAME_queries_query_recs`
+
+  Collection for output of the Query-Query Similarity Job.
+
+### Jobs and schedules
+
+Enabling recommendations creates the new jobs below, each using a different method to produce items-for-item and items-for-user recommendations. These jobs consume the output of the [signals aggregation jobs](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs).
+
+|  | [BPR Recommender](/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs) | [Content-Based Recommender](/managed-fusion/5.9/g02utf/content-based-recommender-jobs-experimental) | [Query-to-Query Session-Based Similarity](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs-experimental) | Default job name |
+| --- | --- | --- | --- | --- |
+| `COLLECTION_NAME_item_recommendations` | `COLLECTION_NAME_bpr_item_recs` | `COLLECTION_NAME_content_recs` | `COLLECTION_NAME_query_recs` | Default input collection |
+| `COLLECTION_NAME_signals_aggr` | `COLLECTION_NAME_signals_aggr` | `COLLECTION_NAME` | `COLLECTION_NAME_signals` | Default output collections |
+| `COLLECTION_NAME_items_for_user_recommendations` `COLLECTION_NAME_items_for_item_recommendations` | `COLLECTION_NAME_bpr_user_recs` `COLLECTION_NAME_bpr_item_recs` | `COLLECTION_NAME_content_recs` | `COLLECTION_NAME_queries_query_recs` | Recommendation type |
+
+None of the jobs are scheduled by default; you must manually run or schedule them.
+
+NOTE:
+
+* The `COLLECTION_NAME_user_item_prefs_agg` job provides input data for the ALS and BPR jobs and must run before them. See [SQL Aggregations](/managed-fusion/5.9/wuhhmm/sql-aggregation-jobs#prefs) for details.
+* The `COLLECTION_NAME_user_query_history_agg` job generates aggregations for user-item preferences from signal information.
+
+Managed Fusion does *not* automatically create a [Query-to-Query Session-Based Similarity job](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs), which is needed for certain [recommender types](/managed-fusion/5.9/l0emoh/methods#content-based-vs-collaborative-recommendations).
+
+### Query pipelines
+
+* `COLLECTION_NAME_items_for_user_recommendations`
+
+  Query pipeline to generate recommendations of items for a user.
+* `COLLECTION_NAME_items_for_item_recommendations`
+
+  Query pipeline to generate recommendations of items similar to an item.
+
+  <Frame>![Default items-for-item recommendations pipeline](/assets/images/5.6/recommendations-item-item-pipeline-56.png)</Frame>
+* `COLLECTION_NAME_queries_query_recs`
+
+  Query pipeline to generate [queries-for-query recommendations](/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations) using a model created by the [Query-to-Query Session-Based Similarity](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs-experimental) job.

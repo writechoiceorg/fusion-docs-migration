@@ -1,0 +1,37 @@
+---
+title: "Configuring the Hierarchical Facet Service"
+permalink: "3203"
+---
+
+To correctly display a taxonomy as a hierarchical facet you must configure the requisite Appkit service to retrieve the data structure that is configured in your Solr index.
+
+First you must create a service configuration:
+
+```
+/conf
+    /services
+        /hierarchical
+            /hierarchical.conf
+```
+
+The file 'hierarchical.conf' should be configured similar to this example:
+
+```yaml
+name: twigkit.search.solr.service.facet.GreedySolrHierarchicalFacetService
+platform: platforms.solr
+parents-suffix: _parent
+```
+
+`platform`  
+This specifies the configured platform where the taxonomy has been indexed.
+
+`parents-suffix`  
+The suffix that, if appended to the facet’s fieldname, designates the field containing parent node data. The suffix will depend on how the taxonomy data has been indexed.
+
+This service configuration is what is used when adding the hierarchical facet to your HTML page as in this example:
+
+```xml
+<search:facet facet-name="location" show="6" show-more="100" max-characters="35" collapsible="true">
+    <facet:hierarchical title="location" facet-name="location" platform="myHierarchicalPlatform" query="myHierarchicalQuery"></facet:hierarchical>
+</search:facet>
+```

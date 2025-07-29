@@ -1,0 +1,55 @@
+---
+title: "toggle:controls"
+permalink: "1167"
+---
+
+## Description
+
+The toggle controls directive
+
+## Usage
+
+as element:
+
+```xml
+<toggle:controls
+       labels="{string}"
+       panes="{string}"
+       [title="{string}"]>
+</toggle:controls>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| labels | **string** | Labels that describe each corresponding pane. There must be exactly the same number of labels as there are panes. |
+| panes | **string** | This parameter associates the controls with the corresponding panes by referencing the panes' id parameter. |
+| title  *(optional)* | **string** | The title of the pane controls. |
+
+## Example
+
+#### Source
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="panes"></toggle:controls>
+<toggle:panes id="panes">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/toggleControls.png)</Frame>

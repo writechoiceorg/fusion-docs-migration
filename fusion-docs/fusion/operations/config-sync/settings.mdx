@@ -1,0 +1,77 @@
+---
+title: "ConfigSync configuration reference"
+permalink: "ifv6st"
+---
+
+This topic provides a complete reference to the ConfigSync configuration options.
+
+See also [Enable ConfigSync](/how-to/config-sync/y1rt4o/enable-config-sync) and [Configure the ConfigSync mode](/how-to/config-sync/r4vnii/configure-the-config-sync-mode).
+
+```yaml
+fusion-config-sync:
+  # pub mode
+  springProfilesOverride: "kubernetes,jwt,fusion,pub"
+  # sub mode
+  #springProfilesOverride: "kubernetes,jwt,fusion,sub"
+  # pubsub mode
+  #springProfilesOverride: "kubernetes,jwt,fusion,pub,sub"
+
+  cfg:
+    sync:
+      apps: -cloud-platform # track all the apps except cloud-platform
+    #  apps: "*" # track all the apps (default)
+    #  apps: "app1,app2" # track only app1 and app2 apps
+      syncEvery: 30000 # this setting controls how often we're running pub/sub job, 30000 milliseconds is a default
+
+    # github connection properties, common for pub/sub modes
+    github:
+      repo: "https://github.com/mycompany/cloud-config-sync.git" # git repo, mandatory
+      branch: "rh/stg" # git branch, mandatory
+      dir: "/tmp/config-sync-repo" # repo dir, default "/tmp/config-sync-repo"
+      path: / # configs path in the repo dir, default "/"
+      username: "fusion-config-sync" # git user name, default "fusion-config-sync"
+      email: "fusion-config-sync@mycompany.com" # git user email, mandatory, default "fusion-config-sync@lucidworks.com"
+      secretPath: "/etc/secrets/github_oauth_token" # alternative location for github oauth token as a file
+      githubToken: "token" # alternative way to specify github oauth token explicitly
+
+    pub:
+      checkForBlobUpdatesEveryMs: 20000 # blob aren't stored in zk but in solr so this setting controls how often should we check blob updates from solr, 20000 is a default
+      checkForRuleUpdatesEveryMs: 300000 # rules aren't stored in zk but in solr so this setting controls how often should we check rule updates from solr, 300000 is a default
+      objects:
+        decode-secrets: false # shall ConfigSync not decode secrets like s3 private keys, JDBC passwords etc.
+        name-filter: ".*_lw_tmp.*" # filter tmp file names
+        # filter audit properties by json pointer
+        prop-filter: >
+          /created,
+          /modified,
+          /createdAt,
+          /updatedAt,
+          /updates
+        apps:
+          prop-filter: >
+            /properties/previousCollectionId
+        blobs:
+          name-filter: "^(quickstart/|prefs-).+"
+        collections:
+          name-filter: "^system_.+"
+        spark-jobs:
+          # data-migration jobs
+          name-filter: "^(import|export)_.+"
+        tasks:
+          # data-migration tasks
+          name-filter: "^export_finalizer_.+"
+        index-pipelines:
+          prop-filter: >
+            /properties/secretSourcePipelineId,
+            /stages/secretSourceStageId,
+            /stages/licensed
+        query-pipelines:
+          prop-filter: >
+            /properties/secretSourcePipelineId,
+            /stages/secretSourceStageId,
+            /stages/licensed
+    sub:
+      objects:
+        name-filter: ".*_lw_tmp.*" # filter tmp file names
+    # add filters and other settings for the subscriber mode here
+```

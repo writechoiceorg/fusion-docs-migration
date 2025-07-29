@@ -1,0 +1,29 @@
+---
+title: "Ray/Seldon Vectorize Query Stage"
+permalink: "4engao"
+---
+
+The Ray/Seldon Vectorize Query stage generates a vector based on the current query string (q parameter). In Managed Fusion 5.9.11 and earlier, this stage is called Seldon Vectorize Query.
+
+<Note>
+This feature is only available in Managed Fusion 5.9.x for versions 5.9.6+.
+</Note>
+
+For more information on setting up vector search with Ray or Seldon, see [Configure Ray/Seldon vector search](/how-to/f2t34r/configure-ray-seldon-vector-search).
+
+<Note>
+**Important**
+
+This query stage must be placed *before* the **[Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage)**.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/ray---seldon-vectorize-query.mdx";
+
+<SchemaParamFields schema={schema}/>

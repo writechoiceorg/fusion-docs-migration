@@ -1,0 +1,27 @@
+---
+title: "Security"
+permalink: "10903"
+---
+
+**Authentication**
+
+The Security Module provides authentication and authorization capabilities to the search application. It supports multiple authentication providers and will pass authentication credentials on to search engines capable of handling authorization (for example, the FAST Security Access Module), providing personalization and role based filtering. The Security Module can be extended and customized via a pluggable API.
+
+The Security module supports a number of authentication providers, including:
+
+* **Single sign-on** via Windows Integrated Authentication
+* **Container-managed** authentication
+* **Form-based** authentication
+* **Cookie-based** authentication
+* **Pass-through** authentication
+* **Custom authentication providers** via API
+
+Role-based Access
+
+In many cases, you might want to restrict access to your application, or parts of your application, to specific groups of users. To enable this option, you must add the file `conf/security/access.conf` to your application’s configuration tree.
+
+User Web Service
+
+Although it is disabled by default, there is a web service that returns all of the details for the currently logged in user.
+
+Every operation and capability of Appkit can be invoked via REST-ful web service endpoints supporting both XML and JSON responses for asynchronous client-side operations, and integrating with external systems. For example, users can perform secure searches to any platform supported by Appkit.

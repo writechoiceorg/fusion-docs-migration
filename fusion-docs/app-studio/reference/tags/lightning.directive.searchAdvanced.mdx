@@ -1,0 +1,41 @@
+---
+title: "search:advanced"
+permalink: "1157"
+---
+
+## Description
+
+Creates an advanced search form to allow the user to add multiple
+filters to a search query.
+
+The following tags are commonly nested within a search advanced tag.
+
+* [Search Box Tag](/app-studio/4.2/1058/search-box)
+* [Advanced Text Tag](/app-studio/4.2/1191/advanced-text)
+* [Advanced Date Range Tag](/app-studio/4.2/1154/advanced-date-range)
+* [Advanced Button Tag](/app-studio/4.2/1186/advanced-button)
+
+## Usage
+
+as element:
+
+```xml
+<search:advanced>
+</search:advanced>
+```
+
+## Example
+
+#### Source
+
+```xml
+<search:advanced>
+    <search:box></search:box>
+    <advanced:text fields="source=Source,Material" label="Source"></advanced:text>
+    <advanced:date-range fields="source=Source,Material"></advanced:date-range>
+</search:advanced>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchAdvanced.png)</Frame>

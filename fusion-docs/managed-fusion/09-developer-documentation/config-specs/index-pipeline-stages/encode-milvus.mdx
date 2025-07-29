@@ -1,0 +1,24 @@
+---
+title: "Encode into Milvus"
+description: "Index pipeline stage configuration specifications"
+permalink: "gupae6"
+---
+
+The Encode into Milvus index stage invokes a machine learning model to encode a field and store it into [Milvus](/fusion/5.9/8821/milvus).
+
+## Troubleshooting
+
+### Update a Milvus collection
+
+Update and delete semantics are not supported on individual items in a Milvus collection. We recommend that you use a blue/green set of collections: reindex to apply updates to an empty Milvus collection, then swap between collections to apply the updates.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/encode-into-milvus.mdx";
+
+<SchemaParamFields schema={schema}/>

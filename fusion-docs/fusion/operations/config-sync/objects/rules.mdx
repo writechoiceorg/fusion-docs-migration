@@ -1,0 +1,37 @@
+---
+title: "Rules"
+permalink: "mt9mtl"
+---
+
+ConfigSync treats rule collections distinctively, aligning more with configurations than data, due to their integral role in the operational logic of Fusion applications.
+This unique approach to handling rule collections is outlined below, emphasizing their storage, synchronization, and selective inclusion criteria.
+
+## Storage location
+
+Rule collections are strategically stored within the `_lw_system/collections-data` repository folder.
+This placement underscores the perception of rules as configurations pivotal to the Fusion ecosystem, necessitating careful version control and management.
+
+## Format
+
+Rule collections are stored as JSON lines files, a format that is conducive to version control and change tracking.
+This format ensures that rule configurations are stored in a human-readable and version-friendly manner, facilitating collaboration and change management.
+
+## Periodic change capture
+
+ConfigSync actively monitors and captures changes to rule collections at 60-minute intervals, a frequency that is configurable.
+This ensures that any modifications are promptly recorded, maintaining an up-to-date configuration state.
+
+## Handling of specific rule collections
+
+### `_query_rewrite` collections
+
+Collections named with the `_query_rewrite` suffix are stored in their entirety.
+This means all associated data within these collections is preserved in ConfigSync, providing a comprehensive snapshot of the rule configurations.
+
+### `_query_rewrite_staging` collections
+
+Staging collections, identified by the `_query_rewrite_staging` suffix, undergo a selective storage process.
+
+Only records marked as deployed (filtered by `deployed:true`) are stored.
+This selective inclusion is strategic, addressing the potential for these staging collections to amass significant volumes of data, possibly spanning several gigabytes.
+Storing such vast amounts of data, especially on platforms like GitHub, could be impractical, even when leveraging Large File Storage ([Git Large File Storage](https://git-lfs.com/)) capabilities for rules.

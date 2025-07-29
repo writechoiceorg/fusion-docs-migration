@@ -1,0 +1,36 @@
+---
+title: "media:excel"
+permalink: "1123"
+---
+
+## Description
+
+The media:excel tag allows you to export results into excel format.
+
+## Usage
+
+as element:
+
+```xml
+<media:excel
+       conf="{string}"
+       query="{object}"
+       [fetch="{number|expression}"]
+       [fields="{string}"]
+       [header="{string}"]>
+</media:excel>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| conf | **string** | The platform configuration to use e.g. platforms.gsa.foo |
+| query | **object** | The query to submit to the CSV service |
+| fetch  *(optional)* | **number]link:[expression** | The number of results or rows to fetch. |
+| fields  *(optional)* | **string** | Fields to output, comma-separated or * for all. |
+| header  *(optional)* | **string** | Replace field names in the header with these header values. Must be a comma separated list of equal length to the fields parameter |

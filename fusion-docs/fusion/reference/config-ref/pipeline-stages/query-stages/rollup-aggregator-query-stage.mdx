@@ -1,0 +1,54 @@
+---
+title: "Rollup Aggregation Stage"
+permalink: "282"
+---
+
+The Rollup Aggregation query pipeline stage (previously called the Rollup Aggregator stage) is used to roll up Solr results from a context variable. In the REST API, this stage type is named `rollup-rec-aggr`.
+
+This stage reads the Solr results (`SolrResponse.class`) from the context and rolls up over a single field product a list of unique IDs and also aggregates the weights (any numeric field in Solr) for those IDs using any of the statistical aggregation functions available. The result from aggregation is saved back in the context and can be used later in a Parameterized Boosting stage.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/rollup-aggregation.mdx";
+
+<SchemaParamFields schema={schema}/>

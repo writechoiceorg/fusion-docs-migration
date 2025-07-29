@@ -1,0 +1,127 @@
+---
+title: "Fusion Server 4.2.2 Release Notes"
+permalink: "91"
+---
+
+**Release date:** 17 May 2019
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.5 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.12.v20180830 | Ignite 2.6.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+No new features were introduced in this release.
+
+## Improvements
+
+* [Web V1 connector](/fusion-connectors/39/web-v-1) improvements:
+
+  + A new `f.allowCircularRedirects`/**Allow circular redirects** configuration key allows a request to be redirected to the same URL multiple times.
+  + Fixed an issue that prevented crawling sitemaps that include `<lastmod>` tags.
+
+* [MongoDB connector](/fusion-connectors/77/mongo-db) improvements:
+
+  + The connector now supports SSL
+  + The Java driver was updated to eliminate a driver-related error when crawling.
+
+* In query pipelines, security trimming can now be configured with multiple [security trimming stages](/fusion-server/4.2/272/security-trimming-stage).
+
+* The [Box connector](/fusion-connectors/79/box-com-v-1) now includes an option to keep security cache local to a connector node.
+
+* It is no longer necessary to repeat the entire [upgrade procedure](/how-to/616/upgrade-to-fusion-4-x) to recover from an error. During upgrades to later versions of Fusion Server, the migrator script now permits recovery from errors by correcting the error, repeating the step that failed, and continuing with the upgrade procedure.
+
+* [Jobs API](/fusion-server/4.2/327/jobs-api) performance is improved when working with large numbers of datasources.
+
+* [Parallel Bulk Loader (PBL) jobs](/fusion-ai/4.2/557/parallel-bulk-loader) (Fusion AI only) and [Script jobs](/fusion-server/4.2/386/script-jobs) can now be configured to set environment variables. In the Fusion UI, click **Advanced** to see this option.
+
+* Fusion now supports running multiple Parallel Bulk Loader (PBL), Script, or Custom jobs in parallel.
+
+  This feature can be enabled via the Configurations API, as follows:
+
+    ```bash
+    curl -X POST -H "Content-type: application/json" -d "2" http://localhost:8765/api/v1/configurations/fusion.spark.max.launcher.jobs
+    ```
+    
+    <Note>
+    This is an experimental feature. Note that running multiple jobs in parallel is memory-intensive.
+    </Note>
+
+* Performance is improved in v2 and custom SDK-based connectors.
+
+## Other changes
+
+* In the [SQL service](/fusion-server/4.2/192/fusion-sql-query-and-analytics), basic select SQL queries on `{collection}_signals`, `{collection}_query_rewrite`, or `{collection}_query_rewrite_staging` no longer fail when an ORDER BY clause is not included.
+
+* The `install.sh` script for `systemd` no longer starts services after installing them. Services must be started manually.
+
+* Fixed a document sampling issue which prevented sample documents from appearing in the Index Workbench when previewing a pipeline that used a v2 connector or custom SDK-based connector.
+
+* Fixed an issue that allowed users to delete pipelines without the correct permissions.
+
+* Fixed an issue that affected the accuracy of the start times displayed in the [Scheduler](/fusion-server/4.2/184/jobs-overview#the-scheduler).
+
+* Fixed some display issues in the [Log Viewer](/fusion-server/4.2/130/the-dev-ops-center#the-log-viewer).
+
+* Fixed the ownership settings on files in the Fusion tarball so that both the UID and GID are 0 when the package is unpacked by a user with root privileges.
+
+* Fixed a bug that caused an infinite loop after logging out of Fusion on Chrome.
+
+* Fixed a bug that prevented the RPC service from starting after connectors were deleted from the blob store.
+* [Query Workbench](/fusion-server/4.2/167/query-workbench) bug fixes:
+
+  + Fixed an issue that changed the display in both panels instead of only the working panel when using Compare mode.
+  + Fixed an issue that prevented some document fields from appearing in the dropdown list of fields for faceting.
+  + Fixed a bug that caused a "Search Error Unknown Pipeline" error after logging out and logging in again.
+  + A few display issues were fixed.
+* [Confluence connector](/fusion-connectors/56/confluence) bug fixes:
+
+  + Added parent permission ACL values.
+  + Fixed a bug that caused a null pointer exception when `f.includePrivateContent`/**Include private content** and `f.enableSecurityTrimming`/**Enable Security Trimming** were both set to "false".
+
+* Fixed an issue in the [Local Filesystem connector](/fusion-connectors/62/local-filesystem-connector-v-2-configuration-reference) which cause crawls to continue after the configured **Maximum Output Limit**/`maximumItemLimitConfig` had been reached.
+
+## Addressed Security Vulnerabilities
+
+* [Apache Commons Email](https://commons.apache.org/proper/commons-email/) was upgraded to version 1.5.0 to resolve a [security vulnerability](https://www.cvedetails.com/cve/CVE-2018-1294/).
+
+## Known issues
+
+* When under load, the Fusion proxy service can occasionally become stuck, causing user authentication to fail. This is the result of the proxy `InputStream` failing to close properly.
+
+  An upgrade to Fusion 4.2.4 is required to fix this issue. See [Upgrade Fusion](/how-to/710/upgrade-fusion-server-4-2-x-to-4-2-y).
+
+* Fusion Admin may become sluggish with extended use over a period of several hours. To alleviate this issue, reload the page in the browser while bypassing the cache using the Shift+F5 shortcut.
+
+* Ommitting the port from the `Origin` and `Host` headers from a cURL request incorrectly triggers the CORS filter, resulting in a `400` bad request error.
+
+    For example:
+
+    ```
+    $ curl -s -o /dev/null -w "%{http_code}\n" -H "Origin: https://example.com:443" -H "Host: example.com:443" http://localhost:8764/api
+    200
+
+    $ curl -s -o /dev/null -w "%{http_code}\n" -H "Origin: https://example.com" -H "Host: example.com" http://localhost:8764/api
+    400
+    ```
+
+* If a user has no assigned groups, conducting SharePoint security trimming on that user will result in a `NullPointerException` error.
+
+* An `IOException` error is sometimes logged while attempting to fetch documents from SharePoint.
+
+* Entering a number value only in the Query Workbench finds stages as a result. No result should be found.
+
+* A `Job execution error` is produced while trying to run a Phrase Detection job with an empty output collection.
+
+* When creating a new collection within a Fusion AI app, collections previously deleted from other apps may appear in the new app as collections or sub-collections.
+
+* After starting and stopping a job in a new Fusion AI app, the job’s `start` time value may be listed as being older than the job’s `stop` time value. Example:
+
+    ```
+    start: Wed, April 17, 2019 at 06:15:55 PM +0300
+    stop: Wed, April 17, 2019 at 06:14:57 PM +0300
+    ```

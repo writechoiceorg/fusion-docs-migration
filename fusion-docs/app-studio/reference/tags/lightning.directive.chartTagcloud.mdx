@@ -1,0 +1,38 @@
+---
+title: "chart:tagcloud"
+permalink: "1071"
+---
+
+## Description
+
+The Chart Tag Cloud Directive
+
+## Usage
+
+as element:
+
+```xml
+<chart:tagcloud
+       response="{object}"
+       facet-name="{string}"
+       [title="{string}"]
+       [show="{number}"]
+       [action="{string}"]
+       [order="{string}"]>
+</chart:tagcloud>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object |
+| facet-name | **string** | Facet name to use from the response object |
+| title  *(optional)* | **string** | The title that should be displayed above the tag cloud. |
+| show  *(optional)* | **number** | The maximum number of values to show in the tag cloud. Defaults to 15. |
+| action  *(optional)* | **string** | The target resource to which the tag cloud query should submit. |
+| order  *(optional)* | **string** | Key to order the data by, accepted values are `val`,`-val`,`-count`,`-weight`,`count` and `weight`. |

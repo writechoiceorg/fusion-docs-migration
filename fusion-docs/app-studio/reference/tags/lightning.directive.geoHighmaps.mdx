@@ -1,0 +1,52 @@
+---
+title: "geo:highmaps"
+permalink: "1059"
+---
+
+## Description
+
+Highmaps directive for mapping data onto a map.
+
+In order to use this directive you need to include the map you wish to
+use, they can be found [here](http://code.highcharts.com/mapdata/)
+
+For example if you want to use this
+[map
+of the UK](http://jsfiddle.net/gh/get/jquery/1.11.0/highslide-software/highcharts.com/tree/master/samples/mapdata/countries/gb/gb-all) you need to include the following script tag
+`<script src="https://code.highcharts.com/mapdata/countries/gb/gb-all.js"></script>`
+and put `countries/gb/gb-all` on the chart highmaps map attribute. eg.
+`<chart:highmaps response="response" facet-name="facet" map="countries/gb/gb-all"></chart:highmaps>`
+
+## Usage
+
+as element:
+
+```xml
+<geo:highmaps
+       response="{string}"
+       facet-name="{string}"
+       map="{string}"
+       [key="{string}"]
+       [title="{string}"]
+       [subtitle="{string}"]
+       [series-name="{string}"]
+       [query="{string}"]
+       [options="{object}"]
+       [select="{string}"]>
+</geo:highmaps>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | Name of the response object to get the facet from. |
+| facet-name | **string** | Name of the facet to retrieve the data from. |
+| map | **string** | The map to use to render the data on. |
+| key  *(optional)* | **string** | The property for joining the data. (Default: 'hc-key') [More details here](http://www.highcharts.com/docs/maps/map-collection) |
+| title  *(optional)* | **string** | Title for the chart. |
+| subtitle  *(optional)* | **string** | Subtitle for the chart. |
+| series-name  *(optional)* | **string** | Name of the series. (Default: Name from the facet) |
+| query  *(optional)* | **string** | Name of the query to apply filters to. |
+| options  *(optional)* | **object** | Extend the current options. Options can be found [here.](http://api.highcharts.com/highmaps/) |
+| select  *(optional)* | **string** | How the data should be filtered when clicking on a part of the chart, a valid query must be present.  ```  + Valid values:- ```  * **click**  User selects a filter by clicking the value;  **(default)** * **multiselect**  Supports selecting multiple filters that get combined with an 'OR'. * **multiselect-instant**  Supports selecting multiple filters that get combined with an 'OR', filters will be applied automatically. |

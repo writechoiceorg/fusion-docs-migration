@@ -1,0 +1,254 @@
+export const schema = {
+  "type": "object",
+  "title": "Phrase Extraction",
+  "description": "Use this job when you want to identify statistically significant phrases in your content.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "analyzerConfig",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Field to Vectorize",
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 8180,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store extracted phrases; defaults to the query_rewrite_staging collection for the associated app."
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "ngramSize": {
+      "type": "integer",
+      "title": "Ngram Size",
+      "description": "The number of words in the ngram you want to consider for the sips.",
+      "default": 3,
+      "maximum": 5,
+      "exclusiveMaximum": false,
+      "minimum": 2,
+      "exclusiveMinimum": false
+    },
+    "minmatch": {
+      "type": "integer",
+      "title": "Minimum Count",
+      "description": "The number of times a phrase must exist to be considered. NOTE: if input is non signal data, please reduce the number to e.g. 5.",
+      "default": 100,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Text Analyzer",
+      "description": "The style of text analyzer you would like to use.",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ]
+    },
+    "attachPhrases": {
+      "type": "boolean",
+      "title": "Extract Key Phrases from Input Text",
+      "description": "Checking this will cause the job to associate extracted phrases from each source doc. and write them back to the output collection. If input data is signals, it is suggested to turn this option off. Also, currently it is not allowed to check this option while attempting to write to a _query_rewrite_staging collection.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "minLikelihood": {
+      "type": "number",
+      "title": "Minimum Likelihood Score",
+      "description": "Phrases below this threshold will not be written in the output of this job.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "enableAutoPublish": {
+      "type": "boolean",
+      "title": "Enable auto-publishing",
+      "description": "If true, automatically publishes rewrites for rules. Default is false to allow for initial human-aided reviewing",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "sip"
+      ],
+      "default": "sip",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "minmatch",
+        "ngramSize"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    }
+  ]
+}

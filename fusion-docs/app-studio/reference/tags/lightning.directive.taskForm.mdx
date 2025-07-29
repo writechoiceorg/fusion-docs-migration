@@ -1,0 +1,30 @@
+---
+title: "task:form"
+permalink: "1133"
+---
+
+## Description
+
+Posts form data to create a Twigkit Task. Any form fields with a name
+prefixed with `attr-` will be added as attributes to the created task.
+
+State classes of `submitting`, `success`, and `error` are added to the
+form element to allow the UI to be customised.
+
+## Usage
+
+as element:
+
+```xml
+<task:form
+       task="{string}"
+       [redirect="{string}"]>
+</task:form>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| task | **string** | The task name. For example, if a configuration logger.conf is found under resources/conf/task/, the task name would be task.logger |
+| redirect  *(optional)* | **string** | If set, the form will redirect to this URL on successful submission |

@@ -1,0 +1,49 @@
+---
+title: "Gateway Configuration Properties"
+permalink: "0p1hqp"
+---
+
+The Gateway configuration properties are generated during an application build.
+
+The following table contains information about Fusion-related parameters.
+
+| name | type | Details |
+| --- | --- | --- |
+| **properties** | | |
+| `audit.enabled` | java.lang.Boolean | `description`: Is audit enabled.  `defaultValue`: true |
+| `audit.excludes` | java.util.List\<java.lang.String> | `description`: Comma separated list of paths to exclude from auditing. |
+| `audit.get.enable` | java.lang.Boolean | `description`: Audit GET requests.  `defaultValue`: false |
+| `audit.get.excludes` | java.util.List\<java.lang.String> | `description`: Comma separated list of paths to exclude from GET auditing.  `defaultValue`: /api/ui-logs |
+| `audit.get.resources-enabled` | java.lang.Boolean | `description`: Audit GET requests to static resources.  `defaultValue`: false |
+| `fusion.error.translation.enabled` | java.lang.Boolean | `defaultValue`: false |
+| `fusion.error.translation.exclude-services` | java.lang.String[] |  |
+| `jwt.issuer.uri` | java.net.URI |  |
+| `jwt.token.cache-size` | java.lang.Integer | `description`: Size of the cache of valid JWT. If value exists in the cache, its signature is not validated. Cache is used for recognized, already logged users for audit logging.  `defaultValue`: 1000 |
+| `jwt.token.expiration-secs` | java.lang.Integer | `description`: Validity time of JWT token, before next login will be required.  `defaultValue`: 1800 |
+| `jwt.token.key` | java.lang.String | `description`: Name of the key in keystore.  `defaultValue`: jwt-signer |
+| `jwt.token.key-store` | java.lang.String | `description`: Path to keystore. |
+| `jwt.token.pass` | java.lang.String | `description`: Password for the keystore.  `defaultValue`: |
+| `security.auth.password-cache-size` | java.lang.Integer | `description`: Size of the cache of user credentials for native authentication. If 0, then cache is disabled.  `defaultValue`: 0 |
+| `security.auth.url` | java.lang.String | `description`: Redirect path to authorization UI.  `defaultValue`: /auth/login |
+| `security.auth.user-cache-size` | java.lang.Integer | `description`: Size of the cache of user data. If 0, then cache is disabled.  `defaultValue`: 100 |
+| `security.cors.allow-credentials` | java.lang.Boolean |  |
+| `security.cors.allowed-headers` | java.util.List\<java.lang.String> |  |
+| `security.cors.allowed-methods` | java.util.List\<java.lang.String> |  |
+| `security.cors.allowed-origins` | java.util.List\<java.lang.String> |  |
+| `security.cors.enabled` | java.lang.Boolean | `defaultValue`: true |
+| `security.internal.enforce-internal-address-exceptions` | java.util.List\<java.lang.String> | `description`: List of names of service accounts which request IP does not check against the service registry. Applies only if enforceInternalAddressForServiceAccounts is true. |
+| `security.internal.enforce-internal-address-for-service-accounts` | java.lang.Boolean | `description`: Check if service is listed in the service registry under IP or hostname of where the request originated.  `defaultValue`: true |
+| `security.internal.service-account-key` | java.lang.String | `description`: Key or password for all services to authenticate in proxy.  `defaultValue`: invalid |
+| `security.passthru` | java.util.List\<java.lang.String> | `description`: List of paths to which anonymous access should be allowed. |
+| `security.saml.max-authentication-age` | java.lang.Integer | `defaultValue`: 7200 |
+| `fusion.cors.allow-credentials` | java.lang.Boolean | `deprecated: true, deprecation: { replacement: security.cors.allow-credentials }` |
+| `fusion.cors.allowed-headers` | java.util.List\<java.lang.String> | `deprecated: true, deprecation: { replacement: security.cors.allowed-headers } ` |
+| `fusion.cors.allowed-methods` | java.util.List\<java.lang.String> | `deprecated: true, deprecation: { replacement: security.cors.allowed-methods } ` |
+| `fusion.cors.allowed-methods` | java.util.List\<java.lang.String> | `deprecated: true, deprecation: { replacement: security.cors.allowed-methods } ` |
+| `fusion.cors.allowed-origins` | java.util.List\<java.lang.String> | `deprecated: true, deprecation: { replacement: security.cors.allow-origins } ` |
+| `fusion.cors.enabled` | java.lang.Boolean | `defaultValue: true, deprecated: true, deprecation: { replacement: security.cors.enabled } ` |
+
+<Note>
+You can also enter `hints`: [ ] information in a similar format as the `properties` defined in the table.
+</Note>
+

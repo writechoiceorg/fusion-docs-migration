@@ -1,0 +1,359 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Evaluates performance of a configured pipeline",
+  "properties": {
+    "additionalParams": {
+      "description": "Additional query parameters to pass to return resultsfrom Fusion. Please specify in dictionary format: e.g. { \"rowsFromSolrToRerank\": 20,\"fq\": \"type:answer\" }\"",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Additional query parameters",
+      "type": "string"
+    },
+    "appName": {
+      "description": "Fusion app where indexed documents or QA pairs live.",
+      "title": "App name",
+      "type": "string"
+    },
+    "batchSize": {
+      "description": "If writing to solr, this field defines the batch size for documents to be pushed to solr.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Output Batch Size",
+      "type": "string"
+    },
+    "collectionName": {
+      "description": "Fusion collection where indexed documents or QA pairs live",
+      "title": "Main Collection",
+      "type": "string"
+    },
+    "doWeightsSelection": {
+      "default": false,
+      "description": "Whether to perform grid search to find the best weights combination for ranking scores for query pipeline's Compute Mathematical Expression stage\"",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Perform weights selection",
+      "type": "boolean"
+    },
+    "fetcherType": {
+      "default": "query-service",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Fetcher Type to use with query evaluation",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "inputEvaluationCollection": {
+      "description": "Cloud storage path or Solr collection to pull labeled data for use in evaluation",
+      "minLength": 1,
+      "title": "Input Evaluation Data Path",
+      "type": "string"
+    },
+    "kList": {
+      "default": "[1,3,5]",
+      "description": "The k retrieval position that will be used to compute for each metric",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics@k list",
+      "type": "string"
+    },
+    "matchFieldInFile": {
+      "default": "answer_id",
+      "description": "Field which contains id or text of the ground truth answer in the evaluation collection",
+      "title": "Ground Truth Field",
+      "type": "string"
+    },
+    "matchFieldInFusion": {
+      "default": "doc_id",
+      "description": "Field name in Fusion which contains answer id or text for matching ground truth answer id or text in the evaluation collection",
+      "title": "Answer or id Field in Fusion",
+      "type": "string"
+    },
+    "metricsList": {
+      "default": "[\"recall\",\"map\",\"mrr\"]",
+      "description": "List of metrics that should be computed during evaluation. e.g.[\"recall\",\"precision\",\"map\",\"mrr\"]",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics list",
+      "type": "string"
+    },
+    "outputEvaluationCollection": {
+      "description": "Cloud storage path or Solr collection to store evaluation results (recommended collection is job_reports)",
+      "minLength": 1,
+      "title": "Output Evaluation Data Path",
+      "type": "string"
+    },
+    "outputFormat": {
+      "default": "solr",
+      "description": "The format of the output data - solr, parquet etc.",
+      "minLength": 1,
+      "title": "Output format",
+      "type": "string"
+    },
+    "partitionFields": {
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Partition fields",
+      "type": "string"
+    },
+    "queryPipelineName": {
+      "description": "Configured query pipeline name that should be used for evaluation",
+      "title": "Fusion Query Pipeline",
+      "type": "string"
+    },
+    "rankingScoreField": {
+      "default": "ensemble_score",
+      "description": "Score to be used for ranking and evaluation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Ranking score",
+      "type": "string"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "returnFields": {
+      "description": "Fields (comma-separated) that should be returned from the main collection (e.g. question, answer). The job will add them to the output evaluation",
+      "title": "Return fields",
+      "type": "string"
+    },
+    "scoreListForWeights": {
+      "default": "score,vectors_distance",
+      "description": "Ranking scores (comma-separated) used for ensemble in the query pipeline's Compute Mathematical Expression stage. The job will perform weights selection for the listed scores",
+      "title": "List of ranking scores for ensemble",
+      "type": "string"
+    },
+    "secretName": {
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Cloud storage secret name",
+      "type": "string"
+    },
+    "seed": {
+      "default": 12345,
+      "description": "Random seed for sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sampling Seed",
+      "type": "integer"
+    },
+    "solrScaleFunc": {
+      "default": "max",
+      "description": "Function used in the pipeline to scale Solr scores. E.g., scale by max Solr score retrieved (max), scale by log with base 10 (log10) or take squre root of score (pow0.5)",
+      "title": "Solr scale function",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "targetRankingMetric": {
+      "default": "mrr@3",
+      "description": "Target ranking metric to optimize during weights selection",
+      "title": "Target metric to use for weight selection",
+      "type": "string"
+    },
+    "testQuestionFieldInFile": {
+      "default": "question",
+      "description": "Defines the field in the collection containing the test question",
+      "title": "Test Question Field",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Training Data Filter Query",
+      "type": "string"
+    },
+    "trainingFormat": {
+      "default": "solr",
+      "description": "The format of the input data - solr, parquet etc.",
+      "minLength": 1,
+      "title": "Input data format",
+      "type": "string"
+    },
+    "trainingSampleFraction": {
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1. Leave blank for no sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sampling proportion",
+      "type": "number"
+    },
+    "type": {
+      "default": "argo-qna-evaluate",
+      "enum": [
+        "argo-qna-evaluate"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "useConcurrentQuerying": {
+      "default": false,
+      "description": "Check this option if you want to make concurrent queries to Fusion. It will greatly speed up the job at the cost of increased load on Fusion. Use with caution.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Concurrent Querying",
+      "type": "boolean"
+    },
+    "useLabelingResolution": {
+      "default": false,
+      "description": "Check this to determine similar questions and similar answers via labeling resolution and graph connected components. Does not work well with signals data.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Labeling Resolution",
+      "type": "boolean"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input / Output Parameters",
+      "properties": [
+        "inputEvaluationCollection",
+        "trainingFormat",
+        "outputEvaluationCollection",
+        "outputFormat",
+        "trainingDataFilterQuery",
+        "testQuestionFieldInFile",
+        "matchFieldInFile",
+        "trainingSampleFraction",
+        "seed",
+        "useLabelingResolution",
+        "partitionFields",
+        "batchSize",
+        "secretName"
+      ]
+    },
+    {
+      "label": "Query Pipeline Input / Output Parameters",
+      "properties": [
+        "appName",
+        "collectionName",
+        "queryPipelineName",
+        "matchFieldInFusion",
+        "additionalParams",
+        "returnFields",
+        "useConcurrentQuerying"
+      ]
+    },
+    {
+      "label": "Metrics",
+      "properties": [
+        "rankingScoreField",
+        "metricsList",
+        "kList",
+        "doWeightsSelection",
+        "solrScaleFunc",
+        "scoreListForWeights",
+        "targetRankingMetric"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "inputEvaluationCollection",
+    "trainingFormat",
+    "outputEvaluationCollection",
+    "outputFormat",
+    "appName",
+    "queryPipelineName",
+    "collectionName",
+    "returnFields",
+    "type"
+  ],
+  "title": "Smart Answers Evaluate Pipeline",
+  "type": "object"
+}

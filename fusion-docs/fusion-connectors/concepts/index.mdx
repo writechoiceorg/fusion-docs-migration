@@ -1,0 +1,85 @@
+---
+title: "Concepts"
+permalink: "24"
+---
+
+Connectors are the out-of-the-box components for pulling your data into Fusion. Lucidworks provides a wide variety of connectors, each specialized for a particular data type.
+
+In Fusion 5.x, when you add a datasource to a [collection](/fusion/5.9/8831/collections), you specify the connector to use for ingesting data. In contrast, in Fusion 4.x, you specify the connector to use for ingesting data.
+
+See the [complete list of connectors](/fusion-connectors/63/configuration-reference), with links to configuration reference information for each one. If you are using Fusion 4.x, see [Fusion 4.x V1 Connector Downloads](/fusion-connectors/5e5d7o/fusion-4-x-v-1-connector-downloads) for a list of connector download links.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Connectors 101** focuses on how to choose, install, and configure connectors in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/connectors-101" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/connectors.jpg" alt="Connectors 101" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## Connector frameworks
+
+Fusion connectors are built using two different frameworks. Learn more about [V1 and V2 connectors](/fusion-connectors/331vyj/v-1-and-v-2-connectors).
+
+## Connector configuration
+
+Connector plugins can be hosted within Fusion, or can [run remotely](#remote-connectors). The communication of messages between Fusion and a remote connector or hosted connector are identical; Fusion sees them as the same kind of connector. This means you can implement a plugin locally, connect to a remote Fusion for initial testing, and when done, upload the same artifact into Fusion, so Fusion can host it for you.
+
+### Hosted connectors
+
+Connectors hosted in Fusion are cluster aware. This means that when a new instance of Fusion starts up, the connectors on other Fusion nodes become aware of the new connectors, and vice versa. This makes scaling the crawling process very natural and simple.
+
+### Remote connectors
+
+In Fusion 5.x, [Remote connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors) become clients of Fusion. These clients run a very lightweight process and communicate to Fusion using a very efficient messaging format. This option makes it possible to put the connector wherever the data lives. This may be done for performance reasons, or for security/access reasons.
+
+If you are using Fusion 4.x, see [Remote Connectors](/fusion-connectors/22/remote-connectors) for more details.
+
+## Connector logs
+
+You can find connector logs in `https://FUSION_HOST:FUSION_PORT/var/log/connectors`.
+
+Most connectors support Diagnostic Mode (also known as Diagnostic Logging), which enables Fusion to print more detailed information to the logs about each request, including the ID of every document inserted, updated, or deleted in the oplog. More information on Diagnostic Mode can be found in the Configuration section of the connectors which offer it. You may need to click on the Advanced slider to show more settings.
+
+<Frame>![Diagnostic mode](/assets/images/5.9/diagnostic-mode.png)</Frame>
+
+## Security trimming
+
+Security trimming in Fusion connectors ensures that users can only access the data they have permissions for, maintaining security and compliance. It works by filtering out unauthorized documents or data based on user access rights before the data is exposed in search results.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Security Trimming With Fusion Connectors** focuses on how to apply security trimming using Fusion connectors:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/security-trimming-with-fusion-connectors" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/security-trimming-connectors.png" alt="Security Trimming With Fusion Connectors" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+

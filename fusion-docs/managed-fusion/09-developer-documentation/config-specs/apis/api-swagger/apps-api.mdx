@@ -1,0 +1,78 @@
+---
+title: "Apps API"
+description: "Managed Fusion Admin APIs"
+permalink: "n2q1el"
+---
+
+The Apps API manages your Managed Fusion apps. To export or import an app, see the [Objects API](/managed-fusion/5.9/7ocb2u/objects-api). You can also [import an app using the Managed Fusion UI](/how-to/opceg9/import-a-fusion-app#import).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+### List all configured apps
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps
+```
+
+**Output**
+
+```json
+[ {
+  "id" : "1032724d-848a-4588-9503-c20702aa3a7b",
+  "name" : "Test App",
+  "properties" : {
+    "headerImageName" : "headerImage2",
+    "tileColor" : "apps-red"
+  }
+}, {
+  "id" : "7fc4d4e5-d3bd-4b21-b85e-9aa29c47b281",
+  "name" : "Movie Search",
+  "properties" : {
+    "headerImageName" : "headerImage3",
+    "tileColor" : "apps-dark"
+  }
+} ]
+```
+
+### Get the configuration for a specific app
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/8fc4d4e5-d3bd-4b21-b85e-9aa29c47b281
+```
+
+**Output**
+
+```json
+{
+  "id" : "7fc4d4e5-d3bd-4b21-b85e-9aa29c47b281",
+  "name" : "Movie Search",
+  "properties" : {
+    "headerImageName" : "headerImage3",
+    "tileColor" : "apps-dark"
+  }
+}
+```
+
+### Create a new app
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id": "MyNewApp", "name":"My new app", "description":"A really great new app"}' https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps
+```
+
+**Output**
+
+```json
+{
+  "id" : "MyNewApp",
+  "name" : "My new app",
+  "description" : "A really great new app"
+}
+```

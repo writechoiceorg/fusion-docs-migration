@@ -1,0 +1,124 @@
+{
+  "type": "object",
+  "title": "Regex Field Replacement",
+  "description": "This stage allows you to replace text using regular expressions",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "title": "Regex Rules",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "pattern",
+          "replacement"
+        ],
+        "properties": {
+          "source": {
+            "type": "array",
+            "title": "Source Fields",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "format": "regex"
+            }
+          },
+          "target": {
+            "type": "string",
+            "title": "Target Field",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "writeMode": {
+            "type": "string",
+            "title": "Write Mode",
+            "description": "What to do if document has target field already",
+            "enum": [
+              "overwrite",
+              "append"
+            ],
+            "default": "overwrite",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "pattern": {
+            "type": "string",
+            "title": "Regex Pattern",
+            "format": "regex"
+          },
+          "returnIfNoMatch": {
+            "type": "string",
+            "title": "Return if no Match",
+            "enum": [
+              "null",
+              "input_string",
+              "value"
+            ],
+            "default": "input_string",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "noMatchValue": {
+            "type": "string",
+            "title": "No Match Literal Value",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "replacement": {
+            "type": "string",
+            "title": "Regex Replacement",
+            "minLength": 0
+          },
+          "replaceWhich": {
+            "type": "string",
+            "title": "Replace Which",
+            "description": "Replace first or all matches",
+            "enum": [
+              "all",
+              "first"
+            ],
+            "default": "all",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 7,
+  "unsafe": false
+}

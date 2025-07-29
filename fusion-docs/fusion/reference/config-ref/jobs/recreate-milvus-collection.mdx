@@ -1,0 +1,64 @@
+---
+title: "Recreate a Milvus Collection"
+permalink: "uykrih"
+---
+
+Use this process to:
+
+* Recreate a lost Milvus collection.
+* Create a Milvus collection for a different field.
+* Create a Milvus collection that uses a different encryption model.
+
+## Prerequisites
+
+* Used the Smart Answers pipeline to index data, which created the Milvus and Solr collections.
+* The created Solr collection still exists, which is used as the Source Collection.
+
+## Process
+
+1. Create the Milvus collection. See [Create Collections in Milvus](/fusion/5.9/10914/create-collections-in-milvus-jobs) for more information.
+
+   <Note>
+   If the Milvus collection still exists and you want to overwrite it, select the **Override Collections** checkbox. This option deletes the current collection, allowing you to create a new collection.
+   </Note>
+
+2. Edit the Smart Answers Index Pipeline as follows:
+
+   * Disable the Solr Indexer stage.
+   * If you are creating a Milvus collection for a different field, or one that uses a different encryption model, access the **Encode into Milvus** stage and:
+
+     + Specify the **model**, the **Encoder Output Vector**, and the **Field to Encode**.
+     + Verify the **Milvus Collection Name** refers to the new Milvus collection.
+3. Navigate to the Datasources panel.
+4. Select **Add a Solr connector** and enter the following information:
+
+   * **Pipeline ID.** Smart Answers pipeline
+   * **Solr Connection Type.** SolrCloud
+   * **SolrCloud Zookeeper Host String.** Execute the following curl command. The response displays the SolrCloud Zookeeper Host String value. In the following `RESPONSE` example, the value you would set for the SolrCloud Zookeeper Host String is `ns-zookeeper-0.ns-zookeeper-headless:2181`.
+
+      ```bash
+      curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/searchCluster/default
+      ```
+
+     **RESPONSE**
+
+      ```json
+      {
+         "id": "default",
+         "connectString": "ns-zookeeper-0.ns-zookeeper-headless:2181",
+         "zkClientTimeout": 30000,
+         "zkConnectTimeout": 60000,
+         "cloud": true,
+         "bufferFlushInterval": 1000,
+         "bufferSize": 100,
+         "concurrency": 10,
+         "authConfig": {
+            "authType": "none"
+         },
+         "validateCluster": true
+      }
+      ```
+   * **Source Collection.** Original collection from the initial Smart Answers pipeline indexing job
+5. Navigate to Index Workbench and load the new solr-index datasource.
+6. Select **Start Job** to run the Solr datasource through the updated Smart Answers pipeline.
+7. When the data is reindexed, edit the Smart Answers pipeline and re-enable the Solr Indexer stage.

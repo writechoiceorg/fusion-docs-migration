@@ -1,0 +1,235 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Evaluates performance of a QnA pipeline",
+  "properties": {
+    "additionalParams": {
+      "description": "Additional query parameters to pass to return resultsfrom Fusion. Please specify in dictionary format: e.g. { \"rowsFromSolrToRerank\": 20,\"fq\": \"type:answer\" }\"",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Additional query parameters",
+      "type": "string"
+    },
+    "appName": {
+      "description": "Fusion app where indexed documents or QA pairs live.",
+      "title": "App name",
+      "type": "string"
+    },
+    "collectionName": {
+      "description": "Fusion collection where indexed documents or QA pairs live",
+      "title": "Main Collection",
+      "type": "string"
+    },
+    "doWeightsSelection": {
+      "default": true,
+      "description": "Whether to perform grid search to find the best weights combination for ranking scores for query pipeline's Compute Mathematical Expression stage\"",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Perform weights selection",
+      "type": "boolean"
+    },
+    "fetcherType": {
+      "default": "query-service",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Fetcher Type to use with query evaluation",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "inputEvaluationCollection": {
+      "description": "Collection to pull labeled data for use in evaluation",
+      "minLength": 1,
+      "title": "Input Evaluation collection",
+      "type": "string"
+    },
+    "kList": {
+      "default": "[1,3,5]",
+      "description": "The k retrieval position that will be used to compute for each metric",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics@k list",
+      "type": "string"
+    },
+    "matchFieldInFile": {
+      "default": "answer_id",
+      "description": "Field which contains id or text of the ground truth answer in the evaluation collection",
+      "title": "Ground Truth Field",
+      "type": "string"
+    },
+    "matchFieldInFusion": {
+      "default": "doc_id",
+      "description": "Field name in Fusion which contains answer id or text for matching ground truth answer id or text in the evaluation collection",
+      "title": "Answer or id Field in Fusion",
+      "type": "string"
+    },
+    "metricsList": {
+      "default": "[\"recall\"]",
+      "description": "List of metrics that should be computed during evaluation. e.g.[\"recall\",\"precision\",\"map\",\"mrr\"]",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics list",
+      "type": "string"
+    },
+    "outputEvaluationCollection": {
+      "description": "Collection to store evaluation results (recommended collection is job_reports)",
+      "minLength": 1,
+      "title": "Output Evaluation collection",
+      "type": "string"
+    },
+    "queryPipelineName": {
+      "description": "QnA query pipeline name",
+      "title": "Fusion Query Pipeline",
+      "type": "string"
+    },
+    "rankingScoreField": {
+      "default": "ensemble_score",
+      "description": "Score to be used for ranking and evaluation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Ranking score",
+      "type": "string"
+    },
+    "returnFields": {
+      "description": "Fields (comma-separated) that should be returned from the main collection (e.g. question, answer). The job will add them to the output evaluation",
+      "title": "Return fields",
+      "type": "string"
+    },
+    "samplingProportion": {
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1. Leave blank for no sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sampling proportion",
+      "type": "number"
+    },
+    "scoreListForWeights": {
+      "default": "score,vectors_distance",
+      "description": "Ranking scores (comma-separated) used for ensemble in the query pipeline's Compute Mathematical Expression stage. The job will perform weights selection for the listed scores",
+      "title": "List of ranking scores for ensemble",
+      "type": "string"
+    },
+    "seed": {
+      "default": 12345,
+      "description": "Random seed for sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sampling Seed",
+      "type": "integer"
+    },
+    "solrScaleFunc": {
+      "default": "max",
+      "description": "Function used in the pipeline to scale Solr scores. E.g., scale by max Solr score retrieved (max), scale by log with base 10 (log10) or take squre root of score (pow0.5)",
+      "title": "Solr scale function",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "targetRankingMetric": {
+      "default": "recall@3",
+      "description": "Target ranking metric to optimize during weights selection",
+      "title": "Target metric to use for weight selection",
+      "type": "string"
+    },
+    "testQuestionFieldInFile": {
+      "default": "question",
+      "description": "Defines the field in the collection containing the test question",
+      "title": "Test Question Field",
+      "type": "string"
+    },
+    "type": {
+      "default": "argo-qna-evaluate",
+      "enum": [
+        "argo-qna-evaluate"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input / Output Parameters",
+      "properties": [
+        "inputEvaluationCollection",
+        "outputEvaluationCollection",
+        "testQuestionFieldInFile",
+        "matchFieldInFile",
+        "samplingProportion",
+        "seed"
+      ]
+    },
+    {
+      "label": "Query Pipeline Input / Output Parameters",
+      "properties": [
+        "appName",
+        "collectionName",
+        "queryPipelineName",
+        "matchFieldInFusion",
+        "additionalParams",
+        "returnFields"
+      ]
+    },
+    {
+      "label": "Metrics",
+      "properties": [
+        "rankingScoreField",
+        "metricsList",
+        "kList",
+        "doWeightsSelection",
+        "solrScaleFunc",
+        "scoreListForWeights",
+        "targetRankingMetric"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "inputEvaluationCollection",
+    "outputEvaluationCollection",
+    "appName",
+    "queryPipelineName",
+    "collectionName",
+    "returnFields",
+    "type"
+  ],
+  "title": "Evaluate QnA Pipeline",
+  "type": "object"
+}

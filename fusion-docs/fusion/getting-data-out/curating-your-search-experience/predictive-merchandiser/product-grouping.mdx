@@ -1,0 +1,45 @@
+---
+title: "Product Grouping"
+permalink: "596"
+---
+
+Predictive Merchandiser makes it easy to group products together so they can be presented to the user. This can be useful when you want to show a product in all of its color variants or the various versions of a product (basic or advanced, for example).
+
+<Frame>![Product Groups](/assets/images/predictive-merchandiser/product-grouping-example01.png)</Frame>
+
+Product groups can be boosted or blocked. If you want to promote a product group that is on sale, for example, you can boost the group to the top of the results.
+
+You can still apply rules individually to products within a group. This allows you to boost a product based on a specific user’s search behavior. If a user typically favors the color red, you can boost the red variant of the product to the top of the group.
+
+<Frame>![Red Preference](/assets/images/predictive-merchandiser/product-grouping-example02.png)</Frame>
+
+## Best practices
+
+These parameters group products, and are defined in the Additional Query Parameters Stage:
+
+| Parameter Name | Parameter Value | Update Policy |
+| --- | --- | --- |
+| group | true | default |
+| group.format | grouped | default |
+| group.ngroups | true | default |
+| group.field | style_id_s | default<br/><br/>NOTE: You must configure `groupField=<field>` if you use [App Studio](/fusion/5.9/963/fusion-app-studio) to create your search application. |
+
+For more information about adding a query pipeline and additional query parameters, see:
+
+* [Add a Query Pipeline Stage](/how-to/702/add-a-query-pipeline-stage)
+* [Additional Query Parameters Stage](/fusion/5.9/294/additional-query-parameters-stage)
+
+### Collapse/Expand parser grouping
+
+The Collapse/Expand parser allows grouping with the following parameters:
+
+| Parameter Name | Parameter Value |
+| --- | --- |
+| expand | true |
+| enableElevation | true |
+| group | false |
+
+<Note>
+See [Collapse and Expand Results](https://solr.apache.org/guide/collapse-and-expand-results.html) for more information.
+</Note>
+

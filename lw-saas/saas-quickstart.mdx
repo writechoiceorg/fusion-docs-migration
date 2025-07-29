@@ -1,0 +1,117 @@
+---
+title: 'Quickstart'
+description: 'Start with Lucidworks Platform in 5 minutes or less.'
+icon: 'rocket'
+---
+
+
+## Get started with the Lucidworks Platform
+
+Use this quickstart to set up your Lucidworks SaaS environment. You’ll connect services, onboard your team, and begin building solutions with Lucidworks AI, Analytics Studio, or Commerce Studio.
+
+<Steps>
+  <Step title="Connect your services">
+    Check that you have access to all required products and capabilities. If you're integrating with Fusion, confirm that your Fusion environments are connected.
+
+    <AccordionGroup>
+      <Accordion title="Check your Fusion connection" icon="share-nodes">
+        Navigate to **Settings > Integrations**. You should see your Fusion integration here. If you don't, reach out to your Lucidworks representative. 
+      </Accordion>
+    </AccordionGroup>
+
+
+    <Card
+      title="Need help or looking for more?"
+      icon="headset"
+      href="https://support.lucidworks.com"
+      arrow="true"
+      cta="Contact Lucidworks Support"
+    >
+      If you have questions during onboarding or don't see what you need, reach out to our Support team. We're here to help. You can also contact us to learn more about additional Lucidworks offerings.
+    </Card>
+  </Step>
+  <Step title="Onboard your team">
+    Implement SSO, invite users, define their roles, and grant access to the appropriate resources.
+
+    <Frame caption="Invite and manage your users">
+      <img src="/images/platform-users.png"/>
+    </Frame>
+
+    <AccordionGroup>
+      <Accordion title="SSO options" icon="lock">
+        Workspace owners can configure SSO with [OpenID Connect (OIDC)](#oidc-authentication) or [Security Assertion Markup Language (SAML)](#saml-authentication).
+
+        **OIDC**
+
+        1. Add your team to Lucidworks Platform at **Settings > Users & Provisioning > Users**. These users must also exist in your OKTA instance.
+        1. Create a new Okta application, using the OIDC sign-on method. 
+        1. Create the idenity provider in Lucidworks Platform at **Settings > Users & Provisioning > Authentication > OIDC**. 
+
+        **SAML**
+
+        1. Add your team to Lucidworks Platform at **Settings > Users & Provisioning > Users**. These users must also exist in your OKTA instance.
+        1. Create a new Okta application, using the SAML sign-on method. 
+        1. Create the idenity provider in Lucidworks Platform at **Settings > Users & Provisioning > Authentication > SAML**. 
+
+
+      </Accordion>
+
+      <Accordion title="Roles and permissions" icon="users">
+        |     |     |     |     |     |     |     |
+      | --- | --- | --- | --- | --- | --- | --- |
+      | Description | Workspace owner | App admin | App viewer | Analytics viewer | API credentials access | Model trainer  |
+      | View specific applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      | View all applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | View application usage dashboards | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      | Create new applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Edit specific applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Edit all applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Invite new users | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Remove or delete users | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Edit user access to all applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Edit user access to specific applications | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Create data sources | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | View data sources | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" />  |
+      | View data source jobs | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      | View data source job history | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Edit relevancy controls | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | View relevancy controls | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      | Edit embed access | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | View embed settings | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> |
+      | Train custom embedding models | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      | Deploy custom embedding models | <Icon icon="square-check" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="minus" iconType="solid" /> | <Icon icon="square-check" iconType="solid" /> |
+      </Accordion>
+    </AccordionGroup>
+    
+  </Step>
+  <Step title="Build your solutions">
+    Follow the implementation guides for Lucidworks AI, Analytics Studio, and Commerce Studio to configure and deploy your solutions.
+
+    <CardGroup cols={1}>
+  <Card
+    title="Lucidworks AI"
+    icon="stars"
+    href="#"
+    horizontal
+  >
+    Advanced AI-powered data discovery and search
+  </Card>
+  <Card
+    title="Analytics Studio"
+    icon="chart-line"
+    href="#"
+    horizontal
+  >
+    Transform data into actionable intelligence
+  </Card>
+  <Card
+    title="Commerce Studio"
+    icon="cart-shopping"
+    href="#"
+    horizontal
+  >
+    Optimize search results and improve product discovery
+  </Card>
+</CardGroup>
+  </Step>
+</Steps>

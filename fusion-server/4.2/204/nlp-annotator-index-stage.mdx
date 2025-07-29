@@ -1,0 +1,73 @@
+---
+title: "NLP Annotator Index Stage"
+permalink: "204"
+---
+
+The NLP Annotator index stage performs [Natural Language Processing](/fusion-ai/4.2/451/natural-language-processing) tasks.
+
+You can choose from different NLP libraries, either [OpenNLP](https://opennlp.apache.org/) or the [JohnSnow Lab](https://nlp.johnsnowlabs.com/) library, which runs on Spark. Note: Only the pre-trained NER model is supported. If choosing an NER model, download **NerDLModel** instead of NerCRFModel.
+
+The NLP Annotator supports the following tasks:
+
+* If choosing JohnSnow Lab (recommended for large dataset processing):
+
+   + NER (Name Entity Recognition)
+
+      Fusion AI uses the deep learning pre-trained NER model that JohnSnowLab provides. Currently, the pre-trained extraction model covers the following name entities:
+
+      - ORG (organization)
+      - PER (person)
+      - LOC (location)
+
+      This means that there are the only three types of entities Fusion will recognize from the source field.
+   + Sentence detection
+   + POS(Part of Speech) Tagging
+* If choosing OpenNLP:
+
+   + NER
+   + Sentence detection
+   + POS Tagging
+   + Shallow Parsing (Chunking)
+
+Example of how to use NLP Annotator Index stage:
+
+1. Add NLP Annotator index stage.
+
+   <Frame>![add nlp stage](/assets/images/4.2/nlp_annotator_add_nlp_stage.png)</Frame>
+2. Choose the annotator type (OpenNLP or SparkNLP).
+
+   <Frame>![which model](/assets/images/4.2/nlp_annotator_which_model.png)</Frame>
+
+   If you select the `sparknlp` model, you need to download and install one or more models:
+   .. Download the models at https://github.com/JohnSnowLabs/spark-nlp#models.
+   .. Rename the downloaded models to something easy to identify, then upload them to Fusion’s [blob store](/fusion-server/4.2/153/blob-storage).
+
+   +
+   <Frame>![add_blob](/assets/images/4.2/nlp_annotator_add_blob.png)</Frame>
+3. Configure the index pipeline stage:
+
+   1. Specify the model to use (fill the box with `model id` in the blob store).
+
+      <Frame>![model_id_blob](/assets/images/4.2/nlp_annotator_model_id_blob.png)</Frame>
+
+      <Frame>![fill_index_stage](/assets/images/4.2/nlp_annotator_fill_index_stage.png)</Frame>
+   2. Specify the source, label pattern, and target (destination) fields:
+
+      * source field: the raw text with name entities to be extracted.
+      * label pattern: regex pattern that matches the NER/POS labels: for example, `PER.` will match extracted name entities with label `PERSON`, while `NN.` will match tagged nouns.
+      * target field: the outcome extraction/tagging and so on.
+
+      <Frame>![source_target](/assets/images/4.2/nlp_annotator_source_target.png)</Frame>
+
+      <Frame>![result](/assets/images/4.2/nlp_annotator_index_result.png)</Frame>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/nlp-annotator.mdx";
+
+<SchemaParamFields schema={schema}/>

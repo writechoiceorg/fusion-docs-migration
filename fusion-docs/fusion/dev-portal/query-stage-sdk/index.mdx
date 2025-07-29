@@ -1,0 +1,28 @@
+---
+title: "Query Stage SDK"
+permalink: "hbu2ug"
+---
+
+In addition to Fusion’s [built-in query stages](/fusion/5.9/278/query-pipeline-stages), Lucidworks provides the Query Stage SDK for developing your own custom query stages with Java. All of the resources are provided in a [public GitHub repository](https://github.com/lucidworks/query-stage-sdk).
+
+## Getting started
+
+Clone the repository to get started:
+
+```
+git clone https://github.com/lucidworks/query-stage-sdk
+```
+
+See [Gradle quickstart](https://docs.gradle.org/current/userguide/tutorial_java_projects.html) documentation for more information on Java Projects.
+
+<Note>
+The Query Stage SDK requires the [Fusion Search DSL](/fusion/5.9/8833/domain-specific-language-dsl).
+</Note>
+
+## Query Stage SDK library
+
+The Java SDK library contains the classes and interfaces for building new query plugin stages. You’ll find it in the [`query-stage-plugin-sdk` directory](https://github.com/lucidworks/query-stage-sdk/tree/master/query-stage-plugin-sdk).
+
+## Example plugin stage
+
+The example query stage plugin contains an example of how a plugin can be implemented as well as information on how to build and deploy the plugin. You’ll find it in the [`examples/sample-plugin-stage` directory](https://github.com/lucidworks/query-stage-sdk/tree/master/examples/sample-plugin-stage).

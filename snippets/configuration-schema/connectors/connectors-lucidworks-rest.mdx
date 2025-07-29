@@ -1,0 +1,1377 @@
+export const schema = {
+  "type": "object",
+  "title": "REST (v2)",
+  "description": "A connector designed to assist in setting up and indexing data from multiple REST APIs",
+  "required": [
+    "id",
+    "properties",
+    "pipelineId"
+  ],
+  "properties": {
+    "properties": {
+      "type": "object",
+      "title": "REST Connector properties",
+      "description": "Plugin specific properties.",
+      "required": [
+        "serviceURL"
+      ],
+      "properties": {
+        "serviceURL": {
+          "type": "string",
+          "title": "Service URL",
+          "description": "The base URL of the API for retrieving external data."
+        },
+        "authenticationMode": {
+          "type": "object",
+          "title": "Authentication",
+          "description": "The method of authentication used to connect to the third-party service.",
+          "required": [],
+          "properties": {
+            "basicAuth": {
+              "type": "object",
+              "title": "Basic Authentication",
+              "description": "Basic Authentication Properties",
+              "required": [
+                "password",
+                "user"
+              ],
+              "properties": {
+                "user": {
+                  "type": "string",
+                  "title": "Username",
+                  "description": "The username for Basic Authentication with the REST API source.",
+                  "minLength": 1
+                },
+                "password": {
+                  "type": "string",
+                  "title": "Secret",
+                  "description": "The password or secret value to perform the Basic Authentication to the REST API source. For example: password or API Key.",
+                  "hints": [
+                    "secret"
+                  ],
+                  "minLength": 1
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.rest.config.auth.RestBasicAuthProperties",
+                "com.lucidworks.connector.components.httpclient.config.authentication.BasicAuthConfig$Properties",
+                "com.lucidworks.connector.plugins.rest.config.auth.RestAuth",
+                "com.lucidworks.connector.components.httpclient.config.authentication.AuthConfig$Properties"
+              ]
+            },
+            "customAuth": {
+              "type": "object",
+              "title": "Custom Authentication",
+              "description": "Custom Authentication Properties",
+              "required": [],
+              "properties": {
+                "authUrl": {
+                  "type": "string",
+                  "title": "Authentication URL",
+                  "description": "The URL used when authenticating to the third-party service."
+                },
+                "httpMethod": {
+                  "type": "string",
+                  "title": "HTTP Method Types",
+                  "description": "The HTTP method to use for the request.",
+                  "enum": [
+                    "GET",
+                    "POST"
+                  ],
+                  "default": "POST"
+                },
+                "secureVariables": {
+                  "type": "array",
+                  "title": "Secure Authentication Variables",
+                  "description": "Variables to use within the authentication request definition.",
+                  "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "keyName": {
+                        "type": "string",
+                        "title": "Key Name",
+                        "description": "The name of the key that saves the secret value, such as 'username'.",
+                        "minLength": 1
+                      },
+                      "secretValue": {
+                        "type": "string",
+                        "title": "Secret Value",
+                        "description": "Secret Value used for authentication, such as a password.",
+                        "hints": [
+                          "secret"
+                        ],
+                        "minLength": 1
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.auth.SecureVariables"
+                    ]
+                  }
+                },
+                "headers": {
+                  "type": "array",
+                  "title": "Request Headers",
+                  "description": "Headers to use within the authentication request.",
+                  "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "headerKey": {
+                        "type": "string",
+                        "title": "Header Key"
+                      },
+                      "headerValue": {
+                        "type": "string",
+                        "title": "Header Value"
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.HeadersProperties"
+                    ]
+                  }
+                },
+                "queries": {
+                  "type": "array",
+                  "title": "Request Queries",
+                  "description": "Query parameters to include in the authentication request.",
+                  "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "queryKey": {
+                        "type": "string",
+                        "title": "Query Key"
+                      },
+                      "queryValue": {
+                        "type": "string",
+                        "title": "Query Value"
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.QueriesProperties"
+                    ]
+                  }
+                },
+                "bodyAuthRequest": {
+                  "type": "string",
+                  "title": "Request Body",
+                  "description": "The body of the authentication request in JSON format.",
+                  "hints": [
+                    "code",
+                    "lengthy"
+                  ]
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.rest.config.auth.CustomAuthProperties",
+                "com.lucidworks.connector.plugins.rest.config.auth.RestAuth"
+              ],
+              "hints": [
+                "hidden"
+              ]
+            },
+            "oAuth": {
+              "type": "object",
+              "title": "OAuth",
+              "description": "OAuth Authentication Properties",
+              "required": [
+                "oAuthServiceUrl",
+                "oAuthValuesLocation",
+                "accessTokenPath",
+                "oAuthEndpoint",
+                "headerAuthorizationTemplate",
+                "httpMethod"
+              ],
+              "properties": {
+                "oAuthServiceUrl": {
+                  "type": "string",
+                  "title": "OAuth Service URL",
+                  "description": "The URL of the service used to retrieve OAuth data."
+                },
+                "oAuthEndpoint": {
+                  "type": "string",
+                  "title": "OAuth Endpoint path",
+                  "description": "Endpoint path for OAuth data. For example: /services/oauth2/token"
+                },
+                "httpMethod": {
+                  "type": "string",
+                  "title": "HTTP Method",
+                  "description": "HTTP method to be used in the request.",
+                  "enum": [
+                    "POST",
+                    "GET"
+                  ],
+                  "default": "POST"
+                },
+                "plainVariables": {
+                  "type": "array",
+                  "title": "Plain Authentication Variables",
+                  "description": "Plain text variables to include in the authentication request definition.",
+                  "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "keyName": {
+                        "type": "string",
+                        "title": "Key Name",
+                        "description": "The name of the key used to store the value, such as username.",
+                        "minLength": 1
+                      },
+                      "keyValue": {
+                        "type": "string",
+                        "title": "Key Value",
+                        "description": "The value used for the key. For example: email@email.com.",
+                        "minLength": 1
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.auth.PlainVariables"
+                    ]
+                  }
+                },
+                "secureVariables": {
+                  "type": "array",
+                  "title": "Secure Authentication Variables",
+                  "description": "Secret variables to use within the authentication request definition.",
+                  "items": {
+                    "type": "object",
+                    "required": [],
+                    "properties": {
+                      "keyName": {
+                        "type": "string",
+                        "title": "Key Name",
+                        "description": "The name of the key that saves the secret value, such as 'username'.",
+                        "minLength": 1
+                      },
+                      "secretValue": {
+                        "type": "string",
+                        "title": "Secret Value",
+                        "description": "Secret Value used for authentication, such as a password.",
+                        "hints": [
+                          "secret"
+                        ],
+                        "minLength": 1
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.auth.SecureVariables"
+                    ]
+                  }
+                },
+                "headerAuthorizationTemplate": {
+                  "type": "string",
+                  "title": "Header Authorization Template",
+                  "description": "A template for inserting authorization details, such as Bearer ${LW_ACCESS_TOKEN}"
+                },
+                "accessTokenPath": {
+                  "type": "string",
+                  "title": "Access token path",
+                  "description": "The path to the access token within the response. This property also accepts JsonPath expressions, such as objects, objects[*] or $.objects[*]. "
+                },
+                "oAuthValuesLocation": {
+                  "type": "string",
+                  "title": "OAuth Values Location",
+                  "description": "Specify if OAuth key-value pair should be sent in request parameters, headers, the request body as JSON, or as URL-encoded data.",
+                  "enum": [
+                    "REQUEST PARAM",
+                    "HEADER",
+                    "BODY JSON",
+                    "URL ENCODED"
+                  ],
+                  "default": "REQUEST PARAM"
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.rest.config.auth.OAuthProperties",
+                "com.lucidworks.connector.plugins.rest.config.auth.RestAuth"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.rest.config.auth.RestAuthenticationConfig"
+          ]
+        },
+        "serviceEndpoints": {
+          "type": "array",
+          "title": "Service Endpoints (deprecated)",
+          "description": "A list of request configurations for service endpoints. This property is deprecated.",
+          "items": {
+            "type": "object",
+            "required": [
+              "rootRequest"
+            ],
+            "properties": {
+              "rootRequest": {
+                "type": "object",
+                "title": "Root Request Configuration",
+                "description": "The request to retrieve the root data objects.",
+                "required": [
+                  "dataRequest"
+                ],
+                "properties": {
+                  "dataRequest": {
+                    "type": "object",
+                    "title": "Data Request",
+                    "description": "Configures the endpoint request.",
+                    "required": [
+                      "endpoint",
+                      "httpMethod"
+                    ],
+                    "properties": {
+                      "endpoint": {
+                        "type": "string",
+                        "title": "Endpoint path. For example: /rest/api/object"
+                      },
+                      "httpMethod": {
+                        "type": "string",
+                        "title": "HTTP Method",
+                        "description": "HTTP method to be used in the request.",
+                        "enum": [
+                          "GET",
+                          "POST"
+                        ],
+                        "default": "GET"
+                      },
+                      "headers": {
+                        "type": "array",
+                        "title": "Headers",
+                        "description": "HTTP headers to be included in the request.",
+                        "items": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "headerKey": {
+                              "type": "string",
+                              "title": "Header Key"
+                            },
+                            "headerValue": {
+                              "type": "string",
+                              "title": "Header Value"
+                            }
+                          },
+                          "interfaces": [
+                            "com.lucidworks.connector.plugins.rest.config.HeadersProperties"
+                          ]
+                        }
+                      },
+                      "queries": {
+                        "type": "array",
+                        "title": "Queries",
+                        "description": "Query parameters to be included in the request URL.",
+                        "items": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "queryKey": {
+                              "type": "string",
+                              "title": "Query Key"
+                            },
+                            "queryValue": {
+                              "type": "string",
+                              "title": "Query Value"
+                            }
+                          },
+                          "interfaces": [
+                            "com.lucidworks.connector.plugins.rest.config.QueriesProperties"
+                          ]
+                        }
+                      },
+                      "bodyRequest": {
+                        "type": "string",
+                        "title": "Body",
+                        "description": "Request body in JSON format.",
+                        "hints": [
+                          "code",
+                          "lengthy"
+                        ]
+                      },
+                      "pagination": {
+                        "type": "object",
+                        "title": "Pagination Options",
+                        "description": "Choose only one. If none of them are chosen, pagination will not be performed.",
+                        "required": [],
+                        "properties": {
+                          "paginationByNextUrl": {
+                            "type": "object",
+                            "title": "Pagination by Next Page URL",
+                            "description": "The URL will be extracted from the response and used to fetch the next page.",
+                            "required": [
+                              "paginationKey"
+                            ],
+                            "properties": {
+                              "paginationKey": {
+                                "type": "string",
+                                "title": "Next Page URL Key",
+                                "description": "Key to access to the nextPageUrl in the response. This property also accepts JsonPath expressions. If the key is nested, use dot notation. Example: list.nextPageUrl or $.list.nextPageUrl"
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByNextPageUrl"
+                            ]
+                          },
+                          "paginationByBatchSize": {
+                            "type": "object",
+                            "title": "Pagination by Batch Size",
+                            "description": "Provide the startIndex and batchSize values.",
+                            "required": [
+                              "paginationStopConditionValue",
+                              "paginationStopConditionKey",
+                              "batchSize",
+                              "indexStart"
+                            ],
+                            "properties": {
+                              "indexStart": {
+                                "type": "number",
+                                "title": "Index Start",
+                                "description": "The starting index value to be mapped to the ${LW_INDEX_START} variable configured in the data request's query parameters. This value will automatically increase during crawl-time. How to use: configure 'Index Start: 0' and configure queryParam 'startAt=${LW_INDEX_START}', where the 'startAt' is defined by the REST source.",
+                                "default": 0,
+                                "maximum": 2147483647,
+                                "exclusiveMaximum": false,
+                                "minimum": 0,
+                                "exclusiveMinimum": false,
+                                "multipleOf": 1
+                              },
+                              "batchSize": {
+                                "type": "number",
+                                "title": "Batch Size",
+                                "description": "The number of objects retrieved per page to be mapped to the ${LW_BATCH_SIZE} variable configured in the data request's query parameters. How to use: configure 'Batch Size: 25' and configure queryParam 'maxSize=${LW_BATCH_SIZE}', where 'maxSize' is defined by the REST source",
+                                "default": 0,
+                                "maximum": 2147483647,
+                                "exclusiveMaximum": false,
+                                "minimum": 0,
+                                "exclusiveMinimum": false,
+                                "multipleOf": 1
+                              },
+                              "paginationStopConditionKey": {
+                                "type": "string",
+                                "title": "Stop Condition Key",
+                                "description": "Key that specifies the condition for stopping pagination. This property also accepts JsonPath expressions."
+                              },
+                              "paginationStopConditionValue": {
+                                "type": "string",
+                                "title": "Stop Condition Value",
+                                "description": "Value for the condition that must be met to stop pagination. If the condition value refers to a list, the stop condition must be []."
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByBatchSize"
+                            ]
+                          }
+                        },
+                        "interfaces": [
+                          "com.lucidworks.connector.plugins.rest.config.pagination.PaginationProperties"
+                        ]
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.DataRequestProperties"
+                    ]
+                  },
+                  "rootResponseMapping": {
+                    "type": "object",
+                    "title": "Root Response Mapping",
+                    "description": "Defines the mapping between the response and the data objects to be indexed.",
+                    "required": [],
+                    "properties": {
+                      "dataPath": {
+                        "type": "string",
+                        "title": "Data Path",
+                        "description": "The path to access a specific data object within a response. For example, to extract a list of elements named with key 'objects', the DataPath would be 'objects' and each element will be indexed as a separate Solr document. If not provided, the entire response body will be indexed as a single Solr document. This property also accepts JsonPath expressions, such as objects, objects[*] or $.objects[*]. "
+                      },
+                      "dataId": {
+                        "type": "string",
+                        "title": "Data ID",
+                        "description": "The identifier key for the data objects extracted with the 'Data Path', whose value will be the Solr document's ID. If not provided, a random UUID will be used. This property also accepts JsonPath expressions."
+                      },
+                      "binaryResponse": {
+                        "type": "boolean",
+                        "title": "Send as Binary Response",
+                        "description": "If true, the response will be sent as Binary Data to Fusion, properties 'Data ID' and 'Data Path' will be ignored, and pagination will not be performed.",
+                        "default": false
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.request.root.RootMappingProperties"
+                    ]
+                  }
+                },
+                "interfaces": [
+                  "com.lucidworks.connector.plugins.rest.config.request.root.RootRequestProperties"
+                ]
+              },
+              "childrenRequests": {
+                "type": "array",
+                "title": "\nChild Request Configuration",
+                "description": "The list of requests to retrieve additional information for the root data objects. The child requests will be performed per each root data object extracted with the root request configuration.",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "dataRequest",
+                    "childResponseMapping"
+                  ],
+                  "properties": {
+                    "dataRequest": {
+                      "type": "object",
+                      "title": "Data Request",
+                      "description": "Configuration of the endpoint request.",
+                      "required": [
+                        "endpoint",
+                        "httpMethod"
+                      ],
+                      "properties": {
+                        "endpoint": {
+                          "type": "string",
+                          "title": "Endpoint path. For example: /rest/api/object"
+                        },
+                        "httpMethod": {
+                          "type": "string",
+                          "title": "HTTP Method",
+                          "description": "HTTP method to be used in the request.",
+                          "enum": [
+                            "GET",
+                            "POST"
+                          ],
+                          "default": "GET"
+                        },
+                        "headers": {
+                          "type": "array",
+                          "title": "Headers",
+                          "description": "HTTP headers to be included in the request.",
+                          "items": {
+                            "type": "object",
+                            "required": [],
+                            "properties": {
+                              "headerKey": {
+                                "type": "string",
+                                "title": "Header Key"
+                              },
+                              "headerValue": {
+                                "type": "string",
+                                "title": "Header Value"
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.HeadersProperties"
+                            ]
+                          }
+                        },
+                        "queries": {
+                          "type": "array",
+                          "title": "Queries",
+                          "description": "Query parameters to be included in the request URL.",
+                          "items": {
+                            "type": "object",
+                            "required": [],
+                            "properties": {
+                              "queryKey": {
+                                "type": "string",
+                                "title": "Query Key"
+                              },
+                              "queryValue": {
+                                "type": "string",
+                                "title": "Query Value"
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.QueriesProperties"
+                            ]
+                          }
+                        },
+                        "bodyRequest": {
+                          "type": "string",
+                          "title": "Body",
+                          "description": "Request body in JSON format.",
+                          "hints": [
+                            "code",
+                            "lengthy"
+                          ]
+                        },
+                        "pagination": {
+                          "type": "object",
+                          "title": "Pagination Options",
+                          "description": "Choose only one. If none of them are chosen, pagination will not be performed.",
+                          "required": [],
+                          "properties": {
+                            "paginationByNextUrl": {
+                              "type": "object",
+                              "title": "Pagination by Next Page URL",
+                              "description": "The URL will be extracted from the response and used to fetch the next page.",
+                              "required": [
+                                "paginationKey"
+                              ],
+                              "properties": {
+                                "paginationKey": {
+                                  "type": "string",
+                                  "title": "Next Page URL Key",
+                                  "description": "Key to access to the nextPageUrl in the response. This property also accepts JsonPath expressions. If the key is nested, use dot notation. Example: list.nextPageUrl or $.list.nextPageUrl"
+                                }
+                              },
+                              "interfaces": [
+                                "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByNextPageUrl"
+                              ]
+                            },
+                            "paginationByBatchSize": {
+                              "type": "object",
+                              "title": "Pagination by Batch Size",
+                              "description": "Provide the startIndex and batchSize values.",
+                              "required": [
+                                "paginationStopConditionValue",
+                                "paginationStopConditionKey",
+                                "batchSize",
+                                "indexStart"
+                              ],
+                              "properties": {
+                                "indexStart": {
+                                  "type": "number",
+                                  "title": "Index Start",
+                                  "description": "The starting index value to be mapped to the ${LW_INDEX_START} variable configured in the data request's query parameters. This value will automatically increase during crawl-time. How to use: configure 'Index Start: 0' and configure queryParam 'startAt=${LW_INDEX_START}', where the 'startAt' is defined by the REST source.",
+                                  "default": 0,
+                                  "maximum": 2147483647,
+                                  "exclusiveMaximum": false,
+                                  "minimum": 0,
+                                  "exclusiveMinimum": false,
+                                  "multipleOf": 1
+                                },
+                                "batchSize": {
+                                  "type": "number",
+                                  "title": "Batch Size",
+                                  "description": "The number of objects retrieved per page to be mapped to the ${LW_BATCH_SIZE} variable configured in the data request's query parameters. How to use: configure 'Batch Size: 25' and configure queryParam 'maxSize=${LW_BATCH_SIZE}', where 'maxSize' is defined by the REST source",
+                                  "default": 0,
+                                  "maximum": 2147483647,
+                                  "exclusiveMaximum": false,
+                                  "minimum": 0,
+                                  "exclusiveMinimum": false,
+                                  "multipleOf": 1
+                                },
+                                "paginationStopConditionKey": {
+                                  "type": "string",
+                                  "title": "Stop Condition Key",
+                                  "description": "Key that specifies the condition for stopping pagination. This property also accepts JsonPath expressions."
+                                },
+                                "paginationStopConditionValue": {
+                                  "type": "string",
+                                  "title": "Stop Condition Value",
+                                  "description": "Value for the condition that must be met to stop pagination. If the condition value refers to a list, the stop condition must be []."
+                                }
+                              },
+                              "interfaces": [
+                                "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByBatchSize"
+                              ]
+                            }
+                          },
+                          "interfaces": [
+                            "com.lucidworks.connector.plugins.rest.config.pagination.PaginationProperties"
+                          ]
+                        }
+                      },
+                      "interfaces": [
+                        "com.lucidworks.connector.plugins.rest.config.DataRequestProperties"
+                      ]
+                    },
+                    "childResponseMapping": {
+                      "type": "object",
+                      "title": "Child Response Mapping",
+                      "description": "Defines the mapping between the child response and child data objects to be indexed.",
+                      "required": [
+                        "parentIdKey"
+                      ],
+                      "properties": {
+                        "parentIdKey": {
+                          "type": "string",
+                          "title": "Parent Data Key",
+                          "description": "Key to extract data from root/parent response for subsequent request. The extracted value will be used to replace the ${LW_PARENT_DATA_KEY} variable in the child request configuration (endpoint, query params or body).For example, endpoint: /api/path/${LW_PARENT_DATA_KEY}/additionalInfo."
+                        },
+                        "parentNestedData": {
+                          "type": "string",
+                          "title": "Parent Nested Data Path",
+                          "description": "The path to a nested object within the Parent Data. When this is set, the 'Parent Data Key' should point to the 'id' or 'key' of the nested object. If the nested object is a list, this will be iterated to perform a request per each item."
+                        },
+                        "childDataPath": {
+                          "type": "string",
+                          "title": "Child Data Path",
+                          "description": "The path to access a specific object within a child response. For example, to access a list of elements named with key 'objects', the childDataPath would be 'objects'. If not provided, the entire response body will be indexed."
+                        },
+                        "childDataId": {
+                          "type": "string",
+                          "title": "Child Data ID",
+                          "description": "The identifier key for the child data object, used as the Solr document's ID. Use this when 'Custom Solr Field' is empty, otherwise the Solr document's ID will be a random UUID."
+                        },
+                        "customSolrField": {
+                          "type": "string",
+                          "title": "Custom Solr Field",
+                          "description": "The field to use to store the child data within the root data objects. If not set, the child data object will be indexed as individual Solr documents."
+                        },
+                        "binaryResponse": {
+                          "type": "boolean",
+                          "title": "Send as Binary Response",
+                          "description": "If true, the response will be sent as Binary Data to Fusion, properties 'Child Data ID' and 'Child Data Path' will be ignored, and pagination will not be performed.",
+                          "default": false
+                        }
+                      },
+                      "interfaces": [
+                        "com.lucidworks.connector.plugins.rest.config.request.child.ChildMappingProperties"
+                      ]
+                    }
+                  },
+                  "interfaces": [
+                    "com.lucidworks.connector.plugins.rest.config.request.child.ChildRequestProperties"
+                  ]
+                }
+              }
+            },
+            "interfaces": [
+              "com.lucidworks.connector.plugins.rest.config.EndpointProperties"
+            ]
+          }
+        },
+        "requestConfigurations": {
+          "type": "array",
+          "title": "List of Requests Configuration",
+          "description": "A hierarchical list of requests to fetch data from the REST source.",
+          "items": {
+            "type": "object",
+            "required": [
+              "request"
+            ],
+            "properties": {
+              "request": {
+                "type": "object",
+                "title": "Request Configuration",
+                "description": "Specifies the request configuration used to retrieve the data objects.",
+                "required": [
+                  "linkRequest",
+                  "requestConfiguration"
+                ],
+                "properties": {
+                  "linkRequest": {
+                    "type": "object",
+                    "title": "Parent-Child Request Link",
+                    "description": "Establishes the hierarchical relationship between parent and child requests.",
+                    "required": [
+                      "objectType"
+                    ],
+                    "properties": {
+                      "objectType": {
+                        "type": "string",
+                        "title": "Object Type",
+                        "description": "Assign a unique name to identify the request. Use a descriptive name that reflects the type of data this request will retrieve."
+                      },
+                      "parentObjectType": {
+                        "type": "string",
+                        "title": "Parent Object Type",
+                        "description": "References an existing Object Type to create a parent-child hierarchy, where the current request becomes the child of the specified Parent Object Type. If blank, the request is considered a parent or root request."
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.request.RequestLinkConfig"
+                    ]
+                  },
+                  "requestConfiguration": {
+                    "type": "object",
+                    "title": "Data Request",
+                    "description": "Configures the endpoint for the request. If configuring a child request, use the variable ${LW_PARENT_DATA_KEY} in the endpoint, query parameters, or body and this variable will be replaced with the value specified in 'Response Handling -> Parent Data Key'.",
+                    "required": [
+                      "endpoint",
+                      "httpMethod"
+                    ],
+                    "properties": {
+                      "endpoint": {
+                        "type": "string",
+                        "title": "Endpoint path. For example: /rest/api/object"
+                      },
+                      "httpMethod": {
+                        "type": "string",
+                        "title": "HTTP Method",
+                        "description": "HTTP method to be used in the request.",
+                        "enum": [
+                          "GET",
+                          "POST"
+                        ],
+                        "default": "GET"
+                      },
+                      "headers": {
+                        "type": "array",
+                        "title": "Headers",
+                        "description": "HTTP headers to be included in the request.",
+                        "items": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "headerKey": {
+                              "type": "string",
+                              "title": "Header Key"
+                            },
+                            "headerValue": {
+                              "type": "string",
+                              "title": "Header Value"
+                            }
+                          },
+                          "interfaces": [
+                            "com.lucidworks.connector.plugins.rest.config.HeadersProperties"
+                          ]
+                        }
+                      },
+                      "queries": {
+                        "type": "array",
+                        "title": "Queries",
+                        "description": "Query parameters to be included in the request URL.",
+                        "items": {
+                          "type": "object",
+                          "required": [],
+                          "properties": {
+                            "queryKey": {
+                              "type": "string",
+                              "title": "Query Key"
+                            },
+                            "queryValue": {
+                              "type": "string",
+                              "title": "Query Value"
+                            }
+                          },
+                          "interfaces": [
+                            "com.lucidworks.connector.plugins.rest.config.QueriesProperties"
+                          ]
+                        }
+                      },
+                      "bodyRequest": {
+                        "type": "string",
+                        "title": "Body",
+                        "description": "Request body in JSON format.",
+                        "hints": [
+                          "code",
+                          "lengthy"
+                        ]
+                      },
+                      "pagination": {
+                        "type": "object",
+                        "title": "Pagination Options",
+                        "description": "Choose only one. If none of them are chosen, pagination will not be performed.",
+                        "required": [],
+                        "properties": {
+                          "paginationByNextUrl": {
+                            "type": "object",
+                            "title": "Pagination by Next Page URL",
+                            "description": "The URL will be extracted from the response and used to fetch the next page.",
+                            "required": [
+                              "paginationKey"
+                            ],
+                            "properties": {
+                              "paginationKey": {
+                                "type": "string",
+                                "title": "Next Page URL Key",
+                                "description": "Key to access to the nextPageUrl in the response. This property also accepts JsonPath expressions. If the key is nested, use dot notation. Example: list.nextPageUrl or $.list.nextPageUrl"
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByNextPageUrl"
+                            ]
+                          },
+                          "paginationByBatchSize": {
+                            "type": "object",
+                            "title": "Pagination by Batch Size",
+                            "description": "Provide the startIndex and batchSize values.",
+                            "required": [
+                              "paginationStopConditionValue",
+                              "paginationStopConditionKey",
+                              "batchSize",
+                              "indexStart"
+                            ],
+                            "properties": {
+                              "indexStart": {
+                                "type": "number",
+                                "title": "Index Start",
+                                "description": "The starting index value to be mapped to the ${LW_INDEX_START} variable configured in the data request's query parameters. This value will automatically increase during crawl-time. How to use: configure 'Index Start: 0' and configure queryParam 'startAt=${LW_INDEX_START}', where the 'startAt' is defined by the REST source.",
+                                "default": 0,
+                                "maximum": 2147483647,
+                                "exclusiveMaximum": false,
+                                "minimum": 0,
+                                "exclusiveMinimum": false,
+                                "multipleOf": 1
+                              },
+                              "batchSize": {
+                                "type": "number",
+                                "title": "Batch Size",
+                                "description": "The number of objects retrieved per page to be mapped to the ${LW_BATCH_SIZE} variable configured in the data request's query parameters. How to use: configure 'Batch Size: 25' and configure queryParam 'maxSize=${LW_BATCH_SIZE}', where 'maxSize' is defined by the REST source",
+                                "default": 0,
+                                "maximum": 2147483647,
+                                "exclusiveMaximum": false,
+                                "minimum": 0,
+                                "exclusiveMinimum": false,
+                                "multipleOf": 1
+                              },
+                              "paginationStopConditionKey": {
+                                "type": "string",
+                                "title": "Stop Condition Key",
+                                "description": "Key that specifies the condition for stopping pagination. This property also accepts JsonPath expressions."
+                              },
+                              "paginationStopConditionValue": {
+                                "type": "string",
+                                "title": "Stop Condition Value",
+                                "description": "Value for the condition that must be met to stop pagination. If the condition value refers to a list, the stop condition must be []."
+                              }
+                            },
+                            "interfaces": [
+                              "com.lucidworks.connector.plugins.rest.config.pagination.PaginationByBatchSize"
+                            ]
+                          }
+                        },
+                        "interfaces": [
+                          "com.lucidworks.connector.plugins.rest.config.pagination.PaginationProperties"
+                        ]
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.DataRequestProperties"
+                    ]
+                  },
+                  "recursiveRequest": {
+                    "type": "boolean",
+                    "title": "Enable Recursive Request",
+                    "description": "When enabled, extra requests are performed to retrieve nested objects within the initial objects found by the current request. For example, if the current request gets a list of folders, extra requests are made per folder to retrieve nested folders. This process will continue until no more nested folders are found.",
+                    "default": false
+                  },
+                  "responseConfiguration": {
+                    "type": "object",
+                    "title": "Response Handling",
+                    "description": "Configures how to parse the response.",
+                    "required": [],
+                    "properties": {
+                      "dataPath": {
+                        "type": "string",
+                        "title": "Data Path",
+                        "description": "The path to access a specific data object within a response. For example, to extract a list of elements named with key 'objects', the DataPath would be 'objects', with each element indexed as a separate Solr document. If not provided, the entire response body will be indexed as a single Solr document. This property also accepts JsonPath expressions, such as objects, objects[*] or $.objects[*]. "
+                      },
+                      "dataId": {
+                        "type": "string",
+                        "title": "Data ID",
+                        "description": "The identifier key for the data objects extracted with 'Data Path'. This value will be used to build the Solr document's ID. If not provided, a random UUID will be used. This property also accepts JsonPath expressions."
+                      },
+                      "parentIdKey": {
+                        "type": "string",
+                        "title": "Parent Data Key",
+                        "description": "Set only if configuring a child request. Map to a key from the parent object, whose value will be used to replace the ${LW_PARENT_DATA_KEY} variable in the child request configuration (endpoint, query parameters, or body).For example, endpoint: /api/path/${LW_PARENT_DATA_KEY}/additionalInfo."
+                      },
+                      "parentNestedData": {
+                        "type": "string",
+                        "title": "Parent Nested Data Path",
+                        "description": "Set only if configuring a child request. Specifies the path to a nested object within the Parent Data. When this is set, the 'Parent Data Key' should point to the 'id' or 'key' of the nested object. If the nested object is a list, this will be iterated to perform a request per each item.",
+                        "hints": [
+                          "advanced"
+                        ]
+                      },
+                      "customSolrField": {
+                        "type": "string",
+                        "title": "Custom Solr Field",
+                        "description": "Set only if configuring a child request. This field is used to store the child data within the parent data objects. If not set, the child data object will be indexed as an individual Solr document.",
+                        "hints": [
+                          "advanced"
+                        ]
+                      },
+                      "binaryResponse": {
+                        "type": "boolean",
+                        "title": "Parse as Binary Data",
+                        "description": "Enable to send the response as Binary Data to the Fusion Parsers. When enabled, properties 'DataPath, DataId, CustomSolrField' will be ignored, pagination will not be performed, and children requests will be ignored.",
+                        "default": false
+                      }
+                    },
+                    "interfaces": [
+                      "com.lucidworks.connector.plugins.rest.config.request.parse.ResponseConfiguration"
+                    ]
+                  },
+                  "skipIndexation": {
+                    "type": "boolean",
+                    "title": "Skip Indexation",
+                    "description": "When enabled, the response is not indexed. Useful when requests of objects are needed only to discover additional info (child objects) without indexing the object itself.For example, if a request is used to find folders along with a child request to retrieve files found within those folders, enable 'Skip Indexation' to index the files but not the folders",
+                    "default": false
+                  }
+                },
+                "interfaces": [
+                  "com.lucidworks.connector.plugins.rest.config.request.RequestProperties"
+                ]
+              }
+            },
+            "interfaces": [
+              "com.lucidworks.connector.plugins.rest.config.request.HierarchyRequestProperties"
+            ]
+          }
+        },
+        "limitDocuments": {
+          "type": "object",
+          "title": "Limit Documents",
+          "description": "Restrictions to be placed on documents fetched.",
+          "required": [],
+          "properties": {
+            "excludeByRegex": {
+              "type": "array",
+              "title": "Exclude by RegEx",
+              "description": "Exclude documents by Regular Expression",
+              "items": {
+                "type": "object",
+                "required": [],
+                "properties": {
+                  "key": {
+                    "type": "string",
+                    "title": "Key",
+                    "description": "Specifies the field name of the object to exclude. This property also accepts JsonPath expressions. For example, objects.nested.path",
+                    "minLength": 1
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "RegEx value to exclude",
+                    "description": "Regular expression value that matches the object to exclude.",
+                    "minLength": 1
+                  }
+                },
+                "interfaces": [
+                  "com.lucidworks.connector.plugins.rest.config.limit.ExclusionVariables"
+                ]
+              }
+            },
+            "filterByFileSize": {
+              "type": "object",
+              "title": "Exclude by File Size",
+              "description": "Filter documents that are outside of the minimum/maximum size limits.",
+              "required": [],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "title": "Key",
+                  "description": "Specifies the field name of the object containing the file size. This property also supports JsonPath expressions, such as objects.nested.path",
+                  "minLength": 1
+                },
+                "minimumSize": {
+                  "type": "number",
+                  "title": "Minimum File Size",
+                  "description": "Excludes files with sizes smaller than the configured value.",
+                  "default": 1,
+                  "maximum": 9223372036854776000,
+                  "exclusiveMaximum": false,
+                  "minimum": -9223372036854776000,
+                  "exclusiveMinimum": false,
+                  "multipleOf": 1
+                },
+                "maximumSize": {
+                  "type": "number",
+                  "title": "Maximum File Size",
+                  "description": "Excludes files with sizes larger than the configured value. Set to -1 when there is no limit.",
+                  "default": -1,
+                  "maximum": 9223372036854776000,
+                  "exclusiveMaximum": false,
+                  "minimum": -9223372036854776000,
+                  "exclusiveMinimum": false,
+                  "multipleOf": 1
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.rest.config.limit.FileSizeExclusion"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.rest.config.limit.LimitProperties"
+          ]
+        },
+        "httpClientProperties": {
+          "type": "object",
+          "title": "HTTP Client Settings",
+          "description": "A set of options for configuring the HTTP client.",
+          "required": [],
+          "properties": {
+            "readTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 300000,
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "connectTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 60000,
+              "maximum": 300000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.rest.config.http.RestHttpClientConfig$Properties",
+            "com.lucidworks.connector.components.httpclient.config.TimeoutsConfig$Properties"
+          ]
+        },
+        "retryProperties": {
+          "type": "object",
+          "title": "Retry Properties",
+          "description": "Configure the retry behavior for failed requests.",
+          "required": [],
+          "properties": {
+            "retryCount": {
+              "type": "number",
+              "title": "Retry Count",
+              "description": "Number of attempts a request will be retried",
+              "default": 3,
+              "maximum": 36,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxDelayTime": {
+              "type": "number",
+              "title": "Maximum Delay Time",
+              "description": "The maximum wait time in milliseconds between retries.",
+              "default": 60000,
+              "maximum": 60000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.rest.config.http.RetryProperties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.connector.plugins.rest.config.RestConfig$Properties",
+        "com.lucidworks.connector.plugins.rest.config.http.RestHttpClientConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "pipelineId": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline.",
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "collectionId": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 5. This setting controls the number of threads that call the Connectors fetch method. Higher values can, but not always, help with overall fetch performance.",
+              "default": 5,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4. This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource. Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instances will do fetching. This is useful for distributing load between different instances.",
+              "default": 0,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingInactivityTimeout": {
+              "type": "number",
+              "title": "Indexing inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default": 86400,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInactivityTimeout": {
+              "type": "number",
+              "title": "Plugin inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default": 600,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default": false
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default": false
+            },
+            "asyncParsing": {
+              "type": "boolean",
+              "title": "Async Parsing",
+              "description": "When enabled, content will be indexed asynchronously.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Repository",
+  "interfaces": [
+    "com.lucidworks.connector.plugins.rest.config.RestConfig",
+    "com.lucidworks.fusion.connector.plugin.api.config.ConnectorConfig"
+  ]
+}

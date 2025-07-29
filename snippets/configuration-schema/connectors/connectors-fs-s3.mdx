@@ -1,0 +1,518 @@
+export const schema = {
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Connector to index content in AWS S3 buckets.",
+  "properties": {
+    "category": {
+      "default": "Filesystem",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description for this datasource.",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Datasource ID",
+      "type": "string"
+    },
+    "parserId": {
+      "description": "Parser used when parsing raw content. Retry parsing setting is available under crawl performance (advance setting)",
+      "title": "Parser",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1,
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Datasource configuration properties",
+      "properties": {
+        "add_failed_docs": {
+          "default": false,
+          "description": "Set to true to add documents even if they partially fail processing. Failed documents will be added with as much metadata as available, but may not include all expected fields.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Add failed documents",
+          "type": "boolean"
+        },
+        "aws_region": {
+          "default": "us-west-2",
+          "description": "AWS Region bucket on GET requests with AWS Signature Version 4 enabled",
+          "enum": [
+            "us-gov-west-1",
+            "us-east-1",
+            "us-west-1",
+            "us-west-2",
+            "eu-west-1",
+            "eu-central-1",
+            "ap-southeast-1",
+            "ap-southeast-2",
+            "ap-northeast-1",
+            "ap-northeast-2",
+            "sa-east-1",
+            "cn-north-1"
+          ],
+          "hints": [
+            "advanced"
+          ],
+          "title": "AWS Region Bucket",
+          "type": "string"
+        },
+        "bounds": {
+          "default": "tree",
+          "description": "Limits the crawl to a specific directory sub-tree, hostname or domain.",
+          "enum": [
+            "tree",
+            "host",
+            "domain",
+            "none"
+          ],
+          "title": "Crawl bounds",
+          "type": "string"
+        },
+        "collection": {
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Collection",
+          "type": "string"
+        },
+        "commit_on_finish": {
+          "default": true,
+          "description": "Set to true for a request to be sent to Solr after the last batch has been fetched to commit the documents to the index.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Solr commit on finish",
+          "type": "boolean"
+        },
+        "crawl_depth": {
+          "default": -1,
+          "description": "Number of levels in a directory or site tree to descend for documents.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max crawl depth",
+          "type": "integer"
+        },
+        "crawl_item_timeout": {
+          "default": 600000,
+          "description": "Time in milliseconds to fetch any individual document.",
+          "exclusiveMinimum": true,
+          "hints": [
+            "advanced"
+          ],
+          "minimum": 0,
+          "title": "Fetch timeout",
+          "type": "integer"
+        },
+        "db": {
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "properties": {
+            "aliases": {
+              "default": false,
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "title": "Process Aliases?",
+              "type": "boolean"
+            },
+            "inlinks": {
+              "default": false,
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "title": "Process Inlinks?",
+              "type": "boolean"
+            },
+            "inv_aliases": {
+              "default": false,
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "title": "Process Inverted Aliases?",
+              "type": "boolean"
+            },
+            "type": {
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "minLength": 1,
+              "title": "Implementation Class Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "Connector DB",
+          "type": "object"
+        },
+        "exclude_paths": {
+          "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Exclusive regexes",
+          "type": "array"
+        },
+        "include_extensions": {
+          "description": "List the file extensions to be fetched. Note: Files with possible matching MIME types but non-matching file extensions will be skipped. Extensions should be listed without periods, using whitespace to separate items (e.g., 'pdf zip').",
+          "items": {
+            "type": "string"
+          },
+          "title": "Included file extensions",
+          "type": "array"
+        },
+        "include_paths": {
+          "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items": {
+            "type": "string"
+          },
+          "title": "Inclusive regexes",
+          "type": "array"
+        },
+        "index_directories": {
+          "default": false,
+          "description": "Set to true to add directories to the index as documents. If set to false, directories will not be added to the index, but they will still be traversed for documents.",
+          "title": "Index directories",
+          "type": "boolean"
+        },
+        "initial_mapping": {
+          "category": "Field Transformation",
+          "categoryPriority": 6,
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "hints": [
+            "advanced"
+          ],
+          "properties": {
+            "condition": {
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "javascript",
+                "advanced"
+              ],
+              "title": "Condition",
+              "type": "string"
+            },
+            "label": {
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255,
+              "title": "Label",
+              "type": "string"
+            },
+            "mappings": {
+              "default": [
+                {
+                  "operation": "move",
+                  "source": "fetch_time",
+                  "target": "fetch_time_dt"
+                },
+                {
+                  "operation": "move",
+                  "source": "ds:description",
+                  "target": "description"
+                }
+              ],
+              "description": "List of mapping rules",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "properties": {
+                  "operation": {
+                    "default": "copy",
+                    "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                    "enum": [
+                      "copy",
+                      "move",
+                      "delete",
+                      "set",
+                      "add",
+                      "keep"
+                    ],
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Operation",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "The name of the field to be mapped.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Source Field",
+                    "type": "string"
+                  },
+                  "target": {
+                    "description": "The name of the field to be mapped to.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Target Field",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "type": "object"
+              },
+              "title": "Field Mappings",
+              "type": "array"
+            },
+            "reservedFieldsMappingAllowed": {
+              "default": false,
+              "hints": [
+                "advanced"
+              ],
+              "title": "Allow System Fields Mapping?",
+              "type": "boolean"
+            },
+            "skip": {
+              "default": false,
+              "description": "Set to true to skip this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "title": "Skip This Stage",
+              "type": "boolean"
+            },
+            "unmapped": {
+              "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+              "hints": [
+                "advanced"
+              ],
+              "properties": {
+                "operation": {
+                  "default": "copy",
+                  "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                  "enum": [
+                    "copy",
+                    "move",
+                    "delete",
+                    "set",
+                    "add",
+                    "keep"
+                  ],
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Operation",
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The name of the field to be mapped.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Source Field",
+                  "type": "string"
+                },
+                "target": {
+                  "description": "The name of the field to be mapped to.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Target Field",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source"
+              ],
+              "title": "Unmapped Fields",
+              "type": "object"
+            }
+          },
+          "title": "Initial field mapping",
+          "type": "object"
+        },
+        "max_bytes": {
+          "default": 10485760,
+          "description": "Maximum size (in bytes) of documents to fetch or -1 for unlimited file size.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Maximum file size (bytes)",
+          "type": "integer"
+        },
+        "max_docs": {
+          "default": -1,
+          "description": "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "exclusiveMinimum": false,
+          "minimum": -1,
+          "title": "Max items",
+          "type": "integer"
+        },
+        "max_threads": {
+          "default": 1,
+          "description": "The maximum number of threads to use for fetching data. Note: Each thread will create a new connection to the repository, which may make overall throughput faster, but this also requires more system resources, including CPU and memory.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fetch threads",
+          "type": "integer"
+        },
+        "maximum_connections": {
+          "default": 1000,
+          "description": "Maximum number of concurrent connections to the filesystem. A large number of documents could cause a large number of simultaneous connections to the repository and lead to errors or degraded performance. In some cases, reducing this number may help performance issues.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Maximum fetch connections",
+          "type": "integer"
+        },
+        "password": {
+          "description": "The AWS Secret Key associated with the Access Key.",
+          "hints": [
+            "secret"
+          ],
+          "title": "AWS Secret Key",
+          "type": "string"
+        },
+        "retryDelay": {
+          "default": 1000,
+          "description": "The retry time delay, in milliseconds.",
+          "exclusiveMinimum": false,
+          "minimum": 1000,
+          "title": "Retry Delay",
+          "type": "integer"
+        },
+        "stopRetry": {
+          "default": 5,
+          "description": "The maximum time to retry failed requests, in minutes.",
+          "exclusiveMinimum": false,
+          "minimum": 1,
+          "title": "Max Retry Time",
+          "type": "integer"
+        },
+        "url": {
+          "description": "A fully-qualified S3 URL, including bucket and sub-bucket paths, as required, e.g., 's3://{bucketName}/{path}'.",
+          "minLength": 1,
+          "pattern": ".*:.*",
+          "title": "S3 URL",
+          "type": "string"
+        },
+        "use_sigv4": {
+          "default": false,
+          "description": "Additional HTTP header on GET requests to retrieve encrypted objects by SSE-KMS",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Use AWS Signature Version 4",
+          "type": "boolean"
+        },
+        "username": {
+          "description": "An AWS Access Key ID that can access the content.",
+          "title": "AWS Key",
+          "type": "string"
+        },
+        "verify_access": {
+          "default": true,
+          "description": "Set to true to require successful connection to the filesystem before saving this datasource.",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Validate access",
+          "type": "boolean"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "SSE-KMS Encryption",
+          "properties": [
+            "use_sigv4",
+            "aws_region"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "max_docs",
+            "max_bytes",
+            "index_directories",
+            "crawl_depth",
+            "bounds",
+            "include_paths",
+            "exclude_paths",
+            "include_extensions"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "max_threads",
+            "add_failed_docs",
+            "crawl_item_timeout",
+            "maximum_connections",
+            "retryDelay",
+            "stopRetry"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ],
+      "required": [
+        "url",
+        "username",
+        "password"
+      ],
+      "title": "Properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Datasource Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "Connector to index content in AWS S3 buckets.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "title": "S3",
+  "type": "object"
+}

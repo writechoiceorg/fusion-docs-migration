@@ -1,0 +1,209 @@
+---
+title: "search:field"
+permalink: "1078"
+---
+
+## Description
+
+The Field directive.
+
+## Usage
+
+as element:
+
+```xml
+<search:field
+       name="{string}"
+       [result="{object}"]
+       [query="{object}"]
+       [max-characters="{string}"]
+       [date-format="{string}"]
+       [number-format="{string}"]
+       [url="{string}"]
+       [urlfield="{string}"]
+       [target="{string}"]
+       [action="{string}"]
+       [default-value="{string}"]
+       [label="{string}"]
+       [value-element="{string}"]
+       [label-element="{string}"]
+       [prefix="{string}"]
+       [suffix="{string}"]
+       [show-more="{string}"]
+       [show-less="{string}"]
+       [show="{number}"]
+       [show-more-values="{number}"]
+       [separator="{string}"]
+       [url-prefix="{string}"]
+       [url-suffix="{string}"]
+       [filter-optional="{string}"]>
+</search:field>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | **string** | Name of the field to be rendered from the result |
+| result  *(optional)* | **object** | The result containing the field to be rendered |
+| query  *(optional)* | **object** | Providing a Query object means that the Value will be displayed as a hyperlink that submits the Query again with this field and its value as a Filt |
+| max-characters  *(optional)* | **string** | Limit display value to a certain number of characters, adding '…​' if maxCharacters is exceeded. |
+| date-format  *(optional)* | **string** | How to format the date. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+| number-format  *(optional)* | **string** | Format string for the numbers used using the Java DecimalFormat pattern.  *(default: ",0.")* |
+| url  *(optional)* | **string** | URL to redirect to when the field is clicked; |
+| urlfield  *(optional)* | **string** | Field containing a URL to redirect to when the field is clicked; |
+| target  *(optional)* | **string** | Set an HTML target attribute for the anchor tag. For example use _blank to have the generated link open the results in a new window. (Not applicable to query) |
+| action  *(optional)* | **string** | Alternative page to submit the query parameters to - defaults to current page. If a 'url' attribute is provided the action is ignored and query parameters are not included in the request. |
+| default-value  *(optional)* | **string** | Default value to show when no value is present in the index. |
+| label  *(optional)* | **string** | A label to use instead of the default value provided by the Platform. If this attribute is set to an empty String (““) then the label container HTML is omitted from the output. |
+| value-element  *(optional)* | **string** | The HTML element to use for the value (Default p).  *(default: "p")* |
+| label-element  *(optional)* | **string** | The HTML element to use for the label (Default p)  *(default: "p")* |
+| prefix  *(optional)* | **string** | Text to prefix index values with (not applied to default value). E.g. if the index field 'price' contains the value '10'. A prefix="US$" would result in 'US$10' would be displayed. |
+| suffix  *(optional)* | **string** | Text to append to index values (not applied to default value). E.g. if the index field 'weight' contains the value '10'. A suffix=" kg." would result in '10 kg.' being displayed as the value. |
+| show-more  *(optional)* | **string** | If the display value is limited by the max-characters, a show more link will be shown. The value of this attribute will be used as the label.  *(default: "Show more")* |
+| show-less  *(optional)* | **string** | If the display value is limited by the max-characters, a show less link will be shown. The value of this attribute will be used as the label.  *(default: "Show less")* |
+| show  *(optional)* | **number** | Number of values to show if the field is multivalued.  *(default: -1)* |
+| show-more-values  *(optional)* | **number** | Set to the number of results you’d like the user to see after clicking the show more link. Set to `-1` to show all the remaining values for the field. |
+| separator  *(optional)* | **string** | Separator character or sequence to split a Field into multiple values. Setting the separator to “;” would turn the value “company1; company2; company3” into a list of 3 values. |
+| url-prefix  *(optional)* | **string** | Text to add as a prefix to the URL. |
+| url-suffix  *(optional)* | **string** | Text to add as a suffix to the URL. |
+| filter-optional  *(optional)* | **string** | If the fields filter is optional (or). Can be set to 'value', 'field' or 'none'. Default: none |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block>
+        <h3 id="example_with-response">With Response</h3>
+    </layout:block>
+    <search:result-list response="response" styling="cards-sm-1 cards-md-2">
+        <search:result>
+            <layout:block>
+                <div class="tk-stl-card">
+                    <search:field name="name" styling="title" urlfield="url"></search:field>
+                    <search:field name="age" styling="label-left" label="Age"></search:field>
+                    <search:field name="date" styling="label-left" label="Created Date" date-format="dd/MM/yy"></search:field>
+                    <search:field name="blank" styling="label-left" label="Contact Number" default-value="No Contact Number on File."></search:field>
+                    <search:field name="number" styling="label-left" label="Worth" number-format="£#,###.##"></search:field>
+                    <search:field name="madeup" styling="label-left" label="Test"></search:field>
+                    <search:field name="longstring" styling="label-left" label="Long String" max-characters="40" show-more></search:field>
+                </div>
+            </layout:block>
+        </search:result>
+    </search:result-list>
+</layout:grid>
+<layout:grid>
+    <layout:block>
+        <h3 id="example_with-results">With Results</h3>
+    </layout:block>
+    <search:result-list results="results" styling="cards-sm-1 cards-md-2">
+        <search:result>
+            <layout:block>
+                <div class="tk-stl-card">
+                    <search:field name="name" styling="title" urlfield="url"></search:field>
+                    <search:field name="age" styling="label-left" label="Age"></search:field>
+                    <search:field name="date" styling="label-left" label="Created Date" date-format="dd/MM/yy"></search:field>
+                    <search:field name="blank" styling="label-left" label="Contact Number" default-value="No Contact Number on File."></search:field>
+                    <search:field name="number" styling="label-left" label="Worth" number-format="£#,###.##"></search:field>
+                    <search:field name="madeup" styling="label-left" label="Test"></search:field>
+                </div>
+            </layout:block>
+        </search:result>
+    </search:result-list>
+</layout:grid>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                hits:{
+                    act:['long','1234']
+                },
+                facets: {
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Testing Tester']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 35]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2014-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[123456789]
+                                },
+                                longstring:{
+                                    name:'longstring',
+                                    val:['Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.']
+                                }
+                            },
+                        },
+                    },
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Foo (Bar)']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 26]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2015-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[-123456789]
+                                }
+                            },
+                        },
+                    },
+                ],
+            }
+            $scope.results = $scope.response.results;
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchField.png)</Frame>

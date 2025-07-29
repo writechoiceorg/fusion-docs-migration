@@ -1,0 +1,90 @@
+---
+title: "Index Pipelines API"
+permalink: "351"
+---
+
+The Index Pipelines API provides methods for managing a set of named index pipelines.
+Every pipeline is made up of one or more stages.
+Stages can be defined during the creation of a pipeline, or stages can be defined separately and included into one or more pipelines.
+For details of the REST API for index stages, see [Index Stages API](/fusion-server/4.2/349/index-stages-api).
+
+Document processing proceeds stage by stage in a linear fashion.
+The order of the stages in a pipeline is the order in which they were defined.
+At installation, Fusion includes several pre-configured pipelines.
+See [Index Pipelines](/fusion-server/4.2/162/index-pipelines) for details on these default pipelines.
+
+For more information about structuring documents for indexing, see [Importing Data with the REST API](/how-to/865/import-data-with-the-rest-api).
+
+## Examples
+
+*List the 'default' pipeline:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/index-pipelines/default
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "default",
+  "stages" : [ {
+    "type" : "solr-index",
+    "id" : "solr-default",
+    "skip" : false
+  } ]
+}
+```
+
+*Create an index pipeline named 'my-index-pipeline' with three stages, one of which does not yet exist:*
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion-server/4.2/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"my-index-pipeline","stages":[{"id":"tika","type":"tika-parser","includeImages":true},{"id":"conn_mapping","type":"ref"},{"id":"solr-default","type":"ref"}]}' https://FUSION_HOST:8764/api/index-pipelines
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "my-index-pipeline",
+  "stages" : [ {
+    "type" : "tika-parser",
+    "id" : "tika",
+    "includeImages" : true,
+    "flattenCompound" : false,
+    "addFailedDocs" : false,
+    "addOriginalContent" : true,
+    "contentField" : "_raw_content_",
+    "skip" : false,
+    "label" : "tika-parser"
+  }, {
+    "type" : "ref",
+    "id" : "conn_mapping",
+    "skip" : false,
+    "label" : "ref"
+  }, {
+    "type" : "ref",
+    "id" : "solr-default",
+    "skip" : false,
+    "label" : "ref"
+  } ]
+}
+```
+
+*Reload the 'my-index-pipeline' pipeline:*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT https://FUSION_HOST:8764/api/index-pipelines/my-index-pipeline/refresh
+```

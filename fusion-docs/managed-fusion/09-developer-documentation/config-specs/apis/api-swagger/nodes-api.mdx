@@ -1,0 +1,58 @@
+---
+description: "Managed Fusion Admin APIs"
+title: "Nodes API"
+permalink: "8oh6ut"
+---
+
+The Nodes API lets you check the status of each node in the search cluster.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+*Show each service:*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/nodes/up
+```
+
+**RESPONSE**
+
+```json
+{
+  "history::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/history", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/history" ],
+  "query-pipelines::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-pipelines" ],
+  "solrconfig::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/collections//solr-config" ],
+  "solrAdmin::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/solrAdmin", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/solrAdmin" ],
+  "stopwords::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/stopwords" ],
+  "collections::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/collections" ],
+  "index-stages::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/index-stages", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-stages" ],
+  "nodes::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/nodes", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/nodes" ],
+  "index-profiles::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/collections//index-profiles", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/collections//index-profiles" ],
+  "schema::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/collections//schema" ],
+  "solr::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/solr", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/solr" ],
+  "query-stages::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-stages" ],
+  "blobs::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/blobs" ],
+  "connectors::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/connectors" ],
+  "recommend::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/recommend" ],
+  "configurations::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/configurations", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/configurations" ],
+  "system::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/system" ],
+  "index-pipelines::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines" ],
+  "query-pipeline-templates::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/pipeline-templates/query" ],
+  "registration::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/registration", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/registration" ],
+  "searchLogs::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/searchLogs" ],
+  "scheduler::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/scheduler" ],
+  "aggregator::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/aggregator" ],
+  "query-profiles::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/collections//query-profiles" ],
+  "usage::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/usage", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/usage" ],
+  "introspect::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/introspect", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/introspect" ],
+  "searchCluster::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/searchCluster", "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/searchCluster" ],
+  "features::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/features" ],
+  "index-pipeline-templates::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud:8984/connectors/v1/pipeline-templates/index", "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/pipeline-templates/index" ],
+  "synonyms::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/synonyms" ],
+  "reports::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/reports" ],
+  "signals::v1" : [ "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/signals" ]
+}
+```

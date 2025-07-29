@@ -1,0 +1,129 @@
+export const schema = {
+  "type": "object",
+  "title": "Solr MoreLikeThis",
+  "description": "Returns results similar to a given item using Solr's MoreLikeThis component. Provide parameters for the component here. For more information, see https://cwiki.apache.org/confluence/display/solr/MoreLikeThis",
+  "required": [
+    "useQueryParser"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "useQueryParser": {
+      "type": "boolean",
+      "title": "Use Query Parser",
+      "description": "Specifies whether to use the MLT Query Parser. Note, if you choose to use this you MUST specify a document id to run the MLT Query on and a Field to run the MLT with.",
+      "default": true
+    },
+    "moreLikeThisFields": {
+      "type": "array",
+      "title": "More Like This Fields",
+      "description": "Specifies the name of the field you want to run the mlt on. NOTE: If you don't supply any fields we will default to using the body field.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "docId": {
+      "type": "string",
+      "title": "DocId Field name",
+      "description": "Specifies the name of the id field we are finding more like this terms on",
+      "default": "id"
+    },
+    "mindf": {
+      "type": "integer",
+      "title": "mindf",
+      "description": "Specify the frequency at which words will be ignored which occur in at least this many docs",
+      "default": 2
+    },
+    "maxdf": {
+      "type": "integer",
+      "title": "maxdf",
+      "description": "Specify the frequency at which words will be ignored which occur in more than this many docs",
+      "default": 10000
+    },
+    "count": {
+      "type": "integer",
+      "title": "Count",
+      "description": "Specifies the number of similar documents to be returned for each result."
+    },
+    "mintf": {
+      "type": "integer",
+      "title": "mintf",
+      "description": "Specify the frequency below which terms will be ignored in the source doc"
+    },
+    "minwl": {
+      "type": "integer",
+      "title": "minwl",
+      "description": "Sets the minimum word length for words to be recognized by the MoreLikeThis",
+      "default": 3
+    },
+    "maxwl": {
+      "type": "integer",
+      "title": "maxwl",
+      "description": "Sets the maximum word length"
+    },
+    "maxqt": {
+      "type": "integer",
+      "title": "maxqt",
+      "description": "Sets the max number of query terms that will be included in any generate query"
+    },
+    "maxntp": {
+      "type": "integer",
+      "title": "maxntp",
+      "description": "Sets the max number of tokens to parse in each example doc that is not stored with TV support"
+    },
+    "boost": {
+      "type": "boolean",
+      "title": "boost",
+      "description": "Specifies if the query will be boosted by the interesting term relevant"
+    },
+    "matchInclude": {
+      "type": "boolean",
+      "title": "match include",
+      "description": "Specifies whether the response should include the matched doc"
+    },
+    "matchOffset": {
+      "type": "integer",
+      "title": "match offset",
+      "description": "Specifies an offset to the main query to find the doc on which the MoreLikeThis query should operate. By default it is 0"
+    },
+    "interestingTerms": {
+      "type": "string",
+      "title": "interesting terms",
+      "description": "Controls how the More Like This component presents the interesting terms. Supports 3 settings, list lists the terms, none lists no terms and details lists the terms with the boosts",
+      "enum": [
+        "list",
+        "none",
+        "details"
+      ]
+    }
+  },
+  "category": "Results Relevancy",
+  "categoryPriority": 7,
+  "unsafe": false
+}

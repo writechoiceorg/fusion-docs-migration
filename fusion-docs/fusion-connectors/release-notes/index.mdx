@@ -1,0 +1,613 @@
+---
+title: "Release Notes"
+description: "Fusion Connectors"
+permalink: "4"
+---
+
+Fusion Connectors are continuously improving with new features, updated functionality, performance upgrades, and bug fixes. This article summarizes these changes.
+
+## July 2025
+
+### July 9, 2025 - Web V2 v2.1.0
+
+The [Web V2 connector](/fusion-connectors/tq6l3z/web-v-2) has been updated to version 2.1.0.
+
+This release adds JavaScript evaluation for the Web V2 connector, which allows the connector to extract content from a website that is only available after JavaScript has been rendered. The release also rebuilds some of the connector’s capabilities in Selenium Grid, which offers non-headless browser mode and concurrent processing. Additionally, this release restores features from the Web V1 connector.
+
+<Tip>
+**Important**
+
+If you are using Web V2 2.1.0 or later, you must use Selenium Grid as part of your Web V2 connector setup.
+</Tip>
+
+
+
+#### JavaScript evaluation
+
+JavaScript evaluation is available for remote and hosted connectors and supports authentication and headless browsing. The capabilities of a browser are essential, and this release introduces Selenium Grid to implement browser-based rendering.
+
+For hosted connectors, Selenium Grid support is available through Kubernetes. For remote connectors, Selenium Grid support is available through Docker Compose. See [the Web V2 remote support repository](https://github.com/lucidworks/web-v2-remote-support/) for setup instructions and YAML files.
+
+The Selenium services require an x86 architecture to run properly. Running the Selenium services on an ARM-based system such as Apple Silicon is not supported.
+
+<Tip>
+**Important**
+
+Up to three Web V2 connectors can run simultaneously in a single cluster. This prevents reaching a max concurrency limit per Web V2 connector, which affects how much data can be sent to Selenium Grid at one time.
+</Tip>
+
+
+
+If you are authenticating to your website when crawling it, you can evaluate JavaScript while crawling websites. Select **Evaluate JavaScript during SmartForms/SAML Login**.
+
+The headless browsing setting in the Web V2 connector lets you runs browsers without actually seeing the browser. For websites that render pages on the server, the **Headless browser** field must be unchecked for the crawl to work correctly and retrieve links. For websites that render pages on the client side, the **Headless browser** field should be checked.
+
+#### Improvements
+
+The `depth` property has been restored, allowing you to control the scope of your web crawl. The default value is `-1`, which does not limit the scope of the crawl. Configure this value in the **Limit Document Properties** section of the Web V2 connector.
+
+If a crawl fails because the start link is invalid, the Web V2 connector now marks the crawl as failed and Fusion logs an exception. This restores functionality from the Web V1 connector.
+
+#### Bug fix
+
+Previously, the Port field for Basic Authentication did not accept `-1` as a value to accept any port. This is now resolved, and `-1` is an accepted value.
+
+## April 2025
+
+### April 24, 2025 - Web V2 v2.0.1
+
+The [Web V2 connector](/fusion-connectors/tq6l3z/web-v-2) has been updated to version 2.0.1.
+
+* Fixed a bug where Web V2 v2.0.0 failed to handle non-HTML responses such as JSON. When a JSON response was returned, the connector would complete with a success resposne but without indexing any data due to a premature stream closure error. This issue occurred only with Web V2 v2.0.0 on Fusion 5.9.11 and did not affect Web V2 v1.4.0.
+* Compatibility for this connector is extended to include all versions of Fusion 5.9.x.
+
+### April 9, 2025 - Amazon S3 V2 v1.4.2
+
+The [AWS S3 V2 connector](/fusion-connectors/8851/amazon-aws-s-3-v-2) is updated to v1.4.2.
+
+This release resolves a bug where recrawls failed to fetch data from folders. This occurred when a previous crawl saved errors in Crawldb and the **datasourceConfig** had:
+
+* `objectKeys` configured
+* `enableStrayContent` set to `false`
+
+## March 2025
+
+### March 31, 2025 - Web V2 v2.0.0
+
+The [Web V2 connector](/fusion-connectors/tq6l3z/web-v-2) has been updated to version 2.0.0. This release resolves a critical issue where the **Restrict crawl to start-link** checkbox appeared unchecked in the UI, while the setting was enabled in the backend. This discrepancy caused the option to be enforced even when the UI indicated it was disabled, potentially resulting in the indexing job failing silently.
+
+This release also includes general performance and compatibility improvements.
+
+Known issues in version 2.0.0:
+
+* The **Link rewrite script** option, which allows JavaScript to modify document links before fetching, is currently non-functional. A fix is planned for a future release.
+* The **Max items** setting enforces a limit that is one less than the configured value. For example, if set to 10,000, only 9,999 documents are fetched. A fix is planned for a future release.
+
+<Tip>
+**Important**
+
+Starting with Fusion 5.9.11, you must upgrade to the Web V2 connector v2.0.0 or later. Previous versions (e.g. 1.4.0) are incompatible with Fusion 5.9.11 and later versions of Fusion 5.9 due to changes introduced by the upgraded JDK in Fusion. If you are using an earlier version of Fusion, use Web V2 v1.4.0 instead.
+
+</Tip>
+
+
+
+## March 3, 2025 - JDBC V2 v2.6.2
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is updated to v2.6.2.
+
+This release resolves a bug that caused some updated or newly added records to be missed during delta indexing.
+
+Previously, the connector only looked at the end time of the last indexing job to find new data. This behavior meant any records added or changed during that job could be skipped during delta indexing.
+
+With this fix, the connector now looks at both the start and end times of the last job, ensuring that no records are missed when running a delta indexing job.
+
+## January 2025
+
+### January 30, 2025 - REST V2 v1.1.0
+
+The [REST V2 connector](/fusion-connectors/e8bakk/rest-v-2-connector) is upgraded to v1.1.0.
+
+#### Summary
+
+A recipe is added for Alfresco to enhance the search experience by implementing a hierarchical request feature that traverses multiple storage levels to locate and index file content. Several new features are added, including introducing a retry mechanism to reattempt requests failing due to server-side errors based on configurable retry counts and delay times. Additionally, this release features a skip indexation option that prevents indexing parent objects when they are only used to discover child objects. The connector now supports recursive requests to automatically retrieve nested objects regardless of depth. This release also allows for limiting documents through exclusion by regular expressions and file size constraints, and includes improvements like enhanced logging with query parameters and the addition of an index field to track the number of documents indexed per request configuration.
+
+#### New recipe
+
+* A new recipe is included as part of this release: [Alfresco](/fusion-connectors/6y4vwx/alfresco).
+* This new recipe integrates with the Alfresco information management software improve to improve the search experience.
+* The recipe implements the new hierarchical request feature to locate and index file content at multiple storage levels.
+
+#### New features
+
+##### Hierarchical request feature:
+
+* Hierarchical object discovery allows requests to traverse multiple levels by following the natural structure of the data under the source.
+
+Retry feature is added to enable retrying requests if they fail due to a server-side error:
+
+* Retry Count: The number of attempts a request will be retried.
+* Max Delay Time: The maximum wait time in milliseconds between retries.
+
+##### Skip indexation of objects feature
+
+* When enabled, the response is not indexed. This is useful when objects are requested only to discover their child objects without indexing the parent object.
+* Example indexing a list of files with their binary content:
+
+  + Given a parent request (`objectType=FILE`), retrieve a list of file metadata. This request helps discover the IDs of files to be downloaded in a follow-up request.
+  + Given a child request (`objectType=FILE-DOWNLOAD` with `parentObjectType=FILE`), download the binary content from previously discovered file metadata.
+  + The indexed documents will include file metadata (from the `FILE` request) joined with binary content (from the `FILE-DOWNLOAD` request).
+  + Enable **Skip Indexation** in `FILE` request to prevent indexing file metadata objects.
+
+##### Recursive requests
+
+* Enables recursive retrieval of nested objects of the same `ObjectType` using the same request configuration. This is useful when the depth of nesting is unknown, automating the retrieval of all nested objects.
+* Example: Detect all nested folders from a system path where the depth of nested folders is unknown. Enable **Recursive Requests** to retrieve all levels automatically.
+
+##### Limit documents
+
+* **Exclude by RegEx** allows specifying a list of key-value pairs to exclude objects from indexing.
+
+  + **Key** references the field name of the object to exclude and supports `JsonPath` expressions for navigating nested objects (for example, `objects.nested.path`).
+  + **Value** is a regular expression matched against the field value in the object. If the match succeeds, then the entire object is excluded.
+* **Exclude by File Size** allows setting minimum and maximum file sizes (in bytes) to exclude files outside the specified range.
+
+  + **Key** references the field name of the object containing the file size and supports `JsonPath` expressions (for example, `objects.nested.path`).
+  + **Minimum File Size**: Files smaller than this value will be excluded.
+  + **Maximum File Size**: Files larger than this value will be excluded. (Set to `-1` for no limit.)
+
+#### Improvements
+
+* Improved logging to include query parameters in requests.
+* Added index field `_lw_rest_object_type_s` to store the value of the `ObjectType` configuration property, which represents the name of the request. This helps track the number of documents indexed per request configuration.
+
+#### Deprecation
+
+* Property `Service Endpoints` used for object discovery through two-level requests is deprecated. Instead, use `List of Requests Configuration` for configuring multiple request levels.
+
+## December 2024
+
+### December 20, 2024 - REST V2 v1.0.0
+
+The [REST V2 connector](/fusion-connectors/e8bakk/rest-v-2-connector) is introduced as a way to enable users to crawl content by exposing its data through a REST API. It can be configured to communicate with a wide selection of external datasources by making API calls and indexing the responses. As an out-of-the-box V2 connector, it provides a low-code user experience for indexing data from REST API-compatible sources.
+
+The REST V2 connector expedites setting up and indexing various datasources using premade configurations, called recipes. These recipes are templates that include all required parameters for datasource integration and can be easily adjusted to suit your specific needs. Unlike single-purpose connectors, the REST V2 connector can index data from any datasource supported by a corresponding recipe.
+
+* The REST V2 Connector relies on a [public GitHub repository](https://github.com/lucidworks/rest-configurations) to store and manage recipes. Recipes are open-source and accessible to the community for use and contribution.
+* Two recipes are included in the initial release: [Jira](/fusion-connectors/lihmnw/jira) and [Confluence](/fusion-connectors/8sbhj5/confluence). Additional recipes are being developed and will be released as they are finalized.
+* This release also includes two forms of authentication: [OAuth](/fusion-connectors/h66upi/use-oauth) and Basic Auth.
+
+The REST connector supports crawl and recrawl:
+
+* Full crawl retrieves all objects from the datasource.
+* Recrawl relies on the `strayContentDeletion` feature from the `connectors-service` to ensure deleted objects from the source are also removed from the index.
+
+Two-level object discovery:
+
+* Allows defining a root request to retrieve first-level objects.
+* Supports a list of child requests (children of the main request) to retrieve second-level objects.
+* By default, objects retrieved with the root request and child requests are indexed as individual Solr documents.
+
+The REST connector supports two types of pagination:
+
+* Next page URL uses a URL to fetch the next page of results.
+* Batch size and index start use a batch size and starting index to paginate through results.
+
+Parsing can be done in one of two ways:
+
+* When parsing within the plugin, the response is parsed as a JSON object structure using JSONPath. This is the default behavior.
+* When parsing with Fusion, the response is emitted directly to Fusion, where Fusion parsers handle the binary data. Enable this feature by setting the property `Send as Binary Data`.
+
+By default, parent and child objects are indexed as individual Solr documents. To merge child objects into the parent object instead of indexing them separately, configure the property `Child Response Mapping → Custom Solr Field`. This feature works only when both parent and child objects are parsed as JSON objects.
+
+The following variables are used when configuring a datasource:
+
+* `${LW_BATCH_SIZE}`: Used with pagination by batch size. This variable represents the `size` query parameter defined in the property, `Pagination By BatchSize → BatchSize`.
+* `${LW_INDEX_START}`: Used with pagination by batch size. This variable represents the `start-point` query parameter defined in the property `Pagination By BatchSize → IndexStart`, which is used to traverse the pagination.
+* `${LW_PARENT_DATA_KEY}`: Used with the child request configuration. This variable is replaced with the `id` extracted from the root object using the property `Parent Data Key`.
+
+<Note>
+This connector is compatible with Fusion 5.9.0 and later.
+</Note>
+
+
+
+### December 20, 2024 - LDAP ACLs V2 v2.1.1
+
+An improvement is made to the [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2).
+
+* The timeout limit to retrieve ACLs from LDAP services is extended.
+
+<Note>
+This version of the connector is compatible with Fusion 5.9.1 and later.
+</Note>
+
+
+
+## September 2024
+
+### September 25, 2024 - Web V2 v1.4.0
+
+The [Web V2 Connector](/fusion-connectors/tq6l3z/web-v-2) is upgraded to v1.4.0.
+
+* Incorporates OAuth for compatibility with Ping Identity and Azure.
+* Fixes a bug where links listed under **BULK START LINKS** were not being indexed.
+
+### September 11, 2024 - Amazon S3 V2 v1.4.1
+
+The [AWS S3 V2 connector](/fusion-connectors/8851/amazon-aws-s-3-v-2) is updated to v1.4.1.
+
+* A new property, retry count, has been introduced to the S3 connector. This property value is passed in the AWS SDK, determining the number of retry attempts for retrieving the file from the AWS S3 bucket. The configurability of this property enhances the effectiveness of the connector, especially in situations of network instability.
+
+### September 10, 2024 - Kaltura V2 v1.4.0
+
+The [Kaltura V2 connector](/fusion-connectors/pzv2ns/kaltura-v-2) is updated to v1.4.0.
+
+<Note>
+This version of the connector is compatible with Fusion 5.9.4 and later.
+</Note>
+
+
+
+* Adds validation to establish a connection with Kaltura before commencing the crawling process.
+* Updates the plugin to replace static Security Trimming with Graph Security Trimming, improving performance.
+
+## August 2024
+
+### August 21, 2024 - Amazon AWS S3 V2 v1.4.0
+
+The [AWS S3 V2 connector](/fusion-connectors/8851/amazon-aws-s-3-v-2) is updated to v1.4.0.
+
+* Adds an **Enable Stray Content Deletion** property in the Fusion UI for the S3 connector to toggle stray content deletion on or off. When stray content deletion is enabled, content that was removed from the datasource is deleted from the index in Fusion. When stray content deletion is disabled, content that was removed from the datasource is not deleted from the index in Fusion. This property is enabled by default.
+
+## July 2024
+
+### July 31, 2024 - AEM V2 v1.3.0
+
+The [AEM V2 connector](/fusion-connectors/um5omx/aem-v-2) is updated to v1.3.0.
+
+<Note>
+This version of the connector is compatible with Fusion 5.9.4 and later.
+</Note>
+
+
+
+* Updates the plugin to replace static Security Trimming with Graph Security Trimming, improving performance.
+* Fixed an issue where security trimming was enabled by default.
+
+### July 24, 2024 - File Upload V2 v1.0.0
+
+The [File Upload V2 connector](/fusion-connectors/r9iys5/fileupload-v-2) replaces the File Upload V1 connector for indexing local file contents.
+
+* Provides a convenient way to quickly ingest data from your local filesystem.
+* Constructed using the V2 framework and serves as a replacement for the classic version.
+
+### July 17, 2024 - Box V2 v2.2.0
+
+The [Box.com V2 connector](/fusion-connectors/3244/box-com-v-2) is updated to version 2.2.0.
+
+<Note>
+This version of the connector is compatible with Fusion 5.9.4 and later.
+</Note>
+
+
+
+* Updates the plugin to replace static Security Trimming with Graph Security Trimming, improving performance.
+* Fixes the invalid RegEx implementation that adjusts the Box URL to retrieve data from the Box datasource so the connector now accepts dashes (`-`) in Box start URLs.
+* Corrects relative path field data when indexing documents that are of type 'File' in nested folders.
+* Fixes a bug where new documents were not being indexed upon incremental crawls.
+* Migrates the Box-Java-SDK to version 4.8.0.
+
+### July 17, 2024 - LDAP-ACLs V2 v1.5.2
+
+An improvement is made to the [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2).
+
+* When the maximum number of referrals is reached, an exception is now thrown to handle the situation while ensuring the connector does not stop functioning.
+
+### July 17, 2024 - SMB V2 v2.0.0
+
+The [Windows Share SMB 2/3 V2 connector](/fusion-connectors/10901/windows-share-smb-2-3-v-2) is updated to version 2.0.0.
+
+<Note>
+This version of the connector is compatible with Fusion 5.9.4 and later.
+</Note>
+
+
+
+* Upgrades the plugin to use the latest SDK version.
+* Updates the plugin to replace static Security Trimming with Graph Security Trimming, improving performance.
+* Fixes a bug where an "Error validating datasource" message displayed after trying to save a datasource with the `Enable DFS` connection property.
+
+## May 2024
+
+### May 15, 2024 - AEM V2 v1.2.0
+
+The [AEM V2 connector](/fusion-connectors/um5omx/aem-v-2) is updated to version 1.2.0.
+
+* Now you can configure the AEM connector to include child paths when indexing fields.
+  This option is off by default; enable it by selecting **Index metadata by child path** in your AEM datasource configuration.
+* Fixes a bug that prevented running the connector on Windows.
+* The basic authentication username and password fields have moved under **Authentication Settings** > **Login Settings**.
+
+## April 2024
+
+### April 16, 2024 - LDAP-ACLs V2 v2.1.0
+
+The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is updated to version 2.1.0.
+
+* Fixes Graph security trimming not working with `Everyone except external` access.
+* Allows connector to reach maximum referral. The connector will throw the exception but will not stop.
+
+### April 16, 2024 - SharePoint Optimized V2 v2.1.0
+
+The [SharePoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is updated to v2.1.0.
+
+<Note>
+SharePoint Optimized V2 v2.1.0 is compatible with Fusion 5.9.1 and later. See the configuration reference page for the latest version and compatibility details.
+</Note>
+
+
+
+* Added the Events Reducer feature, which prevents performing multiple requests to the same SharePoint object and ensures index integrity. Specifically, if multiple change events are made over the same SharePoint object, the connector detects and requests the most relevant event and crawls it correctly.
+
+* Fixed Graph Security Trimming when using custom-level permissions.
+
+* Fixed an issue to reindex restored lists.
+
+* Errors from item/attachment are deleted from crawlDB after being successfully retried.
+
+### April 9, 2024 - JDBC V2 v2.6.1
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is updated to v2.6.1.
+
+* Fixed a pagination issue that limited the number of records returned.
+* Added support for pagination of IBM Db2 (version 11 and earlier) by using a template sub-query:
+
+  ```
+  -- add any WHERE, ORDER BY clauses as needed following your_table
+  SELECT * FROM ( SELECT *, ROW_NUMBER() OVER () AS row_num FROM your_table ) AS subquery WHERE row_num BETWEEN :offset + 1 AND (:offset + :limit)
+  
+  ```
+* Fixed an issue where UTF-8 characters stored as CLOB data types didn’t index properly.
+
+## February 2024
+
+### February 20, 2024 - JDBC V2 v2.6.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is updated to v2.6.0 and implements a pagination feature. This allow the JDBC connector to ingest a specified number of rows during the crawl process.
+
+This feature is controlled by following newly added properties:
+
+* `LIMIT` - specifies the number of rows returned in the results.
+* `OFFSET` - dictates the number of rows to skip from the beginning of the returned data before presenting the results.
+* `disableAutomaticPagination` - disables automatic pagination to ignore limit and offset fields.
+
+## January 2024
+
+### January 31, 2024 - LDAP-ACLs v1.5.1
+
+The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) v1.5.1 release includes backported fixes.
+
+* Indexes the **all-users** acl document when indexing from AzureAD.
+* Fixes Graph Security Trimming with `Everyone except external` access in SharePoint Online.
+
+### January 3, 2024 - JDBC V2 v2.5.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is updated to v2.5.0.
+
+* Exposes configuration options for the validation timeout.
+* Resolves an issue where documents were deleted on incremental crawls when stray delete was enabled.
+
+## November 2023
+
+### November 22, 2023 - Kaltura V2 v1.3.0
+
+The [Kaltura V2 connector](/fusion-connectors/pzv2ns/kaltura-v-2) is updated to v1.3.0.
+
+* This adds back in the Kaltura External Media Entry Compare Attribute fields.
+
+### November 7, 2023 - SharePoint Optimized V2 v2.0.0
+
+The [SharePoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is updated to v2.0.0.
+
+<Note>
+SharePoint Optimized V2 v2.0.0 is compatible with Fusion 5.9.1 and later. See the configuration reference page for the latest version and compatibility details.
+</Note>
+
+
+
+* The connector supports remote configurations.
+
+### November 7, 2023 - LDAP ACLs V2 v2.0.0
+
+The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is updated to v2.0.0.
+
+<Note>
+LDAP ACLs V2 connector v2.0.0 is compatible with Fusion 5.9.1 and later. See the configuration reference page for the latest version and compatibility details.
+</Note>
+
+
+
+The updated connector:
+
+* Supports remote configurations.
+* Uses the SDK that correctly processes the NOT-EQUAL phrase in delete-by-query.
+* Supports unauthenticated proxy.
+
+### November 7, 2023 - AEM V2 v1.1.0
+
+The [AEM V2 connector](/fusion-connectors/um5omx/aem-v-2) is updated to v1.1.0.
+
+* The connector allows OAuth 2 support for JWT token.
+
+## September 2023
+
+### September 12, 2023 - JDBC V2 v2.4.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is upgraded to v2.4.0.
+
+* This release expands the types of character large objects (CLOBs) which can be indexed to include IBM CLOBs.
+
+## June 2023
+
+### June 28, 2023 - SharePoint Optimized V2 v1.6.0
+
+The [SharePoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.6.0.
+
+<Note>
+If you are on Fusion 5.9.0 or later, you must use the SharePoint Optimized V2 v1.6.0 connector or later.
+</Note>
+
+
+
+* For SharePoint Online connector OAuth authentication and NTLM authentication, an issue with the SharePoint Optimized V2 connector crawl was fixed. Now the crawl fails if the data source is configured with incorrect credentials.
+
+* When the moderation status of a published document moves to unpublished, the document is deleted from the index.
+
+* The URL that requests folder metadata is now properly encoded and retrieves requested files correctly.
+
+### June 20, 2023 - LDAP ACLs V2 1.5.0
+
+The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is upgraded to v1.5.0.
+
+<Note>
+If you are on Fusion 5.9.0 or later, you must use the LDAP ACLs V2 connector v1.5.0 or later.
+</Note>
+
+
+
+* The datasource indexing job will now return an error when invalid access credentials are provided instead of reporting a success.
+* The `Security` parameter is now set to `enabled` by default.
+
+## May 2023
+
+### May 30, 2023 - Kaltura V2 1.2.0
+
+The [Kaltura V2 connector](/fusion-connectors/pzv2ns/kaltura-v-2) is upgraded to v1.2.0.
+
+* Fixed an issue that occurred when reaching Kaltura’s API limit of 10,000 documents. Indexing over 10,000 documents should now work as expected.
+
+### May 11, 2023 - JDBC V2 v2.3.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is upgraded to v2.3.0.
+
+* The JDBC V2 connector now supports indexing character large objects (CLOBs).
+
+### May 11, 2023 - Kaltura V2 v1.1.0
+
+The [Kaltura V2 connector](/fusion-connectors/pzv2ns/kaltura-v-2) is upgraded to v1.1.0.
+
+* A `NoClassDefFound` error in the connector has been fixed.
+
+### May 3, 2023 - SharePoint Optimized V2 v1.5.0
+
+The [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.5.0.
+
+* MapDB tables that are no longer needed after indexing are now automatically removed when the indexing job completes.
+* The connector no longer uses the index pipeline client when the `onlyMetadata` property is set to `true` or when Tika async parsing is enabled. Instead, documents are processed using the Connectors SDK’s `.newDocument` method.
+
+### May 3, 2023 - Web V2 v1.3.0
+
+The [Web V2 Connector](/fusion-connectors/tq6l3z/web-v-2) is upgraded to v1.3.0.
+
+* A bug with the **Rewrite URI** configuration option that prevented the configuration from being applied during the indexing job has been fixed.
+* The **SAML**, **Form**, and **NTML** authorization form fields are updated to match those present in the Web V1 connector.
+
+## April 2023
+
+### April 20, 2023 - JDBC V2 v2.2.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is upgraded to v2.2.0.
+
+* A bug that affected JDBC datasources with large document sizes has been fixed. Previously, the indexing job would fail and produce a Solr error message similar to the following:
+
+  ```
+  Document contains at least one immense term in field="FIELD_NAME"
+  
+  ```
+
+  This bug has been fixed and indexing large documents should now work as expected.
+
+### April 12, 2023 - LDAP ACLs V2 v1.4.0
+
+The [LDAP ACLs V2 Connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is upgraded to v1.4.0.
+
+* Added support for the [graph security trimming stage](/how-to/s66hyj/migrate-to-graph-security-trimming-in-fusion-5-8-or-later) for Active Directory in Azure.
+* A bug that prevented the connector from retrying after a connection error has been fixed.
+
+### April 10, 2023 - JDBC V2 connector v2.1.0
+
+The [JDBC V2 Connector](/fusion-connectors/8850/jdbc-v-2) is upgraded to v2.1.0.
+
+* The `statement.setMaxRows()` field was added to resolve a timeout error for large queries on a JDBC data source.
+
+### April 5, 2023 - SharePoint V2 Optimized v1.4.0
+
+The [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.4.0.
+
+* A new field, `_lw_document_type_s`, has been added to differentiate between document types. SharePoint content documents use the value `contentDocument`. ACL documents use the value `aclDocument`.
+* A bug that caused a `NullPointerException` error when the `listDefaultDisplayFormUrl` value is null has been fixed.
+* A bug that prevented the connector from indexing SharePoint Online URLs containing certain special characters, such as `+`, `&`, and `#`, has been fixed.
+* A bug that stopped the indexing job unexpectedly when the `digestValue` request fails has been fixed.
+
+## March 2023
+
+### March 15, 2023 - LDAP ACLs v1.3.0
+
+The [LDAP ACLs connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is upgraded to v1.3.0.
+
+* Fixed a memory leak that resulted in an `OutOfMemoryError` runtime error, causing recrawls to quickly fail.
+
+### March 9, 2023 - SharePoint V2 Optimized v1.3.0
+
+The [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.3.0.
+
+* Fixed an issue where sometimes the connector did not index all attachments in full crawls.
+* Fixed an error related to OAuth authentication where the body would not return the expected value.
+* Folders with unique permissions no longer inherit list permissions instead of their own.
+
+## February 2023
+
+### February 27, 2023 - Web V2 Connector v1.2.0
+
+The [Web V2 Connector](/fusion-connectors/tq6l3z/web-connector-v-2) is upgraded to v1.2.0.
+
+* Fixed a bug that sometimes resulted in an `OutOfMemory: Java Heap Space` error when the connector was run remotely.
+* Fixed a dependency issue that sometimes resulted in a `Error starting controllers` error that caused the job to fail.
+
+### February 9, 2023 - LDAP ACLs V2 Connector v1.2.0
+
+The [LDAP ACLs V2 Connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is upgraded to v1.2.0.
+
+* Fixed a bug that removed access control lists (ACLs) during incremental crawls in Azure Active Directory. This bug resulted from a deviation from the LDAP ACLs V2 connector’s [unique incremental crawl behavior](/fusion-connectors/4selgx/ldap-ac-ls-v-2#incremental-crawls) for Azure Active Directory.
+* Fixed a bug that sometimes deleted ACLs that the indexing job failed to update during its previous run.
+* Known issue: The job may complete with a "Successful" status even when a network communication error occurred.
+
+### February 9, 2023 - SharePoint Optimized V2 Connector v1.2.0
+
+The [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.2.0.
+
+* Fixed a bug that sometimes generated a "User cannot be found" error statement and prevented the connector from indexing files.
+* Updated the description of the **Item size limit** property to clarify its behavior.
+
+## January 2023
+
+### January 19, 2023 - Web V2 v1.1.0
+
+The [Web V2 connector](/fusion-connectors/tq6l3z/web-v-2-connector) is upgraded to v1.1.0.
+
+* Fixed a bug that sometimes prevented the connector from parsing PDF, Word, Excel, and other file types.
+* Some conflicting dependencies were removed to resolve errors.
+* A missing dependency, guava-retrying, was added to resolve a `NoClassDefFoundError` error.
+* A bug was fixed that resulted in the connector performing full crawls instead of recrawling as expected.
+* Known issue: JavaScript evaluation is not functional at this time.
+* Known issue: The counter values in the **Datasources > DATASOURCE_NAME > Job History** view do not reflect actual values, when the datasource uses the Web V2 connector.
+
+### January 6, 2023 - Sharepoint Optimized v1.1.0
+
+The [Sharepoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) is upgraded to v1.1.0. This upgrade includes several bug fixes.
+
+* A bug that sometimes prevented files from being deleted as expected when the datasource was recrawled was fixed.
+* A bug that prevented the connector from indexing data within certain lists was fixed.
+* When indexing data to the `MetaInfo_s` field, an error could occur that prevented indexing data when the data was too large. Now, data larger than 32,766 bytes is indexed to the `MetaInfo_txt` field instead.
+* The connector now accepts URLs with spaces.

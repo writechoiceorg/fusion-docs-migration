@@ -1,0 +1,44 @@
+---
+title: "security:user-actions"
+permalink: "1074"
+---
+
+## Description
+
+User actions tag to log in, log out and navigate home.
+
+To enable this you need to make sure that your security.conf file
+contains the line `webservice-enabled: true`
+
+Your security.conf file can be found in
+`resources/conf/security/security.conf`.
+
+For spring security you will need the following rule to allow access to
+the user api, if parts of the site are public.
+
+`<intercept-url pattern="/twigkit/api/user" access="isAnonymous() or isAuthenticated()"/>`
+
+## Usage
+
+as element:
+
+```xml
+<security:user-actions>
+</security:user-actions>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+## Example
+
+#### Source
+
+```xml
+<security:user-actions></security:user-actions>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/securityUserActions.png)</Frame>

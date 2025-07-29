@@ -1,0 +1,69 @@
+---
+title: "Blob storage"
+permalink: "03ti2e"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+Managed Fusion accepts large binary objects (blobs) for upload, and stores them in Solr. Blob uploads are used to install models, lookup lists, JDBC drivers, and more. The default limit for uploads to Managed Fusion is 10MB. If you need more than that, contact Lucidworks.
+
+## Blob types
+
+A `resourceType` query parameter can be used to specify the blob type. For example, specify `file:js-index` when uploading a Javascript index stage, like this:
+
+```sh
+curl -u USERNAME:PASSWORD -H 'Content-Type: text/javascript' -X PUT 'https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/blobs/index-pipeline-js-stage.js?resourceType=file:js-index' --data-binary @index-pipeline-js-stage.js
+```
+
+The complete list of valid values for `resourceType` is below:
+
+| Type | Description |
+| --- | --- |
+| `driver:jdbc` | A [JDBC driver](/how-to/916/upload-a-jdbc-driver-to-fusion-server) |
+| `file:js-index` | A JavaScript file for use with a [Managed Javascript index stage](/managed-fusion/5.9/2iiic4/managed-java-script) |
+| `file:js-query` | A JavaScript file for use with a [Managed Javascript query stage](/managed-fusion/5.9/zfwfyr/managed-java-script) |
+| `file` | Any uploaded file, such as from the [Quickstart](/how-to/w1eu0z/quickstart) or the [Index Workbench](/managed-fusion/5.9/fqjuhe/index-workbench) |
+| `unspecified` | A blob of unknown type  If no `resourceType` is specified on upload, "other" is assigned by default. |
+
+## The Blob manager
+
+In addition to the [Blob Store API](/managed-fusion/5.9/6q1cvp/blob-store-api), the Managed Fusion UI provides an interface to the blob store in the [Managed Fusion workspace](/managed-fusion/5.9/p4szge/fusion-ui-tour#workspace) at **System** > **Blobs**.
+
+* Click **Add** to upload a new blob.
+* Select an uploaded blob to view, replace, or delete it.
+
+### Blob editor
+
+The blob editor gives the ability to edit blobs in the Managed Fusion UI in a variety of formats:
+
+* CSV
+* Java
+* JavaScript
+* Python
+* SCALA
+* Typescript
+* Plain text
+
+Navigate to **System > Blobs**, select a blob, and click the **Edit blob** button to open the editor:
+
+<Frame>![Edit blob button](/assets/images/5.2/blobs-json-edit.png)</Frame>
+
+<Note>
+
+* If the **Edit blob** button is not available, the blob type cannot be edited with the blob editor.
+* JavaScript can be edited directly in the Managed Fusion UI.
+
+</Note>
+
+The editor has several elements worth noting:
+
+| Elements | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.2/json-editor/copy.png"/> | Copies the JSON to the clipboard. |
+| <InlineImage src="/assets/images/5.2/json-editor/paste.png"/> | Pastes the clipboard into the editor. Only valid JSON is accepted. |
+| <InlineImage src="/assets/images/5.2/json-editor/expand.png"/> | Expands the editor to a fullscreen view. |
+| <InlineImage src="/assets/images/5.2/json-editor/condense.png"/> | Condenses the editor to a compact view. |
+| <InlineImage src="/assets/images/5.2/json-editor/save.png"/> | Saves the JSON in the editor and updates the blob. |
+| <InlineImage src="/assets/images/5.2/json-editor/reset.png"/> | Resets changes made since the last time changes were applied. |
+
+For instructions, see [Use the Blob Editor](/how-to/vkwfch/use-the-blob-editor).

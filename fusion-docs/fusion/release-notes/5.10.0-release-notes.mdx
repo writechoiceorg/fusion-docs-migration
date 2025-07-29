@@ -1,0 +1,93 @@
+---
+title: "Fusion 5.10.0"
+permalink: "ce6szc"
+---
+
+Released on September 28, 2023, this [rapid release](/policies/7shln5/lucidworks-version-support-lifecycle#rapid-release-support-policy) includes new features and improvements, including Adobe Experience Manager (AEM) V2 connector, updates to Solr and Consumption Dashboard, and new user roles.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.25 and 1.26
+* **Microsoft Azure Kubernetes Service (AKS):** 1.25 and 1.26
+* **Amazon Elastic Kubernetes Service (EKS):** 1.25 and 1.26
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.25 and 1.26. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.10.0  *(based on Solr 9.3.0)* |
+| **ZooKeeper** | 3.8.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## New Features
+
+### Fusion Connectors
+
+* The new Adobe Experience Manager (AEM) V2 connector has been added alongside the Fusion 5.10.0 release. The AEM V2 connector is compatible with Fusion 5.5.1 and later and works with AEM version 6.5. For more information, including configuration details, see [AEM V2 Connector Configuration Reference](/fusion-connectors/um5omx/aem-v-2).
+
+## Improvements
+
+### Fusion
+
+* Solr has been upgraded to 9.3.
+
+* The consumption dashboard now features a summary section that displays your total entitlements, requests, and records. You can also view your usage over your contract year.
+
+* New user roles for Fusion have been created to enhance security. Each of these roles should be combined with the developer role in order to work.
+
+    + The spark-developer role can create, edit, and delete Spark jobs.
+    + The script-developer role can create, modify, and delete JavaScript code in the querying and indexing pipelines.
+    + The stage-plugin-developer role can create, edit, and delete custom index and query pipeline stages.
+
+* The GraalVM JavaScript stage has been added to the index and query pipelines. It is available in Nashorn compatibility mode, but full backwards compatibility is not available. The Nashorn JavaScript library is still the default option. To use the GraalVM library, select **GraalVM** from the Javascript engine dropdown in the Fusion UI.
+
+  This is an experimental feature and should not be used in production. Remote calls to other services are not available.
+
+* The [Graph Security Trimming stage](/fusion/5.10/zdzlfu/graph-security-trimming-stage) has new default values for `aclSolrCollection`, `joinField`, and `joinMethod`. Previously deprecated fields `crossCollection` and `dvWithScore` are removed.
+
+* Managed Fusion only: The reverse search saved-query stage now removes any `partition_filter` fields from saved query documents that consist of the empty string.
+
+## Bug Fixes
+
+* Fixed a bug where a non-admin user with the proper permissions could not type in the pipeline configuration source code editor.
+
+* Fixed a bug where the Context object used when posting each document in an array to an index pipeline was the same object.
+
+* Fixed a bug where asynchronous parsing was unable to push documents to Kafka when TLS is enabled.
+
+## Deprecations
+
+* MLeap support has been deprecated. MLeap was used for machine learning tasks in Fusion, including SpaCy and SparkNLP deployments and certain ML models. Instead, refer to the [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) guide.
+
+## Removals
+
+For full details on removals, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#removals).
+
+* The Forked Apache Tika parser stage has been removed. Use [asynchronous Tika parsing](/fusion/5.10/lo9hdj/asynchronous-tika-parsing) instead.
+
+* The Analytics Catalog query stage has been removed.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

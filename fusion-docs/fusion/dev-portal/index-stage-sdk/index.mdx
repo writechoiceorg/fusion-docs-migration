@@ -1,0 +1,76 @@
+---
+title: "Index Stage SDK"
+permalink: "159"
+---
+
+## Overview
+
+Lucidworks provides an Index Stage SDK in a public repository on [GitHub](https://github.com/lucidworks/index-stage-sdk) with all the resources you need to develop custom index stages with Java.
+
+Clone the repository to get started:
+
+```
+git clone https://github.com/lucidworks/index-stage-sdk
+```
+
+See [Gradle quickstart](https://docs.gradle.org/current/userguide/tutorial_java_projects.html) documentation for more information on Java Projects.
+
+## Concepts
+
+### Index stage configuration
+
+The [index stage configuration file](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/config/IndexStageConfig.java) defines configuration options specific to the index stage instance. The options defined in this configuration file are available to the user in the Fusion UI and the API. The plugin configuration class extends the index stage configuration file and is annotated with `@RootScheme`.
+
+Adding `@Property` and type annotations to your stage configuration interface methods defines metadata and type requirements for your plugin configuration fields. This is similar to Fusion’s [connector configuration schema](/fusion/5.9/hpbgki/java-connector-development).
+
+### APIs
+
+The Index Stage SDK includes several APIs for communication with other Fusion components via the [Fusion](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/fusion/Fusion.java) object. This object is passed to the stage during initialization.
+
+- **RestCall**: The [RestCall API](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/fusion/RestCall.java) provides access to the [Fusion REST API](/fusion/5.9/424/fusion-rest-ap-is). You can find an [example](https://github.com/lucidworks/index-stage-sdk/blob/master/examples/sample-plugin-stage/src/main/java/com/lucidworks/sample/query/ExternalQueryStage.java) of its usage in the Index Stage SDK repository.
+
+- **Blobs**: The [Blobs API](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/fusion/Blobs.java) enables interactions with the [Blob Store API](/fusion/5.9/305/blob-store-api).
+
+- **Documents**: The [Documents API](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/fusion/Documents.java) provides a method for creating new document instances. This is useful for custom stages that [output multiple documents](#multiple-output) from a single input documentation.
+
+### Plugins
+
+A plugin is a `.zip` file that contains one or more index stage implementations. The file contains `.jar` files for stage definitions and additional dependencies. It also contains a manifest file that holds the metadata Fusion uses to run the plugin.
+
+Plugins are uploaded to the Blob store:
+
+1. Navigate to **System** > **Blobs**.
+2. Click **Add**.
+3. Select **Index Stage Plugin**.
+
+   <Frame>![Index stage plugin](/assets/images/5.1/java-stage-sdk-upload.png)</Frame>
+4. Click **Browse…​** and select your plugin file.
+5. Click **Upload**.
+
+Plugin stage classes must implement the [`com.lucidworks.indexing.api.IndexStage`](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/IndexStage.java) interface and be annotated with [`com.lucidworks.indexing.api.Stage`](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/Stage.java) annotation. For additional convenience, stage implementation can extend the [`com.lucidworks.indexing.api.IndexStageBase`](https://github.com/lucidworks/index-stage-sdk/blob/master/index-stage-plugin-sdk/src/main/java/com/lucidworks/indexing/api/IndexStageBase.java) class, which already contains initialization logic and some helpful methods.
+
+### Lifecycle
+
+#### Creation and initialization
+
+Fusion begins by creating an `IndexStage` instance. After the index stage is created, it is initialized using the `init(T config, Fusion fusion)` method. This allows for the creation of internal storage instructions and the validation of the configuration.
+
+Initialization occurs immediately after the stage configuration is saved in Fusion. The stage can be maintained and used by Fusion for extensive periods of time, even if no documents are being processed through the stage. This should be considered when making decisions on resource allocation.
+
+#### Document processing
+
+Once the initalization process completes, Fusion calls the `process` method for each document the index pipeline processes.
+
+In most use cases, index stages process a single input document and emit a single output document. For these cases, the `process(Document document, Context context)` method should be used.
+
+In other cases, index stages process a single input document but emit multiple output documents. For these cases, the `process(Document document, Context context, Consumer<Document> output)` method should be used. The output documents are sent by calling `output.accept(doc)`.
+
+A single stage instance can be used to process multiple documents, and the `process` method can be called from multiple concurrently running threads. Additionally, Fusion can initialize and maintain multiple stage instances with the same configuration in separate indexing service nodes. Therefore, it’s important to ensure the plugin stage implementation is thread-safe and the processing logic is stateless.
+
+<Note>
+If the index stage throws an exception while processing a document, that document will not be processed further. It does *not* prevent other documents from being processed. Check the logs for information regarding the exception.
+</Note>
+
+#### Logging
+
+The Index Stage SDK uses the SLF4J Reporter logging API.

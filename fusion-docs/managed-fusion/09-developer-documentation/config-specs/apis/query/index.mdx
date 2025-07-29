@@ -1,0 +1,30 @@
+---
+title: "Query APIs"
+permalink: "zozko5"
+---
+
+The Query APIs are a group of APIs that allow you to customize your search experience. You can use them to [run queries](/managed-fusion/5.9/eqky5t/query-api), [reorder and test pipeline stages](/managed-fusion/5.9/hd4an7/query-pipelines-api), [improve search relevancy](/managed-fusion/5.9/lmgkp0/experiments-api), and more.
+
+For more information, [view the API specification.](?open-api=true)
+
+Query APIs allow a variety of options for modifying a search term when it is sent to Fusion to help provide improved search results.
+
+The basic way to change how queries are processed starts with creating [query stages](/managed-fusion/5.9/ch321e/query-pipeline-stages). These stages are steps that each query will go through to adjust the search term before it is compared against indexed documents.
+
+Query stages must be configured in the Managed Fusion UI. Once they are set up, you can use the [Query Stages API](/managed-fusion/5.9/g5jma3/query-stages-api) to view query stage JSON schemas.
+
+Custom-made query stages are developed using the [Query Stage SDK](/fusion/5.9/hbu2ug/query-stage-sdk), which saves them as plugins. A plugin is a ZIP file that contains one or more query stage implementations. The ZIP file contains JAR files for stage definitions and additional dependencies. It also contains a manifest file that holds the metadata Fusion uses to run the plugin. You can use the [Query Stage Plugins API](/managed-fusion/5.9/roajwi/query-stage-plugins-api) to manage your custom stages.
+
+<Note>
+The Query Stage SDK is not typically used by Managed Fusion. If you require a custom stage, it is recommended that you contact your Lucidworks representive for assistance.
+</Note>
+
+[Custom rules](/managed-fusion/5.9/03vd0y/business-rules) are additional actions a website can take when certain search terms are entered by a user. For example, the site can display a sale banner when a search includes a specified manufacturer, or a particular search term can alter results where returned documents are listed higher or lower than they normally would be. You can manage custom rules with the [Custom Rules API](/managed-fusion/5.9/gdkfpz/custom-rules-api).
+
+A [query pipeline](/managed-fusion/5.9/8qf1w6/query-pipelines) is a series of query stages ordered in a particular way. The [Query Pipelines API](/managed-fusion/5.9/hd4an7/query-pipelines-api) lets you manage query pipelines by allowing you to create, view, update, and delete query pipelines.
+
+[Experiments](/managed-fusion/5.9/mykfo7/experiments) let you compare results for different combinations of pipelines, collections, search handlers, and request parameters. This is useful for A/B testing. You can manage experiments with the [Experiments API](/managed-fusion/5.9/lmgkp0/experiments-api).
+
+[Query profiles](/managed-fusion/5.9/qsrh89/query-profiles) are the way you select which pipeline and collection combination to use. You can use different pipelines with the same collection to test different stage combinations. Another way profiles can be used is to switch to another pipeline to allow different search results for special occasions. You can use the [Query Profiles CRUD API](/managed-fusion/5.9/cym2qh/query-profiles-api), formerly known as the Query Profiles API, to create, view, update, and delete query profiles.
+
+Once you have a query profile set up, you can use the [Query Profiles API](/managed-fusion/5.9/eqky5t/query-api), formerly known as the Query API, to send a query through a profile.

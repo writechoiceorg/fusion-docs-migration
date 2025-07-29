@@ -1,0 +1,51 @@
+---
+title: "Offline"
+permalink: "3199"
+---
+
+At times, it is not always possible to have access to your search device. To facilitate this, Appkit offers the ability to record responses and save them to disk when you do have access. Then, you can use those responses to carry on working offline.
+
+## Recording responses
+
+By booting your application with the system variable `-Dtwigkit.offline.recording=true`, every search response served by the backend device will be serialized to a JSON file written to disk. By default, the location of the saved response JSON file relative to the application root will be as follows:
+
+```
+/offline-data
+    /<platform.id>
+        response_<encoded query url>.json
+```
+
+Here, `<platform.id>` is either the configuration name of the platform (for example, `platforms.fusion`) or the platform ID, and `<encoded query url>` is an encoded form of the query URL that was used to generate the response. The default offline root folder, `offline-data`, can be overridden by setting the system variable `-Dtwigkit.offline.recording.path` to a relative or absolute file path.
+
+For example, suppose you submit a query to the `platforms.solr` platform instance, with `-Dtwigkit.offline.recording.path=my-data`. Then the system will save any response serialized as a JSON file to:
+
+```
+my-data
+    platforms.solr
+        response_1234567.json
+```
+
+If a default query (with no query or filter terms) is run, this response will be written to `response.json` and saved in the appropriate platform folder.
+
+## Working offline
+
+The Offline Search platform is a search interface that serves static content by matching search queries with JSON data files read from disk. Each JSON data file contains a serialized Appkit response object, independent of the particular search engine that produced the original search results. See the section above for information on how to capture and store search response data.
+
+To work offline with recorded responses, the first step is to add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.offline.search</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+After this is done, the next step is to update the configuration file of the platform you had been working online with in order to tell it that you are now working offline. The best way to do this is to use the [configuration overlay](/fusion/5.9/3090/overlaying-configuration-values). For example, if you previously recorded a number of responses from a Solr device, you could create or update the configuration file, `solr.conf`, in `src/dev/resources/conf/platforms/solr/` to have these entries:
+
+```yaml
+name: twigkit.search.offline.OfflineSearch
+path: file://data-files/platforms.solr
+```
+
+Here, `path` defines the location of the offline response JSON files. This can either be a relative path (for example, ./data-files), resolved relative to the directory from which the web server is booted, or an absolute path (for example, /var/data-files).

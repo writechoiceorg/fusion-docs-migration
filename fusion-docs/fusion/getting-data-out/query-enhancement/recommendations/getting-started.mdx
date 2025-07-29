@@ -1,0 +1,122 @@
+---
+title: "Getting Started with Recommendations and Boosting"
+permalink: "480"
+---
+
+[Signals](/fusion/5.9/469/signals) provide the data that Fusion uses to generate [collaborative recommendations](/fusion/5.9/475/methods-for-recommendations-and-boosting). The simplest way to get started is to enable signals and recommendations in one of your primary collections.
+
+Once you do this, Fusion automatically creates a set of [default objects](#objects) and begins creating and updating collections of recommendations on a regular schedule.
+
+<Tip>
+[Content-based recommendations](/fusion/5.9/475/methods-for-recommendations-and-boosting) can be used without enabling signals or recommendations, but they require manual configuration.
+</Tip>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Recommendations** focuses on how Fusion uses signals to automatically produce custom recommendations to offer users the items most relevant to their experience:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/recommendations-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/recommendations-course.png" alt="Recommendations" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Enable signals
+
+Signals are enabled by default for new collections when you have a Fusion license installed. You can enable or disable signals for any collection at **Collections** > **Collections Manager**.
+
+<Frame>![Enable Signals](/assets/images/4.2/signals-enable.png)</Frame>
+
+Enabling signals automatically creates a set of [aggregation jobs](/fusion/5.9/8804/sql-aggregation-jobs#built-in-sql-aggregation-jobs) which create the input data for recommendations. See [Signals and Aggregations](/fusion/5.9/469/signals) for complete details.
+
+## Enable recommendations
+
+Recommendations are not enabled by default. You can enable recommendations using one of the following methods:
+
+* **Collections Manager.** Sign in to Fusion and select your application. Then click **Collections** > **Collections Manager**. Click the gear icon of your collection and select **Enable Recommendations**.
+
+  <Frame>![Enable Recommendations](/assets/images/4.2/recommendations-enable.png)</Frame>
+
+  The system displays the Enable Recommendations dialog box. Click **Enable Recommendations** to automatically enable the [items-for-user](/fusion/5.9/475/methods-for-recommendations-and-boosting#items-for-user) and [items-for-item](/fusion/5.9/475/methods-for-recommendations-and-boosting#items-for-item) recommendation methods. To use additional [recommendation methods](/fusion/5.9/475/methods-for-recommendations-and-boosting), you must configure them separately.
+* **Relevance.** Sign in to Fusion and select your application. Then click **Relevance > Recommendations**. The system displays the Enable Recommendations dialog box. Click **Enable Recommendations** to automatically enable the [items-for-user](/fusion/5.9/475/methods-for-recommendations-and-boosting#items-for-user) and [items-for-item](/fusion/5.9/475/methods-for-recommendations-and-boosting#items-for-item) recommendation methods. To use additional [recommendation methods](/fusion/5.9/475/methods-for-recommendations-and-boosting), you must configure them separately.
+* **REST API.** Use this command to enable recommendations:
+
+  ```bash
+  curl -u USERNAME:PASSWORD -X PUT http://FUSION_HOST:FUSION_PORT/api/collections/COLLECTION_NAME/features/recommendations -H 'content-type: application/json' -d '{"enabled":true}'
+  ```
+
+## Default objects for recommendations
+
+When recommendations are enabled, Fusion automatically creates a default set of collections, jobs, schedules, and query pipelines that provide basic functionality for recommendations.
+
+You can tune the default jobs and pipelines as needed to refine the results, or create new ones, then configure your search application to request recommendations from the query pipelines.
+
+See also the default objects created when you [enable signals](/fusion/5.9/469/signals#enabling). These must already exist when you enable recommendations.
+
+### Collections
+
+* `COLLECTION_NAME_items_for_item_recommendations`
+
+  Collection to hold generated item-item similarities (by default 10 per item). No `user_id_s` data is present. A Recommend Items for Item query pipeline stage can use the similarities to return item recommendations. For example, a query in which `doc_id_s = docA` would return an ordered list of other `doc_id_s` values for documents that are similar to document `docA`, along with the similarities. For example: `[("docB", 0.83), ("docC", 0.55), ("docD", 0.43), …​, ("docK", 0.22)]`.
+* `COLLECTION_NAME_items_for_user_recommendations`
+
+  Collection to hold recommended items for a user. By default the job creates 10 recommendations per user.
+* `COLLECTION_NAME_recs_aggr`
+
+  Collection to hold the output of recommender aggregation jobs.
+* `COLLECTION_NAME_bpr_user_recs` and `COLLECTION_NAME_bpr_item_recs`
+
+  Collections for Bayesian Personalized Ranking (BPR) recs, user-item, and item-item (respectively).
+* `COLLECTION_NAME_content_recs`
+
+  Collection for content-based recommender recs.
+* `COLLECTION_NAME_recommender_models`
+
+  Collection that stores ALS models.
+* `COLLECTION_NAME_queries_query_recs`
+
+  Collection for output of the Query-Query Similarity Job.
+
+### Jobs and schedules
+
+Enabling recommendations creates the new jobs below, each using a different method to produce items-for-item and items-for-user recommendations. These jobs consume the output of the [signals aggregation jobs](/fusion/5.9/8804/sql-aggregation-jobs#built-in-sql-aggregation-jobs).
+
+|  | [BPR Recommender](/fusion/5.9/8805/bpr-recommender-jobs) | [Content-Based Recommender](/fusion/5.9/8807/content-based-recommender-jobs-experimental) | [Query-to-Query Session-Based Similarity](/fusion/5.9/8802/query-to-query-session-based-similarity-jobs-experimental) | Default job name |
+| --- | --- | --- | --- | --- |
+| `COLLECTION_NAME_item_recommendations` | `COLLECTION_NAME_bpr_item_recs` | `COLLECTION_NAME_content_recs` | `COLLECTION_NAME_query_recs` | Default input collection |
+| `COLLECTION_NAME_signals_aggr` | `COLLECTION_NAME_signals_aggr` | `COLLECTION_NAME` | `COLLECTION_NAME_signals` | Default output collections |
+| `COLLECTION_NAME_items_for_user_recommendations` `COLLECTION_NAME_items_for_item_recommendations` | `COLLECTION_NAME_bpr_user_recs` `COLLECTION_NAME_bpr_item_recs` | `COLLECTION_NAME_content_recs` | `COLLECTION_NAME_queries_query_recs` | Recommendation type |
+
+None of the jobs are scheduled by default; you must manually run or schedule them.
+
+NOTE:
+
+* The `COLLECTION_NAME_user_item_prefs_agg` job provides input data for the ALS and BPR jobs and must run before them. See [SQL Aggregations](/fusion/5.9/8804/sql-aggregation-jobs#collection_user_item_preferences_aggregation) for details.
+* The `COLLECTION_NAME_user_query_history_agg` job generates aggregations for user-item preferences from signal information.
+
+Fusion does *not* automatically create a [Query-to-Query Session-Based Similarity job](/fusion/5.9/8802/query-to-query-session-based-similarity-jobs), which is needed for certain [recommender types](/fusion/5.9/475/methods-for-recommendations-and-boosting#content-based-vs-collaborative-recommendations).
+
+### Query pipelines
+
+* `COLLECTION_NAME_items_for_user_recommendations`
+
+  Query pipeline to generate recommendations of items for a user.
+* `COLLECTION_NAME_items_for_item_recommendations`
+
+  Query pipeline to generate recommendations of items similar to an item.
+
+  <Frame>![Default items-for-item recommendations pipeline](/assets/images/5.6/recommendations-item-item-pipeline-56.png)</Frame>
+* `COLLECTION_NAME_queries_query_recs`
+
+  Query pipeline to generate [queries-for-query recommendations](/fusion/5.9/479/queries-for-query-recommendations) using a model created by the [Query-to-Query Session-Based Similarity](/fusion/5.9/8802/query-to-query-session-based-similarity-jobs-experimental) job.

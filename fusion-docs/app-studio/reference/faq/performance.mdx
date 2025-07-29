@@ -1,0 +1,16 @@
+---
+title: "Performance"
+permalink: "3131"
+---
+
+## What kind of performance testing has been done on Appkit and can results be shared?
+
+Appkit is routinely profiled and performance tested. This includes load and capacity testing for concurrent users as well as time taken for requests to be processed. Through years of development and deployments each component will function to a very high performance specification as evidenced by several high load public facing sites including Vodafone, Financial Times, and Thomson-Reuters. Another Appkit customer TES Global (https://www.tes.co.uk) experiences peak loads of 100 requests per second.
+
+We track the performance of Appkit in numerous scenarios across releases to ensure there is no degradation in performance. In nearly every installation the performance bottleneck and largest proportion of time taken during the request-response cycle is due to the search platform. Tuning of the search platform and infrastructure, for example horizontal scaling is recommended in large scale deployments with concurrent users.
+
+## Is there a process to optimize performance?
+
+The performance of a given application tends to be more bound by the search infrastructure. Appkit is normally only approximately 5-10% of the overall request lifecycle with the majority of the time being spent on IO within the search engine.
+
+Appkit is a stateless system, so we advocate building out the application as per user requirements and then load testing that to expected loads x 3. Performance will vary more by features selected and infrastructure/network performance, but due to Appkit’s stateless nature you can add as many instances as required.

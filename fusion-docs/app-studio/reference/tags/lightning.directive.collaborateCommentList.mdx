@@ -1,0 +1,53 @@
+---
+title: "collaborate:comment-list"
+permalink: "1124"
+---
+
+## Description
+
+Comment list component for displaying a list of comments.
+
+If used within a result you will need to add the following workflow
+processor to your platform in order to get the comments that have been
+made on this result.
+
+```yaml
+workflow:
+    twigkit.social.processor.AddCommentFactsProcessor
+```
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:comment-list
+       target="{string}"
+       platform="{object}"
+       [collection="{string}"]
+       [topic="{number}"]
+       [format="{string}"]
+       [show="{number}"]
+       [show-more="{number}"]
+       [empty-text="{string}"]
+       [avatars="{string}"]>
+</collaborate:comment-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | The ID of the document that should be commented on. |
+| platform | **object** | The platform Object |
+| collection  *(optional)* | **string** | If set, only display comments restricted to the given collection. |
+| topic  *(optional)* | **number** | If set, only display comments restricted to the given type. |
+| format  *(optional)* | **string** | How to format the date (formats supported: https://docs.angularjs.org/api/ng/filter/date and 'relative’which outputs the relative date (e.g. 2 hours ago)). Default: relative |
+| show  *(optional)* | **number** | How many comments should be displayed initially (default:2). |
+| show-more  *(optional)* | **number** | How many more comments should be added to the list each time the user clicks 'Show more' (default: 4). |
+| empty-text  *(optional)* | **string** | Message to display when there are no comments to show (default: ""). |
+| avatars  *(optional)* | **string** | Whether to display avatars next to each comment (default: "true"). |

@@ -1,0 +1,67 @@
+---
+title: "Salesforce V1"
+description: "Connector Configuration Reference"
+permalink: "48"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+Use the [Salesforce REST API](https://developer.salesforce.com/page/REST_API)
+to extract data from a Salesforce repository via a Salesforce Connected App.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+This service has an
+[authentication procedure](https://developer.salesforce.com/docs/atlas.en-us.api_rest.meta/api_rest/intro_understanding_web_server_oauth_flow.htm)
+and
+[API usage limits](https://help.salesforce.com/HTViewSolution?id=000003706).
+
+<Note>
+You need to have the Consumer Key and Consumer Secret of the Salesforce Connected App, which must be created by a Salesforce administrator for the account. Instructions on how to do this follow the datasource configuration details.
+</Note>
+
+
+
+There are two details to be aware of with SOQL queries. If no results are returned, try adding the `id` field to the `SELECT`. Special characters like `%` require escape sequences. For example, `%25example%25`.
+
+## Security Trimming
+
+When you enable security trimming for a Salesforce connector, the system uses the Fusion username and tries finding the identical ID in Salesforce. If it finds this ID, then it uses the permissions given to that ID in Salesforce and applies a filter to the search query. If the ID is not found then it applies a filter to block all documents from being shown.
+
+The security trimming feature assumes that the Fusion username is the same as Salesforce alias. When retrieving data from Salesforce, the connector retrieves the user Id based on the Fusion username (Salesforce alias) via the query:
+
+```sql
+     Select Id from User WHERE alias={username}
+
+```
+
+If it is not found, then the connector will create a security filter to deny access to all documents.
+
+If you are logged into the Fusion UI or send a request to the REST API with username "admin", the Salesforce connector uses that as the value of property "salesforce_username". Therefore, in Fusion, you must have accounts which reflect the Salesforce accounts.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-salesforce.mdx";
+
+<SchemaParamFields schema={schema}/>
+

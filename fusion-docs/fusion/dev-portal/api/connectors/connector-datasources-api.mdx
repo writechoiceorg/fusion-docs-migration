@@ -1,0 +1,167 @@
+---
+title: "Connector Datasources API"
+description: "Fusion Connectors APIs"
+permalink: "353"
+---
+
+Use the Connector Datasources API to create and configure datasources and examine or clear items and tables from the [crawl database](https://support.lucidworks.com/hc/en-us/articles/360049671493-What-is-Fusion-CrawlDB-and-what-can-it-be-used-for-).
+
+For more information, [view the API specification.](?open-api=true)
+
+See [Connectors](/fusion-connectors/2/index) and [Indexing your Data](/fusion/5.9/155/indexing-your-data) for related information.
+
+## Working with the crawl database
+
+Some connectors use a crawl database to track documents found during prior crawls. This information is used to take appropriate action in the index for documents that are new, modified, or removed. The `/api/connectors/configs/DATASOURCE_ID/db` endpoints allow [dropping tables](#drop-tables-from-a-crawldb) or [clearing the database](#delete-items-from-a-crawldb).
+
+All V2 connectors support the crawl database as well as some V1 connectors, such as the [Lucid.fs](/fusion-connectors/75/lucid-fs-connector-framework) connector. The [Lucid.anda](/fusion-connectors/57/lucid-anda-connector-framework) connector also uses a crawl database, but it is not the same database as the Lucid.fs connector and does not have a REST API or other interface to access it.
+
+### Drop tables from a crawlDB
+
+The output from a DELETE request to `/api/connectors/configs/DATASOURCE_ID/db/<table>` will be empty. When dropping the database, note that no documents will be removed from the index. However, the crawl database will be empty, so on the next datasource run, all documents will be treated as though they were never seen by the connectors.
+
+When dropping tables, be aware that the `items` table does not delete documents from the index, but instead changes the database so database considers them new documents. When dropping other tables, such as the `errors` table, it will merely clear out old error messages.
+
+### Delete items from a crawlDB
+
+A DELETE request to `/api/connectors/configs/DATASOURCE_ID/db` removes the information *from the Crawl Database only.* Note that this does not affect the Solr Index.
+
+## Examples
+
+Get datasources assigned to the "demo" collection:
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/connectors/configs?collection=demo
+```
+
+RESPONSE
+
+```json
+[ {
+  "id" : "database",
+  "created" : "2014-05-04T19:47:22.867Z",
+  "modified" : "2014-05-04T19:47:22.867Z",
+  "connector" : "lucid.jdbc",
+  "type" : "jdbc",
+  "description" : null,
+  "pipeline" : "conn_solr",
+  "properties" : {
+    "db" : null,
+    "commit_on_finish" : true,
+    "verify_access" : true,
+    "sql_select_statement" : "select CONTENTID as id from CONTENT;",
+    "debug" : false,
+    "collection" : "demo",
+    "password" : "password",
+    "url" : "jdbc:postgresql://FUSION_HOST:5432/db",
+    "nested_queries" : null,
+    "clean_in_full_import_mode" : true,
+    "username" : "user",
+    "delta_sql_query" : null,
+    "commit_within" : 900000,
+    "primary_key" : null,
+    "driver" : "org.postgresql.Driver",
+    "max_docs" : -1
+  }
+} ]
+```
+
+Create a datasource to index Solr-formatted XML files:
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{
+  "id":"SolrXML",
+  "connector":"lucid.solrxml",
+  "type":"solrxml",
+  "properties":{
+    "path":"/Applications/solr-4.10.2/example/exampledocs", "generate_unique_key":false, "collection":"MyCollection"
+  }
+}' https://FUSION_HOST:FUSION_PORT/api/connectors/configs
+```
+
+RESPONSE
+
+```json
+{
+  "id" : "SolrXML",
+  "created" : "2015-05-18T15:47:51.199Z",
+  "modified" : "2015-05-18T15:47:51.199Z",
+  "connector" : "lucid.solrxml",
+  "type" : "solrxml",
+  "properties" : {
+    "commit_on_finish" : true,
+    "verify_access" : true,
+    "generate_unique_key" : false,
+    "collection" : "MyCollection",
+    "include_datasource_metadata" : true,
+    "include_paths" : [ ".*\\.xml" ],
+    "initial_mapping" : {
+      "id" : "a35c9ff3-dbb6-434b-af40-597722c2986a",
+      "skip" : false,
+      "label" : "field-mapping",
+      "type" : "field-mapping"
+    },
+    "path" : "/Applications/apache-repos/solr-4.10.2/example/exampledocs",
+    "exclude_paths" : [ ],
+    "url" : "file:/Applications/apache-repos/solr-4.10.2/example/exampledocs/",
+    "max_docs" : -1
+  }
+}
+```
+
+Change the `max_docs` value for the above datasource:
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-type: application/json' -d '{
+  "id":"SolrXML",
+  "connector":"lucid.solrxml",
+  "type":"solrxml",
+  "properties":{
+    "path":"/Applications/solr-4.10.2/example/exampledocs",
+    "max_docs":10
+  }
+}' https://FUSION_HOST:FUSION_PORT/api/connectors/configs/SolrXML
+```
+
+RESPONSE
+
+```
+true
+```
+
+Delete the datasource named 'database':
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X DELETE https://FUSION_HOST:FUSION_PORT/api/connectors/configs/database
+```
+
+RESPONSE
+
+If successful, no response.
+
+Clear a datasource
+
+You can use both of these APIs in order to fully clear the data:
+
+REQUEST
+
+```bash
+curl -X POST 'http://FUSION_HOST:FUSION_PORT/api/solr/COLLECTION_NAME/update?commit=true' -H 'Content-Type: application/json' --data-binary '{"delete":{"query":"_lw_data_source_s:DATASOURCENAME"}}'
+
+`curl -X DELETE -u USERNAME:PASSWORD 'http://FUSION_HOST:FUSION_PORT/api/connectors/configs/DATASOURCENAME/db' `
+```
+
+The first clears the data from the datasource but does not clear the crawlDB. So if you attempt to index the same document set again, indexing will skip the documents because they are still in the crawl DB. If you send the command to delete the crawlDB afterward, you can then reload the docs.
+
+<Danger>
+When using the POST method with the `/configs` endpoint, the `validateOnly=true` element only tests if the configuration is valid. It does *not* automatically save the datasource.
+</Danger>
+

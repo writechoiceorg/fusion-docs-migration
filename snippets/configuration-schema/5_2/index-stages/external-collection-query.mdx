@@ -1,0 +1,78 @@
+export const schema = {
+  "type": "object",
+  "title": "External collection query",
+  "description": "Adds fields to the document from external Fusion collection.",
+  "required": [
+    "pluginStageType",
+    "queryPipeline",
+    "collection"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "pluginStageType": {
+      "type": "string",
+      "title": "Plugin Stage Type",
+      "description": "Plugin Stage Type",
+      "default": "external-query",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "fromField": {
+      "type": "string",
+      "title": "From ID field",
+      "description": "From ID field to use for look up."
+    },
+    "externalFields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "toField": {
+      "type": "string",
+      "title": "To ID field",
+      "description": "To ID field to use for look up."
+    },
+    "queryPipeline": {
+      "type": "string",
+      "title": "Query pipeline",
+      "description": "Name of query pipeline."
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection",
+      "description": "Name of external collection."
+    }
+  },
+  "category": "Custom",
+  "categoryPriority": 2,
+  "unsafe": false
+}

@@ -1,0 +1,10 @@
+---
+title: "Space for Log Files"
+permalink: "3132"
+---
+
+## How much space should you allow for Appkit logs?
+
+Less than 50 MB for Appkit logs should be more than sufficient in production, after you reduce the log levels to INFO in `logback.xml`.
+
+However this is entirely configurable. You can set up rolling daily logs, only holding back the last X. See the [Logback documentation for more information](http://logback.qos.ch/manual/appenders.html).

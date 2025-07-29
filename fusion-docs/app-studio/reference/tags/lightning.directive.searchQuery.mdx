@@ -1,0 +1,106 @@
+---
+title: "search:query"
+permalink: "1115"
+---
+
+## Description
+
+The query directive constructs a query string and stores it in a scoped
+variable, [Query Filter’s](/app-studio/4.0/1070/query-filter) can be
+added to add or remove filters from the query. You can also use the
+[Query Custom Tag](/app-studio/4.2/1113/query-custom) to add custom
+parameters to the query.
+
+## Usage
+
+as element:
+
+```xml
+<search:query
+       var="{string}"
+       parameters="{string}"
+       [from="{string}"]
+       [query="{string}"]
+       [modified-query="{string}"]
+       [type="{string}"]
+       [results-per-page="{string}"]
+       [max-results="{string}"]
+       [page="{string}"]
+       [facets="{string}"]
+       [fields="{string}"]
+       [sorts="{string}"]
+       [view="{string}"]
+       [filters="{string}"]
+       [collection="{string}"]
+       [custom="{string}"]>
+</search:query>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var | **string** | The variable to assign the query to |
+| parameters | **string** | The URL parameters to query with. |
+| from  *(optional)* | **string** | Name of a previously defined query to extend |
+| query  *(optional)* | **string** | Set the search query value. |
+| modified-query  *(optional)* | **string** | Specify an alternative query which will be submitted to the search engine in place of the query parameter supplied by the user (but can include user submitted parameter). To the user it will appear as the query parameter had been used, but the modifiedQuery will be submitted to the search engine. |
+| type  *(optional)* | **string** | Specifies how to interpret multiple query terms. Takes one of three values: any (boolean OR the terms), all (boolean OR/AND the terms), or adv (interpret using search platform-specific advanced query language). |
+| results-per-page  *(optional)* | **string** | The number of results to display per page. |
+| max-results  *(optional)* | **string** | The maximum number of results to evaluate. Defaults to -1 which means no upper limit. |
+| page  *(optional)* | **string** | Set the page of results to display. Default value is 1 |
+| facets  *(optional)* | **string** | Specifies which facets to evaluate and return. |
+| fields  *(optional)* | **string** | A comma-separated list of fields which should be returned in the Response. |
+| sorts  *(optional)* | **string** | Specifies fields and order for sorting. Sort order is specified by one of two characters: + for ascending and - for descending. To sort ascending by the field price, the sort would be specified as sorts="+price". |
+| view  *(optional)* | **string** | Set which search engine view to use. Behaviour will vary by installation. |
+| filters  *(optional)* | **string** | Specifies filters to apply, specified as an ampersand (&) separated String |
+| collection  *(optional)* | **string** | Specifies the collection you want to use. |
+| custom  *(optional)* | **string** | Specifies custom parameters to apply, specified as an ampersand (&) separated String |
+
+## Example
+
+#### Source
+
+```xml
+<search:query var="query" filters='zipcode["75216"]["75216"],bar["foo"]["foo"]' max-results="1">
+    <query:filter field="foo" value="bar"></query:filter>
+    <query:custom name="foo" value="bar"></query:custom>
+</search:query>
+<search:query var="copyQuery" from="query"></search:query>
+
+<div ng-if="query != null">
+    <code>Original - {{query | setQueryParameter:'q':'foo'}}</code>
+</div>
+<code>Copy - {{copyQuery}}</code>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+        }]);
+
+angular
+.module('lightning')
+.filter('setQueryParameter', setQueryParameter);
+
+setQueryParameter.$inject = ['$timeout'];
+
+function setQueryParameter($timeout) {
+        return function (query, parameter, value) {
+                if (query && parameter && value) {
+                    query[parameter] = value;
+                    return query;
+                } else {
+                    return query
+                }
+        };
+    }
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchQuery.png)</Frame>

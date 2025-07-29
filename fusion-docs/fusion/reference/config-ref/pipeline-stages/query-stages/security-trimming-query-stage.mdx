@@ -1,0 +1,59 @@
+---
+title: "Security Trimming Stage"
+permalink: "272"
+---
+
+<Tip>
+**Important**
+
+
+This stage is deprecated in Fusion 5.9.0. The [Graph Security Trimming stage](/fusion/5.9/zdzlfu/graph-security-trimming-stage), introduced in Fusion 5.6.0, uses a single filter query for all data sources instead of one filter query per data source. [Migrate your query pipeline stage](/how-to/s66hyj/migrate-to-graph-security-trimming-in-fusion-5-8-or-later) to the graph security trimming stage.
+</Tip>
+
+The Security Trimming query pipeline stage restricts query results according to the user ID. While indexing the content, the Fusion connectors service stores security ACL metadata associated with the crawled items and indexes them as fields. The Security Trimming stage matches this information against the ID of the user running the search query.
+
+This stage supports [asynchronous processing](/fusion/5.9/173/query-pipelines#async).
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

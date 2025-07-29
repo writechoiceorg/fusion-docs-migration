@@ -1,0 +1,51 @@
+---
+title: "SAML Configuration"
+permalink: "3165"
+---
+
+We have a method of configuring SAML authentication with a simplified process. SAML is still a complex standard and so a lot of the relevant information from the previous SAML instructions is still included here.
+
+Appkit provides an extension for SAML based authentication. SAML is a recognized standard for authentication with many providers and implementations available.
+
+<Note>
+To learn how to configure SAML based authentication, see the [how-to article](/how-to/3019/saml-configuration).
+</Note>
+
+Typically SAML provides Single-Sign-On (SSO) between services that can be accessed using the same identity. This might, for example, be services provided by different government departments, or different sites in a company’s intranet.
+
+An entity that provides the back-end system determining a user’s access and credentials is known as the **identity provider (IdP)**. The individual web resources that a user might want to access are referred to as **service providers (SP)**.
+
+Generally one IdP provides the SSO login form and numerous SPs that can all be used after the user has logged into the IdP’s login form. However, federated configurations are also common where either single or multiple login forms can enable authentication against multiple IdPs. In this case, there will often be some 'middleware' that mediates the login requests.
+
+## Additional configuration
+
+If additional customizations to the configuration are needed, [download the default spring-security.xml file for SAML](/assets/appkit-misc/4.2/spring-security-saml.xml). This adds all the required filters for the SAML extension to function, but it will need customising for the security configuration the application is to authenticate against.
+
+### Additional parameters
+
+Some additional parameters can be used in `saml.conf` to change the behavior of the SAML module:
+
+- `metadata-display`: set to 'metadataDisplayFilter' and you will be able to download an SP metadata XML file at `http://your-twigkit-host/your-twigkit-app/saml/metadata`. Thid id useful for debugging, but should be removed for production deployments because it exposes information about the authentication protocol.
+
+- `saml-keystore-file`: location of the keystore file to use for checking trust and identity of the IdP and SP security certificates
+
+- `key-alias`: the alias of a key in the keystore to use as the default SP security key
+
+- `key-password`: password for the keystore and the key defined under using 'key-alias' (must match)
+
+- `max-authentication-age`: a TTL for the authentication in seconds, useful if the authentication expires at the IdP end prior to the default which is 7200 seconds.
+
+- `response-skew`: a time window in seconds to accept initial SAML responses from the IdP. This is useful if the IdP server and application server are on different timezones.  
+    Default: 60 seconds
+
+### Configure for a load balancer
+
+When using a load balancer or reverse-proxy in front of an App Studio web app, you must [download a modified spring-security.xml file](/assets/appkit-misc/4.2/spring-security-saml-lb.xml). You can then add these additional attributes to `saml.conf` with the respective connection values for your load balancer:
+
+- `server-scheme`: The load balancer’s communication protocol (for example, http)
+
+- `server-name`: The load balancer’s host name (for example, search.twigkit.com)
+
+- `server-port`: The load balancer’s port number
+
+- `entity-base-url`: A full URL for the load balancer (for example, http://search.twigkit.com)

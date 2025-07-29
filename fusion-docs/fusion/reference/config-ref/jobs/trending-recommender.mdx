@@ -1,0 +1,26 @@
+---
+title: "Trending Recommender Jobs"
+permalink: "yihzwd"
+---
+
+The Trending Recommender job analyzes signals to measure customer engagement over time. Use this job to identify spikes in popularity for specific items or queries, then display those items to your users or analyze the trends for business purposes. You can configure any time window, such as daily, weekly, or monthly.
+
+|  |  |
+| --- | --- |
+| **Input** | [signals](/fusion/5.9/585/built-in-sql-aggregation-jobs) (the `COLLECTION_NAME_signals` collection by default) |
+| **Output** | Trending items or queries |
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: | [[**5**](#note5)] | ✅ | ✅ | ✅ |  | ✅ |  |  |
+
+**5** Required when identifying trending queries instead of trending items.
+
+For detailed steps to configure this job, see [Identify Trending Documents or Products](/how-to/8860/identify-trending-documents-or-projects).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/trending-recommender.mdx";
+
+<SchemaParamFields schema={schema}/>

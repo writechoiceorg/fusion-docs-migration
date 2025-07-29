@@ -1,0 +1,46 @@
+---
+title: "Recommend Items for Item Stage"
+permalink: "251"
+---
+
+The Recommend Items for Item query pipeline stage uses signals about users' item choices to recommend related items based on a specific item. Relationships between items can be based on different criteria, such as click patterns, people who bought this also bought that, percentage match of document tags, and so on.
+
+Given an item ID, this stage performs a secondary query to the `_items_for_item_recommendations` collection to find related items, then retrieves those items from the main collection.
+
+This pipeline stage uses items-for-item recommendations that have been precomputed by an [ALS Recommender](/fusion-ai/4.2/561/als-recommender-jobs).
+
+See also [Items-for-item Recommendations](/fusion-ai/4.2/476/items-for-item-recommendations) to learn how to configure this recommender type and fetch recommendations.
+
+## Prerequisites
+
+**Enable recommendations:**
+
+Before creating a Recommend Items for Item stage, enable recommendations.
+
+* **Fusion UI** – In Collections Manager, click the settings icon next to the collection > **Enable Recommendations**.
+* **Using the REST API** – Use this command to enable recommendations:
+
+  ```bash
+  curl -u admin:<password> -X PUT \http://<hostname>:<port>/api/v1/collections/<collection-name>/features/recommendations -H 'content-type: application/json' -d '{"enabled":true}'
+  ```
+
+<Note>
+When you enable recommendations, Fusion creates a query pipeline that already contains this stage, and that is configured for boosting. The query pipeline is `COLLECTION_NAME_items_for_item_recommendations`.
+</Note>
+
+## Using live signals
+
+The **Estimate Recent Results** option uses live signals to augment items-for-user recommendations with real-time recommendations.
+
+When this is enabled, Fusion first looks up items (from previously-generated recommendations) that are similar to the new items. If there are none then it looks up similar users (who also interacted with that item) to get a list of recommendations based on the new items. It then combines those new recommendations with the job-based recommendations already generated for that user (if any), to generate a final list of recommendations.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/recommend-items-for-item.mdx";
+
+<SchemaParamFields schema={schema}/>

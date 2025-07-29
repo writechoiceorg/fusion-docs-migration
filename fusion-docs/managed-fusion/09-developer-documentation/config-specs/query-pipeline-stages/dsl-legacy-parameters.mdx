@@ -1,0 +1,34 @@
+---
+title: "DSL to Legacy Parameters"
+description: "Query pipeline stage configuration specifications"
+permalink: "y2mquo"
+---
+
+[Managed Fusion Domain Specific Language (DSL)](/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl) provides expected search results as a JSON response in a way that reduces search query complexity for the user. Not all query pipeline stages support DSL. The **DSL to Legacy Parameters** query pipeline stage allows you to convert your DSL requests to the legacy (Solr) format.
+
+If you add an incompatible stage while in DSL mode, Managed Fusion flags the stage:
+
+<Frame>![Incompatible DSL stage](/assets/images/5.3/dsl-incompatible-stage.png)</Frame>
+
+The **DSL to Legacy Parameters** stage extends DSL support to incompatible stages. Click **Add a Stage** and select the **DSL to Legacy Parameters** stage. This stage converts the DSL request to legacy parameters for *subsequent* stages, so it can be processed by the incompatible stage.
+
+<Note>
+**Important**
+
+The **DSL to Legacy Parameters** stage must come before incompatible stages for the conversion to succeed.
+</Note>
+
+<Frame>![DSL to Legacy Parameters stage](/assets/images/5.3/dsl-incompatible-stage-convert.png)</Frame>
+
+See the [DSL documentation](/managed-fusion/5.9/0bvcy0/domain-specific-language-dsl) for more details on what you can do with DSL.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/dsl-to-legacy-parameters.mdx";
+
+<SchemaParamFields schema={schema}/>

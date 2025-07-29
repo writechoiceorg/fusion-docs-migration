@@ -1,0 +1,514 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you have training data and you want to train a random forest model to classify text into groups.",
+  "properties": {
+    "analyzerConfig": {
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "hints": [
+        "advanced",
+        "code/json",
+        "lengthy"
+      ],
+      "title": "Lucene Analyzer Schema",
+      "type": "string"
+    },
+    "autoBalanceClasses": {
+      "default": true,
+      "description": "Ensure that all classes of training data have the same size",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Auto-balance training classes",
+      "type": "boolean"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "minLength": 1,
+      "title": "Data format",
+      "type": "string"
+    },
+    "evaluationMetricType": {
+      "default": "none",
+      "description": "Optimize hyperparameter search over one of [binary, multiclass, regression] metrics, or 'none'",
+      "enum": [
+        "binary",
+        "multiclass",
+        "regression",
+        "none"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Evaluation Metric Type",
+      "type": "string"
+    },
+    "fieldToVectorize": {
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1,
+      "title": "Field to Vectorize",
+      "type": "string"
+    },
+    "gridSearch": {
+      "default": false,
+      "description": "Perform grid search to optimize hyperparameters",
+      "title": "Grid Search with Cross Validation",
+      "type": "boolean"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "makeOtherClass": {
+      "default": true,
+      "description": "Create a label class 'Other' which contains all examples not in a class large enough to train on",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Make 'Other' Class",
+      "type": "boolean"
+    },
+    "maxBins": {
+      "default": 32,
+      "description": "Max number of bins for discretizing continuous features. Must be >=2 and >= number of categories for any categorical feature.",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "maximum": 128,
+      "minimum": 0,
+      "title": "Maximum number of discretizing bins",
+      "type": "integer"
+    },
+    "maxDF": {
+      "default": 1,
+      "description": "To be kept, terms must occur in no more than this number of documents (if > 1.0), or no more than this fraction of documents (if <= 1.0)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Max Term Document Frequency",
+      "type": "number"
+    },
+    "maxDepth": {
+      "default": 5,
+      "description": "Maximum depth of the tree (>= 0).  E.g., depth 0 means 1 leaf node; depth 1 means 1 internal node + 2 leaf nodes.",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "maximum": 20,
+      "minimum": 1,
+      "title": "Maximum tree depth",
+      "type": "integer"
+    },
+    "minDF": {
+      "default": 0,
+      "description": "To be kept, terms must occur in at least this number of documents (if > 1.0), or at least this fraction of documents (if <= 1.0)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Minimum Term Document Frequency",
+      "type": "number"
+    },
+    "minSparkPartitions": {
+      "default": 200,
+      "description": "Minimum number of Spark partitions for training job.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Minimum Number of Spark Partitions",
+      "type": "integer"
+    },
+    "minTrainingSamplesPerClass": {
+      "default": 100,
+      "description": "Ensure that all classes of training data have at least this many examples",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Minimum Labeled Class Size",
+      "type": "integer"
+    },
+    "modelId": {
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Model ID",
+      "type": "string"
+    },
+    "norm": {
+      "default": 2,
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Vector normalization",
+      "type": "integer"
+    },
+    "numTrees": {
+      "default": 20,
+      "description": "Number of trees to train (>= 1)",
+      "exclusiveMaximum": false,
+      "exclusiveMinimum": false,
+      "maximum": 1000,
+      "minimum": 1,
+      "title": "Number of trees",
+      "type": "integer"
+    },
+    "otherClassName": {
+      "default": "Other",
+      "description": "Label class name for the catch-all 'Other' class",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "'Other' class name",
+      "type": "string"
+    },
+    "outputCollection": {
+      "description": "Solr Collection to store model-labeled data to",
+      "title": "Output Collection",
+      "type": "string"
+    },
+    "overwriteExistingModel": {
+      "default": true,
+      "description": "If a model exists in the model store, overwrite when this job runs",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Overwrite existing model",
+      "type": "boolean"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "predictedLabelField": {
+      "default": "labelPredictedByFusionModel",
+      "description": "Solr field which will contain labels when classifier is applied to documents",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Predicted Label Field",
+      "type": "string"
+    },
+    "randomSeed": {
+      "default": 1234,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "serializeAsMleap": {
+      "default": true,
+      "description": "Serialize the output model as Mleap Bundle",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Serialize as Mleap Bundle",
+      "type": "boolean"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "stopwordsList": {
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "List of stopwords",
+      "type": "array"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to use when loading training data if using Solr, Spark SQL expression for all other data sources",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Training data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "trainingLabelField": {
+      "description": "Solr field containing labels for training instances (should be single-valued strings)",
+      "title": "Label Field",
+      "type": "string"
+    },
+    "type": {
+      "default": "random_forests_classifier",
+      "enum": [
+        "random_forests_classifier"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "w2vDimension": {
+      "default": 0,
+      "description": "Word-vector dimensionality to represent text (choose > 0 to use)",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0,
+      "title": "Word2Vec Dimension",
+      "type": "integer"
+    },
+    "w2vMaxIter": {
+      "default": 1,
+      "description": "Maximum number of iterations of the word2vec training",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Max Word2Vec Iterations",
+      "type": "integer"
+    },
+    "w2vMaxSentenceLength": {
+      "default": 1000,
+      "description": "Sets the maximum length (in words) of each sentence in the input data. Any sentence longer than this threshold will be divided into chunks of up to `maxSentenceLength` size.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 3,
+      "title": "Max Word2Vec Sentence Length",
+      "type": "integer"
+    },
+    "w2vStepSize": {
+      "default": 0.025,
+      "description": "Training parameter for word2vec convergence (change at your own peril)",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0.005,
+      "title": "Word2Vec Step Size",
+      "type": "number"
+    },
+    "w2vWindowSize": {
+      "default": 5,
+      "description": "The window size (context words from [-window, window]) for word2vec",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 3,
+      "title": "Word2Vec Window Size",
+      "type": "integer"
+    },
+    "withIdf": {
+      "default": true,
+      "description": "Weight vector components based on inverse document frequency",
+      "hints": [
+        "advanced"
+      ],
+      "title": "IDF Weighting",
+      "type": "boolean"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "predictedLabelField",
+        "trainingLabelField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "w2vDimension",
+        "w2vWindowSize",
+        "w2vMaxIter",
+        "w2vMaxSentenceLength",
+        "w2vStepSize",
+        "withIdf",
+        "maxDF",
+        "minDF",
+        "norm",
+        "autoBalanceClasses",
+        "evaluationMetricType",
+        "minTrainingSamplesPerClass",
+        "otherClassName",
+        "makeOtherClass",
+        "gridSearch",
+        "maxBins",
+        "numTrees",
+        "maxDepth"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "trainingLabelField",
+    "type"
+  ],
+  "title": "Random Forest Classifier Training",
+  "type": "object"
+}

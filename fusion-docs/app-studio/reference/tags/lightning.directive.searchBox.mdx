@@ -1,0 +1,78 @@
+---
+title: "search:box"
+permalink: "1058"
+---
+
+## Description
+
+The Header Search directive
+
+## Usage
+
+as element:
+
+```xml
+<search:box
+       response="{Object}"
+       [query="{string}"]
+       [action="{string}"]
+       [placeholder="{string}"]
+       [button-label="{string}"]
+       [delay="{number}"]
+       [platform="{string}"]
+       [size="{string}"]
+       [social="{boolean}"]
+       [search-within-checkbox="{boolean}"]
+       [search-within-label="{boolean}"]
+       [search-within-default-value="{boolean}"]
+       [min-length="{number}"]
+       [pre-search="{function}"]>
+</search:box>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **Object** | A response object |
+| query  *(optional)* | **string** | The name of the query object |
+| action  *(optional)* | **string** | Page the search should take place on, results will not change automatically when an action is set. |
+| placeholder  *(optional)* | **string** | Placeholder for the search box |
+| button-label  *(optional)* | **string** | Label of the button. |
+| delay  *(optional)* | **number** | The delay before searching, not applicable if an action is set or instant search is being used. If a delay is greater then 1, results will load instantly on the page. |
+| platform  *(optional)* | **string** | The platform to use for social search |
+| size  *(optional)* | **string** | The size of the search box (tiny, small, large, huge, massive) |
+| social  *(optional)* | **boolean** | Whether to enable the social features of the search header. Defaults to false. If you require a customized [Bookmark List Tag](/app-studio/4.2/1069/collaborate-bookmark-list) or [Saved Query List Tag](/app-studio/4.2/1073/collaborate-saved-query-list) you can add your own inside the search box tag and these will be used instead. |
+| search-within-checkbox  *(optional)* | **boolean** | Show the 'search within' option as a checkbox. This enables the query to retain the filters already applied when checked. If not checked the search is reset when a query is entered and the form submitted. If you want this functionality but don’t want a checkbox showing, you can use this attribute set to be false, and set `search-within-default-value` to be true - this uses a hidden field instead of a checkbox. |
+| search-within-label  *(optional)* | **boolean** | The label for the 'search within' checkbox. |
+| search-within-default-value  *(optional)* | **boolean** | Whether to enable 'search within' by default. The default is option is 'false'. |
+| min-length  *(optional)* | **number** | The number of characters before a search is performed, only applicable for instant-results, query suggestions, advanced search or when a delay without an action. Default: 2 |
+| pre-search  *(optional)* | **function** | Callback function that will be called on a search submit before the request is sent, receives the current URL state as a parameter that can be updated. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_search">Search</h3>
+<search:box></search:box>
+<hr />
+<h3 id="example_search-with-social">Search with Social</h3>
+<search:box social="true"></search:box>
+<hr />
+<h3 id="example_search-with-search-within">Search with Search Within</h3>
+<search:box search-within-checkbox="true"></search:box>
+<hr />
+<h3 id="example_search-with-search-within-with-label">Search with Search Within with Label</h3>
+<search:box search-within-checkbox="true" search-within-label="Keep filters?"></search:box>
+<hr />
+<h3 id="example_search-with-search-within-with-label-and-default">Search with Search Within with Label and Default</h3>
+<search:box search-within-checkbox="true" search-within-label="Keep filters?" search-within-default-value="true"></search:box>
+<hr />
+<h3 id="example_search-with-search-within-with-no-checkbox">Search with Search Within with no checkbox</h3>
+<search:box search-within-checkbox="false" search-within-default-value="true"></search:box>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchBox.png)</Frame>

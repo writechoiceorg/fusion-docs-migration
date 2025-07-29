@@ -1,0 +1,34 @@
+---
+title: "NLP Annotator Query Stage"
+permalink: "274"
+---
+
+Like the [NLP Annotator index stage](/fusion-ai/4.2/540/nlp-annotator-index-stage), the NLP Annotator query stage can be included in a query pipeline to perform [Natural Language Processing](/fusion-ai/4.2/451/natural-language-processing) tasks.
+
+Example of how to use NLP Annotator Query stage:
+
+1. Add the NLP Annotator query stage to the query pipeline.
+2. Configure the query pipeline stage:
+
+   1. Specify the model to use (fill the box with `model id` in the blob store).
+   2. Specify the input parameter, label pattern and target parameter fields:
+
+      <Frame>![query pipeline configuration](/assets/images/4.2/nlp_annotator_query_config.png)</Frame>
+
+      * input parameter field: the Fusion query parameter text, normally `q` since we want to annotate the raw query string to understand the intent.
+      * label pattern: regex pattern that matches the NER/POS labels: for example, `PER.` will match extracted name entities with label `PERSON`, while `NN.` will match tagged nouns.
+      * target parameter field: the outcome extraction/tagging, and.
+
+         For the query stage, the result is set to be put in a new query parameter field:
+         <Frame>![NLP annotator query result](/assets/images/4.2/nlp_annotator_query_result.png)</Frame>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/nlp-annotator.mdx";
+
+<SchemaParamFields schema={schema}/>

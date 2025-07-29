@@ -1,0 +1,137 @@
+---
+title: "Connector Datasources API"
+permalink: "353"
+---
+
+The connector datasources API is used to create and configure datasources, look at the crawl database, or clear items and tables from the crawl database.
+
+See [Connectors](/fusion-connectors/2/index) and [Datasources](/fusion-server/4.2/163/index) for related information.
+
+## Working with the crawl database
+
+Some of the connectors use a crawl database to track documents that have been seen by prior crawls and are able to use this information to understand which documents are new or have been updated or removed and take appropriate action in the index. The `/api/connectors/datasources/{id}/db` endpoints allow looking into the crawl database and dropping tables or clearing the database.
+
+The connectors that support the crawl database are currently `lucid.fs` and `lucid.solrxml`. The `lucid.anda` connector also uses a crawl database, but it is not the same database, and does not have a REST API or other interface to access it.
+
+### Examining a crawlDB
+
+The output from a GET request to `/api/connectors/datasources/<id>/db` will include several sections detailing the database structure:
+
+* `counters`: The `counters` section reports the document counts of database activities, such as table inserts.
+* `ops`: The `ops` section reports on database operations that have occurred, such as initiating tables, retrieving items, processing items and table drops.
+* `tables`: The `tables` section lists the tables in the database with a count of the number of items in each table. Inspecting the items is described in the next section.
+
+### Drop tables from a crawlDB
+
+The output from a DELETE request to `/api/connectors/datasources/<id>/db/<table>` will be empty. When dropping the database, note that no documents will be removed from the index. However, the crawl database will be empty, so on the next datasource run, all documents will be treated as though they were never seen by the connectors.
+
+When dropping tables, be aware that the `items` table does not delete documents from the index, but instead changes the database so database considers them new documents. When dropping other tables, such as the `errors` table, it will merely clear out old error messages.
+
+### Get or delete items from a crawlDB
+
+A GET request to `/api/connectors/datasources/<id>/db/items/<item>` retrieves information about an item or items.
+
+A DELETE request removes the information *from the Crawl Database only.* Note that this does not affect the Solr Index.
+
+## Examples
+
+Get datasources assigned to the "demo" collection:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/connectors/datasources?collection=demo
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "id" : "database",
+  "created" : "2014-05-04T19:47:22.867Z",
+  "modified" : "2014-05-04T19:47:22.867Z",
+  "connector" : "lucid.jdbc",
+  "type" : "jdbc",
+  "description" : null,
+  "pipeline" : "conn_solr",
+  "properties" : {
+    "db" : null,
+    "commit_on_finish" : true,
+    "verify_access" : true,
+    "sql_select_statement" : "select CONTENTID as id from CONTENT;",
+    "debug" : false,
+    "collection" : "demo",
+    "password" : "password",
+    "url" : "jdbc:postgresql://FUSION_HOST:5432/db",
+    "nested_queries" : null,
+    "clean_in_full_import_mode" : true,
+    "username" : "user",
+    "delta_sql_query" : null,
+    "commit_within" : 900000,
+    "primary_key" : null,
+    "driver" : "org.postgresql.Driver",
+    "max_docs" : -1
+  }
+} ]
+```
+
+Create a datasource to index a file in the Blob Store using the MyApp pipeline, parser, and collection for an app called "MyApp"
+
+**REQUEST**
+
+```bash
+  curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{
+    "id": "fileupload-example",
+    "connector": "lucidworks.file-upload",
+    "type": "fileupload",
+    "description": "Metadata and abstracts for a selection of documents in arXiv.org",
+    "pipeline": "MyApp",
+    "parserId": "MyApp",
+    "properties": {
+        "collection": "MyApp",
+        "fileId": "quickstart/arxiv-fusion.json",
+        "mediaType": "application/octet-stream"
+    }
+}' https://FUSION_HOST:8764/api/apps/MyApp/connectors/datasources
+```
+
+**RESPONSE**
+
+```json
+    {
+        "parserId": "MyApp",
+        "created": "2021-06-29T20:00:57.534Z",
+        "coreProperties": {},
+        "modified": "2021-06-29T20:00:57.534Z",
+        "id": "fileupload-example",
+        "type": "fileupload",
+        "properties": {
+            "collection" : "MyApp",
+    "fileId" : "IMDB Dataset.csv",
+    "mediaType" : "application/octet-stream"
+      }
+    }
+```
+
+Clear a datasource
+
+You can use both of these APIs in order to fully clear the data:
+
+**REQUEST**
+
+```bash
+curl -X POST 'http://localhost:8764/api/apollo/solr/COLLECTION_NAME/update?commit=true' -H 'Content-Type: application/json' --data-binary '{"delete":{"query":"_lw_data_source_s:DATASOURCENAME"}}'
+
+`curl -X DELETE -u USERNAME:PASSWORD 'http://localhost:8764/api/apollo/connectors/datasources/DATASOURCENAME/db' `
+```
+
+The first clears the data from the datasource but does not clear the crawlDB. So if you attempt to index the same document set again, indexing will skip the documents because they are still in the crawl DB. If you send the command to delete the crawlDB afterward, you can then reload the docs.
+
+<Warning>
+The `validate=true` element in the create datasource command only validates the datasource. It does *not* automatically save the datasource. An example using this element is:
+
+`[https://FUSION_HOST:8764/api/apps/]APP_NAME/datasources?validate=true`
+
+The `POST /datasources` section of the API specification allows you to set the `validate` element for testing and use.
+</Warning>
+

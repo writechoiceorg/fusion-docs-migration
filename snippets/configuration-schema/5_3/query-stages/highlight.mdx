@@ -1,0 +1,77 @@
+export const schema = {
+  "type": "object",
+  "title": "Highlight",
+  "description": "Configure highlighting. Note: The options configured here are used as the default settings if the request does not already have these values set. The stage will not overwrite incoming highlighting options, with the exception of the fields configuration, which is additive.",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "fields": {
+      "type": "array",
+      "title": "Highlight Fields",
+      "description": "Specifies the fields to use for faceting. These fields are always added to any incoming highlight request.",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "count": {
+      "type": "integer",
+      "title": "Snippet count",
+      "description": "Number of snippets to generate for each configured field.",
+      "default": 1
+    },
+    "length": {
+      "type": "integer",
+      "title": "Snippet length",
+      "description": "Length of snippets to attempt to generate.",
+      "default": 100
+    },
+    "pre": {
+      "type": "string",
+      "title": "Match start tag",
+      "description": "The characters immediately preceeding a highlighted value. Usually an opening HTML tag.",
+      "default": "<em>"
+    },
+    "post": {
+      "type": "string",
+      "title": "Match end tag",
+      "description": "The characters immediately following a highlighted value. Usually a closing HTML tag.",
+      "default": "</em>"
+    },
+    "defaultHighlight": {
+      "type": "boolean",
+      "title": "Default highlight",
+      "description": "If no highlight match is found in the field, return the leading part of the field instead. Can be used to avoid returning large fields if you need to display something even when there is no highlight match.",
+      "default": false
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 8,
+  "unsafe": false
+}

@@ -1,0 +1,159 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Creates collections with specified parameters in Milvus",
+  "properties": {
+    "allow-recreate": {
+      "description": "If checked and there are existing collections with the same names, they will be dropped and recreated. If unchecked, the exception is thrown in such situation.",
+      "title": "Override collections",
+      "type": "boolean"
+    },
+    "collections-list": {
+      "description": "List of the collections that should be created with corresponding params.",
+      "items": {
+        "properties": {
+          "dimension": {
+            "description": "Dimension size of vectors to be stored in the collection",
+            "title": "Dimension",
+            "type": "integer"
+          },
+          "indexFileSize": {
+            "default": 1024,
+            "description": "Files larger than this will trigger index building for raw data files",
+            "exclusiveMinimum": false,
+            "minimum": 1,
+            "title": "Index File Size",
+            "type": "integer"
+          },
+          "metric": {
+            "default": "Inner Product",
+            "description": "Metric which should be used for vectors similarity",
+            "enum": [
+              "Euclidean",
+              "Inner Product",
+              "Hamming",
+              "Jaccard",
+              "Tanimoto",
+              "Substructure",
+              "Superstructure"
+            ],
+            "title": "Metric",
+            "type": "string"
+          },
+          "milvusCollectionName": {
+            "description": "Name of the collection to create in Milvus",
+            "pattern": "^[a-zA-Z0-9_]+$",
+            "title": "Collection Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "milvusCollectionName",
+          "dimension",
+          "indexFileSize",
+          "metric"
+        ],
+        "type": "object"
+      },
+      "title": "Collections",
+      "type": "array"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "type": {
+      "default": "argo-milvus-create-collections",
+      "enum": [
+        "argo-milvus-create-collections"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "type"
+  ],
+  "title": "Create Collections in Milvus",
+  "type": "object"
+}

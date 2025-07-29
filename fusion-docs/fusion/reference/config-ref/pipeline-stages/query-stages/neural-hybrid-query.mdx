@@ -1,0 +1,83 @@
+---
+title: "Neural Hybrid Query Stage"
+permalink: "mb500k"
+---
+
+The Neural Hybrid Query stage performs hybrid lexical-semantic search that combines BM25-type lexical search with KNN dense vector search via Solr.
+
+Not sure which hybrid query stage is right for you? Read about the
+[differences between the hybrid query stages](/fusion/5.9/fhx9nk/differences-between-hybrid-query-stages).
+
+<Note>
+This feature is only available in Fusion 5.9.10 and later versions of Fusion 5.9.
+</Note>
+
+## Prefiltering
+
+Prefiltering is a technique that can improve performance and accuracy by filtering documents before applying the algorithm, reducing the number of documents that need to be processed.
+This is especially effective with the KNN algorithm.
+
+Prefiltering is disabled by default.
+To enable it, uncheck **Block pre-filtering** in this stage.
+
+When prefiltering is enabled, you can configure the filters using one or both of these methods:
+
+* Security filters
+
+  You can use security filters as prefilters by placing the [Graph Security Trimming Stage](/fusion/5.9/zdzlfu/graph-security-trimming-stage) *after* this one in the pipeline.
+  Then Fusion uses the security trimming filter as a prefilter.
+* JavaScript
+
+  When prefiltering is enabled, this stage adds a `preFilterKey` object to the Javascript `ctx` object.
+  You can place a [Javascript stage](/fusion/5.9/283/java-script-query-stage) after this one and use it to access the `preFilterKey` object, as in this example:
+
+  ```js
+  if(ctx.hasProperty("preFilterKey")) {
+    var preFilter = ctx.getProperty("preFilterKey");
+    preFilter.addFilter(filterQuery)
+  }
+  ```
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/neural-hybrid-query.mdx";
+
+<SchemaParamFields schema={schema}/>

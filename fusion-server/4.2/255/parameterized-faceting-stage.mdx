@@ -1,0 +1,17 @@
+---
+title: "Parameterized Faceting Stage"
+permalink: "255"
+---
+
+The Parameterized Faceting query pipeline stage determines the most frequent value for a given field, then uses that value to look up stored parameters and auto-select the most appropriate facet for a query.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/parameterized-faceting.mdx";
+
+<SchemaParamFields schema={schema}/>

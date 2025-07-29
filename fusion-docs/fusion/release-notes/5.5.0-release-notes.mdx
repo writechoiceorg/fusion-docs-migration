@@ -1,0 +1,106 @@
+---
+title: "Fusion 5.5.0"
+permalink: "301ya6"
+---
+
+**Release date:** March 18, 2022
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | 8.11.1 |
+| **ZooKeeper** | 3.6.2 |
+| **Spark** | 2.4.5 |
+| **Kubernetes** | GKE, AKS, EKS 1.22  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.22  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## Improvements
+
+* Fusion 5.5 adds support for Rancher. See [Deploy Fusion 5 on Other Kubernetes Platforms](/how-to/750/deploy-fusion-5-on-other-kubernetes-platforms) for more information.
+
+## Security
+
+* Fusion services have been updated with the following versions:
+
+    + Log4J service version 2.17.1
+    + Tika 1.28
+    + nginix 1.21.5-alpine
+
+## Bug Fixes
+
+### Fusion
+
+* Fixed an issue that caused problems with access and configuration of kubelet options.
+
+* Fixed an issue that potentially allowed Read roles to create/delete Solr operations.
+
+* Fixed an issue that prevented the logout option from being displayed if the "logout" button was clicked while creating or modifying an OIDC/SAML [security realm](/fusion/5.5/127/security-realms).
+
+* Fixed an issue that caused the cursor to bypass the password field when using the tab button at login.
+
+* Fixed an issue that prevented [App Insights](/fusion/5.5/456/app-insights) from creating custom reports.
+
+* Fixed an issue that caused invalid language codes to be displayed in the [**Detect Language**](/fusion/5.5/210/detect-language-index-stage) index pipeline stage.
+
+* Fixed an issue that caused the [job list](/how-to/853/schedule-a-job) to disappear after saving the job settings.
+
+### Predictive Merchandiser
+
+* Fixed an issue that caused console and facet elements to stretch too far across the screen.
+
+* Fixed an issue that made the **+ Add** button unavailable to associate products with [zero results](/how-to/832/merchandising-zero-results).
+
+* Fixed an issue that caused results to disregard sorting attempts.
+
+* Fixed an issue that caused [**facet**](/how-to/zclrwv/use-hierarchical-facets) values with child facets to not expand when clicked.
+
+* Fixed an issue that prevented facet ordering from working as expected.
+
+* Fixed an issue that caused analytics chart cards to remain blank.
+
+* Fixed an issue that caused facets with no values to produce an error in query logs.
+
+### Connectors
+
+* Various Connector improvements and bug fixes.
+
+## Removals
+
+<Warning>
+The following features and functionalities are removed in Fusion 5.5.0:
+</Warning>
+
+* The SharePoint V1 connector.
+
+* Usage of the `with` keyword syntax in the [JavaScript Query Stage](/fusion/5.5/283/java-script-query-stage) has been removed, as usage can result in random errors. See [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/with) for more information.
+
+* Child facet values have been removed from [Hierarchical Facet](/fusion/5.5/vfdq6w/hierarchical-facets) breadcrumbs in favor of displaying facet values, to avoid confusion.
+
+## Known Issues
+
+<Tip>
+**Important**
+
+Users may experience one of the following issues with Predictive Merchandiser within the Fusion 5.5 release:
+</Tip>
+
+* The [**Rules**](/fusion/5.5/491/rules-editor#rules) screen no longer loads in Predictive Merchandiser when importing an app after building from Fusion 5.5.
+* After importing an app running an earlier version of Solr, newly-created facets do not appear in the [facet zone](/how-to/874/use-predictive-merchandiser-facets#add-a-facet).
+
+    Workaround Steps:
+
+    In the `solrconfig.xml`, all cache classes that use `solr.LRUCache` must be changed to `solr.search.CaffeineCache`. See [Cache Implementations](https://solr.apache.org/guide/8_7/query-settings-in-solrconfig.html#cache-implementations) for more information.
+* Changing the **Sort by** order of results is not reflected in the results list.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

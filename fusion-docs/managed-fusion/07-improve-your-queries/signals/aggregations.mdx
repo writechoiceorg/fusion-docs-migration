@@ -1,0 +1,112 @@
+---
+title: "Aggregations"
+permalink: "itm6oz"
+---
+
+Aggregations compile [Signals](/managed-fusion/5.9/ws4w2h/signals) into a set of summaries that you can use to enrich the search experience through [recommendations and boosting](/managed-fusion/5.9/l0emoh/methods).
+
+Managed Fusion uses SQL to produce these signal summaries. SQL is a familiar query language that is well suited to data aggregation. Managed Fusion’s SQL Aggregation Engine is powerful and flexible.
+
+You can perform a SQL aggregation on a signals collection for a datasource (or on some other collection) through the Managed Fusion UI or using a Managed Fusion API. For more information, see [Create and Run a SQL Aggregation Job](/how-to/rs7278/create-and-run-a-sql-aggregation-job).
+
+<Frame>![signals boosting](/assets/images/common/signals-boosting.png)</Frame>
+
+## Rollup SQL
+
+Most aggregation jobs run with the catch-up flag set to `true`, which means that Managed Fusion only computes aggregations for new signals that have arrived *since* the last time the job was run, and *up to and including* `ref_time`, which is usually the run time of the current job. Managed Fusion must "roll up" the newly aggregated rows into any existing aggregated rows in the `COLLECTION_NAME_aggr` collection.
+
+If you are using SQL to do aggregation but have not supplied a custom rollup SQL, Managed Fusion generates a basic rollup SQL script automatically by consulting the schema of the aggregated documents. If your rollup logic is complex, you can provide a custom rollup SQL script.
+
+Managed Fusion’s basic rollup is a SUM of numeric types (long, integer, double, and float) and can support `time_decay` for the weight field. If you are not using `time_decay` in your weight calculations, then the weight is calculated using `weight_d`. If you do include `time_decay` with your weight calculations, then the weight is calculated as a combination of timestamp, `halfLife`, `ref_time`, and `weight_d`.
+
+The basic rollup SQL can be grouped by `DOC_ID`, `QUERY`, `USER_ID`, and `FILTERS`. The last GROUP BY field in the main SQL is used so it will ultimately group any newly aggregated rows with existing rows.
+
+This is an example of a rollup query:
+
+```sql
+SELECT query_s, doc_id_s, time_decay(1, timestamp_tdt, "30 days", ref_time, weight_d)
+AS weight_d , SUM(aggr_count_i) AS aggr_count_i
+FROM `commerce_signals_aggr` GROUP BY query_s, doc_id_s
+```
+
+## Time-range filtering
+
+When Managed Fusion rolls up new data into an aggregation, time-range filtering lets you ensure that Managed Fusion does not aggregate the same data over and over again.
+
+Managed Fusion applies a time-range filter when loading rows from Solr, before executing the aggregation SQL statement. In other words, the SQL executes over rows that are already filtered by the appropriate time range for the aggregation job.
+
+Notice that the examples [Perform the Default SQL Aggregation](/managed-fusion/5.9/cq0ccq/sql-aggregation-examples#perform-the-default-sql-aggregation) and [Use Different Weights Based on Signal Types](/managed-fusion/5.9/cq0ccq/sql-aggregation-examples#use-different-weights-based-on-signal-types) do not include a time-range filter. Managed Fusion computes the time-range filter automatically as follows:
+
+* If the catch-up flag is set to `true`, Managed Fusion uses the last time the job was run and `ref_time` (which you typically set to the current time). This is equivalent to the WHERE clause `WHERE time > last_run_time AND time <= ref_time`.
+* If the catch-up flag is not set to `true`, Managed Fusion uses a filter with `ref_time` (and no start time). This is equivalent to the WHERE clause `WHERE time <= ref_time`.
+
+The built-in time logic should suffice for most use cases. You can set the time range filter to **TO** and specify a WHERE clause filter to achieve more complex time based filtering.
+
+Time range in Managed Fusion is equivalent to [date range in Solr](https://solr.apache.org/guide/working-with-dates.html).
+
+Example values for time range:
+
+* `[* TO NOW]` - all past events
+* `[2000-11-01 TO 2020-12-01]` – specify by exact date
+* `[* TO 2020-12-01]` – from the first data point to the end of the day specified
+* `[2000 TO 2020]` - from the start of a year to the end of another year
+
+## SQL functions
+
+A Spark SQL aggregation query can use any of the functions provided by [Spark SQL](https://spark.apache.org/docs/latest/api/sql/index.html). Use these functions to perform complex aggregations or to enrich aggregation results.
+
+## Weight aggregated values using a time-decay function
+
+Managed Fusion automatically uses a default `time_decay` function to compute and apply appropriate weights to aggregation groups during aggregation. Larger weights are assigned to more recent events. This reduces the impact of less-recent signals. Intuitively, older signals (and the user behavior they represent) should count less than newer signals.
+
+If the default `time_decay` function does not meet your needs, you can modify it. The `time_decay` function is implemented as a [User Defined Aggregate Function](https://spark.apache.org/docs/latest/sql-ref-functions-udf-aggregate.html) (UDAF).
+
+Full function signature
+
+This is the UDAF signature of the default `time_decay` function:
+
+```
+time_decay(count: Long,
+           timestamp: Timestamp,
+           halfLife: String (calendar interval),
+           ref_time: Timestamp,
+           weight_d: Double)
+```
+
+Abbreviated function signature and default values
+
+Your function call can also use this abbreviated UDAF signature, that omits `halfLife`, `ref_time`, and `weight_d`:
+
+```
+time_decay(count: Long,
+           timestamp: Timestamp)
+```
+
+In this case, Managed Fusion fills in these values for the omitted parameters: `halfLife` = `30 days`, `ref_time` = `NOW`, and `weight_d` = `0.1`.
+
+<Note>
+Users indexing custom signals with `weight_d` specified should ensure that the "default" value matches the `weight_d` parameter used by `time_decay`.
+</Note>
+
+Matching legacy aggregation
+
+To match the results of legacy aggregation, either use the abbreviated function signature or supply these values for the mentioned parameters: `halfLife` = `30 days`, `ref_time` = `NOW`, and `weight_d` = `0.1`.
+
+Parameters
+
+Parameters for `time_decay` are:
+
+| Parameter | Description |
+| --- | --- |
+| `count` | Number of occurrences of the event. Typically, the increment is 1, though there is no reason it could not be some other number. In most cases, you pass `count_i`, which is the event count field used by Managed Fusion signals, as shown in the [SQL aggregation examples](/managed-fusion/5.9/cq0ccq/sql-aggregation-examples). |
+| `timestamp` | The date-and-time for the event. This time is the beginning of the interval used to calculate the time-based decay factor. |
+| `halfLife` | Half life for the exponential decay that Managed Fusion calculates. It is some interval of time, for example, `30 days` or `10 minutes`. The `interval` prefix is optional. Managed Fusion treats `30 days` as equivalent to `interval 30 days`. |
+| `ref_time` | Reference time used to compute the age of an event for the time-decay computation. It is usually the time when the aggregation job runs (`NOW`). The reference time is not present in the data; Managed Fusion determines the reference time at runtime. Managed Fusion automatically attaches a `ref_time` column to every row before executing the SQL. |
+| `weight_d` | Initial weight for an event if not specified in the signal, prior to the decay calculation. This value is typically not present in the signal data. If some signals *do* contain `weight_d` values, this parameter should be set to match the "neutral" value there.  You can use SQL to compute `weight_d`; see [Use Different Weights Based on Signal Types](/managed-fusion/5.9/cq0ccq/sql-aggregation-examples#use-different-weights-based-on-signal-types) for an example. |
+
+Sample calculation of the age of a signal
+
+This is an example of how Managed Fusion calculates the age of a signal:
+
+Imagine a SQL aggregation job that runs at `Tuesday, July 11, 2017 1:00:00 AM (1499734800)`.
+For a signal with the timestamp `Tuesday, July 11, 2017 12:00:00 AM (1499731200)`, the age of the signal in relation to the reference time is 1 hour.

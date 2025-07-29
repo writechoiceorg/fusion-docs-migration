@@ -1,0 +1,41 @@
+---
+title: "Page Metadata"
+permalink: "d9o8jb"
+---
+
+Metadata describe the content of a web page. The Page Metadata feature in Predictive Merchandiser lets you configure metadata using [templates](/how-to/3293/use-predictive-merchandiser-templates).
+
+When you trigger Predictive Merchandiser templates, the page metadata is added to the response payload, which looks like this:
+
+```json
+{
+    "triggered": {
+        "app": "test",
+        "id": "5d9cd572-5928-4a16-a9de-5bab582538a2",
+        "name": "example-template",
+...
+            "name": "Metadata of example-template",
+...
+            "inTemplates": ["5d9cd572-5928-4a16-a9de-5bab582538a2"],
+            "pageMetadata": [{
+                "metadata": {
+                    "pageTitle": "Example page title",
+                    "pageDescription": "Example description",
+                    "pageKeywords": ["example"],
+                    "imageUrl": null,
+                    "pageUrl": null
+                }
+        }],
+        "neverPublished": false,
+        "staging": true,
+        "published": false
+    }
+}
+
+```
+
+The Page Metadata feature also allows you to filter your facets by existing tags, clone the values of your facets, or select filters/facets with predefined metadata. If you have a large number of pages, you can also search your domain by **Path URL** using the **URL Search**.
+
+<Frame>![Predictive Merchandiser Page Metadata](/assets/images/predictive-merchandiser/pm-page-metadata.png)</Frame>
+
+For more information, see [How to Use Page Metadata](/how-to/7n0ysd/use-page-metadata).

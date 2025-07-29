@@ -1,0 +1,48 @@
+---
+title: "TogglePanesService"
+permalink: "1213"
+---
+
+## Description
+
+Twigkit service for the toggle pane(s) components
+
+## Methods
+
+### onTogglePane(panesId, callback, scope)
+
+When the togglePanes event is fired the callback function will be called.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| panesId | string | The id of the toggle panes component where the callback is being fired. |
+| callback | Function | The function to be called when the cancel event is fired. |
+| scope | Object | The `$scope` object for unsubscribing to the event when the scope is destroyed. |
+
+#### Example
+
+```
+TogglePanesService.onTogglePane('MyPaneId', function (paneNumber) {
+  console.log('Pane has been toggled to ' + paneNumber);
+}, $scope);
+TogglePanesService.togglePane('MyPaneId', 1);
+
+
+```
+### togglePane(panesId, paneNumber)
+
+Fires an event to change the currently selected pane for a specific set of panes.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| panesId | string | The id of the toggle panes component to fire the toggle against. |
+| paneNumber | number | The number of the pane to switch to (0 based so the first pane is 0, the second pane is 1 etc.). |
+
+#### Example
+
+```js
+TogglePanesService.togglePane('MyPaneId', 1);```

@@ -1,0 +1,628 @@
+---
+title: "JavaScript"
+description: "Index pipeline stage configuration specifications"
+permalink: "x6nldc"
+---
+
+The JavaScript Index stage allows you to write a custom processing logic using JavaScript to manipulate Pipeline Documents and the index pipeline context, which will be compiled by the JDK into Java bytecode that is executed by the Managed Fusion pipeline. The first time that the pipeline is run, Managed Fusion compiles the JavaScript program into Java bytecode using the JDK’s JavaScript engine.
+
+<Warning>
+**Caution**
+
+Users who can create or modify code obtain access to the broader Managed Fusion environment. This access can be used to create intentional or unintentional damage to Managed Fusion.
+</Warning>
+
+For a JavaScript Index stage, the JavaScript code must return either:
+
+* A single document or array of documents
+
+  *or*
+* The null value or an empty array.
+
+  In the latter case, no further processing is possible, which means that the document will not be indexed or updated. For example, Solr commits have a `null` value and are dropped. For information about how to skip stages when Solr commits are sent, see the [Skip JavaScript stages during Solr commits](#skip-javascript-stages-during-solr-commits).
+
+## JavaScript Index Stage global variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+In a JavaScript stage, Fusion uses the Nashorn engine, which implements [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) version 5.1. Although Nashorn does include some ECMAScript 6 (ES6) features such as `let`, `const`, or template strings, Fusion does not enable ES6 by default, so ES6 support is not guaranteed.
+
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Index stage, the container is a Managed Fusion index pipeline.
+The following global pipeline variables are available:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `doc` | [PipelineDocument](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/common/pipeline/pipelinedocument) | The contents of each document submitted to the pipeline. |
+| `ctx` | [Context](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/context) | A map that stores miscellaneous data created by each stage of the pipeline.  <Note> **Important** Use the `ctx` variable instead of the deprecated `_context` global variable. </Note> The `ctx` variable is used to:  * Pass data from one stage to another * Store data that needs to be passed from one custom stage to a later custom stage  The data can differ between stages:  * If the previous stage changes the data * Based on the configuration of each stage <Note> If the data is modified in one stage, it may cause a later stage to function irregularly. </Note> |
+| `collection` | String | The name of the Managed Fusion collection being indexed or queried. |
+| `solrServer` | [BufferingsolrServer](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/component/bufferingsolrserver) | The Solr server instance that manages the pipeline’s default Managed Fusion collection. All indexing and query requests are done by calls to methods on this object. See [solrClient](https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html) for details |
+| `solrServerFactory` | [solrClusterComponent](/fusion-pipeline-javadocs/5.9/com/lucidworks/cloud/api/solr/solrclustercomponent) | The SolrCluster server used for lookups by collection name which returns a Solr server instance for that collection. For example:  `var productsSolr = solrServerFactory.getSolrServer("products");`. |
+
+### Syntax variants
+
+JavaScript stages can be written using ***legacy syntax*** or ***function syntax***. The key difference between these syntax variants is how the "global variables" are used. While using legacy syntax, these variables are used as global variables. With function syntax, however, these variables are passed as function parameters.
+
+#### Legacy syntax
+
+Legacy syntax is used to perform very simple tasks.
+
+```js
+//do some work...
+return doc;
+```
+
+#### Function syntax
+
+Function syntax is used for moderately complex tasks.
+
+```js
+function (doc) {
+    // do some work ...
+    return doc;
+}
+```
+
+<Note>
+**Important**
+*Function syntax* is used for the examples in this document.
+</Note>
+
+#### Advanced syntax
+
+Advanced syntax is used for complex tasks and when multiple functions are needed.
+
+```js
+/* globals Java, logger*/
+(function () {
+    "use strict";
+
+    return function main(doc , ctx, collection, solrServer, solrServerFactory) {
+    // do some work ...
+
+        return doc;
+    };
+})();
+```
+
+### JavaScript use
+
+The JavaScript in a JavaScript Index stage must return either a single document or an array of documents.
+This can be accomplished by either:
+
+* a series of statements where the final statement evaluates to a document or array of documents
+* a function that returns a document or an array of documents
+
+All pipeline variables referenced in the body of the JavaScript function are passed in as arguments to the function. For example, in order to access the PipelineDocument in global variable 'doc',
+the JavaScript function is written as follows:
+
+```js
+function doWork(doc) {
+    // do some work ...
+    return doc;
+}
+```
+
+The allowed set of function declarations are:
+
+```js
+function doWork(doc) {  ... return doc; }
+function doWork(doc, ctx) {  ... return doc; }
+function doWork(doc, ctx, collection) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer, SolrClusterComponent) {  ... return doc; }
+```
+
+The order of these arguments is according to the (estimated) frequency of use.
+The assumption is that most processing only requires access to the document object itself,
+and the next-most frequent type of processing requires only the document and read-only access of some context parameters.
+If you need to reference the solrServerFactory global variable, you must use the 5-arg function declaration.
+
+In order to use other functions in your JavaScript program, you can define and use them, as long as the final statement
+in the program returns a document or documents.
+
+### Global variable `logger`
+
+The logs are output to the indexing service logs for custom index stages. Access the Log Viewer and filter on this service to view the information.
+
+## The JavaScript engine used by Managed Fusion
+
+The
+default
+JavaScript engine used by Managed Fusion is the Nashorn engine from Oracle.
+See [The Nashorn Java API](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/nashorn/api.html) for details.
+
+In Managed Fusion 5.9.6 and up, you also have the option to select OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>
+
+### Creating and accessing Java types
+
+The following information is taken from
+Oracle’s JavaScript programming guide section 3,
+[Using Java From Scripts](https://docs.oracle.com/javase/8/docs/technotes/guides/scripting/prog_guide/javascript.html#A1147207).
+
+To create script objects that access and reference Java types from Javascript use the `Java.type()` function:
+
+```js
+var ArrayList = Java.type("java.util.ArrayList");
+var a = new ArrayList;
+```
+
+## Examples
+
+### Set the condition field
+
+The JavaScript Index stage lets you define a condition to trigger the script body.
+
+<Frame>![Javascript Form](/assets/images/5.1/javascript-form.png)</Frame>
+
+The condition field is evaluated as either true or false. Do not precede with `if` or include `;` at the end of the line.
+
+* Works:
+
+  + `doc.hasField("title_s") === true`
+  + `doc.hasField("title_s") === false`
+  + `doc.hasField("title_s")`
+* Does not work:
+
+  + `if doc.hasField("title_s") === false;`
+
+### Add a field to a document
+
+```js
+function (doc) {
+  doc.addField('some-new-field', 'some-value');
+  return doc;
+}
+```
+
+### Join two fields
+
+The following example conjoins separate latitude and longitude fields into a single geo-coordinate field,
+whose field name follows Solr schema conventions and ends in "_p".
+It also removes the original latitude and longitude fields from the document.
+
+```js
+function(doc) {
+  var value = "";
+  if (doc.hasField("myGeo_Lat") && doc.hasField("myGeo_Long"))   {
+    value = doc.getFirstFieldValue("myGeo_Lat") + "," + doc.getFirstFieldValue("myGeo_Long");
+    doc.addField("myGeo_p", value);
+    doc.removeFields("myGeo_Lat");
+    doc.removeFields("myGeo_Long");
+    logger.debug("conjoined Lat, Long: " + value);
+  }
+  return doc;
+}
+```
+
+### Return an array of documents
+
+```js
+function (doc) {
+  var subjects = doc.getFieldValues("subjects");
+  var id = doc.getId();
+  var newDocs = [];
+  for (i = 0; i < subjects.size(); i++) {
+     var pd = new com.lucidworks.apollo.common.pipeline.PipelineDocument(id+'-'+i );
+     pd.addField('subject',  subjects.get(i));
+     newDocs.push( pd  );
+  }
+  return newDocs;
+}
+```
+
+### Parse a JSON-escaped string into a JSON object
+
+While it is simpler to use a JSON Parsing index stage, the following code example
+shows you how to parse a JSON-escaped string representation into a JSON object.
+
+This code parses a JSON object into an array of attributes,
+and then find the attribute "tags" which has as its value a list of strings.
+Each item in the list is added to a multi-valued document field named "tag_ss".
+
+```js
+function (doc, ctx) {
+  /**
+  * Returned body is a JSON string.  Example:
+  {
+  "telescope": "Hubble",
+  "location": "low earth orbit",
+  "primary_mirror_size": "2.4m"
+  "tags": ["launched 1990","repaired 1993","repaired 1997","repaired 1997","repaired 1999","repaired 2002","repaired 2009"]
+  }
+  */
+
+    for (var key in myData) {
+      var obj = myData[key];
+      if (obj == "tags") {
+        logger.debug("extracting tags from tag field {}", JSON.stringify(obj))
+        for (var i = 0; i < obj.length; i++) {
+          var tag = obj[i][0];
+          doc.addField("tag_ss", tag);
+        }
+      }
+    }
+
+    return doc;
+}
+
+```
+
+### Do a lookup on another Managed Fusion collection
+
+```js
+function doWork(doc, ctx, collection, solrServer, solrServerFactory) {
+    var sku = doc.getFirstFieldValue("sku");
+    if (!doc.hasField("mentions")) {
+        var mentions = ""
+        var productsSolr = solrServerFactory.getSolrServer("products");
+        if( productsSolr != null ){
+            var q = "sku:"+sku;
+            var query = new org.apache.solr.client.solrj.SolrQuery();
+            query.setRows(100);
+            query.setQuery(q);
+            var res = productsSolr.query(query);
+            mentions = res.getResults().size();
+            doc.addField("mentions",mentions);
+        }
+    }
+    return doc;
+}
+
+```
+
+### Reject a document
+
+If the function returns `null` or an empty array, it will not be indexed or updated into Managed Fusion.
+
+```js
+function doWork(doc) {
+ if (!doc.hasField("required_field")) {
+    return null;
+ }
+ return doc;
+}
+
+```
+
+### Drop a document by ID
+
+```js
+function(doc) {
+  var id = doc.getId();
+  if (id !== null) {
+    var pattern = "https://www.mydomain.com/links/contact/?";
+
+    // 0 means the pattern was found so drop the doc
+    return (id.indexOf(pattern) == 0) ? null : doc;
+  }
+
+  return doc;
+}
+
+```
+
+### Format Date to Solr Date
+
+```js
+// For example:
+// From: 26/Mar/2015:14:38:48 -0700
+// To:   2015-03-26T14:38:48Z  (Solr format)
+function(doc) {
+  if (doc.getId() !== null) {
+    var inboundPattern = "dd/MMM/yyyy':'HH:mm:ss Z";  // modify this to match the format of the inbound date
+    var solrDatePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'"; // leave this alone
+    var dateFieldName = "apachelogtime"; // change this to your date field name
+
+    var solrFormatter = new java.text.SimpleDateFormat(solrDatePattern);
+    var apacheParser = new java.text.SimpleDateFormat(inboundPattern);
+
+    var dateString = doc.getFirstFieldValue(dateFieldName);
+    logger.info("**** dateString: " + dateString);
+    var inboundDate = apacheParser.parse(dateString);
+    logger.info("**** inboundDate: " + inboundDate.toString());
+    var solrDate =  solrFormatter.format(inboundDate);
+    logger.info("**** solrDate: " + solrDate.toString());
+
+    doc.setField(dateFieldName, solrDate.toString());
+  }
+
+  return doc;
+}
+
+```
+
+### Replace whitespace and newlines
+
+```js
+function(doc) {
+  if (doc.getId() !== null) {
+    var fields = ["col1", "col2", "col3"];
+
+    for (i = 0; i < fields.length; i++ ) {
+      var field = fields[i];
+      var value = doc.getFirstFieldValue(field);
+      logger.info("BEFORE: Field " + field + ": *" + value + "*");
+
+      if (value != null) {
+        value = value.replace(/^\s+/, "");  // remove leading whitespace
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+        value = value.replace(/\s+$/, "");  // remove trailing whitespace
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+        value = value.replace(/\s+/g, " ");  // multiple whitespace to one space
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+
+        doc.setField(field, value);
+      }
+    }
+  }
+
+  return doc;
+}
+
+```
+
+### Split the values in a field
+
+```js
+//Split On a delimiter. In this case, a newline
+function(doc){
+  if (doc.getId() !== null) {
+    var fromField = "company2_ss";
+    var toField = "company2_ss";
+    var delimiter = "\n";
+
+    var oldList = doc.getFieldValues(fromField);
+
+    var values = [];
+
+    // parse the entries one at a time
+    doc.removeFields(toField); // clear out the target field
+    for (i = 0; i < oldList.size(); i++) {
+      values[i] = oldList.get(i);
+
+      // get the list of strings split by the delimiter
+      newList = values[i].split(delimiter);
+      for(j = 0; j < newList.length; j++ ){
+        doc.addField(toField, newList[j]);
+      }
+    }
+  }
+  return doc;
+}
+
+```
+
+### Prevent global variables in JavaScript
+
+#### Variable declared using the `var` keyword
+
+If a variable is declared using the `var` keyword, the JavaScript interpreter processes the value sequentially.
+
+In this example, the values for `var i = 0` are logged in order as `0`, `1`, `2`, `3`, `4`, etc.
+
+```js
+var queries = ["cat","the cat", "the cat in the hat","the cat in the hat is back"]
+for(var i = 0; i < queries.length; i++){
+  logger.info("query {} is '{}'",i,queries[i])
+}
+
+```
+
+#### Variable not declared using the `var` keyword
+
+If a variable is not declared using the `var` keyword, the JavaScript interpreter moves the declaration of variable and functions to the top of the declared (global) scope. Because Managed Fusion pipeline stages execute in a multi-threaded environment, these global (shared) variables make the stages not thread-safe.
+
+For more detailed information, see [Hoisting](https://developer.mozilla.org/en-US/docs/Glossary/Hoisting#:~:text=JavaScript%20Hoisting%20refers%20to%20the,defined%20in%20the%20ECMAScript%20specification).
+
+```js
+var queries = ["cat","the cat", "the cat in the hat","the cat in the hat is back"]
+for(i = 0; i < queries.length; i++){
+  logger.info("query {} is '{}'",i,queries[i])
+}
+
+```
+
+Issues and errors that may occur include:
+
+For multi-threaded environments, the value of `i` may not proceed sequentially from 0 to 4 as the loop is processed. Instead, values may be logged based on the execution state of the other pipeline requests. For example, `0`, `1`, `3`, `1`, `2`, etc., which logs the values as `"cat", "the cat", "the cat in the hat is back", "the cat", "the cat in the hat"`.
+
+However, if only one thread is incrementing the `i` variable, the values proceed sequentially (`0`, `1`, `2`, `3`, `4`, etc.)
+
+If the `queries` array varies in length from document to document, the loop may generate an `ArrayIndexOutOfBounds` exception for a Java array or an `undefined` error for a JavaScript array.
+
+Threads may not log all four queries.
+
+#### Setting the `"use strict"` directive
+
+Setting the `"use strict"` directive tells the JavaScript engine to require non-global declarations of all functions and variables.
+
+The following example demonstrates how to create a copy of a `PipelineDocument` and return both the original and the copy to the pipeline for processing.
+
+```js
+/* globals Java, logger*/ // This is an optional line that informs the syntax checker about known global objects. This avoids excessive flagging of what it perceives as errors.
+(function () { //Defines a top-level scope
+    "use strict"; // This directs the interpreter to require `var` for all variable declarations to help ensure thread safety. Any global scope variables generate compile errors.
+    /***
+    * NOTE:  All code within the outer scope, (everything from other than the `main` function returned by the `function` declared on line two) is only run when the JavaScript engine JIT-compiles the script.  Place comments, static declarations, functions, and initialization code here to improve readability and performance.
+    */
+    var PipelineDocument = Java.type('com.lucidworks.apollo.common.pipeline.PipelineDocument');
+    var ArrayList = Java.type("java.util.ArrayList")
+
+    /**
+    * Take a PipelineDocument like the one passed to this stage and clone it.  Then give it a new id.
+    */
+    function clonePipelineDoc(pipelineDoc, id) {
+      var clone = new PipelineDocument(pipelineDoc);
+      if (id) {
+        clone.setId(id);
+      }
+      logIfDebug("Cloned document with id '{}' and gave the clone id '{}'",pipelineDoc.getId(),id)
+      return clone;
+    };
+
+    var isDebug = false // This setting is optional and determines if log messages are turned off or on. It works in conjunction with the `logIfDebug` function.
+    function logIfDebug(m){if(isDebug && m)logger.info(m, Array.prototype.slice.call(arguments).slice(1));}
+
+    return function main(doc , ctx, collection, solrServer, solrServerFactory) {
+        //This returns the function to be called by Managed Fusion when the stage executes, and guarantees Managed Fusion will always call this function. When a stage does not use advanced syntax, but declares multiple top-level functions, Managed Fusion may not be able to determine which function to call. Duplicate doc and give it an ID that is the reverse of the original.
+        var doc2 = clonePipelineDoc(doc, doc.getId().split("").reverse().join(""))
+        var list = new ArrayList()
+        list.add(doc)
+        list.add(doc2)
+
+        //Return both docs to the downstream stages.
+        return listOfDocs;
+    };
+})();
+
+```
+
+## Additional resources
+
+* [JavaScript Index Pipeline Stage](/managed-fusion/5.9/x6nldc/java-script)
+* [Managed Fusion Pipeline Javadocs](/fusion-pipeline-javadocs/5.9/)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **JavaScript in Fusion** focuses on how to leverage JavaScript in Fusion to build powerful and responsive scripts at index and query time:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/javascript-in-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/javascript-in-fusion.jpg" alt="JavaScript in Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## JavaScript Index Stage global variables
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+In a JavaScript stage, Fusion uses the Nashorn engine, which implements [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript) version 5.1. Although Nashorn does include some ECMAScript 6 (ES6) features such as `let`, `const`, or template strings, Fusion does not enable ES6 by default, so ES6 support is not guaranteed.
+
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Index stage, the container is a Managed Fusion index pipeline.
+The following global pipeline variables are available:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `doc` | [PipelineDocument](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/common/pipeline/pipelinedocument) | The contents of each document submitted to the pipeline. |
+| `ctx` | [Context](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/context) | A map that stores miscellaneous data created by each stage of the pipeline.  <Note> **Important** Use the `ctx` variable instead of the deprecated `_context` global variable. </Note> The `ctx` variable is used to:  * Pass data from one stage to another * Store data that needs to be passed from one custom stage to a later custom stage  The data can differ between stages:  * If the previous stage changes the data * Based on the configuration of each stage <Note> If the data is modified in one stage, it may cause a later stage to function irregularly. </Note> |
+| `collection` | String | The name of the Managed Fusion collection being indexed or queried. |
+| `solrServer` | [BufferingsolrServer](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/component/bufferingsolrserver) | The Solr server instance that manages the pipeline’s default Managed Fusion collection. All indexing and query requests are done by calls to methods on this object. See [solrClient](https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html) for details |
+| `solrServerFactory` | [solrClusterComponent](/fusion-pipeline-javadocs/5.9/com/lucidworks/cloud/api/solr/solrclustercomponent) | The SolrCluster server used for lookups by collection name which returns a Solr server instance for that collection. For example:  `var productsSolr = solrServerFactory.getSolrServer("products");`. |
+
+### Syntax variants
+
+JavaScript stages can be written using ***legacy syntax*** or ***function syntax***. The key difference between these syntax variants is how the "global variables" are used. While using legacy syntax, these variables are used as global variables. With function syntax, however, these variables are passed as function parameters.
+
+#### Legacy syntax
+
+Legacy syntax is used to perform very simple tasks.
+
+```js
+//do some work...
+return doc;
+
+```
+
+#### Function syntax
+
+Function syntax is used for moderately complex tasks.
+
+```js
+function (doc) {
+    // do some work ...
+    return doc;
+}
+
+```
+
+<Note>
+**Important**
+*Function syntax* is used for the examples in this document.
+</Note>
+
+#### Advanced syntax
+
+Advanced syntax is used for complex tasks and when multiple functions are needed.
+
+```js
+/* globals Java, logger*/
+(function () {
+    "use strict";
+
+    return function main(doc , ctx, collection, solrServer, solrServerFactory) {
+    // do some work ...
+
+        return doc;
+    };
+})();
+
+```
+
+### JavaScript use
+
+The JavaScript in a JavaScript Index stage must return either a single document or an array of documents.
+This can be accomplished by either:
+
+* a series of statements where the final statement evaluates to a document or array of documents
+* a function that returns a document or an array of documents
+
+All pipeline variables referenced in the body of the JavaScript function are passed in as arguments to the function. For example, in order to access the PipelineDocument in global variable 'doc',
+the JavaScript function is written as follows:
+
+```js
+function doWork(doc) {
+    // do some work ...
+    return doc;
+}
+
+```
+
+The allowed set of function declarations are:
+
+```js
+function doWork(doc) {  ... return doc; }
+function doWork(doc, ctx) {  ... return doc; }
+function doWork(doc, ctx, collection) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer) {  ... return doc; }
+function doWork(doc, ctx, collection, solrServer, SolrClusterComponent) {  ... return doc; }
+
+```
+
+The order of these arguments is according to the (estimated) frequency of use.
+The assumption is that most processing only requires access to the document object itself,
+and the next-most frequent type of processing requires only the document and read-only access of some context parameters.
+If you need to reference the solrServerFactory global variable, you must use the 5-arg function declaration.
+
+In order to use other functions in your JavaScript program, you can define and use them, as long as the final statement
+in the program returns a document or documents.
+
+### Global variable `logger`
+
+The logs are output to the indexing service logs for custom index stages. Access the Log Viewer and filter on this service to view the information.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

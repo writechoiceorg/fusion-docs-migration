@@ -1,0 +1,66 @@
+---
+title: "Spark Administration in Kubernetes"
+permalink: "190"
+---
+
+In Fusion 5.x, Spark operates in native [Kubernetes mode](https://spark.apache.org/docs/latest/running-on-kubernetes.html), rather than the standalone mode used in Fusion 4.x. This topic describes Spark operations in Fusion 5.x.
+
+## Node Selectors
+
+You can control which nodes Spark executors are scheduled on using a Spark configuration property for a job:
+
+```
+spark.kubernetes.node.selector.<LABEL>=<LABEL_VALUE>
+```
+
+Use the `LABEL` specified for the node, and the name of the node as the `LABEL_VALUE`. For example, if a node is labeled with `fusion_node_type=spark_only`, schedule Spark executor pods to run on that node using:
+
+```
+spark.kubernetes.node.selector.fusion_node_type=spark_only
+```
+
+<Tip>
+In Fusion 5.5, Spark version 2.4.x does not support tolerations for Spark pods. As a result, Spark pods can’t be scheduled on any nodes with taints in Fusion 5.5.
+</Tip>
+
+## Cluster mode
+
+Fusion 5 ships with Spark and operates in "cluster mode" on top of Kubernetes. In cluster mode, each Spark driver runs in a separate pod, and resources can be managed per job. Each executor also runs in its own pod.
+
+## Spark config defaults
+
+The table below shows the default configurations for Spark. These settings are configured in the job-launcher config map, accessible using `kubectl get configmaps <release-name>-job-launcher`. Some of these settings are also configurable via Helm.
+
+Spark Resource Configurations
+
+
+| Spark Configuration | Default value | Helm Variable |
+| --- | --- | --- |
+| `spark.driver.memory` | 3g |  |
+| `spark.executor.instances` | 2 | `executorInstances` |
+| `spark.executor.memory` | 3g |  |
+| `spark.executor.cores` | 6 |  |
+| `spark.kubernetes.executor.request.cores` | 3 |  |
+| `spark.sql.caseSensitive` | true |  |
+
+Spark Kubernetes Configurations
+
+| Spark Configuration | Default value | Helm Variable |
+| --- | --- | --- |
+| `spark.kubernetes.container.image.pullPolicy` | Always | `image.imagePullPolicy` |
+| `spark.kubernetes.container.image.pullSecrets` |  | `image.imagePullSecrets` |
+| `spark.kubernetes.authenticate.driver.serviceAccountName` | \<name>-job-launcher-spark |  |
+| `spark.kubernetes.driver.container.image` | fusion-dev-docker.ci-artifactory.lucidworks.com | `image.repository` |
+| `spark.kubernetes.executor.container.image` | fusion-dev-docker.ci-artifactory.lucidworks.com | `image.repository` |
+
+### Spark operations how-tos
+
+These topics provide how-tos for Spark operations:
+
+* [Configure Spark Job Resource Allocation](/how-to/606/configure-spark-job-resource-allocation)
+* [Configure Spark Credentials in The Kubernetes Cluster](/how-to/704/configure-spark-jobs-to-access-cloud-storage)
+* [Get Logs for A Spark Job](/how-to/764/get-logs-for-a-spark-job)
+* [Clean Up Spark Driver Pods](/how-to/941/clean-up-spark-driver-pods)
+* [Install The Spark History Server](/how-to/681/install-the-spark-history-server)
+* [Configure The Spark History Server](/how-to/807/configure-the-spark-history-server)
+* [Access The Spark History Server](/how-to/718/access-the-spark-history-server)

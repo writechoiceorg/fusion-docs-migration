@@ -1,0 +1,43 @@
+---
+title: "Panel"
+permalink: "1044"
+---
+
+## Default
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/panel01.png)</Frame>
+
+```html
+<div styling="panel">
+    <h3 styling="title">Panel Header</h3>
+
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. A blanditiis commodi corporis, culpa ea eius error molestias necessitatibus numquam odit, officia possimus quae quasi quis quisquam quos rerum unde, voluptas.</p>
+    <br>
+
+    <div styling="footer">
+        <p>Panel footer</p>
+    </div>
+</div>
+```
+
+## Using a result
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/panel02.png)</Frame>
+
+```xml
+<search:result result="response | result:5">
+    <layout:grid>
+        <layout:block md="1-2">
+            <div styling="stretch-content">
+                <div styling="center aligned panel center-content">
+                    <search:field name="born_city" styling="title"></search:field>
+                    <search:field name="full_name" styling="description" value-element="h3"></search:field>
+                    <div styling="footer">
+                        <search:field name="motivation" styling="description"></search:field>
+                    </div>
+                </div>
+            </div>
+        </layout:block>
+    </layout:grid>
+</search:result>
+```

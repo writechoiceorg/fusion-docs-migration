@@ -1,0 +1,104 @@
+---
+title: "Business rules"
+description: "Overview"
+permalink: "03vd0y"
+---
+
+Business rules are manually-created formulas for rewriting queries. This is the most versatile strategy for creating custom query rewrites. It supports a variety of conditions and actions to address a wide range of use cases. When you need a very specific query rewrite, this is the best strategy.
+
+Business rules are applied in the [Apply Rules stage](/managed-fusion/5.9/yx85m4/apply-rules-stage) of the query pipeline.
+
+To learn how to use business rules in the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor), see [Use Business Rules in the Rules Editor](/how-to/rcmii7/use-business-rules-in-the-rules-editor).
+
+## Configuration options
+
+### General
+
+General configurations are used to characterize a rule, including its name, description, group, and more. They are also used to set a rule’s precedence, or priority over other rules.
+
+For complete details, see [General configurations](/managed-fusion/5.9/oitb8y/general-configurations).
+
+### Condition
+
+Conditions, or triggers, define the environment necessary for the rule action to fire. Any combination of conditions (date, field value, query, and query profile) can be defined for a rule.
+
+For complete details, see [Conditions](/managed-fusion/5.9/7bpslr/conditions).
+
+### Action
+
+Business rule actions define what actions are taken when a rule fires.
+
+For complete details, see [Actions](/managed-fusion/5.9/8eqepp/actions).
+
+## Custom Rule Actions
+
+Custom rule actions allow you to define a unique action to take when certain conditions are met. They involve three primary components: a query pipeline, a custom rule type, and a rule that is triggered by conditions defined by the user.
+
+For complete details, see [Custom Rule Actions](/managed-fusion/5.9/j1xtp7/custom-rule-actions). To learn use custom rule actions with the API, see [Create Custom Rule Actions with the API](/how-to/vjau3o/create-custom-rule-actions-with-the-api).
+
+## Query Elevation Component
+
+Managed Fusion supports the use of the Query Elevation Component (QEC) with boost lists and filter lists.
+
+For instructions about using the QEC, see [Use the Query Elevation Component](/how-to/a22nu9/use-the-query-elevation-component).
+
+## Additional details
+
+### Query pipeline stages for rules
+
+These stages are part of the [default query pipeline](/managed-fusion/5.9/8qf1w6/query-pipelines#default-query-pipelines):
+
+<Frame>![Rules query stages in the query pipeline](/assets/images/4.2/diagrams/rules-query-stages.png)</Frame>
+
+* [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage)
+
+  This stage looks up rules that have been deployed to the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/tw7rlx/query-rewriting#collections) and matches them against the query. Matching rules that perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) are applied at this stage, while matching rules that perform [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) are applied by the [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage) stage later in the pipeline.
+
+<Note>
+To trigger a rule that contains a tag, specify the tagname in the request URL of the user search app. See [Easily define triggers in tags](/managed-fusion/5.9/oitb8y/general-configurations#tags) for more information.
+</Note>
+
+* [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage)
+
+  Most rules operate on the request, but some [rule types](/managed-fusion/5.9/tw7rlx/query-rewriting#types), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+Generally, if you are using rules, you need both of these stages enabled in your query pipeline. The Apply Rules stage must come *before* the Solr Query stage, while the Modify Response with Rules stage must come *after* the Solr Query stage. Disabling or removing the Apply Rules stage will disable rules entirely. Disabling or removing the Modify Response with Rules stage will disable only the rules that perform [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting), if any.
+
+### Rules on response signals
+
+Response signals capture a list of rule IDs that match the query in a multi-valued field named `rule_ss`.
+
+### Rules and experiments
+
+The easiest way to integrate rules and experiments is to create one query pipeline with rules enabled and one without. Keep all other settings constant between the two pipelines. The pipeline without rules enabled must be configured manually.
+
+To create an experimental rule, use tags on the rule and set the tag in one of the variant pipelines.
+
+## FAQ
+
+What are arbitrary values?
+
+Arbitrary values are values that are not actively used by Managed Fusion. Instead, they are used by the user or the search application. For example, the **Description** is considered an arbitrary value, as it serves only to inform the user what the business rule is used for.
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Query Rewriting with Business Rules and Search Rewrites** focuses on how using business rules and search rewrites gives you the opportunity to boost conversions and create better customer experiences by improving your relevancy:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/query-rewriting-with-business-rules-and-search-rewrites" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/query-rewriting-with-business-rules-and-search-rewrites.jpg" alt="Query Rewriting with Business Rules and Search Rewrites" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>

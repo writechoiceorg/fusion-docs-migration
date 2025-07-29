@@ -1,0 +1,21 @@
+---
+title: "Spark Operations"
+permalink: "189"
+---
+
+[Apache Spark](http://spark.apache.org/) is an open source cluster-computing framework that serves as a fast and general execution engine for large-scale data processing jobs that can be decomposed into stepwise tasks, which are distributed across a cluster of networked computers.
+
+Spark improves on previous MapReduce implementations by using resilient distributed datasets (RDDs), a distributed memory abstraction that lets programmers perform in-memory computations on large clusters in a fault-tolerant manner.
+
+These topics explain Spark administration concepts in Fusion 5:
+
+* [Spark Job Drivers](/fusion/5.9/188/spark-job-drivers)
+* [Spark Administration in Kubernetes](/fusion/5.9/190/spark-kubernetes-overview)
+
+Spark operations include:
+
+1. Audit all [Spark jobs](/fusion/5.9/187/spark-jobs) for natural key support.
+2. Audit [SQL Aggregation](/fusion/5.9/8804/sql-aggregation-jobs) jobs for natural key usage.
+3. When looking at SQL for the [BPR Recommender job](/fusion/5.9/8805/bpr-recommender-jobs), audit generated aggregation SQL to ensure that it’s using a natural key projection.
+4. Support partitioning in all Spark jobs in accordance with config options.
+5. Support external data sources for all jobs (Spark, NLP, Clustering, Recommender), including external Spark source support for NLP.

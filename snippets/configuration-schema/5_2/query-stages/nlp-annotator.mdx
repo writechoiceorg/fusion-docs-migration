@@ -1,0 +1,112 @@
+export const schema = {
+  "type": "object",
+  "title": "NLP Annotator",
+  "description": "Annotate a query using NLP",
+  "required": [
+    "serviceId",
+    "modelId"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "serviceId": {
+      "type": "string",
+      "title": "Service ID of ML Model Service",
+      "description": "Service ID of ML Model Service",
+      "default": "ml-model-service",
+      "hints": [
+        "advanced",
+        "hidden"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Model ID"
+    },
+    "inputParam": {
+      "type": "string",
+      "title": "Input parameter to annotate",
+      "description": "Name of the request parameter to annotate using NLP",
+      "default": "q",
+      "minLength": 1
+    },
+    "extractorRules": {
+      "type": "array",
+      "title": "Extractor Rules",
+      "description": "Define rules to extract annotated text into separate parameters",
+      "items": {
+        "type": "object",
+        "required": [
+          "extractedAnnotationType",
+          "labelPattern",
+          "targetParamName"
+        ],
+        "properties": {
+          "extractedAnnotationType": {
+            "type": "string",
+            "title": "Annotation Type to Extract",
+            "enum": [
+              "sentence",
+              "named_entity",
+              "part_of_speech",
+              "noun_chunk"
+            ],
+            "default": "named_entity"
+          },
+          "labelPattern": {
+            "type": "string",
+            "title": "Label Pattern",
+            "description": "Extract all annotations with labels that match this regular expression",
+            "default": ".*",
+            "format": "regex"
+          },
+          "targetParamName": {
+            "type": "string",
+            "title": "Target Parameter Name"
+          },
+          "flattenList": {
+            "type": "boolean",
+            "title": "Flatten Multiple",
+            "description": "Flatten multiple values into a single value by joining on space"
+          }
+        }
+      }
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

@@ -1,0 +1,26 @@
+---
+title: "Logging Stage"
+permalink: "287"
+---
+
+The Logging query pipeline stage prints messages to the API log file; the default location is
+`https://FUSION_HOST:FUSION_PORT/var/log/api/api.log`.
+
+The verbosity of this message is controlled by the property `detailed`.
+If true, then the current Request object will be pretty-printed to the log file.
+If false, only the basic information about this stage will be logged.
+
+In a production environment logging stages should be configured with
+property `skip` set to `true`, if possible. Use of detailed logging
+may impact performance.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/logging.mdx";
+
+<SchemaParamFields schema={schema}/>

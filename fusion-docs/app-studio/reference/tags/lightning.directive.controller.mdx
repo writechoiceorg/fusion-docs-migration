@@ -1,0 +1,55 @@
+---
+title: "controller"
+permalink: "1144"
+---
+
+## Description
+
+Wraps the html in a controller.
+
+## Usage
+
+as attribute
+
+```xml
+<ANY controller="{string}">
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| controller | **string** | The name of the controller. |
+
+## Example
+
+#### Source
+
+```xml
+<div controller="ExampleController">
+        <p>{{foo}} <a href="javascript:void(0);" ng-click="alert()" styling="button">Alert!</a> </p>
+    </div>
+    <hr/>
+    <div controller="Example2Controller">
+        <p>{{bar}}</p>
+    </div>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+            $scope.foo = 'bar';
+            $scope.alert = function(){
+            alert('Hello World!')
+            };
+        }])
+.controller('Example2Controller', ['$scope','$timeout', function($scope,$timeout) {
+            $scope.bar = 'foo';
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/controller.png)</Frame>

@@ -1,0 +1,63 @@
+---
+title: "graph:flow"
+permalink: "1136"
+---
+
+## Description
+
+The Graph Flow Tag displays network data rendered as a Sankey diagram.
+The body of the Graph Flow tag can contain a
+[Chart Credit Tag](/app-studio/4.2/1127/chart-credit) for adding a
+credit to the chart and the [Chart
+Export Tag](/app-studio/4.2/1101/chart-export) for exporting the chart.
+
+For detail on how to change the color and background color see the demo
+below, for more detail on what you can change and set using CSS see
+[here.](http://www.highcharts.com/docs/chart-design-and-style/style-by-css)
+
+The following tags can be nested within the chart sankey tag.
+
+* [Chart Credit Tag](/app-studio/4.2/1127/chart-credit)
+* [Chart Export Tag](/app-studio/4.2/1101/chart-export)
+
+## Usage
+
+as element:
+
+```xml
+<graph:flow
+       platform="{string}"
+       query="{string}"
+       source-field="{string}"
+       target-field="{string}"
+       [measure="{string}"]
+       [measure-field="{string}"]
+       data="{object}"
+       [title="{string}"]
+       [subtitle="{string}"]
+       [series-name="{string}"]
+       [inverted="{boolean}"]
+       [options="{object}"]>
+</graph:flow>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | **string** | Name of the platform (Required if not using `data` attribute). |
+| query | **string** | Name of the query (Required if not using `data` attribute). |
+| source-field | **string** | Name of a primary field to facet on (for example "Country"). The values of this facet will define the set of graph nodes with outgoing edges. (Required if not using `data` attribute). |
+| target-field | **string** | Name of a secondary field to facet on (for example "City"), for every facet value of the primary field. The values of this facet will define the set of graph nodes with incoming edges. For example, say the primary facet (source-field) has values for Country=Germany and Country=France and the secondary facet (target-field) has values for City=Berlin, City=Munich and City=Paris. Then we add graph edges Germany-→Berlin, Germany-→Munich and France-→Paris. (Required if not using `data` attribute). |
+| measure  *(optional)* | **string** | Name of a numerical measure that defines the weight of each graph edge. When omitted, this defaults to the counts of the facets defined by the target-field. Some possible measures include "sum", "mean" and "min". (Only applicable if not using `data` attribute). |
+| measure-field  *(optional)* | **string** | Field to measure, when the "measure" option is specified. |
+| data | **object** | Array of arrays containing the data to render the sankey chart. In the format of `['from', 'to', 'weight']`  ``` [   ['Spain', 'Portugal', 100]   ['Spain', 'Brazil', 300] ] ```  (Required if not using the `platform` attribute) |
+| title  *(optional)* | **string** | Chart title |
+| subtitle  *(optional)* | **string** | Chart sub title |
+| series-name  *(optional)* | **string** | The name of the series.  *(default: '')* |
+| inverted  *(optional)* | **boolean** | Whether the chart should be inverted.  *(default: true)* |
+| options  *(optional)* | **object** | Extend the current options. Options can be found [here.](http://api.highcharts.com/highcharts/) |

@@ -1,0 +1,122 @@
+export const schema = {
+  "type": "object",
+  "title": "LWAI Vectorize Field",
+  "description": "Invokes a Lucidworks AI model to encode a string field to a vector representation. Will be skipped if the field to encode doesn't exist or is null on the pipeline document.",
+  "required": [
+    "accountName",
+    "modelType",
+    "sourceFieldName",
+    "destinationFieldName"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "accountName": {
+      "type": "string",
+      "title": "Account Name",
+      "description": "Lucidworks AI API Account Name as defined in Lucidworks AI Gateway Service.  This entry should match the account name set in the LWAI Gateway.",
+      "hints": [
+        "enumUrl:/api/query-stages/lwai-accounts"
+      ]
+    },
+    "modelType": {
+      "type": "string",
+      "title": "Model",
+      "description": "Lucidworks AI API model to use for encoding.",
+      "hints": [
+        "enumUrl:/api/query-stages/lwai-model?account=${accountName}&useCase=embedding"
+      ]
+    },
+    "sourceFieldName": {
+      "type": "string",
+      "title": "Source Field",
+      "description": "Name of the string field whose value should be submitted to the model for encoding. If the field doesn't exist or is null in the pipeline document, this stage will be skipped.  Supports Template Expressions, e.g. <doc.title_t> and <ctx.myVar>."
+    },
+    "destinationFieldName": {
+      "type": "string",
+      "title": "Destination Field",
+      "description": "Name of the field into which the dense vector value from the model response will be saved."
+    },
+    "useCaseConfig": {
+      "type": "array",
+      "title": "Use Case Configuration",
+      "default": [
+        {
+          "key": "dataType",
+          "value": "passage"
+        }
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelConfig": {
+      "type": "array",
+      "title": "Model Configuration",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    }
+  },
+  "category": "AI",
+  "categoryPriority": 10,
+  "unsafe": false
+}

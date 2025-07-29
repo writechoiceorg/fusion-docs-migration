@@ -1,0 +1,209 @@
+---
+title: "Smart Answers"
+permalink: "461"
+---
+
+Fusion Smart Answers brings the benefits of a versatile, scalable Semantic Search platform to provide cutting edge relevancy for your applications.
+This system makes use of advanced Deep Learning techniques to provide the power of Neural dense vectors search.
+Semantically rich models encode queries and documents into vectors in the same digital vector space in such way that query and the most relevant information are located near each other.
+It pushes search boundaries beyond classical token-based matching mechanisms by leveraging the contextual information and query understanding.
+Virtual assistants and Chatbots can incorporate Smart Answers to enable self-service for employees and customers and save cost on answering incoming queries.
+
+E-commerce can utilize Smart Answers to handle zero-result search queries and improve the overall relevancy by recommending products that are most likely of users interest.
+
+Training data can be explicitly provided as query/response pairs or constructed from the collected signals data.
+Even if you do not have an existing set of recorded interactions, you can rely on Smart Answers cold start solution. It uses various pre-trained models to get out-of-the-box (OOTB) semantic capabilities as well as provides a possibility to train unsupervised models for specific domains.
+
+These features bring traditional search relevancy development and Data Science together into an easy-to-use configuration framework that leverages Fusion’s indexing and querying pipelines.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Smart Answers** focuses on how to utilize Smart Answers to go beyond classical token-based matching mechanisms by leveraging contextual information and query understanding:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/smart-answers" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/smart-answers.png" alt="Smart Answers" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Example business use cases
+
+#### Call center or IT support
+
+* Embed this system as a self-help feature on your Help page or Contact Us page to reduce the call center load.
+* Make it available to your customer support team to find the answers to already-solved problems.
+
+#### Zero-result search problem in E-commerce:
+
+Queries that lead to zero-results is a huge problem for E-commerce that leads to income loss and decrease of the overall users experience. Semantic search does not have this problem as it does not operate on the exact token matches as classical search. Instead search is done in the vector space which can find relevant products even if there is no token overlapping.
+
+#### Questions about products for E-commerce:
+
+E-commerce websites can use this system to search "how to" content, product user manuals, or existing product questions. For example, amazon.com provides a search function on questions about each product.
+
+#### Search in Slack, email conversations, or SharePoint FAQ docs
+
+You can achieve fast knowledge extraction by applying this solution to these types of knowledge repositories.
+
+#### Improve search for long queries
+
+As the solution utilizes state of the art Deep Learning techniques, it is able to capture semantic and contextual information into query understanding. This makes it very suitable to work with long queries or natural language questions.
+
+## Getting started
+
+To get started, you need a trained machine learning model. There are two methods for building a model, depending on the kind of data you already have:
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 50%;" />
+    <col style="width: 50%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">The Supervised solution</th>
+      <th class="tableblock halign-left valign-top">The Cold Start solution</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Use this solution when you already have a collection of query/response pairs or if you can construct such a dataset from the signals data.</p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li><p>Input: A dataset of query/response pairs.</p></li>
+              <li>
+                <p>Workflow:</p>
+                <div class="olist loweralpha">
+                  <ol class="loweralpha" type="a">
+                    <li>
+                      <p>
+                        <a href="/how-to/652/train-a-smart-answers-supervised-model">Train a machine learning model</a>
+                        using the
+                        <a href="/fusion/5.9/8845/smart-answers-supervised-training">Smart Answers Supervised Training</a>
+                        job.
+                      </p>
+                    </li>
+                    <li><p><a href="/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later">Configure the pipelines</a>.</p></li>
+                    <li><p><a href="/how-to/653/evaluate-a-smart-answers-query-pipeline">Evaluate the query pipeline</a>.</p></li>
+                    <li><p><a href="/how-to/634/see-a-smart-answers-qn-a-jobs-status-and-output">Check the job status and output</a>.</p></li>
+                  </ol>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Use this solution when you have no historical training data or fewer than 200 query/response pairs.</p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>Workflow 1:</p>
+                <div class="olist loweralpha">
+                  <ol class="loweralpha" type="a">
+                    <li>
+                      <p>
+                        <a href="/how-to/734/set-up-a-pre-trained-cold-start-model-for-smart-answers">Set Up A Pre‑Trained Cold Start Model for Smart Answers</a>
+                        using the
+                        <a href="/fusion/5.9/564/create-seldon-core-model-deployment">Create Seldon Core Model Deployment</a>
+                        job.
+                      </p>
+                    </li>
+                    <li><p><a href="/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later">Configure the pipelines</a>.</p></li>
+                    <li><p><a href="/how-to/653/evaluate-a-smart-answers-query-pipeline">Evaluate the query pipeline</a>.</p></li>
+                    <li><p><a href="/how-to/634/see-a-smart-answers-qn-a-jobs-status-and-output">Check the job status and output</a>.</p></li>
+                  </ol>
+                </div>
+              </li>
+              <li>
+                <p>Workflow 2:</p>
+                <div class="olist loweralpha">
+                  <ol class="loweralpha" type="a">
+                    <li><p>Input: A body of content that can be used for unsupervised training.</p></li>
+                    <li>
+                      <p>
+                        <a href="/how-to/828/train-a-smart-answers-cold-start-model">Train a machine learning model</a>
+                        using the
+                        <a href="/fusion/5.9/8847/smart-answers-coldstart-training">Smart Answers Coldstart Training</a>
+                        job.
+                      </p>
+                    </li>
+                    <li><p><a href="/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later">Configure the pipelines</a>.</p></li>
+                    <li><p><a href="/how-to/653/evaluate-a-smart-answers-query-pipeline">Evaluate the query pipeline</a>.</p></li>
+                    <li><p><a href="/how-to/634/see-a-smart-answers-qn-a-jobs-status-and-output">Check the job status and output</a>.</p></li>
+                  </ol>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+Each method requires a slightly different model training procedure, but the model deployment procedure is the same for both.
+
+## Smart Answers workflow
+
+To implement Smart Answers, you will follow this workflow:
+
+1. Train or install a machine learning model.
+
+   This process differs depending on whether you use the [Supervised Solution](/how-to/652/train-a-smart-answers-supervised-model) or the [Cold Start Solution](/how-to/828/train-a-smart-answers-cold-start-model).
+2. Configure the index and query pipelines.
+
+   Fusion includes default pipelines to get you started. See [Configure the Smart Answers Pipelines](/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later).
+3. Evaluate the query pipeline’s effectiveness.
+
+   Fine tune your query pipeline configuration by running a job that analyzes its effectiveness. See [Evaluate a Smart Answers Query Pipeline](/how-to/653/evaluate-a-smart-answers-query-pipeline).
+
+## Smart Answers jobs
+
+These jobs provide the machine learning features that drive Smart Answers:
+
+* Machine learning model training:
+
+  + [Smart Answers Supervised Training](/fusion/5.9/8845/smart-answers-supervised-training) job.
+    Fusion includes default pipelines to get you started. See [Configure the Smart Answers Pipelines](/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later).
+  + [Smart Answers Coldstart Training](/fusion/5.9/8847/smart-answers-coldstart-training) job.
+* Machine learning model deployment:
+
+  + [Create Seldon Core Model Deployment](/fusion/5.9/564/create-seldon-core-model-deployment)
+  + [Delete Seldon Core Model Deployment](/fusion/5.9/584/delete-seldon-core-model-deployment-job)
+* [Smart Answers Evaluate Pipeline](/fusion/5.9/8846/smart-answers-evaluate-pipeline)
+
+  This job analyzes your configured Smart Answers query pipeline to provide insights about its effectiveness so that you can fine-tune your configuration for the best possible results.
+
+## "Smart-answers" pipelines and stages
+
+Once you have trained and deployed your model, you can use one of the default pipelines that are automatically created with your Fusion app. Both pipelines are called `APP_NAME-smart-answers`.
+
+See [Configure the Smart Answers Pipeline](/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later) for more information.
+
+* **"-smart-answers" index pipeline**
+
+  <Frame>![smart-answers default index pipeline](/assets/images/5.3/smart-answers-index-pipeline.png)</Frame>
+* **"-smart-answers" query pipeline**
+
+  <Frame>![smart-answers default query pipeline](/assets/images/5.3/smart-answers-query-pipeline.png)</Frame>
+
+## Short answer extraction
+
+By default, the question-answering query pipelines return complete documents that answer questions. Optionally, you can extract just a paragraph, a sentence, or a few words that answer the question. See [Extract Short Answers from Longer Documents](/how-to/8861/extract-short-answers-from-longer-documents).

@@ -1,0 +1,132 @@
+---
+title: "Customer Dashboard"
+description: "Grafana dashboard"
+permalink: "jc151t"
+---
+
+The Customer Dashboard is a Grafana dashboard created alongside your Managed Fusion deployments that visualizes important performance and usage data. Data capture begins immediately after deployment, so historical data is available. For access to the Customer Dashboard, reach out to your Customer Success Manager.
+
+<Note>
+Performance metrics vary from deployment to deployment. This article doesn’t try to differentiate between acceptable and unacceptable performance.
+</Note>
+
+For basic information about Grafana dashboards, see the [Grafana documentation on the Dashboard UI](https://grafana.com/docs/grafana/latest/dashboards/).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Grafana for Managed Fusion** focuses on the best practices for utilizing the Grafana dashboard:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/grafana-for-managed-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/grafana-for-managed-fusion.jpeg" alt="Grafana for Managed Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Rows
+
+The Customer Dashboard includes three rows: [Overview](#overview), [Queries](#queries), and [Indexing](#indexing). Each row has [panels](https://grafana.com/docs/grafana/latest/panels/) that visualize your data. Hovering over the panels provides extra information and options.
+
+### Overview
+
+#### Fusion Gateway RPS
+
+The **Fusion Gateway RPS** panel displays the number of query requests per second for your cluster’s query operations and global operations. Query operations are largely associated with searches. Global operations include query operations, as well as all other requests to the Fusion Gateway service. In this example, query operations make up most of the global operations requests.
+
+<Frame>![Fusion Gateway RPS](/assets/images/managed-fusion/customer-dashboard/fusion-gateway-rps-01.png)</Frame>
+
+#### Gateway Errors Per Second
+
+The **Gateway Errors Per Second** panel displays how many errors per second the Fusion Gateway service experiences. This example shows the cluster experienced no gateway errors during the 7-day timeframe.
+
+<Frame>![Gateway Errors Per Second](/assets/images/managed-fusion/customer-dashboard/gateway-errors-per-second-01.png)</Frame>
+
+#### Query RPS
+
+The **Query RPS** panel shows how many query operations per second are sent to your cluster. This panel isolates the query operations from the combined query and global operations in the **[Fusion Gateway RPS](#fusion-gateway-rps)**. In this example, the cluster received fewer query pipeline requests per second over the weekend as compared to the rest of the week.
+
+<Frame>![Query RPS](/assets/images/managed-fusion/customer-dashboard/query-rps-01.png)</Frame>
+
+#### Indexing RPS
+
+The **Indexing RPS** panel shows how many indexing operations per second are sent to your cluster. This example shows that Managed Fusion indexes the datasource daily. On 9/17, the indexing job stopped early, possibly due to a cancellation or error.
+
+<Frame>![Indexing RPS](/assets/images/managed-fusion/customer-dashboard/indexing-rps-01.png)</Frame>
+
+### Queries
+
+#### Query Pipeline RPS (with outcomes)
+
+The **Query Pipeline RPS (with outcomes)** panel displays how many query requests per second were made and what the result was. This includes successful queries and client and server errors. In this example, all queries during the timeframe were successful.
+
+<Frame>![Query Pipeline RPS (with outcomes)](/assets/images/managed-fusion/customer-dashboard/query-pipeline-rps-with-outcomes-01.png)</Frame>
+
+#### Query Pipeline RPS By Pipeline
+
+The **Query Pipeline RPS By Pipeline** panel displays how many query requests per second were made per [Managed Fusion query pipeline](/managed-fusion/5.9/8qf1w6/query-pipelines). In the example panel, most query request were made to the **Docs_Site_2** query pipeline.
+
+<Frame>![Query Pipeline RPS By Pipeline](/assets/images/managed-fusion/customer-dashboard/query-pipeline-rps-by-pipeline-01.png)</Frame>
+
+#### Query Pipeline Execution Time
+
+The **Query Pipeline Execution Time** panels display how long it took for the query pipeline to execute requests. There are several panels, with each panel representing a different percentile group for the data. For example the **p99 Query Pipeline Execution Time** panel represents the 99th percentile group.
+
+##### p99 Query Pipeline Execution Time
+
+<Frame>![p99 Query Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p99-query-pipeline-execution-time-01.png)</Frame>
+
+##### p95 Query Pipeline Execution Time
+
+<Frame>![p95 Query Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p95-query-pipeline-execution-time-01.png)</Frame>
+
+##### p50 Query Pipeline Execution Time
+
+<Frame>![p50 Query Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p50-query-pipeline-execution-time-01.png)</Frame>
+
+##### p75 Query Pipeline Execution Time
+
+<Frame>![p75 Query Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p75-query-pipeline-execution-time-01.png)</Frame>
+
+### Indexing
+
+#### Indexing Service RPS (non-GET)
+
+The **Indexing Service RPS (non-GET)** panel displays how many indexing operations, excluding `GET` operations, took place during the timeframe. In the example panel, a [datasource indexing job](/managed-fusion/5.9/mz6jhc/jobs-and-scheduling) is scheduled to perform indexing operations on a daily basis. On 9/17, the indexing job stopped early, due to a cancellation or error.
+
+<Frame>![Indexing Service RPS (non-GET)](/assets/images/managed-fusion/customer-dashboard/indexing-service-rps-non-get-01.png)</Frame>
+
+#### Document Index Rate
+
+The **Document Index Rate** panel displays how many write operations per second were completed during the timeframe. In this example, the write operations align with the [Indexing Service RPS (non-GET)](#indexing-service-rps) data. On 9/17, the datasource indexing job failed or was canceled.
+
+<Frame>![Document Index Rate](/assets/images/managed-fusion/customer-dashboard/document-index-rate-01.png)</Frame>
+
+#### Index Pipeline Execution Time
+
+The **Index Pipeline Execution Time** panels display how long it took for the index pipeline to execute requests. There are several panels, with each panel representing a different percentile group for the data. For example the **p99 Index Pipeline Execution Time** panel represents the 99th percentile group.
+
+##### p99 Index Pipeline Execution Time
+
+<Frame>![p99 Index Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p99-index-pipeline-execution-time-01.png)</Frame>
+
+##### p95 Index Pipeline Execution Time
+
+<Frame>![p95 Index Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p95-index-pipeline-execution-time-01.png)</Frame>
+
+##### p75 Index Pipeline Execution Time
+
+<Frame>![p75 Index Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p75-index-pipeline-execution-time-01.png)</Frame>
+
+##### p50 Index Pipeline Execution Time
+
+<Frame>![p50 Index Pipeline Execution Time](/assets/images/managed-fusion/customer-dashboard/p50-index-pipeline-execution-time-01.png)</Frame>

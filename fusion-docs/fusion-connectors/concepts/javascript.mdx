@@ -1,0 +1,223 @@
+---
+title: "Javascript Connector"
+permalink: "33"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.2.x through Fusion 5.2.2.
+
+</Note>
+
+
+
+The Javascript connector executes a JavaScript program that is compiled by the JDK.
+This program returns a content item which is handed off to the fetcher. The JavaScript program must be standard [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript).
+
+You can use any Java class available to the connectors JDK ClassLoader to manipulate that object within a function.
+As in Java, to access Java classes by their simple names instead of their fully specified class names, e.g. to be able to write `String` instead of `java.lang.String`, these classes must be imported.
+The java.lang package is not imported by default, because its classes would conflict with Object, Boolean, Math, and other built-in JavaScript objects.
+To import a Java class, use the JavaImporter object and the `with` statement, which limits the scope of the imported Java packages and classes.
+
+```java
+var imports = new JavaImporter(java.lang.String);
+...
+with (imports) {
+    var name = new String("foo"); ...
+}
+
+```
+
+For global variables, you can reference these objects using the `Java.type` API extension.
+See this tutorial for details: `<http://winterbe.com/posts/2014/04/05/java8-nashorn-tutorial/>`
+
+There is a known issue with `JavaImporter` that causes intermittent errors with patterns like `with (imports) { } *`. The preferred approach is `Java.type()`.
+
+A pattern that works well is:
+
+```java
+var SolrQuery = Java.type("org.apache.solr.client.solrj.SolrQuery");
+var query = new SolrQuery();
+
+```
+
+An example of `Java.type()` usage:
+
+```java
+function (request, response, ctx, collection, solrServer, solrServerFactory) {
+    //Type imports
+    var String = Java.type("java.lang.String");
+    var ArrayList = Java.type("java.util.ArrayList");
+    var HashMap = Java.type("java.util.LinkedHashMap");
+    var HashSet = Java.type("java.util.LinkedHashSet");
+    var TreeSet = Java.type("java.util.TreeSet");
+    var Integer = Java.type("java.lang.Integer");
+    //get map out of response
+    var map = response.getInnerResponse().getUnderlyingObject();
+    var facets = map.get("facets");
+    var facetBoostValues = ctx.getProperty("boostValues.json.facet");
+    var facetBuryValues = ctx.getProperty("buryValues.json.facet");
+    var facetSuppressValues = ctx.getProperty("suppressValues.json.facet");
+    var facetMultiValue = ctx.getProperty("multivalueMap.json.facet");
+    if (facets != null) {
+       //Process JSON facets
+       if (facets.get("count") != null) facets.remove("count");
+       if (facets.get("products") != null) facets.remove("products");
+      // Set multivalue and number to show as defaults
+      var facetKeySet = facets.keySet();
+      if (facetKeySet != null) {
+         var facetIterator = facetKeySet.iterator();
+         while (facetIterator.hasNext()) {
+            var facet = facetIterator.next();
+            logger.info("==================");
+            logger.info("Processing facet: "+facet.toString());
+            facets.get(facet).put("multivalue", true);
+            var multiSelect = facetMultiValue.get(facet.toString());
+            if (null != multiSelect && multiSelect == 'single') {
+               facets.get(facet).put("multivalue", false);
+               logger.info("multi: False");
+            }
+            var buckets = facets.get(facet).get("buckets");
+            var boostValues = new ArrayList();
+            var boostBuckets = new ArrayList();
+            var boostValList = new ArrayList();
+            if (null != facetBoostValues) {
+               boostValues = facetBoostValues.get(facet.toString());
+               logger.info("BOOST: "+boostValues);
+            }
+            var buryValues = new ArrayList();
+            var buryBuckets = new ArrayList();
+            var buryValList = new ArrayList();
+            if (null != facetBuryValues) {
+               buryValues = facetBuryValues.get(facet.toString());
+               logger.info("BURY: "+buryValues);
+            }
+            var suppressValues = new ArrayList();
+            if (null != facetSuppressValues) {
+               suppressValues = facetSuppressValues.get(facet.toString());
+               logger.info("suppressValues: "+suppressValues);
+            }
+            var normalBuckets = new ArrayList();
+            for (var i = 0; i < buckets.size(); i++) {
+               var bucket = buckets[i];
+               var val = bucket.get("val");
+               if (null != boostValues && boostValues.indexOf(val) > -1) {
+                  boostBuckets.add(bucket);
+                  boostValList.add(val);
+               } else if (null != buryValues && buryValues.indexOf(val) > -1) {
+                  buryBuckets.add(bucket);
+                  buryValList.add(val);
+               } else if ((null == suppressValues) || (suppressValues.isEmpty()) || (suppressValues.indexOf(val) < 0)) {
+                  normalBuckets.add(bucket);
+               }
+            }
+            if (null != boostValues) {
+               var finalBoostedBuckets = new ArrayList();
+               for (var i = 0; i < boostValues.size(); i++) {
+                  var boostIndex = boostValList.indexOf(boostValues[i]);
+                  if (boostIndex > -1) {
+                     finalBoostedBuckets.add(boostBuckets.get(boostIndex));
+                  }
+               }
+               if (finalBoostedBuckets.size() > 0) {
+                  finalBoostedBuckets.addAll(normalBuckets);
+                  facets.get(facet).put("buckets", finalBoostedBuckets);
+               }
+            }
+            if (null != buryValues) {
+               var finalBuriedBuckets = new ArrayList();
+               for (var i = 0; i < buryValues.size(); i++) {
+                  var buryIndex = buryValList.indexOf(buryValues[i]);
+                  if (buryIndex > -1) {
+                     finalBuriedBuckets.add(buryBuckets.get(buryIndex));
+                  }
+               }
+               if (finalBuriedBuckets.size() > 0) {
+                  normalBuckets.addAll(finalBuriedBuckets);
+                  facets.get(facet).put("buckets", normalBuckets);
+               }
+            }
+         }
+      }
+   }
+}
+
+```
+
+## The JavaScript Program
+
+The Javascript context provides the following variables:
+
+| Variable | Type | Description |
+| --- | --- | --- |
+| `id` | java.lang.String | The ID of the object to fetch. This is almost always the URI of the datasource to connect to and fetch content. |
+| `lastModified` | long | The time since the epoch from which the item was last touched. |
+| `signature` | java.lang.String | An optional string meant to be used to compare versions of the ID being fetched, e.g. an ETag in a web-crawl. |
+| `content` | crawler.common.MutableObject | A Content object that can be modified and returned, for fine grained control over the return. |
+| `_fetcher` | Fetcher | The current Fetcher instance (usually type `JavascriptFetcher`), used to interact with the Fetcher, including getting a WebFetcher instance using `_fetcher.getWebFetcher()`. |
+| `_context` | java.util.Map | A map used to store data to persist across calls to `fetch()`, e.g. an instance of WebFetcher obtained using `_fetcher.getWebFetcher()`. |
+
+The program must return one of the following kinds of objects:
+
+| Object | Description |
+| --- | --- |
+| String | A string object. This is converted to UTF-8 bytes and added as the raw content on a `common.crawler.Content` object and returned from the `fetch()` method. |
+| byte [] | A byte array. This array is set on a `common.crawler.Content` object and returned from the `fetch()` method. |
+| `common.crawler.MutableContent` | If you want to have complete control over the return from `fetch()`, make changes to the content object provided in the Context and return it. <Warning> Do not create a new object. </Warning>
+
+ |
+| An array of Objects | The array is converted to Embedded Content. The Fetcher returns a parent Content object that has a "Container" discardMessage. The Embedded Content on that container is generated by calling `toString()` on the objects in the array. |
+| A JavaScript Map | The map is converted to fields on the Content item returned. |
+
+If the JavaScript script is implemented as a function, the return statement must return one of the above types. If the script is not function-based, the last line in the script must evaluate to one of these object types.
+
+## Examples
+
+### Return content as a java.lang.String
+
+```java
+var str = new java.lang.String("Java");
+str;
+```
+
+### Return content as a byte array
+
+```java
+var bytes = new java.lang.String("Java");
+bytes.getBytes('UTF-8');
+```
+
+### Return content as a JavaScript array
+
+```java
+var strings = ["hi", "bye"];
+strings;
+```
+
+### Return content as a JavaScript map
+
+```java
+var map = {"hi": "bye", "bye": "hi", "number":1};
+map;
+```
+
+### Leverage the Fetcher
+
+```java
+var webFetcher = _context.get("webFetcher");
+if (null == webFetcher) {
+  webFetcher = _fetcher.getWebFetcher();
+  // it is possible to pass config options to getWebFetcher() as a map as well, e.g.:
+  // _fetcher.getWebFetcher({"f.discardLinkURLQueries" : false });
+  _context.put("webFetcher", webFetcher);
+}
+var webContent = webFetcher.fetch(id, lastModified, signature);
+var jsoupDoc = webContent.getDocument();
+if (null !== jsoupDoc) {
+  // modify the Jsoup document or web-content as-needed here, adding new links, removing sections etc.
+  // ...
+  // ...
+  webContent.setRawContent(jsoupDoc.toString().getBytes("UTF-8"));
+}
+webContent;
+```

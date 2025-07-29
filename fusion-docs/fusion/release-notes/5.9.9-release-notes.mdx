@@ -1,0 +1,134 @@
+---
+title: "Fusion 5.9.9"
+permalink: "hga40k"
+---
+
+Released on January 29, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) delivers essential security enhancements, including the latest updates for Kafka and key improvements for future-ready protection, plus bug fixes.
+
+Upgrading to the latest version of Fusion 5.9 offers several key benefits:
+
+* **Access to latest features:** Stay current with the latest features and functionality to ensure compatibility and optimal performance.
+* **Simplified process:** Fusion 5.9.5 and later use an in-place upgrade strategy, making upgrades easier than ever.
+* **Extended support:** Upgrading keeps you up-to-date with the latest supported Kubernetes versions, as outlined in the [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle) policy.
+
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+
+
+## Key highlights
+
+### Enhanced security and future-ready safeguards
+
+With the Fusion 5.9.9 release, we’ve upgraded Kafka to version 3.7.0, incorporating the latest security updates to strengthen your platform’s resilience. Additionally, we’ve implemented critical updates for Fusion’s Webapps, Templating, and API Gateway services, ensuring robust protection for your data.
+
+Looking ahead, we’ve introduced enhancements to streamline and expedite the delivery of future security updates, providing you with a safer Fusion environment.
+
+### Secure deployments with immutable root file system
+
+Fusion now supports a read-only root file system to safeguard against unauthorized modifications, protecting your deployment against malicious software and other attacks.
+Most services operate efficiently in this mode, and for components that need write access, a separate writable mount is available using specific helm configurations.
+
+Read-only mode is enabled by default for some Fusion services.
+See [Enable read-only root file system](/how-to/ybijf6/enable-read-only-root-file-system) for a list of services that support it or have it enabled by default, along with examples of how to configure it in your Fusion deployment.
+It should only be enabled for services that do not require CRUD access.
+
+## Bug fixes
+
+* This release addresses an issue in Fusion 5.9.2 and up, where enabling Transport Layer Security (TLS) during installation resulted in the following error:
+
+    ```
+    Error: INSTALLATION FAILED: ... at <.tls.certSecret.name>: nil pointer evaluating interface {}.name
+    ```
+
+  With this fix, Fusion can now be successfully installed with TLS enabled.
+
+* This release improves compatibility between Solr and Fusion’s [LWAI Prediction index pipeline stage](/fusion/5.9/bzik28/lwai-prediction) to prevent errors about incompatible characters in field names.
+
+* The Fusion API realm can now authenticate when an API key is passed via an `apiKey` parameter.
+
+  Previously, the key could only be passed in the header, as in these examples:
+
+    ```bash
+    curl -H "x-api-key: API_KEY" "https://FUSION_HOST/api/query/status"
+    curl -H "apiKey: API_KEY" "https://FUSION_HOST/api/query/status"
+    ```
+
+    Now you can also pass the key as a parameter, like this:
+
+    ```bash
+    curl https://FUSION_HOST/api/query/status?apiKey=API_KEY
+    ```
+
+* The [Configurations](/fusion/5.9/342/configurations-api) and [ZooKeeper Import/Export](/fusion/5.9/320/zoo-keeper-import-export-api) APIs are now accessible only to authorized users from within your Fusion cluster or through Kubernetes port forwarding.
+
+* The API Gateway now includes an optional Kubernetes health check. To enable this check, edit your `values.yaml` file, and add `-Dspring.cloud.kubernetes.loadbalancer.mode=POD` to the API Gateway’s `javaToolOptions`. For example:
+
+    ```yaml
+    fusion:
+      api-gateway:
+        javaToolOptions: "-Dspring.cloud.kubernetes.loadbalancer.mode=POD"
+    ```
+
+    When enabled, if the health check fails during pod discovery, Kubernetes will restart the pod.
+
+## Known issues
+
+* An issue prevents segment-based rule filtering from working correctly in Commerce Studio. This issue is fixed in Fusion 5.9.12.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#deprecations).
+
+As part of our ongoing initiative to replace our V1 (Classic) connectors with our more secure, flexible, and scalable V2 (Plugin) connectors, the following V1 connectors are deprecated in this release:
+
+* [Windows Share SMB 2/3 V1](/fusion-connectors/54/windows-share-smb-2-3-v-1-connector-configuration-reference)
+* [File Upload V1](/fusion-connectors/41/file-upload-v-1-connector-configuration-reference)
+
+Learn more about [V1 and V2 connectors](/fusion-connectors/331vyj/v-1-and-v-2-connectors).
+
+<Danger>
+**FAQ**
+
+How long will Lucidworks continue to support these connectors?
+
+These connectors will remain available for at least 6 months from the release of Fusion 5.9.9 and will be removed in a release after this 6-month period.
+
+</Danger>
+
+To prepare for the eventual removal of these connectors in a future release, Lucidworks strongly recommends beginning the migration of your datasources to the following V2 connectors:
+
+* [Windows Share SMB 2/3 V2](/fusion-connectors/10901/windows-share-smb-2-3-v-2)
+* [File Upload V2](/fusion-connectors/r9iys5/file-upload-v-2)
+
+## Platform support and component versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30
+* **Microsoft Azure Kubernetes Service (AKS):** 1.28, 1.29, 1.30
+* **Amazon Elastic Kubernetes Service (EKS):** 1.28, 1.29, 1.30
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.28, 1.29, 1.30. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.9  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

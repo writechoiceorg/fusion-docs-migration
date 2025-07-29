@@ -1,0 +1,284 @@
+export const schema = {
+  "type": "object",
+  "title": "Cluster Labeling",
+  "description": "Use this job when you already have clusters or well-defined document categories, and you want to discover and attach keywords to see representative words within those existing clusters. (If you want to create new clusters, use the Document Clustering job.)",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "clusterIdField",
+    "outputCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing documents with defined categories or clusters",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Field to detect keywords from",
+      "description": "Field containing data from which to discover keywords for the cluster",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store output data to",
+      "minLength": 1
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "clusterIdField": {
+      "type": "string",
+      "title": "Existing Document Category Field",
+      "description": "Field that contains your existing cluster IDs or document categories.",
+      "minLength": 1
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "minLength": 1
+    },
+    "clusterLabelField": {
+      "type": "string",
+      "title": "Top Unique Terms Field Name",
+      "description": "Output field name for top frequent terms that are (mostly) unique for each cluster.",
+      "default": "cluster_label"
+    },
+    "freqTermField": {
+      "type": "string",
+      "title": "Top Frequent Terms Field Name",
+      "description": "Output field name for top frequent terms in each cluster. These may overlap with other clusters.",
+      "default": "freq_terms"
+    },
+    "minDF": {
+      "type": "number",
+      "title": "Min Doc Support",
+      "description": "Min number of documents the term has to show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "default": 5
+    },
+    "maxDF": {
+      "type": "number",
+      "title": "Max Doc Support",
+      "description": "Max number of documents the term can show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "default": 0.75
+    },
+    "norm": {
+      "type": "integer",
+      "title": "Vector normalization",
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numKeywordsPerLabel": {
+      "type": "integer",
+      "title": "Number of Keywords for Each Cluster",
+      "description": "Number of Keywords needed for labeling each cluster.",
+      "default": 5
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "cluster_labeling"
+      ],
+      "default": "cluster_labeling",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "clusterIdField",
+        "freqTermField",
+        "clusterLabelField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "maxDF",
+        "minDF",
+        "norm",
+        "numKeywordsPerLabel"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ]
+}

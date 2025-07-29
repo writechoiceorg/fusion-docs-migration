@@ -1,0 +1,16 @@
+---
+title: "Chart Legend"
+permalink: "3153"
+---
+
+A legend is displayed when the chart has multiple series. With the Chart Legend tag, you can customize the legend with a title, border and location on the chart along with other things. This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+```xml
+<chart:display response="response" title="Current Products vs Recommended Products" stacking="normal">
+    <series:facet name="current_products" type="column" title="Current Products"></series:facet>
+    <series:facet name="recommended_products" type="column" title="Recommended Products"></series:facet>
+    <chart:legend title="Legend Title"  align="right" vertical-align="top" layout="vertical" y="100" border-radius="5" border-width="1"></chart:legend>
+</chart:display>
+```
+
+<Frame>![Chart Legend](/assets/images/appkit/4.2/highchart-legend-right.png)</Frame>

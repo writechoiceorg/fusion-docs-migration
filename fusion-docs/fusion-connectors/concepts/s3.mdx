@@ -1,0 +1,14 @@
+---
+title: "AWS S3 V2 Connector"
+permalink: "17"
+---
+
+The AWS S3 V2 connector crawls items in a single bucket. You must specify the **bucket name** and **AWS region** in which that bucket is located.
+
+You may crawl specific items in a bucket. If no items are specified, the entire bucket will be crawled.
+
+The connector uses the S3 API to request data from S3. It calls the `listBucket` service, which lists all buckets owned by the user account supplied to the connector.
+
+When creating an S3 datasource using the UI, Fusion automatically verifies that the user information supplied has access to the bucket defined in the URL property. If the bucket is not in the list returned by S3, datasource creation may fail. At crawl time, if the bucket is not in the list returned by S3, the crawl will fail.
+
+Permission errors when trying to create or crawl the datasource may be caused by incorrect username or password, or they may be due to user account permissions. The user account must have List Bucket permissions for the account which owns the bucket that the crawler is trying to access.

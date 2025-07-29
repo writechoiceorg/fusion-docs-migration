@@ -1,0 +1,91 @@
+---
+title: "Language Support in Fusion"
+permalink: "364"
+---
+
+The table below shows how various language are supported in the Fusion product suite. The meanings of the columns are as follows:
+
+* **Encoding.** Fusion and App Studio support the language encodings of the selected languages both for search and display.
+* **Language detection.** The superset of languages supported was determined based on our use of the Language Detection Library for Java that recognizes 71 languages and the supported languages in Solr.
+* **Thesaurus.** Solr can support a supplied thesaurus for the selected language.
+* **Did you mean (spell check).** Fusion can return spelling suggestions for the selected language.
+* **Stemming.** Supported with an externally-supplied dictionary or out of the box with `HunspellStemFilter`.
+* **Summary.** The ability to display matching text from a search request which may also include highlighting.
+* **App Studio.** Text in the selected language can be displayed and Right-to-Left languages are also supported.
+* **Administration tools.** The language is supported in the Fusion UI.
+
+| Supported language | Encoding | Language detection | Thesaurus | Did you mean (spell check) | Stemming | Summary | App Studio | Administration tools |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Afrikaans | x | x | x | x | x (hunspell) | x | x |  |
+| Albanian | x | x | x | x | x (hunspell) | x | x |  |
+| Arabic | x | x | x | x | x | x | x |  |
+| Aragonese | x | x | x | x | x (hunspell) | x | x |  |
+| Asturian | x | x | x | x | x (hunspell) | x | x |  |
+| Basque | x | x | x | x | x (hunspell) | x | x |  |
+| Belarusian | x | x | x | x | x (hunspell) | x | x |  |
+| Bengali | x | x | x | x | x (hunspell) | x | x |  |
+| Breton | x | x | x | x | x (hunspell) | x | x |  |
+| Brazilian Portuguese | x | x | x | x | x | x | x |  |
+| Bulgarian | x | x | x | x | x | x | x |  |
+| Catalan | x | x | x | x | x | x | x |  |
+| Chinese | x | x | x | x | x (performed as part of dictionary-based tokenization; separate stemming step not required) | x | x |  |
+| Croatian | x | x | x | x | x (hunspell) | x | x |  |
+| Czech | x | x | x | x | x | x | x |  |
+| Danish | x | x | x | x | x | x | x |  |
+| Dutch | x | x | x | x | x | x | x |  |
+| English | x | x | x | x | x | x | x | x |
+| Estonian | x | x | x | x | x (hunspell) | x | x |  |
+| Finnish | x | x | x | x | x | x | x |  |
+| French | x | x | x | x | x | x | x |  |
+| Galician | x | x | x | x | x | x | x |  |
+| German | x | x | x | x | x | x | x |  |
+| Greek | x | x | x | x | x (hunspell) | x | x |  |
+| Gujarati | x | x | x | x | x (hunspell) | x | x |  |
+| Haitian | x | x | x | x | x (hunspell) | x | x |  |
+| Hebrew | x | x | x | x | x (hunspell) | x | x |  |
+| Hindi | x | x | x | x | x | x | x |  |
+| Hungarian | x | x | x | x | x (hunspell) | x | x |  |
+| Icelandic | x | x | x | x | x (hunspell) | x | x |  |
+| Indonesian | x | x | x | x | x | x | x |  |
+| Irish | x | x | x | x | x | x | x |  |
+| Italian | x | x | x | x | x | x | x |  |
+| Japanese | x | x | x | x | x | x | x |  |
+| Kannada | x | x | x | x | x (hunspell) | x | x |  |
+| Khmer | x | x | x | x | x (hunspell) | x | x |  |
+| Korean | x | x | x | x | x (hunspell) | x | x |  |
+| Lao | x | x | x | x |  | x | x |  |
+| Latvian | x | x | x | x | x | x | x |  |
+| Lithuanian | x | x | x | x | x (hunspell) | x | x |  |
+| Macedonian | x | x | x | x | x (hunspell) | x | x |  |
+| Malay | x | x | x | x | x (hunspell) | x | x |  |
+| Malayalam | x | x | x | x | x (hunspell) | x | x |  |
+| Maltese | x | x | x | x | x (hunspell) | x | x |  |
+| Marathi | x | x | x | x | x (hunspell) | x | x |  |
+| Myanmar |  |  |  | x |  | x | x |  |
+| Nepali | x | x | x | x | x (hunspell) | x | x |  |
+| Norwegian | x | x | x | x | x | x | x |  |
+| Occitan | x | x | x | x | x (hunspell) | x | x |  |
+| Persian | x | x | x | x | x (hunspell) | x | x |  |
+| Polish | x | x | x | x | x | x | x |  |
+| Portuguese | x | x | x | x | x | x | x |  |
+| Punjabi | x | x | x | x | x (hunspell) | x | x |  |
+| Romanian | x | x | x | x | x | x | x |  |
+| Russian | x | x | x | x | x | x | x |  |
+| Serbian | x | x | x | x | x (hunspell) | x | x |  |
+| Slovak | x | x | x | x | x (hunspell) | x | x |  |
+| Slovene | x | x | x | x | x (hunspell) | x | x |  |
+| Somali | x | x | x | x | x (hunspell) | x | x |  |
+| Spanish | x | x | x | x | x | x | x |  |
+| Swahili | x | x | x | x | x (hunspell) | x | x |  |
+| Swedish | x | x | x | x | x | x | x |  |
+| Tagalog | x | x | x | x | x (hunspell) | x | x |  |
+| Tamil |  | x | x | x | x (hunspell) | x | x |  |
+| Telugu |  | x | x | x | x (hunspell) | x | x |  |
+| Thai | x | x | x | x | x (hunspell) | x | x |  |
+| Turkish | x | x | x | x | x | x | x |  |
+| Ukrainian | x | x | x | x | x | x | x |  |
+| Urdu |  | x | x | x | x (hunspell) | x | x |  |
+| Vietnamese |  | x | x | x | x (hunspell) | x | x |  |
+| Walloon | x | x | x | x | x (hunspell) | x | x |  |
+| Welsh | x | x | x | x | x (hunspell) | x | x |  |
+| Yiddish | x | x | x | x | x (hunspell) | x | x |  |

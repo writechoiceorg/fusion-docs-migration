@@ -1,0 +1,50 @@
+---
+title: "Neural Hybrid Query Stage"
+permalink: "4xm0li"
+---
+
+The Neural Hybrid Query stage performs hybrid lexical-semantic search that combines BM25-type lexical search with KNN dense vector search via Solr.
+
+Not sure which hybrid query stage is right for you? Read about the
+[differences between the hybrid query stages](/managed-fusion/5.9/00qy0k/differences-between-hybrid-query-stages).
+
+<Note>
+This feature is only available in Managed Fusion 5.9.10 and later versions of Managed Fusion 5.9.
+</Note>
+
+## Prefiltering
+
+Prefiltering is a technique that can improve performance and accuracy by filtering documents before applying the algorithm, reducing the number of documents that need to be processed.
+This is especially effective with the KNN algorithm.
+
+Prefiltering is disabled by default.
+To enable it, uncheck **Block pre-filtering** in this stage.
+
+When prefiltering is enabled, you can configure the filters using one or both of these methods:
+
+* Security filters
+
+  You can use security filters as prefilters by placing the [Graph Security Trimming Stage](/fusion/5.9/zdzlfu/graph-security-trimming-stage) *after* this one in the pipeline.
+  Then Fusion uses the security trimming filter as a prefilter.
+* JavaScript
+
+  When prefiltering is enabled, this stage adds a `preFilterKey` object to the Javascript `ctx` object.
+  You can place a [Javascript stage](/fusion/5.9/283/java-script-query-stage) after this one and use it to access the `preFilterKey` object, as in this example:
+
+  ```js
+  if(ctx.hasProperty("preFilterKey")) {
+    var preFilter = ctx.getProperty("preFilterKey");
+    preFilter.addFilter(filterQuery)
+  }
+  ```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/hybrid-query.mdx";
+
+<SchemaParamFields schema={schema}/>

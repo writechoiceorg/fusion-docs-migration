@@ -1,0 +1,79 @@
+---
+title: "Solr query language"
+permalink: "b4lyep"
+---
+
+This cheat sheet is a quick reference to the Solr query language. Use this syntax when querying Managed Fusion via the [Query API](/managed-fusion/5.9/eqky5t/query-api#queryid).
+
+Additional information about Solr query syntax can be found in the [Solr Query](https://solr.apache.org/guide/8_7/the-standard-query-parser.html#specifying-terms-for-the-standard-query-parser) documentation.
+
+There are two ways to query a Managed Fusion collection using the parameters below:
+
+* Enter query parameters in the [Query Workbench](/managed-fusion/5.9/ukxc4p/query-workbench) or the Quickstart.
+* Append query parameters to the [`/query/{id}` endpoint](/managed-fusion/5.9/eqky5t/query-api#queryid).
+
+## Wildcards
+
+Wildcards and regular expressions are supported.
+
+* `?`
+
+  Single-character wildcard
+* `*`
+
+  Multi-character wildcard
+
+## Escape characters
+
+Some characters in query fields must be escaped using a backslash `\`. Adding `\` before the following includes them in the query as literal values:
+
+* `?`
+* `*`
+* `\`
+* `/`
+* `"`
+
+<Note>
+Queries against facets are case sensitive.
+</Note>
+
+## Common query parameters
+
+|  |  |
+| --- | --- |
+| `q` | Defines a query using [standard query syntax](https://solr.apache.org/guide/8_8/the-standard-query-parser.html#standard-query-parser-parameters). This parameter is mandatory. |
+| `fq` | [Filter query](https://solr.apache.org/guide/8_8/common-query-parameters.html#fq-filter-query-parameter). A query string that limits the query results without influencing their scores. |
+| `sort` | [Sort field/direction](https://solr.apache.org/guide/8_8/common-query-parameters.html#sort-parameter). The field on which to sort, followed by a space and direction (`desc` or `asc`). You can specify multiple sort fields like this: `sort=title asc,year desc`. |
+| `rows` | [Max results per page](https://solr.apache.org/guide/8_8/common-query-parameters.html#rows-parameter). This sets the "page size" for paginated search results. |
+| `start` | [Pagination offset](https://solr.apache.org/guide/8_8/common-query-parameters.html#start-parameter). The number of results to skip, for pagination purposes. |
+| `fl` | [Field List](https://solr.apache.org/guide/8_8/common-query-parameters.html#fl-field-list-parameter). The list of fields to return in the query results. |
+| `df` | [Default field](https://solr.apache.org/guide/8_8/the-standard-query-parser.html#standard-query-parser-parameters). Used to configure the `q` and `fq` parameters. If not specified, the default field is `text`. |
+| `wt` | [Response writer](https://solr.apache.org/guide/8_8/common-query-parameters.html#wt-parameter). Select the response format by specifying one of [Solr’s response writers](https://solr.apache.org/guide/8_8/response-writers.html). |
+
+## Query examples
+
+1. Search only the `title` field in the "docs" collection for the term "solr", and format the results as JSON:
+
+```
+http://EXAMPLE_COMPANY.lucidworks.cloud/api/query-pipelines/default/collections/docs/select?q=solr&fl=title&wt=json
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+2. Use the following query with wildcards and character escaping in the Query Workbench to search for both `BLU RAY MOVIES` and `CAMERA` classes in the `VIDEO/CD` and `PHOTO/CAMERA` departments:
+
+   * `class_s:*RA* AND department_s:*O\/C*`
+
+3. Use a movie collection to select the movie ID and rating where the rating is equal to 4.
+
+```
+http://FUSION_HOST:FUSION_PORT/api/query-pipelines/default/collections/docs/select?q=*:*&fl=movie_id,rating&fq=rating:4
+```
+
+4. Search for movies with "black" in the title, starting at the 20th result for pagination, then return the results as XML:
+
+```
+http://FUSION_HOST:FUSION_PORT/api/query-pipelines/default/collections/docs/select?q=black&fl=title&start=20&rows=20&wt=xml
+```

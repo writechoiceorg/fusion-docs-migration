@@ -1,0 +1,648 @@
+export const schema = {
+  "type": "object",
+  "title": "Twitter Search",
+  "description": "Twitter Search uses Twitter's search API to query Twitter for tweets that match specific parameters. It allows querying for any keyword, location or other terms.",
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Social",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Twitter Search uses Twitter's search API to query Twitter for tweets that match specific parameters. It allows querying for any keyword, location or other terms.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "consumer_key",
+        "consumer_secret",
+        "access_token",
+        "token_secret"
+      ],
+      "properties": {
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "db": {
+          "type": "object",
+          "title": "Connector DB",
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Implementation Class Name",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength": 1
+            },
+            "inlinks": {
+              "type": "boolean",
+              "title": "Process Inlinks?",
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "aliases": {
+              "type": "boolean",
+              "title": "Process Aliases?",
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "inv_aliases": {
+              "type": "boolean",
+              "title": "Process Inverted Aliases?",
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default": false
+            }
+          },
+          "hints": [
+            "hidden"
+          ]
+        },
+        "consumer_key": {
+          "type": "string",
+          "title": "Consumer Key",
+          "description": "The OAuth Consumer Key is provided by Twitter when registering the application.",
+          "minLength": 1
+        },
+        "consumer_secret": {
+          "type": "string",
+          "title": "Consumer Secret",
+          "description": "The OAuth Consumer Secret is provided by Twitter when registering the application.",
+          "hints": [
+            "secret"
+          ],
+          "minLength": 1
+        },
+        "access_token": {
+          "type": "string",
+          "title": "Access Token",
+          "description": "The OAuth Access Token is provided by Twitter when registering the application.",
+          "minLength": 1
+        },
+        "token_secret": {
+          "type": "string",
+          "title": "Token Secret",
+          "description": "The OAuth Token Secret is provided by Twitter when registering the application.",
+          "hints": [
+            "secret"
+          ],
+          "minLength": 1
+        },
+        "max_docs": {
+          "type": "integer",
+          "title": "Max Documents",
+          "description": "The maximum number of documents to pull down, as a long. -1 for no limit",
+          "default": -1
+        },
+        "sleep": {
+          "type": "integer",
+          "title": "Sleep",
+          "description": "The amount of time, in milliseconds, to sleep when listening so as to not get throttled",
+          "default": 10000
+        },
+        "commit_on_finish": {
+          "type": "boolean",
+          "title": "Solr commit on finish",
+          "description": "Set to true for a request to be sent to Solr after the last batch has been fetched to commit the documents to the index.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "initial_mapping": {
+          "type": "object",
+          "title": "Initial field mapping",
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties": {
+            "skip": {
+              "type": "boolean",
+              "title": "Skip This Stage",
+              "description": "Set to true to skip this stage.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "title": "Label",
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255
+            },
+            "condition": {
+              "type": "string",
+              "title": "Condition",
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ]
+            },
+            "reservedFieldsMappingAllowed": {
+              "type": "boolean",
+              "title": "Allow System Fields Mapping?",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "retentionMappings": {
+              "type": "array",
+              "title": "Field Retention",
+              "description": "Fields that should be kept or deleted",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: keep (default) or delete",
+                    "enum": [
+                      "keep",
+                      "delete"
+                    ],
+                    "default": "keep",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "updateMappings": {
+              "type": "array",
+              "title": "Field Value Updates",
+              "description": "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "The value to add to or set on the field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: add (default) or set.",
+                    "enum": [
+                      "add",
+                      "set"
+                    ],
+                    "default": "add",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "translationMappings": {
+              "type": "array",
+              "title": "Field Translations",
+              "description": "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "target"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "title": "Source Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "title": "Target Field",
+                    "description": "The name of the target field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: copy (default) or move.",
+                    "enum": [
+                      "copy",
+                      "move"
+                    ],
+                    "default": "copy",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "unmappedRule": {
+              "type": "object",
+              "title": "Unmapped Fields",
+              "description": "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "title": "Keep",
+                  "description": "Keep all unmapped fields",
+                  "default": true,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "delete": {
+                  "type": "boolean",
+                  "title": "Delete",
+                  "description": "Delete all unmapped fields",
+                  "default": false,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToMoveValuesTo": {
+                  "type": "string",
+                  "title": "Move",
+                  "description": "Move all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToCopyValuesTo": {
+                  "type": "string",
+                  "title": "Copy",
+                  "description": "Copy all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToAddToUnmappedFields": {
+                  "type": "string",
+                  "title": "Add",
+                  "description": "Add this value to all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToSetOnUnmappedFields": {
+                  "type": "string",
+                  "title": "Set",
+                  "description": "Set this value on all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                }
+              }
+            }
+          },
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "hints": [
+            "advanced"
+          ],
+          "unsafe": false
+        },
+        "queries": {
+          "type": "array",
+          "title": "Queries",
+          "description": "A list of queries to perform",
+          "items": {
+            "type": "string"
+          }
+        },
+        "lang": {
+          "type": "string",
+          "title": "Language",
+          "description": "Restrict Tweets to the given language",
+          "enum": [
+            "aa",
+            "ab",
+            "ae",
+            "af",
+            "ak",
+            "am",
+            "an",
+            "ar",
+            "as",
+            "av",
+            "ay",
+            "az",
+            "ba",
+            "be",
+            "bg",
+            "bh",
+            "bi",
+            "bm",
+            "bn",
+            "bo",
+            "br",
+            "bs",
+            "ca",
+            "ce",
+            "ch",
+            "co",
+            "cr",
+            "cs",
+            "cu",
+            "cv",
+            "cy",
+            "da",
+            "de",
+            "dv",
+            "dz",
+            "ee",
+            "el",
+            "en",
+            "eo",
+            "es",
+            "et",
+            "eu",
+            "fa",
+            "ff",
+            "fi",
+            "fj",
+            "fo",
+            "fr",
+            "fy",
+            "ga",
+            "gd",
+            "gl",
+            "gn",
+            "gu",
+            "gv",
+            "ha",
+            "he",
+            "hi",
+            "ho",
+            "hr",
+            "ht",
+            "hu",
+            "hy",
+            "hz",
+            "ia",
+            "id",
+            "ie",
+            "ig",
+            "ii",
+            "ik",
+            "in",
+            "io",
+            "is",
+            "it",
+            "iu",
+            "iw",
+            "ja",
+            "ji",
+            "jv",
+            "ka",
+            "kg",
+            "ki",
+            "kj",
+            "kk",
+            "kl",
+            "km",
+            "kn",
+            "ko",
+            "kr",
+            "ks",
+            "ku",
+            "kv",
+            "kw",
+            "ky",
+            "la",
+            "lb",
+            "lg",
+            "li",
+            "ln",
+            "lo",
+            "lt",
+            "lu",
+            "lv",
+            "mg",
+            "mh",
+            "mi",
+            "mk",
+            "ml",
+            "mn",
+            "mo",
+            "mr",
+            "ms",
+            "mt",
+            "my",
+            "na",
+            "nb",
+            "nd",
+            "ne",
+            "ng",
+            "nl",
+            "nn",
+            "no",
+            "nr",
+            "nv",
+            "ny",
+            "oc",
+            "oj",
+            "om",
+            "or",
+            "os",
+            "pa",
+            "pi",
+            "pl",
+            "ps",
+            "pt",
+            "qu",
+            "rm",
+            "rn",
+            "ro",
+            "ru",
+            "rw",
+            "sa",
+            "sc",
+            "sd",
+            "se",
+            "sg",
+            "si",
+            "sk",
+            "sl",
+            "sm",
+            "sn",
+            "so",
+            "sq",
+            "sr",
+            "ss",
+            "st",
+            "su",
+            "sv",
+            "sw",
+            "ta",
+            "te",
+            "tg",
+            "th",
+            "ti",
+            "tk",
+            "tl",
+            "tn",
+            "to",
+            "tr",
+            "ts",
+            "tt",
+            "tw",
+            "ty",
+            "ug",
+            "uk",
+            "ur",
+            "uz",
+            "ve",
+            "vi",
+            "vo",
+            "wa",
+            "wo",
+            "xh",
+            "yi",
+            "yo",
+            "za",
+            "zh",
+            "zu"
+          ],
+          "default": "en"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "sleep"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "queries",
+            "lang",
+            "max_docs"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

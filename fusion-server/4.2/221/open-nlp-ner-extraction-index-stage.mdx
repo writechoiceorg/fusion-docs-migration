@@ -1,0 +1,95 @@
+---
+title: "OpenNLP NER Extraction Index Stage"
+permalink: "221"
+---
+
+Named Entity Recognition (NER) is the task of finding the names of persons, organizations, locations, and/or things in a passage of free text. The OpenNLP NER Extraction index stage (previously called the OpenNLP NER Extractor stage) uses a set of rules to find named entities in a field in the Pipeline Document (the "source") and populates a new field (the "target") with these entities.
+
+This stage uses [Apache OpenNLP](http://opennlp.apache.org/) project’s [Named Entity Recognition tool](http://opennlp.apache.org/docs/#tools.namefind.recognition) (the Name Finder tool). The OpenNLP documentation states:
+
+> The Name Finder tool can detect named entities and numbers in text. To be able to detect entities the Name Finder needs a model. The model is dependent on the language and entity type it was trained for. The OpenNLP projects offers a number of pre-trained name finder models which are trained on various freely available corpora. They can be downloaded at our model download page. To find names in raw text the text must be segmented into tokens and sentences.
+
+Fusion 4.x.x contains a common set of NER models for English that include sentence, token, and part-of-speech models. These models are:
+
+| Model | Purpose |
+| --- | --- |
+| `nlp/models/en-sent.bin` | Sentence model to detect sentences |
+| `nlp/models/en-token.bin` | Tokenizer model for tokenization of sentences |
+| `nlp/models/en-ner-date.bin` | Date name finder model |
+| `nlp/models/en-ner-location.bin` | Location name finder model |
+| `nlp/models/en-ner-money.bin` | Money name finder model |
+| `nlp/models/en-ner-organization.bin` | Organization name finder model |
+| `nlp/models/en-ner-percentage.bin` | Percentage name finder model |
+| `nlp/models/en-ner-person.bin` | Person name finder model |
+| `nlp/models/en-ner-time.bin` | Time name finder model |
+
+<Note>
+See [OpenNLP 1.5 series](http://opennlp.sourceforge.net/models-1.5/) for additional pre-trained OpenNLP models.
+</Note>
+
+To use these models, upload to Fusion using the [Fusion Blob Store service](/fusion-server/4.2/153/blob-storage). Here is an example of how to upload the sentence model file using the `curl` command-line utility, where "admin" is the name of a user with admin privileges, and "pass" is the password:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @data/nlp/models/en-sent.bin -H 'Content-type: application/octet-stream' http://localhost:8764/api/blobs/en-sent.bin
+```
+
+See [Natural Language Processing](/fusion-ai/4.2/451/natural-language-processing) for more information.
+
+## Example Specification
+
+*Specification of a stage which extracts names of people and places from field named 'body':*
+
+```json
+{
+   "type":"nlp-extractor",
+   "id":"iqtr",
+   "rules":[
+      {
+         "source":[
+            "body_t"
+         ],
+         "target":"organizations",
+         "writeMode":"append",
+         "sentenceModelLocation":"nlp/models/en-sent.bin",
+         "tokenizerModelLocation":"nlp/models/en-token.bin",
+         "entityTypes":[
+            {
+               "name":"organization",
+               "definition":"nlp/models/en-ner-organization.bin"
+            }
+         ]
+      },
+      {
+         "source":[
+            "body_t"
+         ],
+         "target":"persons",
+         "writeMode":"append",
+         "sentenceModelLocation":"nlp/models/en-sent.bin",
+         "tokenizerModelLocation":"nlp/models/en-token.bin",
+         "entityTypes":[
+            {
+               "name":"person",
+               "definition":"nlp/models/en-ner-person.bin"
+            }
+         ]
+      }
+   ],
+   "type":"nlp-extractor",
+   "skip":false,
+   "label":"Extract Entities",
+   "licensed":true,
+   "secretSourceStageId":"iqtr"
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/opennlp-ner-extraction-deprecated.mdx";
+
+<SchemaParamFields schema={schema}/>

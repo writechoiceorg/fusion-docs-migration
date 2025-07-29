@@ -1,0 +1,50 @@
+---
+title: "JIRA V1"
+description: "Connector Configuration Reference"
+permalink: "71"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The JIRA connector retrieves data from an instance of [Atlassian’s JIRA](https://www.atlassian.com/software/jira) issue tracking system.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is using the [Jira recipe](/fusion-connectors/lihmnw/jira) with the REST V2 connector.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+The JIRA connector uses the JIRA REST API to retrieve the following JIRA elements:
+
+* Projects
+* Issues
+* Comments
+* Worklogs
+* Attachments
+
+JIRA access to projects and issues may be restricted to certain users. Access of restricted information requires a JIRA username and password.
+
+The JIRA connector first requests a list of all projects, and for each project, it finds all issues. For each issue, information on summary, priority, assignee, and more is retrieved. Worklogs, comments, and attachments are treated as new entries (issue links) and indexed as a new document, not as a component of the issue itself.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-jira.mdx";
+
+<SchemaParamFields schema={schema}/>
+

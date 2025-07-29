@@ -1,0 +1,76 @@
+---
+title: "Exclude Documents Index Stage"
+permalink: "216"
+---
+
+The Exclude Documents stage drops all documents that match all of the specified rules (Boolean AND).
+If some field has multiple values then at least one value must match against the specified pattern.
+No further processing is done on any matching documents, thus they will not be indexed into a Fusion collection.
+All non-matching documents are passed to the next stage in the pipeline. Rules are defined using regular expression field matching.
+
+## Examples
+
+**Give the "simple-exclude" pipeline a stage that excludes certain document types**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-type: application/json" 'http://FUSION_HOST:FUSION_PORT/api/index-pipelines' -d '
+{
+  "id" : "simple-exclude",
+  "stages" : [ {
+    "type" : "exclude-doc",
+    "matchRules" : [ {
+        "field" : "document_type",
+        "pattern" : "(xls|xlsx|xlst|doc|docx)"
+    }]
+  }]
+}'
+```
+
+**Send a text document through the "simple-exclude" pipeline**
+
+```bash
+curl -u USERNAME:PASSWORD 'http://FUSION_HOST:FUSION_PORT/api/index-pipelines/simple-exclude/collections/logs/index?simulate=true&echo=true' -H 'Content-type: application/json' -d '
+{
+  "document_type": "txt"
+}'
+```
+
+The response is document metadata, indicating the document passed the stage:
+
+```json
+[ {
+  "id" : "93da43ff-4218-4f24-a690-23b530926104",
+  "fields" : [ {
+    "name" : "document_type",
+    "value" : "txt",
+    "metadata" : { },
+    "annotations" : [ ]
+  } ]
+} ]
+```
+
+**Send an XLS document through the "simple-exclude" pipeline**
+
+```bash
+curl -u USERNAME:PASSWORD 'http://FUSION_HOST:FUSION_PORT/api/index-pipelines/simple-exclude/collections/logs/index?simulate=true&echo=true' -H 'Content-type: application/json' -d '
+{
+  "document_type": "xls"
+}'
+```
+
+The empty response indicates the document was dropped:
+
+```json
+[ ]
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/exclude-documents.mdx";
+
+<SchemaParamFields schema={schema}/>

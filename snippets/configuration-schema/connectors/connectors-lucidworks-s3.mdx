@@ -1,0 +1,623 @@
+export const schema = {
+  "type": "object",
+  "title": "S3 (v2)",
+  "description": "Connector to index content in AWS S3 buckets.",
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipelineId"
+  ],
+  "properties": {
+    "properties": {
+      "type": "object",
+      "title": "S3 properties",
+      "description": "Plugin specific properties.",
+      "required": [
+        "application",
+        "authenticationConfig"
+      ],
+      "properties": {
+        "application": {
+          "type": "object",
+          "title": "S3 Application",
+          "required": [
+            "bucketName",
+            "region"
+          ],
+          "properties": {
+            "bucketName": {
+              "type": "string",
+              "title": "Bucket name"
+            },
+            "region": {
+              "type": "string",
+              "title": "Region",
+              "description": "The AWS region in which the bucket is located.",
+              "enum": [
+                "ap-south-1",
+                "eu-south-1",
+                "us-gov-east-1",
+                "ca-central-1",
+                "eu-central-1",
+                "us-west-1",
+                "us-west-2",
+                "af-south-1",
+                "eu-north-1",
+                "eu-west-3",
+                "eu-west-2",
+                "eu-west-1",
+                "ap-northeast-2",
+                "ap-northeast-1",
+                "me-south-1",
+                "sa-east-1",
+                "ap-east-1",
+                "cn-north-1",
+                "us-gov-west-1",
+                "ap-southeast-1",
+                "ap-southeast-2",
+                "us-iso-east-1",
+                "us-east-1",
+                "us-east-2",
+                "cn-northwest-1",
+                "us-isob-east-1",
+                "aws-global",
+                "aws-cn-global",
+                "aws-us-gov-global",
+                "aws-iso-global",
+                "aws-iso-b-global"
+              ],
+              "default": "us-west-2"
+            },
+            "objectKeys": {
+              "type": "array",
+              "title": "Object keys or prefixes",
+              "description": "Limit the crawl to a set of Files or Folders inside the bucket. Folders must end with '/'. Valid input examples: 'folderName/', 'folder/subFolder/', 'file.txt', 'folder/file.txt'",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.s3.config.S3Application"
+          ]
+        },
+        "authenticationConfig": {
+          "type": "object",
+          "title": "S3 Authentication settings",
+          "required": [],
+          "properties": {
+            "awsBasicAuthConfig": {
+              "type": "object",
+              "title": "AWS Basic Authentication settings",
+              "required": [],
+              "properties": {
+                "accessKey": {
+                  "type": "string",
+                  "title": "AWS Key",
+                  "description": "An AWS Access Key ID that can access the content."
+                },
+                "secretKey": {
+                  "type": "string",
+                  "title": "AWS Secret Key",
+                  "description": "The AWS Secret Key associated with the Access Key.",
+                  "hints": [
+                    "secret"
+                  ]
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.s3.config.auth.AwsBasicAuthenticationConfig"
+              ]
+            },
+            "awsSessionAuthenticationConfig": {
+              "type": "object",
+              "title": "AWS Session Authentication settings",
+              "required": [],
+              "properties": {
+                "accessKey": {
+                  "type": "string",
+                  "title": "AWS Key",
+                  "description": "An AWS Access Key ID that can access the content."
+                },
+                "secretKey": {
+                  "type": "string",
+                  "title": "AWS Secret Key",
+                  "description": "The AWS Secret Key associated with the Access Key.",
+                  "hints": [
+                    "secret"
+                  ]
+                },
+                "sessionToken": {
+                  "type": "string",
+                  "title": "AWS Session Token"
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.s3.config.auth.AwsSessionAuthenticationConfig"
+              ]
+            },
+            "awsInstanceCredentialsAuthConfig": {
+              "type": "object",
+              "title": "AWS Instance Credentials Authentication settings",
+              "required": [],
+              "properties": {
+                "instanceCredentials": {
+                  "type": "boolean",
+                  "title": "Use Instance Credentials",
+                  "description": "Use AWS instance credentials rather than an AWS key. Requires that Fusion 5 be hosted in an EKS. You can specify another AWS region through Region property in S3 Application settings.",
+                  "default": false
+                }
+              },
+              "interfaces": [
+                "com.lucidworks.connector.plugins.s3.config.auth.AwsInstanceCredentialsAuthConfig"
+              ]
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.s3.config.S3AuthenticationConfig"
+          ]
+        },
+        "proxyConfig": {
+          "type": "object",
+          "title": "S3 Proxy settings",
+          "required": [],
+          "properties": {
+            "proxyEndpoint": {
+              "type": "string",
+              "title": "Proxy Host",
+              "description": "The optional proxy protocol, host and endpoint through which the client will connect"
+            },
+            "proxyUsername": {
+              "type": "string",
+              "title": "Proxy Username",
+              "description": "The optional username to use when connecting through a proxy"
+            },
+            "proxyPassword": {
+              "type": "string",
+              "title": "Proxy Password",
+              "description": "The optional password to use when connecting through a proxy"
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.s3.config.S3ProxyConfig"
+          ]
+        },
+        "enableStrayContentDeletion": {
+          "type": "boolean",
+          "title": "Enable Stray Content Deletion",
+          "description": "When enabled, folders and files that are not found will be deleted.",
+          "default": true
+        },
+        "maximumItemLimitConfig": {
+          "type": "object",
+          "title": "Item Count Limits",
+          "required": [],
+          "properties": {
+            "maxItems": {
+              "type": "number",
+              "title": "Maximum Output Limit",
+              "description": "Limits the number of items emitted to the configured IndexPipeline. The default is no limit (-1).",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig$Properties"
+          ]
+        },
+        "sizeLimitProperties": {
+          "type": "object",
+          "title": "Item Size Limits",
+          "description": "Options for including or excluding items based on size, in bytes.",
+          "required": [],
+          "properties": {
+            "maxSizeBytes": {
+              "type": "number",
+              "title": "Maximum",
+              "description": "Used for excluding items when the item size is larger than the configured value.",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "minSizeBytes": {
+              "type": "number",
+              "title": "Minimum",
+              "description": "Used for excluding items when the item size is smaller than the configured value.",
+              "default": 1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig$Properties"
+          ]
+        },
+        "regexConfig": {
+          "type": "object",
+          "title": "Regular expression rules",
+          "required": [],
+          "properties": {
+            "inclusiveRegexes": {
+              "type": "array",
+              "title": "Inclusive regexes",
+              "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "exclusiveRegexes": {
+              "type": "array",
+              "title": "Exclusive regexes",
+              "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "Regex Cache Size",
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "default": 10000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.RegexConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "extensionConfig": {
+          "type": "object",
+          "title": "File Extension rules",
+          "required": [],
+          "properties": {
+            "includedFileExtensions": {
+              "type": "array",
+              "title": "Included file extensions",
+              "description": "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "excludedFileExtensions": {
+              "type": "array",
+              "title": "Excluded file extensions",
+              "description": "A set of all file extensions to be skipped from the fetch.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "Regex Cache Size",
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "default": 10000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "requestConfig": {
+          "type": "object",
+          "title": "Request Settings",
+          "description": "Options to configure the client",
+          "required": [
+            "retryCount"
+          ],
+          "properties": {
+            "pageSize": {
+              "type": "number",
+              "title": "Request page size",
+              "description": "Maximum number of items per paginated request",
+              "default": 1000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "retryCount": {
+              "type": "number",
+              "title": "Retry Count",
+              "description": "Number of times the S3 client connection should retry",
+              "default": 3,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.s3.config.request.RequestConfig$Properties"
+          ]
+        },
+        "documentsConfig": {
+          "type": "object",
+          "title": "Indexing settings",
+          "description": "Options to control how documents will be indexed",
+          "required": [],
+          "properties": {
+            "indexFolderMetadata": {
+              "type": "boolean",
+              "title": "Index Folder Metadata",
+              "description": "Enable indexing of folder metadata. Each folder will be represented by a document in the collection.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.s3.config.documents.LimitDocumentsConfig$Properties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.connector.plugins.s3.config.S3Config$Properties",
+        "com.lucidworks.fusion.connector.checker.config.RegexConfig",
+        "com.lucidworks.connector.plugins.s3.config.documents.LimitDocumentsConfig",
+        "com.lucidworks.connector.plugins.s3.config.request.RequestConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.checker.config.ExtensionConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig",
+        "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline."
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "pipelineId": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "collectionId": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 5. This setting controls the number of threads that call the Connectors fetch method. Higher values can, but not always, help with overall fetch performance.",
+              "default": 5,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4. This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource. Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instances will do fetching. This is useful for distributing load between different instances.",
+              "default": 0,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingInactivityTimeout": {
+              "type": "number",
+              "title": "Indexing inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default": 86400,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInactivityTimeout": {
+              "type": "number",
+              "title": "Plugin inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default": 600,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default": false
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default": false
+            },
+            "asyncParsing": {
+              "type": "boolean",
+              "title": "Async Parsing",
+              "description": "When enabled, content will be indexed asynchronously.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "FileSystem",
+  "interfaces": [
+    "com.lucidworks.connector.plugins.s3.config.S3Config",
+    "com.lucidworks.fusion.connector.plugin.api.config.ConnectorConfig"
+  ]
+}

@@ -1,0 +1,54 @@
+---
+title: "widget:datetimepicker"
+permalink: "1065"
+---
+
+## Description
+
+The Header Search directive
+
+## Usage
+
+as element:
+
+```xml
+<widget:datetimepicker
+       ng-model="{Object}"
+       [on-set-time="{Object}"]
+       [datepicker-config="{Object}"]
+       date-from="{String}">
+</widget:datetimepicker>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| ngModel | **Object** | Scope variable to update |
+| onSetTime  *(optional)* | **Object** | Function to call when the date/time has been selected |
+| datepickerConfig  *(optional)* | **Object** | Config for datepicker. \{minView: 'year/month/day/hour'} |
+| dateFrom | **String** | Earliest pickable date, updates automatically when changed. |
+
+## Example
+
+#### Source
+
+```xml
+<input type="text" ng-model="data | date:'fullDate'" />
+<widget:datetimepicker data-ng-model="data" data-on-set-time="onTimeSet(newDate, oldDate)"></widget:datetimepicker>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+            $scope.data = new Date();
+
+            $scope.onTimeSet = function (newDate, oldDate) {
+                console.log(newDate, oldDate);
+            }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetDatetimepicker.png)</Frame>

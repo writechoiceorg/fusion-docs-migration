@@ -1,0 +1,82 @@
+---
+title: "AEM V2"
+description: "Connector Configuration Reference"
+permalink: "um5omx"
+---
+
+Latest version: v1.3.0
+
+Compatible with Fusion version: 5.9.4 and later
+
+This connector retrieves data from an Adobe Experience Manager (AEM) repository. The AEM V2 connector is compatible with AEM version 6.5.
+
+For step-by-step configuration instructions, refer to [configure AEM V2 connector](/how-to/ht8hle/configure-aem-v-2-connector).
+
+The AEM V2 connector supports the following:
+
+* Full crawling and recrawling of pages and assets in Adobe Experience Manager.
+* Basic authentication.
+
+  <Note>
+  In v1.2.0 and Fusion 5.12.0 and later, the username and password fields have moved under **Authentication Settings** > **Login Settings**.
+  </Note>
+
+
+* [OAuth authenticaion](/how-to/ht8hle/aem-connector-oauth-authorization).
+* Security trimming, to filter results based on user permissions.
+* Filter document crawling by including and excluding paths and configuring content properties when [setting up the connector](/how-to/ht8hle/configure-aem-v-2-connector).
+* Specify wait time between fetch requests to throttle crawls, if necessary.
+* In Fusion 5.12.0 and later: Optional crawling of child paths.
+
+  <Tip>
+  Check for duplicate data when crawling child paths. For example, if the connector indexes both `cq:Page` and `cq:PageContent` then the results could include duplicated data.
+  </Tip>
+
+
+
+<Tip>
+**Important**
+
+The v1.3.0 version of this connector is only compatible with Fusion 5.9.4 and later when using security trimming. The v1.3.0 connector version uses [Graph Security Trimming](/fusion/5.9/zdzlfu/graph-security-trimming-stage) and not regular security trimming. It is imperative to treat this as a new connector, as configurations do not transfer over due to disparities between newer versions and previous ones. A full crawl is mandatory.
+</Tip>
+
+
+
+## Remote connectors
+
+V2 connectors support [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.7.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+Below is an example configuration showing how to specify the file system to index under the `connector-plugins` entry in your `values.yaml` file:
+
+```yaml
+additionalVolumes:
+- name: fusion-data1-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data1-pvc
+- name: fusion-data2-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data2-pvc
+additionalVolumeMounts:
+- name: fusion-data1-pvc
+    mountPath: "/connector/data1"
+- name: fusion-data2-pvc
+    mountPath: "/connector/data2"
+
+```
+
+You may also need to specify the user that is authorized to access the file system, as in this example:
+
+```yaml
+securityContext:
+    fsGroup: 1002100000
+    runAsUser: 1002100000
+
+```
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-aem.mdx";
+
+<SchemaParamFields schema={schema}/>
+

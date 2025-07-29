@@ -1,0 +1,93 @@
+export const schema = {
+  "type": "object",
+  "title": "Create Seldon Core Model Deployment",
+  "description": "Deploys a Seldon Core Model into the Fusion cluster",
+  "required": [
+    "id",
+    "deployModelName",
+    "modelDockerRepo",
+    "modelDockerImage",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "deployModelName": {
+      "type": "string",
+      "title": "Model name",
+      "description": "The model name of the Seldon Core deployment to deploy",
+      "maxLength": 30,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "modelReplicas": {
+      "type": "integer",
+      "title": "Model replicas",
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "default": 1
+    },
+    "modelDockerRepo": {
+      "type": "string",
+      "title": "Docker repository",
+      "description": "Defines the Docker repository where the model image is located."
+    },
+    "modelDockerImage": {
+      "type": "string",
+      "title": "Image name",
+      "description": "Name of the model's docker image"
+    },
+    "modelDockerSecret": {
+      "type": "string",
+      "title": "Kubernetes secret name for model repo",
+      "description": "Defines the Kubernetes secret to be used with the Docker repository"
+    },
+    "columnNames": {
+      "type": "string",
+      "title": "Output column names for model",
+      "description": "A list of column names that the model generates which the ML Service will return after inference.",
+      "default": "[output1, output2]"
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-deploy-model"
+      ],
+      "default": "argo-deploy-model",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

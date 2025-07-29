@@ -1,0 +1,38 @@
+---
+title: "search:load"
+permalink: "1142"
+---
+
+## Description
+
+The load directive sends an id or a query to the twigkit API and stores
+the result on a scoped variable and in the
+[Response Service](#/api/lightning.ResponseService)
+
+## Usage
+
+as element:
+
+```xml
+<search:load
+       var="{string}"
+       platform="{string}"
+       id="{string}"
+       query="{string}"
+       [error-page="{string}"]>
+</search:load>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var | **string** | The name of the variable to store the document in. |
+| platform | **string** | The name of the platform to retrieve the document from. |
+| id | **string** | The ID of the document to retrieve. If both an ID and query are present ID will take precedence. |
+| query | **string** | The name of the query object. If both an ID and query are present ID will take precedence. |
+| error-page  *(optional)* | **string** | Error page to redirect to when Platform throws an exception. |

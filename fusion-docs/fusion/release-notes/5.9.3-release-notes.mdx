@@ -1,0 +1,61 @@
+---
+title: "Fusion 5.9.3"
+permalink: "lqgbgi"
+---
+
+Released on February 26, 2024, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) includes an update to Kubernetes 1.28.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28
+* **Microsoft Azure Kubernetes Service (AKS):** 1.28
+* **Amazon Elastic Kubernetes Service (EKS):** 1.28
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.28. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.3  *(based on Solr 9.1.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## Improvements
+
+* Fusion now supports Kubernetes 1.28. This applies to GKE, AKS, and EKS. It also applies to Rancher (RKE) and OpenShift 4 versions that are compatible with Kubernetes 1.28. Refer to Kubernetes documentation at [Kubernetes v1.28](https://kubernetes.io/blog/2023/08/15/kubernetes-v1-28-release/) for more information.
+
+## Bug fixes
+
+* Fixed an issue affecting remote connector datasources where they could enter a state of persistent inability to index following a `No Plugin Activity` timeout error.
+
+* Fixed an issue with the async-parser where large files exceeding the configured memory buffer were repeatedly retried for processing, even though they would ultimately fail. This behavior could lead to unnecessary resource consumption and logging noise. Files that exceed the size configuration are no longer retried.
+
+* Fixed an issue with the async-parser where documents containing empty values were erroneously emitted for indexing, even though the indexing process couldn’t handle them. This behavior led to indexing failures and unnecessary resource consumption.
+
+* Fixed an issue with the Rules UI where very large rule sets could trigger URI errors, preventing the UI from loading or functioning correctly. This required manual deletion of rules to restore functionality.
+
+* Fixed an issue where previously denied and published rules reappeared as new suggestions after running detection jobs.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

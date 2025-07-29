@@ -1,0 +1,39 @@
+---
+title: "Rendering Search Results"
+permalink: "3096"
+---
+
+Search results are the focus of every search interface, and Appkit makes it easy to forge the results precisely to your liking.
+
+## Result Lists
+
+To add a list of results containing every available field, use a Result List tag on its own:
+
+```xml
+<search:result-list response="response"></search:result-list>
+```
+
+To choose which fields are displayed, add the Result tag inside the body of the Result List tag:
+
+```xml
+<search:result-list response="response">
+    <search:result>
+        ...
+    </search:result>
+</search:result-list>
+```
+
+## Working with fields
+
+Inside the Result tag, use the Field tag to specify and configure each field:
+
+```xml
+<search:result-list response="response">
+    <search:result>
+
+        <search:field name="title" />
+        <search:field name="description" />
+
+    </search:result>
+</search:result-list>
+```

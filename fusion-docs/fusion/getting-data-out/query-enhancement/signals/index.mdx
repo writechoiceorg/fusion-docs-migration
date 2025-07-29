@@ -1,0 +1,55 @@
+---
+title: "Signals"
+permalink: "469"
+---
+
+A *signal* is a recorded event related to one or more documents in a collection. Signals can record any kind of event that is useful to your organization. Click signals are the most common type of signals as this is the most common action a user takes with an item. In addition, other signal types can be defined, such as "addToCart", "purchase", and so on.
+
+Using a sufficiently large collection of signals, Fusion can automatically generate [recommendations](/fusion/5.9/475/methods-for-recommendations-and-boosting) such as these:
+
+* Based on the user’s search query, which items are most likely to interest them?
+* Based on the user’s similarity to other users, which additional items are likely to interest them?
+
+Signals are indexed in a secondary collection which is linked to the primary collection by the naming convention `<primarycollectionname>_signals`. So, if your main collection is named `products`, the associated signals collection is named `products_signals`. The signals collection is created automatically when signals are enabled for the primary collection. Signals are enabled by default whenever a new collection is created.
+
+Signals are indexed just like ordinary documents. The signals collection can be searched like any other collection, for example by using the [Query Workbench](/fusion/5.9/167/query-workbench) with the signals collection selected.
+
+[App Insights](/fusion/5.9/456/app-insights) provides visualizations and reports with which to analyze your signals. App Insights mainly uses raw signals, but also uses some [*aggregated*](/fusion/5.9/590/aggregation-jobs) signals. Currently only the signal types Request, Response and Click are supported within the App Insights dashboards.
+
+See [signals types and structure](/fusion/5.9/466/signals-types-and-structures) for more information.
+
+## The cold start problem
+
+The "cold start" problem means it is hard to personalize the search experience when insufficient signals have been aggregated. For example, it is hard to offer recommendations to users who have never visited before, or for queries that have never been issued before, or for items that have been recently introduced into the system.
+
+Fusion provides solutions for this problem using its query pipelines. A query pipeline that includes stages for blocking, boosting, or recommending based on signals can also include stages that provide fallbacks. In the case where there is not enough data to provide specialized blocking, boosting, or recommendations, the pipeline can return a simpler set of search results using Solr’s normal relevancy calculation.
+
+A common solution to the cold start problem is to sort or boost on a certain field to provide pseudo-recommendations when more specific recommendations are not available. For example, you can sort on the `sales_rank` field to recommend the most popular products, or boost on the `date_added` field to recommend the newest items.
+
+## Indexing or importing Signals
+
+Normally, signals are indexed as streaming data during the natural activity of users. See [Indexing Signals](/fusion/5.9/3225/indexing-signals) for details.
+
+For more information, see [Parallel Bulk Loader](/fusion/5.7/557/parallel-bulk-loader).
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Fusion Signals** focuses on how Fusion utilizes signal information to boost search relevance:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/advanced-signals" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/advanced-signals.jpg" alt="Fusion Signals" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

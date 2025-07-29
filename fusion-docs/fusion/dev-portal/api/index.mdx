@@ -1,0 +1,109 @@
+---
+title: "Fusion REST APIs"
+permalink: "424"
+---
+
+Fusion’s REST APIs provide programmatic access to Fusion services and features.
+You can use the APIs to automate tasks, integrate Fusion with other systems, and build custom applications.
+
+## API authentication
+
+There are two ways to authenticate when making API calls to Fusion:
+
+* Basic authentication with a username and password
+* API key authentication
+
+### Authenticate with basic auth
+
+You can use a Fusion username and password to authenticate with Fusion’s REST API.
+The user’s [role](/fusion/5.9/126/roles) and [permissions](/fusion/5.9/123/permissions) must include access to the endpoints and methods you want to use.
+
+### Authenticate with an API key
+
+You can use an API key instead of a username and password combination to power your search application or operations.
+Pass your API key to Fusion using either `apiKey` or `x-api-key`, as in these examples:
+
+```bash
+curl -H "x-api-key: API_KEY" "https://FUSION_HOST/api/query/status"
+curl -H "apiKey: API_KEY" "https://FUSION_HOST/api/query/status"
+curl https://FUSION_HOST/api/query/status?apiKey=API_KEY
+```
+
+For more information, see [API Keys](/fusion/5.9/7zriph/api-keys).
+
+## Access API endpoints
+
+API endpoints follow this pattern:
+
+```
+https://FUSION_HOST/api/SERVICE_NAME/ENDPOINT
+```
+
+Example: `https://FUSION_HOST/api/query/query-pipelines`
+
+## Discover API endpoints
+
+There are several ways to discover Fusion’s REST API endpoints.
+
+### Discover endpoints in the docs
+
+Navigate this documentation to find the API for each Fusion service.
+On any API documentation page, click the **View API specification** button to see the Swagger/OpenAPI specs for that service’s API endpoints.
+
+You can also jump directly to the specs from here:
+
+* [Admin API specs](/fusion/5.9/gjojjl/admin-ap-is?open-api=true#/)
+* [Apps Manager API specs](/fusion/5.9/xjhjxq/apps-manager-api?open-api=true#/)
+* [Async Parsing API specs](/fusion/5.9/mwbgkx/async-parsing-api?open-api=true#/)
+* [Query API specs](/fusion/5.9/s4cope/query-service-ap-is?open-api=true#/)
+* [Connectors APIs specs](/fusion/5.9/sm7up1/connectors-service-ap-is?open-api=true#/)
+* [Proxy API specs](/fusion/5.9/2z28q8/fusion-proxy-ap-is?open-api=true#/)
+* [Indexing APIs specs](/fusion/5.9/gq9miz/indexing-service-ap-is?open-api=true#/)
+* [Job Config API specs](/fusion/5.9/28cxtu/job-config-api?open-api=true)
+* [Job Launcher API specs](/fusion/5.9/l11e45/job-launcher-ap-is?open-api=true#/)
+* [Job REST Server API specs](/fusion/5.9/8a21lq/job-rest-server-ap-is?open-api=true#/)
+* [Machine Learning Model API specs](/fusion/5.9/fubw40/machine-learning-model-service-ap-is?open-api=true#/)
+* [Templating API specs](/fusion/5.9/wm0epz/templating-api?open-api=true#/)
+
+### Access the Swagger UI
+
+To enable Swagger, use `--set swagger.enabled=true` in the Helm chart install command.
+
+<Warning>
+**Caution**
+
+Authentication and authorization rules do not include the Swagger user interface; anyone with network access to your Fusion instance can see it.
+Before enabling Swagger, determine your organization’s security requirements.
+</Warning>
+
+
+
+Access the Swagger UI at this URL:
+
+```
+https://FUSION_HOST/swagger-ui/index.html
+```
+
+You can change the URL path to switch between the APIs for different services.
+For any API you want to see, change the path to `/SERVICE_NAME/swagger-ui/index.html` in the URL.
+For example, change the path to `/indexing/swagger-ui/index.html` to see the Indexing API.
+
+### Get the API specs in JSON
+
+You can view or download the JSON-formatted API specs for each service by appending
+`/v2/api-docs` or `/v3/api-docs`
+to the service’s base URL:
+
+```
+https://FUSION_HOST/api/swagger
+https://FUSION_HOST/apps-manager/v3/api-docs
+https://FUSION_HOST/async-parsing/v3/api-docs
+https://FUSION_HOST/connectors/v3/api-docs
+https://FUSION_HOST/indexing/v2/api-docs
+https://FUSION_HOST/job-config/v3/api-docs
+https://FUSION_HOST/job-launcher/v3/api-docs
+https://FUSION_HOST/job-rest-server/v3/api-docs
+https://FUSION_HOST/ml-model-service/v3/api-docs
+https://FUSION_HOST/query/v2/api-docs
+https://FUSION_HOST/templating/v3/api-docs
+```

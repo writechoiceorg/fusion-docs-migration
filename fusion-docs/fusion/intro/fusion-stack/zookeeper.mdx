@@ -1,0 +1,26 @@
+---
+title: "ZooKeeper"
+permalink: "3213"
+---
+
+[Apache ZooKeeper](http://zookeeper.apache.org/) is a distributed configuration service, synchronization service, and naming registry.
+Fusion uses a ZooKeeper [microservice](/fusion/5.9/195/fusion-microservices) to configure and manage all Fusion components in a single Fusion deployment.
+
+## ZooKeeper Terms
+
+At a high level, ZooKeeper services consist of the following components:
+
+* **znode.** ZooKeeper data is organized into a hierarchal name space of data nodes called znodes.
+  A znode can have data associated with it as well as child znodes.
+  The data in a znode is stored in a binary format, but it is possible to import, export, and view this information as JSON data.
+  Paths to znodes are always expressed as canonical, absolute, slash-separated paths; there are no relative reference.
+* **ephemeral nodes.** An ephemeral node is a znode which exists only for the duration of an active session.
+  When the session ends the znode is deleted. An ephemeral znode cannot have children.
+* **server.** A ZooKeeper service consists of one or more machines; each machine is a server which runs in its own JVM and listens on its own set of ports.
+  For testing, you can run several ZooKeeper servers at once on a single workstation by configuring the ports for each server.
+* **quorum.** A quorum is a set of ZooKeeper servers. It must be an odd number. For most deployments, only 3 servers are required.
+* **client.** A client is any host or process which uses a ZooKeeper service.
+
+The Fusion UI and API handle changes to ZooKeeper’s configuration. See [the ZooKeeper Import/Export API](/fusion/5.9/320/zoo-keeper-import-export-api).
+
+See the official [ZooKeeper documentation](http://zookeeper.apache.org/doc/current/) for details about using and managing a ZooKeeper service.

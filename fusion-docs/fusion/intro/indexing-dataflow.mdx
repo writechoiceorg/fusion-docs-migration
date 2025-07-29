@@ -1,0 +1,89 @@
+---
+title: "Indexing Data Flow"
+permalink: "3211"
+---
+
+With Fusion, your data is indexed in a set of collections in Fusion’s Solr core.
+
+A *primary collection* holds your searchable content, such as your product catalog, knowledge base, blog articles, product reviews, and so on.
+
+A set of *secondary collections* are associated with your primary collection to hold related data that Fusion can use to enhance the relevancy of your search results.
+
+This topic shows you how different types of data flow through Fusion to be indexed in your primary and secondary collections.
+
+## 1. Index your content
+
+No matter where your content is located, Fusion can index it. The Fusion collection where your searchable content is indexed is called the primary collection. Secondary collections are automatically created to hold related data, such as signals, machine learning job output, and so on.
+
+There are a few ways to index your searchable content to the primary collection:
+
+* [Connectors](/fusion-connectors/2/fusion-connectors)
+
+  Lucidworks has a wide variety of connectors for many types of data sources. [Find your connector](/fusion-connectors/2/fusion-connectors).
+
+  Once the connector fetches your data, [parsers](/fusion/5.9/370/parsers) read it before passing it to the [index pipeline](/fusion/5.9/162/index-pipelines).
+
+  + The gRpc remote framework is configured on the client side and only works with V2 type connectors.
+  + V1 classic connectors support ingesting data using IP white lists, VPN tunnels, and public channels.
+* The [Parallel Bulk Loader (PBL)](/fusion/5.9/452/parallel-bulk-loader-pbl)
+
+  The PBL can send your data to an index pipeline *or* directly to the primary collection, depending on whether the data requires transformation before indexing. It does not support parsers and is not recommended for production environments.
+* [Index profiles](/how-to/865/import-data-with-the-rest-api#push-documents-to-fusion-using-index-profiles)
+
+  Send your content to an index profile using the Fusion REST API. Index profiles are saved configurations of parsers and index pipelines.
+
+Indexing your content
+
+<Frame>![Index your content](/assets/images/5.9/diagrams/indexing-dataflow.png)</Frame>
+
+The [index pipeline](/fusion/5.9/162/index-pipelines) consists of one or more configurable [index pipeline stages](/fusion/5.9/8799/index-pipeline-stages), each performing a different type of transformation on the incoming data. Each connector has a default index pipeline, but you can modify these or create new ones.
+
+The last stage in any index pipeline should be the [Solr Indexer](/fusion/5.9/227/solr-indexer-stage) stage, which submits the documents to Solr for indexing.
+
+## 2. Index your signals
+
+Signals are event records that provide historical data about user behavior, such as clicks, likes, purchases, and so on. You don’t need to index signals about query responses; Fusion indexes response signals automatically by default. If you are using [App Studio](/fusion/5.9/963/fusion-app-studio) or [App Insights](/fusion/5.9/456/app-insights), then you need to index request signals. Learn more about [signal types and required fields](/fusion/5.9/466/signals-types-and-structures).
+
+To index your signals, you send them to Fusion using the [Signals API](/fusion/5.9/549/signals-api), which points to the hidden index pipeline designed especially for signals.
+
+Indexing your signals
+
+<Frame>![Index your signals](/assets/images/5.4/diagrams/index-your-signals.png)</Frame>
+
+Raw signals are indexed in a secondary collection called `COLLECTION_NAME_signals`. For example, if your primary collection is called `Products`, then the raw signals collection is `Products_signals`.
+
+## 3. Fusion jobs that index signals-related data
+
+When you [enable signals](/how-to/826/enable-or-disable-signals), Fusion creates jobs and secondary collections for analyzing and aggregating your raw signals. Some of this data enables [query rewriting](/fusion/5.9/489/query-rewriting) and [automatic boosting](/fusion/5.9/483/boost-with-signals), while other data becomes useful when you enable [recommendations](/fusion/5.9/3241/recommendations).
+
+Fusion jobs that index signals-related data
+
+<Frame>![Enable signals jobs](/assets/images/5.4/diagrams/enable-signals-jobs.png)</Frame>
+
+* The [`_session_rollup` job](/fusion/5.9/585/built-in-sql-aggregation-jobs#collection_session_rollup) creates session signals from your raw signals and adds them to the `_signals` collection.
+* [Automatic query rewrites](/fusion/5.9/489/query-rewriting) are created by [several jobs](/fusion/5.9/489/query-rewriting#spark-jobs) and indexed in the `_query_rewrite_staging` collection for review before they are published to the `_query_rewrite` collection.
+* The [`_head_tail` job](/fusion/5.9/552/head-tail-analysis-jobs) sends [rewrites for underperforming queries](/fusion/5.9/489/query-rewriting#head-tail) to the the `_query_rewrite_staging` collection. It also sends analytics tables to the `_job_reports` collection.
+* The `_signals_aggr` collection stores unique combinations of query, document ID, and filters found in your raw signals, each with a timestamp, weight, and count. These are generated by the [`_click_signals_aggregation` job](/fusion/5.9/590/aggregation-jobs) and the [`_user_query_history_agg` job](/fusion/5.9/585/built-in-sql-aggregation-jobs#history).
+* The [`user_item_prefs_agg` job](/fusion/5.9/585/built-in-sql-aggregation-jobs#prefs) identifies unique pairs of document IDs and user IDs, assigns a timestamp, weight, and count to each pair, and indexes it in the `_recs_aggr` collection.
+
+## 4. Fusion jobs that index recommendations
+
+When you [enable recommendations](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#enable-recommendations), another set of jobs and secondary collections is created.
+
+Fusion jobs that index recommendations
+
+<Frame>![Enable recommendations jobs](/assets/images/5.4/diagrams/enable-recommendations.png)</Frame>
+
+The default recommendation jobs read data from different collections depending on the type of recommendations being generated:
+
+* [Content-based recommendations](/fusion/5.9/476/items-for-item-recommendations#content-based-items-for-item-recommendations) are produced by the [`_content_recs` job](/fusion/5.9/8807/content-based-recommender-jobs-experimental) by analyzing your primary collection.
+* [Queries-for-query recommendations](/fusion/5.9/479/queries-for-query-recommendations) are produced by the [`_query_recs` job](/fusion/5.9/8802/query-to-query-session-based-similarity-jobs) by analyzing your raw signals.
+* BPR-based [items-for-item](/fusion/5.9/476/items-for-item-recommendations#collaborative-items-for-item-recommendations) and [items-for-user](/fusion/5.9/477/items-for-user-recommendations) recommendations are produced by the [`_bpr_item_recs` job](/fusion/5.9/8805/bpr-recommender-jobs) by analyzing aggregated signals.
+
+<Tip>
+For more recommendations, try [configuring the Trending Recommender job](/how-to/8860/identify-trending-documents-or-products).
+</Tip>
+
+## What’s next?
+
+See [Query Data Flow](/fusion/5.9/3215/query-data-flow) to learn about querying your content and recommendations.

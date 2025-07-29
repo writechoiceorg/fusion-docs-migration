@@ -1,0 +1,60 @@
+---
+title: "Appkit Concepts"
+permalink: "3115"
+---
+
+### Platform
+
+Appkit integrates with a variety of *search platforms*. These are the back-end technologies responsible for indexing the documents for efficient retrieval of search results. These are often referred to as 'search engines' or 'search technologies', but throughout the Appkit framework, we standardize on the term 'platform'.
+
+A platform provides the means to query a collection of data, returning a list of results. The original format of the data could be full-text documents, media (audio/video/images), or structured relational data.
+
+In our documentation, we assume that the target search platforms for the application you are developing are configured and ready to query.
+
+### Query
+
+A query is built up from the variety of search controls available in the application to form a bundle of parameters that the platform will understand. Appkit will automatically convert the query into the platform’s native format. It will then execute the query against the platform and return the results matching the query.
+
+Queries vary in complexity from a search on a single term to combinations of many 'clauses' with boolean logic (AND/OR/NOT). As far as a user is concerned the search controls provided in Appkit make it easy to build queries which best represent their information need by following intuitive and well established user experience (UX) patterns.
+
+### Response
+
+A search response wraps all the information a platform returns from a query including the result list and facets.
+
+### Result list
+
+A result list is the collection of data matching a query issued against a platform.
+
+### Result
+
+Each result in a result list will contain information stored in named fields. This information can take any form. Appkit provides tags for displaying the fields within a result including styling for displaying common field types. Every result has an `id` field that allows it to be uniquely identified amongst others in the collection of data being searched.
+
+### Facets
+
+Facets can be thought of as groupings or categories of results. Typically a platform will return all the values of facets within the results along with a count of the number of results within that category matching the given query.
+
+The common terminology for returning facet values for a particular field is '*faceting on* a field'. Platforms handle facets differently and the facets to return can usually either be statically configured to return with all search results, or dynamically specified with each query sent to the platform. The sensible defaults in Appkit let you easily display all available facets without prior knowledge of those which are statically configured.
+
+Facets allow for a richer search experience as users can click on a particular facet value to limit the results to those containing only the selected value of the field which is faceted on.
+
+### Pagination
+
+Nearly all search pages have a limit to the number of results displayed on a page. Pagination refers to the ability to navigate between the pages of results. This can vary in implementation and context. For example when viewing results on a desktop or tablet, you might be given a list of page numbers to choose from, whereas the same page on a mobile device might display only Next and Previous links. Pagination is usually combined with a control that lets the user choose between some options for the number of search results which appear on a page (for example, 5, 10, 50, 100).
+
+### Sort order
+
+The order in which results appear is dependent on how the platform is configured and the 'sort' options applied (if any) in the query. The default *sort order* for most platforms organizes the results by relevance to the query. This is usually based on a calculation using a number of factors. Full-text relevancy factors include: the number of times terms in the query appear in the document, the rarity of the terms across the collection of documents, the number of clauses in a query which are matched by the document and normalization factors such as the length of a field in which a match is found.
+
+Usually in a search application some options for re-sorting a result list based on a particular field are provided (for example, publication date, customer rating).
+
+### Relevancy ranking (score)
+
+Most platforms sort results using a calculation of the relevance of a document in the result list to the query. This is often returned as a number in a 'score' field within each result representing the ranking of a document relative to others in the result list. Scores are usually fairly meaningless on their own and only make sense when compared to other results in the same result list.
+
+### Filters
+
+*Filter* is a general term for anything that limits the search results. Many of the Appkit controls allow the user to apply filters to narrow down the results to those they seek. For specific types of fields, there are different options for how a filter can be represented. For example date fields can be filtered on using date pickers to choose a range or plain text to represent distinct ranges available to filter on.
+
+Most field values represented in an Appkit application are exposed as links which can be clicked on to allow a user to add a filter for that specific value. An example of this is that every slice of a pie chart visualization of the results is a clickable link which will filter to only those results which match the value represented by the slice of the pie chart.
+
+Careful thought to filters and how best to represent them in a search application can improve the quality of the search experience and efficiency of the search.

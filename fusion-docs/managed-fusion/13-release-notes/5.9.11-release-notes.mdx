@@ -1,0 +1,221 @@
+---
+title: "Managed Fusion 5.9.11"
+permalink: "0bs8ji"
+---
+
+Released on March 20, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) provides KNN-based performance enhancements for Neural Hybrid Search, Java 17 support for connectors, a new asynchronous parsing service, the Apps Manager API, and critical security updates.
+
+<Tip>
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+</Tip>
+
+## Key highlights
+
+### KNN performance enhancements
+
+The [Neural Hybrid Query stage](/managed-fusion/5.9/4xm0li/neural-hybrid-query-stage) now uses K-Nearest Neighbors (KNN) instead of vector similarity (vecSim).
+KNN is a more efficient method for finding the most relevant results, leading to faster and more accurate searches that help users find the most relevant information faster.
+
+New configuration options give you finer control over the speed and accuracy of neural hybrid queries:
+
+* `vectorDepth` (Number of Vector Results) sets the number of vector results to return from the vector portion of the hybrid query.
+  Increasing `vectorDepth` retrieves more vector results but may increase query time.
+  Lowering it speeds up search but may reduce result diversity.
+* `vecPreFilterBoolean` (Block pre-filtering) indicates whether to prevent pre-filtering.
+  Pre-filtering can improve performance, while blocking it can yield more accurate facet counts and search results.
+
+### Java 17 for connectors
+
+Connectors have been updated to use Java 17. If you use remote connectors, you must upgrade to JVM 17. See [Configure Remote V2 Connectors](/how-to/gy3add/configure-remote-v-2-connectors) for more information.
+
+### Asynchronous parsing service
+
+An asynchronous parsing service for connectors has been added.
+While traditional synchronous parsing can create delays in indexing when handling large documents or high data volumes, asynchronous parsing processes files in the background, allowing indexing to continue without waiting for each document to be fully parsed.
+This new service brings more efficient data processing, improved search freshness, scalability without added complexity, and better support for diverse data types, supporting HTML, JSON, and other formats.
+
+A new parsing stage, [Apache Tika Container](/managed-fusion/5.9/fi9zfy/apache-tika-container), has been added.
+This stage is now required when using asynchronous parsing for connectors.
+
+To use asynchronous parsing for connectors, be sure that **Async Parsing** is checked in the datasource and the Apache Tika Container parser stage is enabled in the index pipeline.
+See [Use Tika Asynchronous Parsing](/how-to/5h70cn/use-tika-asynchronous-parsing) for detailed steps to set up asynchronous parsing.
+
+<Note>
+Other parsers, such as HTML and JSON, are now supported by the asynchronous parsing service. By enabling asynchronous parsing, the parser configuration linked to your datasource is used.
+</Note>
+
+
+
+To learn how to start using the new asynchronous parsing service, see the following demonstration:
+
+{/* <iframe src="https://app.supademo.com/embed/cm7p23oxz00m9290i04lcinw5?embed_v=2" loading="lazy" title="Fusion 5.9.11 Asynchronous parsing service" allow="clipboard-write" frameborder="0" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe> */}
+
+This update also includes a new [Async Parsing API](/managed-fusion/5.9/3uszuk/async-parsing-api).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Asynchronous Parsing Service** focuses on how to use the asynchronous parsing service for connectors to improve efficiency and responsiveness:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/asynchronous-parsing-service" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/async-parsing.jpg" alt="Asynchronous Parsing Service" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+### Job Config service
+
+The new Job Config service provides more accurate and reliable job status reporting.
+This service uses asynchronous communication through Kafka for improved efficiency over the previous synchronous calls, with these benefits:
+
+* More accurate job tracking. You get real-time, reliable job status updates, reducing uncertainty about whether a job is running, completed, or failed.
+* Faster troubleshooting. With detailed job histories and improved reporting, teams can quickly diagnose issues instead of chasing down incomplete or outdated job statuses.
+* Seamless transition. For most users, no action is required—API calls through `api-gateway` automatically reroute. Internal API users need only a simple update to continue tracking jobs accurately.
+
+The following API endpoints have been migrated from the `admin` service to the new `job-config` service:
+
+```
+/api/tasks/{id}
+/api/jobs/{resource}/schedule
+/api/tasks
+/api/jobs/{resource}/actions
+/api/tasks/_schema
+/api/jobs
+/api/jobs/{resource}
+/api/jobs/{resource}/history
+/api/jobs/_schema
+```
+
+For API calls made to the `api-gateway` service, you do not need to make any changes; the endpoints above are automatically rerouted to the new `job-config` service.
+See [Job Config API](/managed-fusion/5.9/bg2tq9/job-config-api) for reference information about these endpoints.
+
+<Note>
+If you are making internal API calls to the `admin` service using any of the endpoints above, you must update your API calls to point to the new `job-config` service.
+</Note>
+
+### Security updates
+
+Lucidworks remains committed to providing a secure and resilient platform. Managed Fusion 5.9.11 includes critical security updates across a number of Managed Fusion services, including the admin, connectors, distributed compute, indexing, job configuration, and query services, ensuring continued protection and reliability for your deployments.
+
+### API path changes
+
+Trailing slashes are no longer supported when making API calls.
+For example, this API call works:
+
+```
+http://HOSTNAME/api/apps/APP_NAME/query/QUERY_PROFILE?q=hello
+```
+
+But this API call does not work and results in an error:
+
+```
+http://HOSTNAME/api/apps/APP_NAME/query/QUERY_PROFILE/?q=hello
+```
+
+## Known issues
+
+* Scheduled jobs that perform Solr operations may fail to run or save due to permission-related issues in the `job-config` service.
+
+  In some cases, users without full permissions can create or modify scheduled tasks that execute actions they aren’t authorized to run directly, specifically tasks that invoked Solr using `solr://` URIs.
+  These jobs may fail silently or prevent schedule changes from being saved. This issue can also affect the execution of jobs after upgrade. It is fixed in Fusion 5.9.13.
+
+* Config Sync may remove job schedules during upgrade.
+
+  During upgrades to Managed Fusion 5.9.11, ConfigSync may remove scheduled job entries from the cluster but fail to reapply them afterward. This can result in missing or disabled job schedules depending on the environment.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Jobs API returns incorrect timestamps for jobs scheduled after 12:00 UTC.
+
+  In Managed Fusion 5.9.11, job timestamps returned by the API may be off by 12 hours if the time is after noon UTC. This affects scheduling accuracy and may cause the UI to misinterpret whether a change has been made.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Cannot update existing job triggers in the Schedulers view.
+
+  In Managed Fusion 5.9.11, scheduled job triggers cannot be modified due to incorrect timestamp comparison logic in the Admin UI. You must delete and recreate the trigger instead.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Scheduler may stop working if ZooKeeper becomes briefly unavailable.
+
+  If all `job-config` pods lose connection to ZooKeeper in Managed Fusion 5.9.11, they may fail to re-elect a leader, halting all scheduling until one of the pods is manually restarted.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Datasource jobs show incorrect "started by" user.
+
+  In Managed Fusion 5.9.11, datasource jobs started in the UI incorrectly show `default-subject` as the initiating user in job history instead of the actual user.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Schema API incompatibility with nonstandard schema file names.
+
+  In Managed Fusion 5.9.11, new apps may save Solr schemas with the name `managed-schema` instead of `managed-schema.xml`, while older apps may include only a `managed-schema` file.
+  This mismatch can cause errors when editing or previewing schemas using the Schema API, particularly when the expected file extension is missing.
+
+  Managed Fusion 5.9.12 resolves this by supporting both file names, ensuring backward compatibility with older apps and consistent behavior for new ones.
+* Scheduled jobs configured to trigger based on the success or failure of another job do not execute as expected. The root cause is that the completion event of a job is not triggering the `onJobEventReceived` handler.
+
+  This issue is fixed in Managed Fusion 5.9.12.
+* Aborted jobs in Managed Fusion are listed twice in the Job History.
+  This issue is fixed in Managed Fusion 5.9.12.
+* When a new datasource is configured in **Indexing > Index Workbench**, the simulated results do not display, and the following error is generated: "Failed to simulate results from a working pipeline." As a result, the Index Workbench cannot simulate results for new datasources, preventing users from configuring the indexing process within the workbench.
+  This issue is fixed in Managed Fusion 5.9.12.
+
+  To work around this issue, configure each part of the indexing process separately instead of using the Index Workbench:
+
+  + Configure datasources in **Indexing > Datasources**.
+  + Configure parsers in **Indexing > Parsers**.
+  + Configure index pipelines in **Indexing > Index Pipelines**.
+* In Managed Fusion 5.9.10, the Apache Spark 3.4.1 upgrade impacted jobs that use Python 3.7 behavior or compatibility, which may have automatically updated to Python 3.10.x and no longer function correctly. If you have not yet updated the code for Python 3.10.x, update your code to ensure compatibility with Python 3.10.x and then test your Spark jobs in a staging environment before deploying to production.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/managed-fusion/5.9/dv9ib2/deprecations-and-removals#deprecations).
+
+* The [Parsers Indexing CRUD API](/managed-fusion/5.9/hqxqm1/parsers-api), which provides CRUD operations for parsers, allowing users to create, read, update, and delete parsers, is deprecated in Managed Fusion 5.9.11. This feature was originally deprecated in Managed Fusion 5.12.0. It will be removed in a future release no later than September 4, 2025.
+
+    <Tip>
+    The [Async Parsing API](/managed-fusion/5.9/3uszuk/async-parsing-api) replaces the Parsers Indexing CRUD API and is available in Managed Fusion 5.9.11. This API provides improved functionality and aligns with Managed Fusion’s updated architecture, ensuring consistency across versions.
+    </Tip>
+
+
+* The [Word2Vec Model Training Job](/managed-fusion/5.9/jem3fe/word-2-vec-model-training-jobs), which trains a shallow neural model to generate vector embeddings for text data, is deprecated in Managed Fusion 5.9.11. It will be removed in a future release no later than September 4, 2025.
+
+    <Tip>
+    Lucidworks offers a wide array of AI solutions, including [Lucidworks AI](/lw-platform/ai/lukosg/lucidworks-ai). Lucidworks AI provides easy-to-use, AI-powered data discovery and search capabilities including:
+
+    + Pre-trained embedding models
+    + Custom embedding model training
+    + Seamless integration with Managed Fusion
+    </Tip>
+
+
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platform and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30, 1.31
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.11  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

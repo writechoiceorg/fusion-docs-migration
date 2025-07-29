@@ -1,0 +1,254 @@
+---
+title: "Prompting Preview API"
+description: "Lucidworks AI Prediction API"
+permalink: "m0x9s2"
+---
+
+View API specification
+
+The Lucidworks AI Generative AI Prompting Preview API returns [Prediction API `passthrough` use case](/lw-platform/ai/aimylh/pass-through-use-case) prompts before being sent to any [generative AI (GenAI) model](/lw-platform/ai/r7ai90/generative-ai#generative-ai-models).
+
+This API is used to help debug `passthrough` use case prompts to ensure the input to the GenAI model is valid, and within the model’s processing limits.
+
+<Note>
+Before the prompt is passed to the GenAI model, it may be formatted, truncated, expanded, or modified in other ways to meet that model’s requirements so the API call is successful.
+</Note>
+
+
+
+These preprocessing steps are integral to deliver an optimized prompt that generates coherent and relevant responses. By examining the prompt after preprocessing, you can better understand how your input is being interpreted by the AI, which can help you refine your queries for more accurate and useful outputs.
+
+The input parameter keys and values are the same used in the [Prediction API `passthrough` use case](/lw-platform/ai/aimylh/pass-through-use-case) except for `apiKey` or similar authentication params, which must be provided for consistency. However, the model third-party API is *not* called, so those parameters are not used. You can enter placeholder values instead.
+
+<Note>
+
+To view the full configuration specification for an API, click the **View API specification** button.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+Alternatively, [click here to open the API spec](?open-api=true).
+
+</Note>
+
+
+
+## Prerequisites
+
+To use this API, you need:
+
+* The unique `APPLICATION_ID` for your Lucidworks AI application. For more information, see [credentials to use APIs](/lw-platform/platform/oqzogo/index#credentials).
+* A bearer token generated with a scope value of `machinelearning.predict`. For more information, see [Authentication API](/lw-platform/ai/oa96k5/authentication-api).
+* The GenAI model name in the `MODEL_ID` field for the request. The path is: `/ai/prompt/passthrough/MODEL_ID`. For more information about supported models, see [Generative AI models](/lw-platform/ai/r7ai90/generative-ai#generative-ai-models).
+
+## Common parameters and fields
+
+Some parameters in the `/ai/prompt/passthrough/MODEL_ID` request POST request are common to all of the generative AI (GenAI) use cases.
+Also referred to as hyperparameters, these fields set certain controls on the response.
+Refer to the [API spec](?open-api=true) for more information.
+
+### useCaseConfig parameters
+
+The request also uses the following `useCaseConfig` parameters:
+
+* ["useCaseConfig": "useSystemPrompt": boolean](#use-system-prompt)
+* ["useCaseConfig": "dataType": "string"](#data-type)
+
+<Note>
+If both `useSystemPrompt` and `dataType` are present, the value in `dataType` is used.
+</Note>
+
+
+
+#### Use System Prompt
+
+**`"useCaseConfig": "useSystemPrompt": boolean`**
+
+This parameter can be used:
+
+* If custom prompts are needed, or if the prompt response format needs to be manipulated.
+* But the prompt length may increase response time.
+
+  Some models, such as the `mistral-7b-instruct` and `llama-3-8b-instruct`, generate more effective results when system prompts are included in the request.
+
+  If `"useSystemPrompt": true`, the LLM input is automatically wrapped into a model-specific prompt format with a generic system prompt before passing it to the model or third-party API.
+
+  If `"useSystemPrompt": false`, the `batch.text` value serves as the prompt for the model. The LLM input must accommodate model-specific requirements because the input is passed as is.
+
+#### Data Type
+
+**`"useCaseConfig": "dataType": "string"`**
+
+This optional parameter enables model-specific handling to format the text returned in the `/prompt` request.
+
+The values for `dataType` in the request are:
+
+* `"dataType": "text"`
+
+  This value is equivalent to `"useSystemPrompt": true` and is a pre-defined, generic prompt.
+* `"dataType": "raw_prompt"`
+
+  This value is equivalent to `"useSystemPrompt": false` and is passed directly to the model.
+* `"dataType": "json_prompt"`
+
+  This value follows the generics that allow three roles:
+
+  + `system`
+  + `user`
+
+    - Only the last user message is truncated.
+    - If the API does not support system prompts, the user role is substituted for the system role.
+  + `assistant`
+
+    - If the last message role is `assistant`, it is used as a pre-fill for generation and is the first generated token the model uses. The pre-fill is prepended to the model output, which makes models less verbose and helps enforce specific outputs such as YAML.
+    - The Google Vertex AI does not support generation pre-fills, so an exception error is generated.
+
+      This follows the HuggingFace template contraints at [Hugging Face chat templates](https://huggingface.co/docs/transformers/main/en/chat_templating).
+    - Additional `json_prompt` information:
+
+      * Consecutive messages for the same role are merged.
+      * You can paste the information for a hosted model into the `json_prompt` value and change the model name in the stage.
+
+## Examples
+
+### Sample POST request
+
+The following example is a POST prompt request. Replace the values in the `APPLICATION_ID`, `MODEL_ID`, and `ACCESS_TOKEN` fields with your information.
+
+```bash
+curl --request POST \
+  --url https://APPLICATION_ID.applications.lucidworks.com/ai/prompt/passthrough/{MODEL_ID} \
+  --header 'Authorization: Bearer ACCESS_TOKEN' \
+  --header 'Content-type: application/json' \
+  --data '{
+    "batch": [
+        {
+            "text": "[{\"role\": \"system\", \"content\": \"You are a helpful utility program instructed to accomplish a product classififcation task. Please, classify the provided product name into one of the following categories:\\nGROCERIES, FURNITURE, UNKNOWN\"}, {\"role\": \"user\", \"content\": \"chocolate milk\"}, {\"role\": \"assistant\", \"content\": \"GROCERIES\"}, {\"role\": \"user\", \"content\": \"chocolate table\"}, {\"role\": \"assistant\", \"content\": \"FURNITURE\"}, {\"role\": \"user\", \"content\": \"stone baked pizza\"}]"
+        }
+    ],
+    "useCaseConfig": {
+        "dataType": "json_prompt"
+    },
+    "modelConfig": {
+        "apiKey": "fake"
+    }
+}'
+
+```
+
+### Sample Llama3 model response
+
+Based on the request, the following example is the response for the Llama3 `MODEL_ID`:
+
+```json
+{
+    "predictions": [
+        {
+            "tokensUsed": {
+                "promptTokens": 95
+            },
+            "prompt": "<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\nYou are a helpful utility program instructed to accomplish a product classififcation task. Please, classify the provided product name into one of the following categories:\nGROCERIES, FURNITURE, UNKNOWN<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nchocolate milk<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\nGROCERIES<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nchocolate table<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\nFURNITURE<|eot_id|><|start_header_id|>user<|end_header_id|>\n\nstone baked pizza<|eot_id|><|start_header_id|>assistant<|end_header_id|>\n\n"
+        }
+    ]
+}
+
+```
+
+### Sample Mistral model response
+
+Based on the request, the following example is the response for the Mistral `MODEL_ID`:
+
+```json
+{
+    "predictions": [
+        {
+            "tokensUsed": {
+                "promptTokens": 94
+            },
+            "prompt": "<s> [INST] You are a helpful utility program instructed to accomplish a product classififcation task. Please, classify the provided product name into one of the following categories:\nGROCERIES, FURNITURE, UNKNOWN\n\nchocolate milk [/INST] GROCERIES</s> [INST] chocolate table [/INST] FURNITURE</s> [INST]  stone baked pizza  [/INST]"
+        }
+    ]
+}
+
+```
+
+### Sample OpenAI model response
+
+Based on the request, the following example is the response for the OpenAI `MODEL_ID`:
+
+```json
+[
+    {
+        "tokensUsed": {
+            "promptTokens": 92
+        },
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful utility program instructed to accomplish a product classififcation task. Please, classify the provided product name into one of the following categories:\nGROCERIES, FURNITURE, UNKNOWN"
+            },
+            {
+                "role": "user",
+                "content": "chocolate milk"
+            },
+            {
+                "role": "assistant",
+                "content": "GROCERIES"
+            },
+            {
+                "role": "user",
+                "content": "chocolate table"
+            },
+            {
+                "role": "assistant",
+                "content": "FURNITURE"
+            },
+            {
+                "role": "user",
+                "content": "stone baked pizza"
+            }
+        ]
+    }
+]
+
+```
+
+### Sample Anthropic model response
+
+Based on the request, the following example is the response for the Anthropic `MODEL_ID`:
+
+```json
+[
+    {
+        "tokensUsed": {
+            "promptTokens": 96
+        },
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are a helpful utility program instructed to accomplish a product classififcation task. Please, classify the provided product name into one of the following categories:\nGROCERIES, FURNITURE, UNKNOWN"
+            },
+            {
+                "role": "user",
+                "content": "chocolate milk"
+            },
+            {
+                "role": "assistant",
+                "content": "GROCERIES"
+            },
+            {
+                "role": "user",
+                "content": "chocolate table"
+            },
+            {
+                "role": "assistant",
+                "content": "FURNITURE"
+            },
+            {
+                "role": "user",
+                "content": "stone baked pizza"
+            }
+        ]
+    }
+]
+
+```

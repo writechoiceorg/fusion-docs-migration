@@ -1,0 +1,55 @@
+---
+title: "Web V1"
+description: "Connector Configuration Reference"
+permalink: "39"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Web V1 connector retrieves data from a Web site using HTTP and starting from a specified URL.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is the Web V2 connector.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+Fusion 5.x uses the [Open Graph Protocol](https://ogp.me/) as the default configuration for fields. Deviation from that standard configuration may exclude information from indexing during the crawl.
+
+## Crawl options
+
+* If you’re crawling a website protected by a login or SmartForm, see [Crawl an Authenticated Website with the Web Connector](/how-to/2v5rgf/crawl-an-authenticated-website-with-the-web-connector).
+* If you’re crawling a CMS or ecommerce site, you may want to [Deduplicate Web Content using Canonical Tags](/how-to/754/deduplicate-web-content-using-canonical-tag).
+* To prevent unbounded crawls or to only crawl a portion of your website, see [Limit the Crawl Scope for Web Sites](/how-to/776/limit-the-crawl-scope-for-web-sites).
+
+The `sitemap_incremental_crawling` configuration parameter processes and crawls URLs found in the sitemap. Set to `true` to remove documents from the index when they can no longer be accessed as unique documents. For example, if the page is removed from the sitemap and cannot be accessed. In addition, if the page is not in the sitemap, the connector classifies the missing page as unbounded and removes the page from the index.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+<Note>
+
+If you experience CrawlDB errors such as "File is already opened and is locked", then raise the Alias Expiration setting.
+
+</Note>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-web.mdx";
+
+<SchemaParamFields schema={schema}/>
+

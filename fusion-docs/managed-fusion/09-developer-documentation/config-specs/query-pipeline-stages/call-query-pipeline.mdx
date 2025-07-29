@@ -1,0 +1,79 @@
+---
+title: "Call Pipeline"
+description: "Query pipeline stage configuration specifications"
+permalink: "9pxv1w"
+---
+
+The Call Pipeline query stage calls another query pipeline.
+You can use this stage to reuse pipeline logic across multiple pipelines.
+You can also use it to check for null results, look up related queries, perform fallback queries, and so on.
+
+In the context of a query pipeline, the Call Pipeline stage creates a "subroutine" that pauses the main pipeline while the called pipeline completes its operations.
+The called pipeline returns its output to the pipeline that called it, as input for the next pipeline stage.
+Note that this is different than Call Pipeline stages in index pipelines, where the called pipeline does *not* return its output to the pipeline that called it.
+
+In the example illustrated below, a Call Pipeline stage invokes a query pipeline that looks up related items and returns those results to the main pipeline as the input to the next pipeline stage:
+
+<Frame>![A Call Pipeline stage in a query pipeline](/assets/images/diagrams/call-pipeline-query1.png)</Frame>
+
+The main pipeline then continues processing the query.
+
+<Tip>
+Use a naming convention for your pipelines that lets you easily differentiate between your main pipelines and the ones you are using as call pipelines.
+For example, you can add a suffix like `_cpl` to differentiate your call pipelines from other pipelines.
+</Tip>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Using Call Pipelines** focuses on how the Call Pipeline stage works differently in index pipelines versus query pipelines and how to use it in both:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/using-call-pipelines" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/call-pipelines-ql.jpeg" alt="Using Call Pipelines" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Call Pipelines** focuses on how to implement reusable pipelines and call them from other pipelines:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/call-pipelines" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/call-pipelines.jpg" alt="Call Pipelines" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/call-pipeline.mdx";
+
+<SchemaParamFields schema={schema}/>

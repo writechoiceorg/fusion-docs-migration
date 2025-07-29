@@ -1,0 +1,53 @@
+---
+title: "lifecycle:on"
+permalink: "1152"
+---
+
+## Description
+
+Shows or hides elements when an event is broadcast
+
+## Usage
+
+as element:
+
+```xml
+<lifecycle:on
+       event="{string}"
+       hide="{boolean}"
+       show="{boolean}">
+</lifecycle:on>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| event | **string** | The name of the event to be listened to |
+| hide | **boolean** | If true when the event is heard the elements will be hidden. |
+| show | **boolean** | If true when the event is heard the elements will be shown. |
+
+## Example
+
+#### Source
+
+```xml
+<p>An event called foo will broadcast in 5 seconds.</p>
+<lifecycle:delay delay="5000">
+    <lifecycle:event event="foo">
+        <search:alert style="alertbox-positive">Event foo has been broadcast</search:alert>
+    </lifecycle:event>
+</lifecycle:delay>
+<lifecycle:on event="foo">
+    <lifecycle:delay delay="1000">
+        <search:alert style="alertbox-positive">Event foo has been heard so I have appeared!</search:alert>
+    </lifecycle:delay>
+</lifecycle:on>
+<lifecycle:on event="foo" hide="true">
+    <search:alert style="alertbox-warning">When I hear the event foo I will hide!</search:alert>
+</lifecycle:on>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/lifecycleOn.png)</Frame>

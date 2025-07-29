@@ -1,0 +1,28 @@
+---
+title: "facet"
+permalink: "1026"
+---
+
+## Description
+
+Returns a result from the response
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ facet_expression | facet:facetName }}
+```
+
+### In JavaScript
+
+```js
+$filter('facet')(response, facetName)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| response | object | The response object to get the facet from |
+| facetName | string | The facet name |

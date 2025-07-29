@@ -1,0 +1,44 @@
+---
+title: "Lucidworks AI Vectorize Field"
+description: "Lucidworks AI"
+permalink: "4h364i"
+---
+
+LWAI Vectorize Field is a Fusion index pipeline stage that invokes a Lucidworks AI model to encode a string field to a vector representation.
+
+To use this stage, non-admin Fusion users must be granted the `PUT,POST,GET:/LWAI-ACCOUNT-NAME/**` permission in Fusion, which is the Lucidworks AI API Account Name defined in [Lucidworks AI Gateway](/lw-platform/ai/41gdb7/lucidworks-ai-gateway) when this stage is configured.
+
+More detailed information to configure this stage is in [Configure Neural Hybrid Search](/how-to/jk43nv/configure-neural-hybrid-search).
+
+## Configurable vector quantization method
+
+In Fusion 5.9.13 and up, you can configure the vector quantization method.
+Quantization converts high-precision float vectors into compact 8-bit integer vectors, significantly lowering storage and compute costs.
+By default, no quantization is performed; you enable it by selecting a method.
+
+To select the quantization method, go to **Model Configuration** in the stage configuration and enter the `vectorQuantizationMethod` parameter with the value for the desired method:
+
+<Frame>![Vector quantization method configuration in an LWAI pipeline stage](/assets/images/5.9/vector-quantization-method-config.png)</Frame>
+
+Available methods are:
+
+* `min-max` creates tensors of embeddings and converts them to uint8 by normalizing them to the range [0, 255].
+
+  This method loses precision when evaluated against non-quantized vectors.
+  Test it against your data to see if the loss is acceptable.
+* `max-scale` finds the maximum absolute value along each embedding, normalizes the embeddings by scaling them to a range of -127 to 127, and returns the quantized embeddings as an 8-bit integer tensor.
+
+  This method has no loss at the ten-thousandths place during evaluation against non-quantized vectors.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/lw-platform/index-stages/lwai-vectorize-field.mdx";
+
+<SchemaParamFields schema={schema}/>

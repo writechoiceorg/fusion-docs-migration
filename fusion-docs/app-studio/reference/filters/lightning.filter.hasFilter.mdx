@@ -1,0 +1,29 @@
+---
+title: "hasFilter"
+permalink: "1024"
+---
+
+## Description
+
+Returns the first filter object from the query or facet that matches the name and optionally the value also
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ hasFilter_expression | hasFilter:field[:value] }}
+```
+
+### In JavaScript
+
+```js
+$filter('hasFilter')(query, field[, value])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| query | string | The query object |
+| field | number | The name of the filter |
+| value *(optional)* | number | The value of the filter |

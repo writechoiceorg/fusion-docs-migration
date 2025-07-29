@@ -1,0 +1,34 @@
+---
+title: "collaborate:comment-form"
+permalink: "1171"
+---
+
+## Description
+
+The comment form directive to render a comment form
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:comment-form
+       target="{string}"
+       platform="{object}"
+       [collection="{string}"]
+       [topic="{number}"]>
+</collaborate:comment-form>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | The ID of the document that should be commented on. |
+| platform | **object** | The platform Object |
+| collection  *(optional)* | **string** | Collection the comment belongs to. |
+| topic  *(optional)* | **number** | Topic the comment belongs to. |

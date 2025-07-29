@@ -1,0 +1,47 @@
+---
+title: "Misspelling detection"
+permalink: "231w02"
+---
+
+The Misspelling detection feature maps misspellings to their corrected spellings. When Managed Fusion receives a query containing a known misspelling, it rewrites the query using the corrected spelling in order to return relevant results instead of an empty or irrelevant results set.
+
+Spelling corrections are applied in the [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) of the query pipeline.
+
+The [Token and Phrase Spell Correction job](/managed-fusion/5.9/9pf532/token-and-phrase-spell-correction-job) automatically creates spelling corrections based on your AI-generated data. When you navigate to **Relevance** > **Rules** > **Rewrite** and select the **Misspelling** tab, the application displays the **Misspelling Detection** screen.
+
+You can:
+
+* [Review or edit](/how-to/1lppeb/use-misspelling-detection#review) the output from the job
+* [Manually add new spelling corrections](/how-to/1lppeb/use-misspelling-detection#add-new)
+* [Publish changes](/how-to/1lppeb/use-misspelling-detection#publish) from the `_query_rewrite_staging` collection
+
+When you manually add new spelling corrections, subsequent job runs use those documents as input for machine learning to improve the job’s output. Unlike job-generated documents, manually-added query rewriting documents are never overwritten by new job output.
+
+<Tip>
+Misspelled terms are completely replaced by their corrected terms. If you want to expand the query to include all alternative terms, set the synonyms to bi-directional. See [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection) for more information.
+</Tip>
+
+<Frame>![Misspelling Detection screen](/assets/images/5.1/ai-rules/ui/rules-ui-rewrite-misspelling.png)</Frame>
+
+To learn how to use misspelling detection in the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor), see [Use Query Rewrites in the Rules Editor](/how-to/lfx7b8/use-query-rewrites-in-the-rules-editor).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Query Analytics** focuses on how Fusion provides query analytics to detect and improve underperforming queries:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/query-analytics" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/query-analytics.jpeg" alt="Query Analytics" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>

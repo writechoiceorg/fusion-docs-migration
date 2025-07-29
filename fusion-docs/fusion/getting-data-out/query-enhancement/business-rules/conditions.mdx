@@ -1,0 +1,39 @@
+---
+title: "Conditions"
+permalink: "8837"
+---
+
+Conditions, or triggers, define the environment necessary for the rule action to fire. Any combination of conditions (date, field value, query, and query profile) can be defined for a rule.
+
+Query profile triggers can be tested in the [Query Workbench](/fusion/5.9/permalink/167) or with the [Query Pipelines API](/fusion/5.9/360/query-pipelines-api) by setting `queryProfileID` parameter on the request.
+
+For more information, see [Business Rules Conditions Concepts](/fusion/5.9/8837/conditions).
+
+## Configuration options
+
+### Condition types
+
+#### Dates
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Dates** | The date and time range for the rule. | `01/01/2021 12:00 to 01/31/2021 12:00` |
+
+#### Field value
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Filters** | The filters that determine whether the rule fires: <br/>● Field name. The name of the field that the rule action applies to. The documents in the datasource determine what fields are available.<br/>● Field value. The values of the field that the rule action applies to. The field determines what field values are available. | Field name: `color_group_name`  Field value: `red` |
+
+#### Query
+
+| Required | **Parameter** | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Match query using** | Method used for query matching. Choose from the following: <br/>● `keywords`. The query must match the keywords of the **Search terms** value exactly. For example, if the **Search terms** value is `red pants`, only that value triggers the rule. The rule is not triggered if the value is `red`, `pants`, or `small red pants`.<br/>● `phrase`. The search query must contain one of the **Search terms** values as a subphrase, and in the same order. For example, if the **Search terms** value is `yellow shirt`, the rule is triggered by `yellow shirt` and `small yellow shirt`. The rule is not triggered if the value is `yellow small shirt`.<br/>● `text`. At least one of the **Search terms** values must match the query, but unlike `phrase`, the query only needs to match part of the value. For example, if the **Search terms** value is `green hat`, the rule is triggered by `green hat`, `green`, `hat`, and `large green hat`. | `keywords` |
+| ✅ | **Search terms** | Search terms that will trigger the rule. Terms can be words or phrases. | `sale`, `shoes`, `red` |
+
+#### Query profile
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | **Query profile ID** | The ID of the query profile that allows the rule to fire. Accepts multiple values. | `myFusionApp` |

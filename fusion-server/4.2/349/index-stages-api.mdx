@@ -1,0 +1,203 @@
+---
+title: "Index Stages API"
+permalink: "349"
+---
+
+**API Objective:**
+Each step of a pipeline.
+
+The Index Stages API provides endpoints to:
+
+* List index stage configuration properties
+* Manage index stage instances
+* Test processing on a set of queries
+
+An index pipeline is comprised of index stages.
+Each index stage has a name and a type.
+The name identifies the stage instance, and the type identifies its class.
+Every stage type has a number of properties, which can be configured for a particular index stage instance.
+See the section [Index Pipeline Stages](/fusion-server/4.2/161/index-pipeline-stages) for a taxonomy of index stage types.
+
+## Examples
+
+*See all defined index pipeline stages, regardless of type:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/index-stages/instances
+```
+
+**RESPONSE**
+
+```json
+[{
+  "type" : "tika-parser",
+  "id" : "conn_tika",
+  "includeImages" : true,
+  "flattenCompound" : false,
+  "addFailedDocs" : true,
+  "addOriginalContent" : true,
+  "skip" : false
+},
+{
+  "type" : "index-logging",
+  "id" : "detailed-logging",
+  "detailed" : true,
+  "skip" : false,
+  "label" : "detailed-index-logging",
+}]
+```
+
+*See details of an index-stage named 'conn_tika':*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/index-stages/instances/conn_tika
+```
+
+**RESPONSE**
+
+```json
+{
+  "type" : "tika-parser",
+  "id" : "conn_tika",
+  "includeImages" : true,
+  "flattenCompound" : false,
+  "addFailedDocs" : true,
+  "addOriginalContent" : true,
+  "skip" : false
+}
+```
+
+*Create an index stage:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id": "storagesize-regex-extractor", "type":"regex-extractor", "rules": [{"source":["name"], "target":"storage_size_ss", "pattern":"(\\d{1,20}\\s{0,3}(GB|MB|TB|KB|mb|gb|tb|kb))", "annotateAs":"storage_size"}]}' https://FUSION_HOST:8764/api/index-stages/instances
+```
+
+**RESPONSE**
+
+```json
+{
+  "type" : "regex-extractor",
+  "id" : "storagesize-regex-extractor",
+  "rules" : [ {
+    "source" : [ "name" ],
+    "target" : "storage_size_ss",
+    "pattern" : "(\\d{1,20}\\s{0,3}(GB|MB|TB|KB|mb|gb|tb|kb))",
+    "annotateAs" : "storage_size"
+  } ],
+  "skip" : false
+}
+```
+
+*Delete an index stage:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X DELETE https://FUSION_HOST:8764/api/index-stages/instances/storagesize-regex-extractor
+```
+
+No response is returned. To check that the stage is no longer defined, list all index stage instances.
+
+*Send a document through the index stage named 'conn_tika':*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type: application/json" -d '[{"id": "myDoc4","fields": [{"name":"title", "value": "Another little document document"},{"name":"body", "value": "This is a simple document."}]}]' https://FUSION_HOST:8764/api/index-stages/instances/conn_tika/docs/test
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "id" : "7b8a1d5b-9e42-40eb-8059-5804c4b4fc6b",
+  "fields" : [ {
+    "name" : "id",
+    "value" : "myDoc4",
+    "metadata" : { },
+    "annotations" : [ ]
+  }, {
+    "name" : "parsing_time",
+    "value" : [ "java.lang.Long", 0 ],
+    "metadata" : { },
+    "annotations" : [ ]
+  }, {
+    "name" : "parsing",
+    "value" : "no_raw_data",
+    "metadata" : {
+      "creator" : "tika-parser"
+    },
+    "annotations" : [ ]
+  }, {
+    "name" : "fields",
+    "value" : [ "java.util.ArrayList", [ {
+      "name" : "title",
+      "value" : "Another little document document"
+    }, {
+      "name" : "body",
+      "value" : "This is a simple document."
+    } ] ],
+    "metadata" : { },
+    "annotations" : [ ]
+  } ],
+  "metadata" : { },
+  "commands" : [ ]
+} ]
+```
+
+*View the configuration properties for index stage type "regex-extractor":*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/index-stages/schema/regex-extractor
+```
+
+**RESPONSE**
+
+```json
+{
+  "type" : "object",
+  "title" : "Regex Field Extraction",
+  "description" : "This stage allows you to extract entities using regular expressions",
+  "properties" : {
+    "rules" : {
+      "type" : "array",
+      "title" : "Regex Rules",
+      "items" : {
+        "type" : "object",
+        "required" : [ "pattern" ],
+        "properties" : {
+          "source" : {
+            "type" : "array",
+            "title" : "Source Fields",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "target" : {
+            "type" : "string",
+            "title" : "Target Field"
+          },
+          "pattern" : {
+            "type" : "string",
+            "title" : "Regex Pattern",
+            "format" : "regex"
+          },
+          "annotateAs" : {
+            "type" : "string",
+            "title" : "Annotation Name"
+          }
+        }
+      }
+    }
+  }
+}
+```

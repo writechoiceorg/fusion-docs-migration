@@ -1,0 +1,40 @@
+---
+title: "Configuring the Search Platform"
+permalink: "3129"
+---
+
+The Generic Platform tag can instantiate all platforms by name or configuration.
+
+## What is an Appkit platform?
+
+The Appkit search platform abstraction presents a unified way of carrying out common data operations such as searching, storing, and deleting information from the underlying repository. You can use multiple platforms on the same page to send a query to different repositories and aggregate the response. Each search platform is encapsulated as a `twigkit.platform.Platform` Java object.
+
+## Searching
+
+When a platform is used for searching, it will map an Appkit query to something the underlying search engine will understand and send it off. When the search engine responds the platform will again map the response from the engine specific structure to a generic Appkit search response that can be processed by other Appkit components such as workflow processors and UI widgets.
+
+## Storing data
+
+If a particular platform supports storing data, then it will take care of adapting an Appkit representation of a textual content to a piece of data that the underlying engine can store, and send it off for indexing or saving.
+
+## Usage
+
+This example shows how to use any of the platforms using the generic Platform tag in an html page. This would retrieve a platform configuration from a file (under the `conf` directory).
+
+```xml
+<search:platform var="platform" conf="platforms.fusion.data"></search:platform>
+```
+
+## Configuration parameters
+
+- `var (java.lang.String)`
+    Variable name to reference this `twigkit.model.Platform` instance.  
+    Default: `platform`
+
+- `conf (java.lang.String)`
+    Retrieve a `twigkit.model.Platform` instance by either configuration name, or a platform annotation class name such as `twigkit.search.solr.Solr`. This is not the same as the platform class name used by the className attribute. Use either this or the name attribute.
+
+- `host (java.lang.String)`
+    The URI of the Solr Server. Must be specified using the full URI (for example, `http://localhost:8983/solr`; `localhost:8983` will not work).
+
+For configuration settings for a specific provider, see [Search Platforms](/fusion/5.9/3196/search-platforms).

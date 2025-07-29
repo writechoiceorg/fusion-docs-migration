@@ -1,0 +1,154 @@
+{
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to estimate ground truth queries using click and query signals with document relevance per query determined using a click/skip formula. Pair this job with ranking metrics job to calculate relevance metrics, such as nDCG",
+  "properties": {
+    "filterQueries": {
+      "description": "Filter queries to apply while choosing top queries from query signals in signals collection",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Filter Queries",
+      "type": "array"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "joinKeySearchLogs": {
+      "default": "id",
+      "description": "Join key of query signals in the signals collection",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Join Key (Query Signals)",
+      "type": "string"
+    },
+    "joinKeySignals": {
+      "default": "fusion_query_id",
+      "description": "Join key of click signals in the signals collection",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Join Key (Click Signals)",
+      "type": "string"
+    },
+    "searchLogsAddOpts": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional options to use while loading search logs collection",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Search Logs and Options",
+      "type": "object"
+    },
+    "searchLogsPipeline": {
+      "description": "Pipeline id associated with search log entries",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Search Logs Pipeline",
+      "type": "string"
+    },
+    "signalsAddOpts": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional options to use while loading signals collection",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Additional Signals Options",
+      "type": "object"
+    },
+    "signalsCollection": {
+      "description": "Collection containing click signals and the associated search log identifier",
+      "minLength": 1,
+      "title": "Signals collection",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "topQueriesLimit": {
+      "default": 100,
+      "description": "Total number of queries to pick for Ground truth calculations",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Top Queries Limit",
+      "type": "integer"
+    },
+    "type": {
+      "default": "ground_truth",
+      "enum": [
+        "ground_truth"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "signalsCollection"
+      ]
+    },
+    {
+      "label": "Additional Options",
+      "properties": [
+        "searchLogsPipeline",
+        "joinKeySearchLogs",
+        "joinKeySignals",
+        "searchLogsAddOpts",
+        "signalsAddOpts",
+        "filterQueries",
+        "topQueriesLimit"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "signalsCollection",
+    "type"
+  ],
+  "title": "Ground Truth",
+  "type": "object"
+}

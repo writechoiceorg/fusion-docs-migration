@@ -1,0 +1,164 @@
+export const schema = {
+  "type": "object",
+  "title": "Text Tagger",
+  "description": "Queries a Solr text tagger request handler to perform spell correction, phrase boosting, and synonym expansion.",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "taggerCollectionId": {
+      "type": "string",
+      "title": "Tagger Collection",
+      "description": "Collection to send the tagger request to; defaults to the query_rewrite collection for the application in context. Collection must contain only one shard, as the underlying Text Tagger in Solr doesn't currently support multi-shard collections. Supports template expressions.",
+      "minLength": 1
+    },
+    "paramToTag": {
+      "type": "string",
+      "title": "Param to Tag",
+      "description": "Name of the parameter in the request containing text to tag, defaults to 'q'.  Ignored on DSL requests.",
+      "default": "q"
+    },
+    "taggedOutputParam": {
+      "type": "string",
+      "title": "Tagged Output Param",
+      "description": "Apply the matching tags to the 'paramToTag' value and set the parameter specified by this option; defaults to the value of the 'paramToTag' setting.  Ignored on DSL requests."
+    },
+    "saveTagsInContextKey": {
+      "type": "string",
+      "title": "Save Tags in Context",
+      "description": "Save tags in context instead of applying directly to the incoming query in this stage; allows downstream stages to apply the tags after doing other processing.  Ignored on DSL requests."
+    },
+    "spell_corrections_enabled": {
+      "type": "boolean",
+      "title": "Spell Correction",
+      "description": "If checked, then this stage will perform spell corrections on the incoming query.",
+      "default": true
+    },
+    "phrase_boosting_enabled": {
+      "type": "boolean",
+      "title": "Phrase Boosting",
+      "description": "If checked, then this stage will perform phrase boosting on the incoming query.",
+      "default": true
+    },
+    "synonym_expansion_enabled": {
+      "type": "boolean",
+      "title": "Synonym Expansion",
+      "description": "If checked, then this stage will perform synonym expansion on the incoming query.",
+      "default": true
+    },
+    "remove_words_enabled": {
+      "type": "boolean",
+      "title": "Remove Words",
+      "description": "If checked, then this stage will perform applicable Remove Words rewrites on the incoming query.",
+      "default": true
+    },
+    "tail_rewrites_enabled": {
+      "type": "boolean",
+      "title": "Tail Rewrites",
+      "description": "If checked, then this stage will perform tail rewrites on the incoming query.",
+      "default": true
+    },
+    "filterOverride": {
+      "type": "string",
+      "title": "Filter Override",
+      "description": "Use this option to override filtering for built-in tagger doc types with your own filter."
+    },
+    "synonymExpansionBoost": {
+      "type": "number",
+      "title": "Original Term Boost for Synonyms",
+      "description": "Boost applied to the original term when doing synonym expansion; set to -1 to disable this behavior.",
+      "default": 2
+    },
+    "phraseBoost": {
+      "type": "number",
+      "title": "Default Phrase Boost",
+      "description": "Default boost to be applied to phrases that don't have a boost set; set to -1 to disable this behavior.",
+      "default": 2
+    },
+    "phraseSlop": {
+      "type": "integer",
+      "title": "Default Phrase Slop",
+      "description": "Default phrase slop to be applied to detected phrases.",
+      "default": 10
+    },
+    "overlaps": {
+      "type": "string",
+      "title": "Overlapping Tag Policy",
+      "description": "Choose the algorithm to determine which tags in an overlapping set should be retained, versus being pruned away. Ignored on DSL requests (longest_dominant_right is always used). The available options correspond to Solr Tagger Handler overlaps: all, no_sub, longest_dominant_right; defaults to longest_dominant_right, which ensures the retained tags have no overlaps. Setting this to all or no_sub allows more rewrites to potentially be applied to a query, but can increase the chance of producing undesirable rewrites.",
+      "enum": [
+        "longest_dominant_right",
+        "all",
+        "no_sub"
+      ],
+      "default": "longest_dominant_right"
+    },
+    "params": {
+      "type": "array",
+      "title": "Additional Params to be Included in the Text Tagger Request. ",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "maxWaitMs": {
+      "type": "integer",
+      "title": "Max Wait for Lookup (ms)",
+      "description": "Max time to wait for call to remote tagger collection to return; set to -1 to disable.",
+      "default": 500
+    },
+    "skipQueryRegex": {
+      "type": "string",
+      "title": "Skip Query Regex",
+      "description": "Pattern to find queries to skip matching on, such as single term queries with wildcards."
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

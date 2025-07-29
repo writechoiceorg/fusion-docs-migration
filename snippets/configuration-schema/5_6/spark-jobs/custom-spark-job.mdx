@@ -1,0 +1,80 @@
+export const schema = {
+  "type": "object",
+  "title": "Custom Spark Job",
+  "description": "Use this job when you want to run a custom JAR on Spark",
+  "required": [
+    "id",
+    "klassName",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "klassName": {
+      "type": "string",
+      "title": "Class name",
+      "description": "Fully-qualified name of the Java/Scala class to invoke"
+    },
+    "submitArgs": {
+      "type": "array",
+      "title": "Script args",
+      "description": "Additional options to pass to the application when running this job.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "script": {
+      "type": "string",
+      "title": "Scala Script",
+      "description": "Use this text field if you want to override the default behaviour, which is to run className.main(args)",
+      "hints": [
+        "code/scala",
+        "lengthy",
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "custom_spark_scala_job"
+      ],
+      "default": "custom_spark_scala_job",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

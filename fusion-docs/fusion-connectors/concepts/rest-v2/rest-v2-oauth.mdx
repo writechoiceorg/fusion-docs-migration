@@ -1,0 +1,47 @@
+---
+title: "Use OAuth"
+description: "REST V2 connector"
+permalink: "h66upi"
+---
+
+OAuth authentication allows configuration of OAuth credentials and settings to fetch an access token for authorizing requests to service endpoints.
+
+## Configuration
+
+To configure a data source to use OAuth authentication:
+
+1. Choose the **OAuth** option from the Authentication checkbox list.
+2. Fill in the required fields for OAuth configuration:
+
+   1. **OAuth Service URL**: Enter the base URL of the OAuth service.
+   2. **OAuth Endpoint Path**: Specify the endpoint required for the OAuth request.
+   3. **HTTP Method**: Select the HTTP method for the OAuth request. Options include **POST** (default) or **GET**.
+   4. **Plain Authentication Variables**: Configure non-sensitive variables, for example `grant_type` or `username`, that will be visible in the datasource.
+   5. **Secure Authentication Variables**: Use this field for sensitive credentials, for example `client_secret` or `password`. These values will remain hidden.
+   6. **Access Token Path**: Define the JSON path expression to extract the access token from the response, for example `objects`, `objects[]`, and `$.objects[]`.
+   7. **OAuth Values Location**: Specify where the plain/secure authentication variables should be sent:
+
+      1. Request Param: As query parameters in the URL.
+      2. URL-Encoded Body: As a body with the `application/x-www-form-urlencoded` format.
+      3. JSON Body: As a JSON-formatted body.
+      4. Header: As part of the request headers.
+   8. **Header Authorization Template**: Use this to define the format for the access token in the request header. For example, include the prefix **Bearer** before the token: `Bearer ${LW_ACCESS_TOKEN}`. The special variable `${LW_ACCESS_TOKEN}` will be replaced with the actual token.
+
+## Validation
+
+### Connection Validation
+
+The OAuth connection is validated when the crawl starts. Validation will fail if:
+
+* The connector cannot reach the OAuth service URL and endpoint.
+* The access token cannot be parsed from the response.
+
+Validation passes only if the connector successfully contacts the OAuth service and retrieves the token.
+
+### Token Refresh on 401 Response
+
+If the connector receives a `401 Unauthorized` response, it will automatically attempt to fetch a new access token. This ensures uninterrupted crawling if the token expires.
+
+## Special notes
+
+Enter credentials in their normal, non-encoded format, for example `team@company.com.njg4`. The system performs URL-encoding internally. Avoid entering pre-encoded values, for example `team%40company.com.njg4` to prevent double encoding.

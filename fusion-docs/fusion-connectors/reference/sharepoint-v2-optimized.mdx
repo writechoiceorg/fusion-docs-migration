@@ -1,0 +1,347 @@
+---
+title: "SharePoint Optimized V2"
+description: "Connector Configuration Reference"
+permalink: "3qqudu"
+---
+
+Latest version: v2.1.0
+
+Compatible with Fusion version: 5.9.1 and later
+
+The SharePoint Optimized V2 connector indexes content and metadata from SharePoint Online and on-premises environments, making it searchable in Fusion. It supports fine-grained scoping and filtering, so teams can include only the content that matters. Security trimming ensures that users see only content they are authorized to access, which protects sensitive data and enforces compliance. This enables a secure, unified search experience across SharePoint and other enterprise systems.
+
+This article provides an in-depth look at the SharePoint Optimized V2 connector, including business context, setup, use cases, and troubleshooting. It also includes the configuration specification, which fully describes the connector object for use with API operations.
+
+## Prerequisites
+
+* Access to a Fusion instance with the appropriate permissions to configure a data source.
+* Supported SharePoint deployment (2010, 2013, 2016, 2019, or Online).
+* A service account with site collection administrator rights for on-premises SharePoint.
+* An app registration with the `Sites.FullControl.All` permission for SharePoint Online.
+* Azure Active Directory app registration with required permissions (for SharePoint Online).
+
+For details about required permissions, see the [Permissions](#required-permissions) section.
+
+<Note>
+
+Verify your connector version
+
+This connector depends on specific Fusion versions. See the following table for the required versions:
+
+| Fusion version | Connector version | Notes |
+| --- | --- | --- |
+| Fusion 5.9.1 and later | v2.0.0 and later | Supports LDAP ACLs integrations and security trimming. |
+| Fusion 5.9.0 | v1.6.0 and later. Lucidworks recommends using the latest supported connector version. | Fusion 5.9.0 supports the v2.0.0 connector, but does not support LDAP ACLs integrations or security trimming. |
+| Fusion 5.6.1 and later | v1.1.0 through v1.6.0 | - |
+
+</Note>
+
+
+
+## Business context
+
+SharePoint is widely adopted for internal content collaboration, knowledge sharing, and structured document management. The SharePoint Optimized V2 connector supports use cases across knowledge management and business environments by making SharePoint content discoverable in Fusion.
+
+### Knowledge management
+
+Organizations use SharePoint as a central platform for storing and organizing internal knowledge, such as policies, training materials, and procedural documentation. With structured libraries, metadata tagging, and version control, teams can maintain accurate, searchable content. The connector brings this content into Fusion to support enterprise search, self-service portals, and role-based access to knowledge resources.
+
+### B2B
+
+In business-to-business contexts, SharePoint supports cross-functional collaboration, secure partner portals, and project documentation workflows. Companies use it to share content with clients, vendors, and internal stakeholders while maintaining strict access controls. The connector indexes this content for a unified search experience across departments or applications, enabling faster access to contracts, technical documents, or onboarding materials.
+
+### B2C
+
+SharePoint is not typically used for direct customer-facing experiences. However, B2C organizations often use it internally to support customer service, compliance, or product support operations. With the connector, teams can expose curated SharePoint content such as FAQs, internal product specifications, or support documentation through public or authenticated search interfaces managed in Fusion.
+
+## How it works
+
+The SharePoint Optimized V2 connector crawls and indexes structured content from SharePoint using its object model. SharePoint organizes data into a hierarchical structure that begins with a web application and includes site collections, sites, lists, folders, and list items. For an overview of this structure, see the [SharePoint object model](https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/get-a-quick-overview-of-the-sharepoint-object-model).
+
+<Frame>![SharePoint data types](/assets/images/5.11/spo-data-types.png)</Frame>
+
+Each level of this hierarchy stores both metadata and content. For example:
+
+* A **site collection** can contain multiple subsites, each with its own permissions and content.
+* A **list** can store structured data like announcements or documents, with fields such as title, status, and date.
+* A **list item** or **document** may contain file content and metadata, such as the file type, size, author, and version.
+
+The connector uses this model to identify and extract documents and metadata during a crawl. It starts at a configured entry point such as a web application URL or specific site collection and traverses the hierarchy to gather content.
+
+Access to SharePoint content is controlled by user-based permissions at each level of the hierarchy. SharePoint uses Access Control Lists (ACLs) to define which users or groups can view or manage specific content. These permissions may be inherited or explicitly set at the site, list, or item level.
+
+The connector retrieves ACLs during the crawl and stores them with the indexed documents. When security trimming is enabled in Fusion, these permissions are enforced at query time to ensure users can only see documents they are authorized to access.
+
+Content is stored in SharePoint databases, not directly exposed to external systems. The connector accesses this content through SharePoint APIs or Microsoft Graph, depending on configuration and authentication method. Retrieved data is sent to Fusion, where it is indexed and made searchable alongside other enterprise content sources.
+
+## Set up
+
+To index SharePoint content with Fusion, you must configure both the SharePoint environment and the connector. SharePoint must be accessible and properly permissioned, and the connector must be configured to authenticate, crawl, and index the desired content.
+
+### Required SharePoint permissions
+
+The SharePoint Optimized V2 connector requires specific permissions to index content across SharePoint sites effectively. These permissions must be granted before the connector can perform operations such as reading site data, accessing files, or collecting audit logs.
+
+The following table lists the required permissions, along with detailed descriptions and use cases for each. Full indexing functionality, including support for all site collections and audit data, depends on granting the appropriate elevated permissions.
+
+| Permission | Description | Use case |
+| --- | --- | --- |
+| **Sites.Read.All** | Grants read-only access to all SharePoint site collections and their content. | Used by applications that need to enumerate sites, retrieve metadata, list items, or download files across all sites. |
+| **Sites.Manage.All** | Provides full control over all site collections, excluding permission management. | Enables applications to create, edit, and delete content such as list items and documents across all sites. |
+| **Files.Read.All** | Allows read-only access to all files stored in SharePoint and OneDrive document libraries. | Used to access and download documents, attachments, and other file content across the organization. |
+| **AuditLog.Read.All** | Enables access to SharePoint audit logs for monitoring user and system activities. | Used to analyze actions such as file edits, deletions, and permission changes for compliance and security auditing. |
+| **Sites.Selected** | Allows access only to specific site collections explicitly granted by an administrator. | Used to restrict application access to approved SharePoint sites, providing fine-grained control over data exposure. |
+| **User.Read** | Permits access to basic profile information of the signed-in user, including name and email. | Used to personalize the user experience or perform operations on behalf of the authenticated user. |
+| **Directory.Read.All** | Grants read access to the full directory of users, groups, and other directory objects. | Used to look up user and group information for features like permissions mapping, people pickers, or organizational insights. |
+
+<Danger>
+**FAQ**
+
+Why are Full Control permissions required?
+
+Full Control allows the connector to discover all site collections and content in SharePoint. Without it, the connector can only access content where it already has permission and may miss sites or documents.
+
+Granting Full Control does not allow the SharePoint Optimized V2 connector to take destructive actions such as deleting or modifying content. The permission is used strictly for discovery and indexing.
+
+For environments with data transfer security concerns, the SharePoint Optimized V2 connector can be deployed as a remote connector. This enables Fusion to index content stored behind firewalls without opening firewall ports or exposing internal systems.
+
+</Danger>
+
+
+
+### Prepare SharePoint
+
+Before you configure the SharePoint Optimized V2 connector in Fusion, you must prepare your SharePoint environment. This section explains how to select an authentication method, assign the required permissions, and ensure access to the SharePoint content you intend to index.
+
+### Configure the connector in Fusion
+
+In Fusion, configure the SharePoint Optimized V2 connector to define the crawl scope, select an authentication method, and apply indexing settings. This setup enables Fusion to connect to SharePoint and index content securely and efficiently.
+
+<Note>
+
+This section applies to the latest version of the SharePoint Optimized V2 connector. If you are using an earlier version, some settings may have different names, appear in different sections, or may not be available.
+
+</Note>
+
+
+
+### Core configurations
+
+Use the following parameters to configure what the connector crawls, how it authenticates, and how it handles content updates. Parameters are grouped by category for clarity.
+
+For full configuration options, see [Configuration specifications](#configuration-specifications).
+
+#### Scope
+
+These settings define what SharePoint content the connector includes in the crawl. You can configure it to crawl all site collections or only specific sites, lists, folders, or items.
+
+To begin, specify the **Web Application URL**. This is the base URL of your SharePoint web application. All paths to site collections or items must be relative to this URL.
+
+<Frame>![SharePoint Optimized V2 Web application URL](/assets/images/connectors/sp-optimized-v2-web-app-config.png)</Frame>
+
+By default, the connector discovers and crawls site collections under the specified web application. This requires administrative permissions.
+
+<Note>
+
+In earlier versions of the SharePoint Optimized V2 connector, you had to enable **Fetch all site collections** to crawl all site collections. This setting was removed in v2.0.0 and later. If you are using an older version and see this option in your configuration, enable it to ensure all site collections are crawled.
+
+</Note>
+
+
+
+To crawl only a subset of content:
+
+1. In the **Site Collection List**, provide a single site collection path.
+
+   <Frame>![SharePoint Optimized V2 site collection list](/assets/images/connectors/sp-optimized-v2-site-colllection-list.png)</Frame>
+2. In **Restrict to specific SharePoint items**, enter one or more SharePoint URLs. You can copy these URLs directly from your browser.
+
+The connector converts the specified URLs into inclusive regular expressions. Only matching content is included in the crawl.
+
+#### Authentication
+
+These settings define how the connector authenticates with SharePoint.
+
+For on-premises SharePoint, use NTLM authentication.
+
+<Frame>![SharePoint Optimized V2 NTLM authentication](/assets/images/connectors/sp-optimized-v2-ntlm-auth-settings.png)</Frame>
+
+For SharePoint Online, use app-only authentication with a private key or with OAuth, or assign a Site Collection Administrator who has sufficient crawl permissions.
+
+#### Crawl behavior
+
+These settings control how the connector detects content changes and whether it performs incremental or full crawls.
+
+After the first successful full crawl, the connector uses incremental crawls by default. It relies on the SharePoint Changes API to detect and index added, updated, and deleted content. The connector tracks changes using a change token and removes deleted site collections.
+
+To support incremental crawling, required fields prefixed with `lw` must remain in the indexed documents.
+
+To force a full crawl, enable the **Force Full Crawl** setting. This disables incremental crawling and reindexes all content from scratch. It also clears any previous crawl state. This option is useful when resetting the crawl due to major changes.
+
+Incremental crawling requires **Force Full Crawl** to remain disabled.
+
+## Use cases
+
+The SharePoint Optimized V2 connector supports a range of use cases for securely indexing and searching SharePoint content. This section highlights common deployment scenarios and configurations that help organizations meet security, compliance, and infrastructure requirements.
+
+### Protect documents with security trimming
+
+Security trimming ensures that users only see the content they are authorized to access when querying your SharePoint Optimized V2 datasource. It uses user roles and permissions to control document visibility. This feature requires the SharePoint Optimized V2 datasource to be used alongside an LDAP ACLs V2 datasource and a Graph Security Trimming query stage within the same app and collection.
+
+Benefits of using security trimming include:
+
+* Ensuring users only see documents they are authorized to access, maintaining data confidentiality.
+* Reducing irrelevant search results by filtering content based on user permissions.
+* Enhancing compliance with organizational security policies through integrated role-based access control.
+
+To use security trimming, refer to [Configure Security Trimming for SharePoint Optimized V2](/how-to/hjbv7z/configure-security-trimming-for-share-point-optimized-v-2).
+
+### Index data behind firewalls
+
+You can configure the SharePoint Optimized V2 Connector v2.0.0 and later to run remotely.
+
+This setup lets Fusion index content stored behind firewalls without exposing internal systems or opening firewall ports. It helps protect sensitive data, supports compliance, and enables unified search across cloud and on-premises sources.
+
+Fusion uses gRPC over HTTP/2 to connect on-premises remote connectors to Fusion clusters.
+
+For more information, see [Remote V2 connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors).
+
+To configure the SharePoint Optimized V2 Connector as a remote connector, see [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+### API operations
+
+This section provides a simple example of how to use the Connectors API to list available connector plugins, demonstrating how to interact with the API to discover which datasources are supported.
+
+For more detailed examples, including full request and response payloads and the configuration specification used with the SharePoint Optimized V2 connector, see the [Connector APIs documentation](/fusion/5.9/sm7up1/connector-ap-is).
+
+#### Get all available connectors
+
+**Request**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/connectors/plugins
+```
+
+**Response**
+
+```json
+[{
+  "type": "lucidworks.rest",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.web-v2",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.kaltura",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.gcs",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.sharepoint-optimized",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.file-upload",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucidworks.ldap-acls",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucid.servicenow",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucid.fileupload",
+  "state": "DEPLOYED"
+}, {
+  "type": "lucid.web",
+  "state": "DEPLOYED"
+}]
+
+```
+
+## Troubleshooting
+
+This section describes known limitations and configuration requirements for the SharePoint Optimized V2 Connector. Each issue includes the observed behavior, the expected behavior, and the impact to users.
+
+### Connector runs on multiple pods
+
+The SharePoint Optimized V2 Connector does not support running on more than one pod. If multiple instances run at the same time, they may try to index the same content, which can cause duplication, crawl errors, or inconsistent results. The connector is designed to run as a single instance. To ensure reliable indexing, deploy the connector on only one pod.
+
+This means you should only run one copy of the connector. Keeping it to one copy helps everything work correctly.
+
+### Connector version compatibility
+
+If you use the SharePoint Optimized V2 Connector with an ACL connector, make sure the versions are compatible. Incompatible versions can prevent document-level access controls from being applied correctly. This can result in users seeing content they shouldn’t or missing content they should be able to access. To avoid access issues, use only supported combinations of the SharePoint and ACL connectors.
+
+Check version compatibility in [Prerequisites](#version-compatibility).
+
+For details about crawls and incremental crawls see [How to crawl using the SharePoint Optimized V2 Connector](/how-to/390hb2/crawl-using-the-sharepoint-v2-optimized-connector).
+
+### Avoid throttling and rate limiting in SharePoint Online
+
+SharePoint Online enforces rate limits to protect its APIs. When that happens, it tells the connector to slow down by sending error messages. When the connector sends too many requests in parallel, SharePoint may respond with `429 Too Many Requests` or `503 Server Too Busy` errors. These indicate that the service is temporarily rejecting traffic due to overload.
+
+To avoid these errors, reduce the number of concurrent requests. In the connector configuration, go to **Core Properties > Fetch Settings** and lower the **Fetch Threads** value. Also consider reducing the number of connector jobs running at the same time.
+
+<Frame>![SharePoint Optimized V2 Fetch settings](/assets/images/connectors/sp-optimized-v2-fetch-settings.png)</Frame>
+
+The connector includes an automatic retry mechanism with exponential backoff to help recover from throttling. You can adjust this behavior in the **Retry Options** section by modifying settings such as **Maximum Retries**, **Delay Factor**, **Retry Delay**, and **Maximum Delay Time**.
+
+<Frame>![SharePoint Optimized V2 retry options](/assets/images/connectors/sp-optimized-v2-retry-options.png)</Frame>
+
+<Note>
+
+Retries help with occasional limits, but persistent `429` or `503` errors mean you’re sending too much traffic. Reduce request volume first. Only use retries to improve resilience, not to bypass throttling.
+
+</Note>
+
+
+
+## More resources
+
+For more information on how to plan, install, and configure the SharePoint Optimized V2 connector:
+
+* [Overview of SharePoint and SharePoint Online connectors](/fusion-connectors/21/share-point-and-share-point-online-connectors). Learn about the available SharePoint connectors and how they compare.
+* [Download Connectors](/fusion-connectors/n0s114/download-connectors). Get the latest version of the SharePoint Optimized V2 connector package.
+* [Install a Connector](/how-to/8810/install-a-connector-5-2-and-later). Follow step-by-step instructions to install a connector into Fusion.
+* [Crawl using the SharePoint Optimized V2 connector](/how-to/390hb2/crawl-using-the-share-point-optimized-v-2-connector). Configure and run crawls using scoped collections, inclusion filters, and other crawl settings.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Microlearning** for **Connectors 101** focuses on Learn how connectors work to get data into Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/connectors-101" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/connectors.jpg" alt="Connectors 101" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## Configuration specifications
+
+To change the number of items to retrieve per page, set the value of `apiQueryRowLimit`. The default value is `5000`.
+
+To change the number of change events to retrieve per page, set the value of `changeApiQueryRowLimit`. The default value is `2000`.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-sharepoint-optimized.mdx";
+
+<SchemaParamFields schema={schema}/>

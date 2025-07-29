@@ -1,0 +1,24 @@
+---
+title: "Faceted Navigation"
+permalink: "3105"
+---
+
+Faceted navigation is one of the most powerful features of search. Appkit provides simple tags for rendering lists of facets and filters in your application, while also providing a single widget that handles many of the complexities of faceted navigation for you.
+
+### Listing facets
+
+Self-closing the Facet List tag will output a list of all the facets and filter links with the default look-and-feel. [Find out more about the facetList tag](/fusion/5.9/1061/search-facet-list).
+
+```xml
+<search:facet-list response="response" facet-names="*"></search:facet-list>
+```
+
+You could then open the Facet List tag and place an individual Facet tag within it. [Find out more about the facet tag](/fusion/5.9/1068/search-facet).
+
+```xml
+<search:facet-list response="response" facet-names="*">
+    <search:facet facet-name="Author" collapsible="true"></search:facet>
+</search:facet-list>
+```
+
+This tag is also customisable to allow different display values and behavior. For a complete list of attributes, see the [`search:facet-list`](/fusion/5.9/1061/search-facet-list) tag doc.

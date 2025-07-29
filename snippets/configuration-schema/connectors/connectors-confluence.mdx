@@ -1,0 +1,1047 @@
+export const schema = {
+  "type": "object",
+  "title": "Confluence",
+  "description": "Atlassian Confluence Wiki CMS",
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Repository",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Atlassian Confluence Wiki CMS",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "enable_security_trimming",
+        "f.confluenceHost",
+        "f.confluenceUsername",
+        "f.confluencePassword"
+      ],
+      "properties": {
+        "fetchDelayMS": {
+          "type": "integer",
+          "title": "Fetch delay",
+          "description": "Number of milliseconds to wait between fetch requests. The default is 100. This property can be used to throttle a crawl if necessary.",
+          "default": 100,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "startLinks": {
+          "type": "array",
+          "title": "Start Links",
+          "description": "One or more starting URIs for this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "depth": {
+          "type": "integer",
+          "title": "Max crawl depth",
+          "description": "Number of levels in a directory or site tree to descend for documents.",
+          "default": -1,
+          "hints": [
+            "hidden"
+          ]
+        },
+        "maxItems": {
+          "type": "integer",
+          "title": "Max items",
+          "description": "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "default": -1,
+          "hints": [
+            "hidden"
+          ]
+        },
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "db": {
+          "type": "object",
+          "title": "Connector DB",
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Implementation Class Name",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength": 1
+            },
+            "inlinks": {
+              "type": "boolean",
+              "title": "Process Inlinks?",
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "aliases": {
+              "type": "boolean",
+              "title": "Process Aliases?",
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "inv_aliases": {
+              "type": "boolean",
+              "title": "Process Inverted Aliases?",
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default": false
+            }
+          },
+          "hints": [
+            "hidden"
+          ]
+        },
+        "dedupe": {
+          "type": "boolean",
+          "title": "Dedupe documents",
+          "description": "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "dedupeField": {
+          "type": "string",
+          "title": "Dedupe field",
+          "description": "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "dedupeScript": {
+          "type": "string",
+          "title": "Dedupe script",
+          "description": "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "dedupeSaveSignature": {
+          "type": "boolean",
+          "title": "Save dedupe signature",
+          "description": "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "delete": {
+          "type": "boolean",
+          "title": "Delete dead URIs",
+          "description": "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "default": true
+        },
+        "deleteErrorsAfter": {
+          "type": "integer",
+          "title": "Fetch failure allowance",
+          "description": "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "default": -1
+        },
+        "fetchThreads": {
+          "type": "integer",
+          "title": "Fetch threads",
+          "description": "The number of threads to use during fetching. The default is 5.",
+          "default": 5
+        },
+        "emitThreads": {
+          "type": "integer",
+          "title": "Emit threads",
+          "description": "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "default": 5
+        },
+        "chunkSize": {
+          "type": "integer",
+          "title": "Fetch batch size",
+          "description": "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "default": 1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshAll": {
+          "type": "boolean",
+          "title": "Recrawl all items",
+          "description": "Set to true to always recrawl all items found in the crawldb.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshStartLinks": {
+          "type": "boolean",
+          "title": "Recrawl start links",
+          "description": "Set to true to recrawl items specified in the list of start links.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshErrors": {
+          "type": "boolean",
+          "title": "Recrawl errors",
+          "description": "Set to true to recrawl items that failed during the last crawl.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshOlderThan": {
+          "type": "integer",
+          "title": "Recrawl age",
+          "description": "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "default": -1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshIDPrefixes": {
+          "type": "array",
+          "title": "Recrawl ID prefixes",
+          "description": "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshIDRegexes": {
+          "type": "array",
+          "title": "Recrawl ID regexes",
+          "description": "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshScript": {
+          "type": "string",
+          "title": "Recrawl script",
+          "description": "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "forceRefresh": {
+          "type": "boolean",
+          "title": "Force recrawl",
+          "description": "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "forceRefreshClearSignatures": {
+          "type": "boolean",
+          "title": "Clear signatures",
+          "description": "If true, signatures will be cleared if force recrawl is enabled.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "retryEmit": {
+          "type": "boolean",
+          "title": "Retry emits",
+          "description": "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "failFastOnStartLinkFailure": {
+          "type": "boolean",
+          "title": "Fail crawl if start links are invalid",
+          "description": "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "crawlDBType": {
+          "type": "string",
+          "title": "Crawl database type",
+          "description": "The type of crawl database to use, in-memory or on-disk.",
+          "enum": [
+            "in-memory",
+            "on-disk"
+          ],
+          "default": "on-disk",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "commitAfterItems": {
+          "type": "integer",
+          "title": "Commit After This Many Items",
+          "description": "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "default": 10000,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "initial_mapping": {
+          "type": "object",
+          "title": "Initial field mapping",
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties": {
+            "skip": {
+              "type": "boolean",
+              "title": "Skip This Stage",
+              "description": "Set to true to skip this stage.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "title": "Label",
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255
+            },
+            "condition": {
+              "type": "string",
+              "title": "Condition",
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ]
+            },
+            "reservedFieldsMappingAllowed": {
+              "type": "boolean",
+              "title": "Allow System Fields Mapping?",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "retentionMappings": {
+              "type": "array",
+              "title": "Field Retention",
+              "description": "Fields that should be kept or deleted",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: keep (default) or delete",
+                    "enum": [
+                      "keep",
+                      "delete"
+                    ],
+                    "default": "keep",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "updateMappings": {
+              "type": "array",
+              "title": "Field Value Updates",
+              "description": "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "The value to add to or set on the field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: add (default) or set.",
+                    "enum": [
+                      "add",
+                      "set"
+                    ],
+                    "default": "add",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "translationMappings": {
+              "type": "array",
+              "title": "Field Translations",
+              "description": "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default": [
+                {
+                  "source": "charSet",
+                  "target": "charSet_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "fetchedDate",
+                  "target": "fetchedDate_dt",
+                  "operation": "move"
+                },
+                {
+                  "source": "lastModified",
+                  "target": "lastModified_dt",
+                  "operation": "move"
+                },
+                {
+                  "source": "signature",
+                  "target": "dedupeSignature_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "length",
+                  "target": "length_l",
+                  "operation": "move"
+                },
+                {
+                  "source": "mimeType",
+                  "target": "mimeType_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "parent",
+                  "target": "parent_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "owner",
+                  "target": "owner_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "group",
+                  "target": "group_s",
+                  "operation": "move"
+                }
+              ],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "target"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "title": "Source Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "title": "Target Field",
+                    "description": "The name of the target field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: copy (default) or move.",
+                    "enum": [
+                      "copy",
+                      "move"
+                    ],
+                    "default": "copy",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "unmappedRule": {
+              "type": "object",
+              "title": "Unmapped Fields",
+              "description": "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "title": "Keep",
+                  "description": "Keep all unmapped fields",
+                  "default": true,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "delete": {
+                  "type": "boolean",
+                  "title": "Delete",
+                  "description": "Delete all unmapped fields",
+                  "default": false,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToMoveValuesTo": {
+                  "type": "string",
+                  "title": "Move",
+                  "description": "Move all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToCopyValuesTo": {
+                  "type": "string",
+                  "title": "Copy",
+                  "description": "Copy all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToAddToUnmappedFields": {
+                  "type": "string",
+                  "title": "Add",
+                  "description": "Add this value to all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToSetOnUnmappedFields": {
+                  "type": "string",
+                  "title": "Set",
+                  "description": "Set this value on all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                }
+              },
+              "default": {
+                "keep": true,
+                "delete": false,
+                "fieldToMoveValuesTo": "",
+                "fieldToCopyValuesTo": "",
+                "valueToAddToUnmappedFields": "",
+                "valueToSetOnUnmappedFields": ""
+              }
+            }
+          },
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "hints": [
+            "advanced"
+          ],
+          "unsafe": false
+        },
+        "enable_security_trimming": {
+          "type": "object",
+          "title": "Enable Security Trimming",
+          "properties": {
+            "f.enableSecurityTrimming": {
+              "type": "boolean",
+              "title": "Enable Security Trimming",
+              "description": "Enable security trimming of Confluence searches. To properly check security the user will need Admin rights to see everything and filter accordingly.",
+              "default": true
+            },
+            "f.useJsonRpc": {
+              "type": "boolean",
+              "title": "Use JSON-RPC API",
+              "description": "Use JSON-RPC instead of REST API for permissions retrieval. This can be useful for older Confluence Server versions that don't have full permissions support via REST API.",
+              "default": false
+            },
+            "f.indexGroupPermissions": {
+              "type": "boolean",
+              "title": "Index group permissions?",
+              "description": "Enable indexing of user groups that have permission to view Confluence content.",
+              "default": true
+            },
+            "f.indexUserPermissions": {
+              "type": "boolean",
+              "title": "Index user permissions?",
+              "description": "Enable indexing of users who have permission to view Confluence content.",
+              "default": true
+            },
+            "f.cacheUserGroups": {
+              "type": "boolean",
+              "title": "Cache User Groups",
+              "description": "If true, user groups will be cached so that they confluence api is not called at query time.",
+              "default": false
+            },
+            "f.cacheUserGroupLimit": {
+              "type": "integer",
+              "title": "User group cache limit",
+              "description": "Only applicable when cacheUserGroups is enabled, this will limit the number of users who will have their groups cached. This is used for testing purposes only. The default of -1 will cause all users to be cached.",
+              "default": -1,
+              "minimum": -1,
+              "exclusiveMinimum": false
+            },
+            "f.userGroupCacheCollectionName": {
+              "type": "string",
+              "title": "User group cache collection",
+              "description": "The name of the solr collectionthat will store this datsources' user group cache. This user group cache collection can be shared with other datasources. There is a `ds_id_s` field that is used to query user/groups separately.",
+              "default": "confluence_usr_grp"
+            }
+          }
+        },
+        "excludeExtensions": {
+          "type": "array",
+          "title": "Excluded file extensions",
+          "description": "File extensions that should not to be fetched. This will limit this datasource to all extensions except this list.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludeRegexes": {
+          "type": "array",
+          "title": "Exclusive regexes",
+          "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includeExtensions": {
+          "type": "array",
+          "title": "Included file extensions",
+          "description": "File extensions to be fetched. This will limit this datasource to only these file extensions.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includeRegexes": {
+          "type": "array",
+          "title": "Inclusive regexes",
+          "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "legalURISchemes": {
+          "type": "array",
+          "title": "Legal URI schemes",
+          "description": "Legal URI schemes; use '*' to allow all schemes",
+          "hints": [
+            "advanced",
+            "hidden"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "retainOutlinks": {
+          "type": "boolean",
+          "title": "Retain links in the crawldb",
+          "description": "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "aliasExpiration": {
+          "type": "integer",
+          "title": "Alias expiration",
+          "description": "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "default": 1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "reevaluateCrawlDBOnStart": {
+          "type": "boolean",
+          "title": "Reevaluate crawldb on start?",
+          "description": "Reevaluate exisiting crawldb entries for legality on startup?",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "f.confluenceHost": {
+          "type": "string",
+          "title": "Confluence Host",
+          "description": "Hostname domain porition of the Confluence server to crawl."
+        },
+        "f.confluenceUsername": {
+          "type": "string",
+          "title": "Confluence Username",
+          "description": "Name of any existing Confluence user. Admin access not required."
+        },
+        "f.confluencePassword": {
+          "type": "string",
+          "title": "Confluence Password or API Token",
+          "description": "Password/API Token for the Confluence user.",
+          "hints": [
+            "secret"
+          ]
+        },
+        "f.domain": {
+          "type": "string",
+          "title": "Domain (NTLM auth only)",
+          "description": "Applicable only for when Confluence when usingNTLM authentication, this parameter is the domain of the username."
+        },
+        "f.confluencePort": {
+          "type": "integer",
+          "title": "Confluence Port",
+          "description": "An outbound port used by the Confluence server.",
+          "default": 443
+        },
+        "f.confluenceCtxPath": {
+          "type": "string",
+          "title": "Confluence Context Path",
+          "description": "Context path under which Confluence instance is deployed. Part of the URL for Spaces. An example path might be `/confluence/`.",
+          "default": "/"
+        },
+        "f.useHttps": {
+          "type": "boolean",
+          "title": "Use HTTPS (SSL/TLS)?",
+          "description": "Enable to use SSL when connecting to the Confluence server.",
+          "default": true
+        },
+        "f.confluenceAuthType": {
+          "type": "string",
+          "title": "Confluence Authentication Method",
+          "description": "Authentication method to use. Note: Basic is the only allowed method for connecting to Confluence hosted by Atlassian",
+          "enum": [
+            "basic",
+            "request",
+            "ntlm"
+          ],
+          "default": "basic"
+        },
+        "f.timeout": {
+          "type": "integer",
+          "title": "Read Timeout (ms)",
+          "description": "Time in milliseconds to wait for a server response.",
+          "default": 10000
+        },
+        "f.sessionTTL": {
+          "type": "integer",
+          "title": "Session TTL (ms)",
+          "description": "Time in milliseconds until HTTP session is considered expired and re-login is performed.",
+          "default": 150000
+        },
+        "f.excludedSpaces": {
+          "type": "array",
+          "title": "Excluded Spaces",
+          "description": "Confluence Spaces that should be skipped during the crawl. Use the confluence 'space name' or 'space key' to identify the spaces.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "f.includedSpaces": {
+          "type": "array",
+          "title": "Included Spaces",
+          "description": "Required. Confluence Spaces that should be crawled.   When using this setting, other spaces will be skipped.  Use the confluence 'space name' or 'space key' to identify the spaces.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "f.crawlPersonalSpaces": {
+          "type": "boolean",
+          "title": "Crawl personal spaces?",
+          "description": "Enable indexing of personal spaces of Confluence users.",
+          "default": true
+        },
+        "f.indexSpacesAsDocs": {
+          "type": "boolean",
+          "title": "Index spaces as docs?",
+          "description": "Create a separate document for each Confluence Space indexed.",
+          "default": false
+        },
+        "f.crawlPages": {
+          "type": "boolean",
+          "title": "Crawl pages?",
+          "description": "Enable indexing of Confluence pages.",
+          "default": true
+        },
+        "f.crawlBlogPosts": {
+          "type": "boolean",
+          "title": "Crawl blog-posts?",
+          "description": "Enable indexing of Confluence blog posts.",
+          "default": true
+        },
+        "f.crawlAttachments": {
+          "type": "boolean",
+          "title": "Crawl attachments?",
+          "description": "Enable indexing of attachments.",
+          "default": true
+        },
+        "f.crawlComments": {
+          "type": "boolean",
+          "title": "Crawl comments?",
+          "description": "Enable indexing of comments.",
+          "default": true
+        },
+        "f.commentFormat": {
+          "type": "string",
+          "title": "Comment Format",
+          "description": "Index comments as JSON in 'comments_ss' or as separate documents?",
+          "enum": [
+            "Embedded JSON",
+            "Separate doc"
+          ],
+          "default": "Separate doc"
+        },
+        "f.indexNonCurrentContent": {
+          "type": "boolean",
+          "title": "Index non-current content?",
+          "description": "Enable indexing of non-current (older) versions of Confluence content.",
+          "default": false
+        },
+        "f.verify_access": {
+          "type": "boolean",
+          "title": "Verify access to Confluence?",
+          "description": "Try to connect to Confluence server with current properties before saving changes to datasource.",
+          "default": true
+        },
+        "f.includePrivateContent": {
+          "type": "boolean",
+          "title": "Include private content",
+          "description": "If true, all the private content would be included. Only respected if security trimming is on, if security trimming is disabled private content will still be indexed.",
+          "default": true
+        },
+        "f.includeArchivedSpaces": {
+          "type": "boolean",
+          "title": "Include archived spaces",
+          "description": "If true, archived spaces will be included. It is respected for Confluence versions greater or equal than 5.10, for earlier versions all the archived spaces will be included whether this property is true or false.",
+          "default": true
+        },
+        "f.attachmentMaxSizeBytes": {
+          "type": "integer",
+          "title": "Max attachment file size (bytes)",
+          "description": "Maximum size, in bytes, of an attachment to fetch.",
+          "default": 4194304
+        },
+        "f.indexOversizedAttachments": {
+          "type": "boolean",
+          "title": "Index oversized attachments metadata?",
+          "description": "Index metadata of attachments bigger than attachmentMaxSizeBytes?",
+          "default": false
+        },
+        "f.pageSize": {
+          "type": "integer",
+          "title": "Confluence API request page size",
+          "description": "Number of records to retrieve per page when making requests to Confluence REST API.",
+          "default": 200
+        },
+        "f.prefetch": {
+          "type": "boolean",
+          "title": "Enable prefetch",
+          "description": "Enable prefetching of Confluence content metadata. When enabled content metadata will be fetched and cached in parallel with the main crawl.",
+          "default": false
+        },
+        "rewriteLinkScript": {
+          "type": "string",
+          "title": "URI rewrite script",
+          "description": "A Javascript function 'rewriteLink(link) { }' to modify links to documents before they are fetched.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "diagnosticMode": {
+          "type": "boolean",
+          "title": "Diagnostic mode",
+          "description": "Enable to print more detailed information to the logs about each request.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Security Trimming",
+          "properties": [
+            "enable_security_trimming"
+          ]
+        },
+        {
+          "label": "Dedupe",
+          "properties": [
+            "dedupe",
+            "dedupeSaveSignature",
+            "dedupeField",
+            "dedupeScript"
+          ]
+        },
+        {
+          "label": "Crawl History",
+          "properties": [
+            "retainOutlinks",
+            "aliasExpiration",
+            "crawlDBType",
+            "commitAfterItems",
+            "reevaluateCrawlDBOnStart"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "includeExtensions",
+            "includeRegexes",
+            "excludeExtensions",
+            "excludeRegexes",
+            "delete",
+            "deleteErrorsAfter",
+            "f.attachmentMaxSizeBytes",
+            "f.indexOversizedAttachments"
+          ]
+        },
+        {
+          "label": "Recrawl Rules",
+          "properties": [
+            "refreshAll",
+            "refreshStartLinks",
+            "refreshErrors",
+            "refreshOlderThan",
+            "refreshIDPrefixes",
+            "refreshIDRegexes",
+            "refreshScript",
+            "forceRefresh",
+            "forceRefreshClearSignatures"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "chunkSize",
+            "fetchThreads",
+            "fetchDelayMS",
+            "emitThreads",
+            "retryEmit",
+            "failFastOnStartLinkFailure"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

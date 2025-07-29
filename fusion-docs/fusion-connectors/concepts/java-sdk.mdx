@@ -1,0 +1,243 @@
+---
+title: "Java Connector Development"
+permalink: "i977jn"
+---
+
+## Overview
+
+The Lucidworks Connector SDK provides a set of components to support building all types of Fusion connectors.
+Connectors can be created by implementing some of the classes described in this document and using the provided build tool.
+
+Connectors can be deployed directly within a Fusion cluster or outside Fusion as a remote client.
+To deploy a connector into Fusion, upload the build artifact (as a zip file) to the Fusion blob API.
+To deploy remotely, you can use the
+[Connector client utility](https://doc.lucidworks.com/how-to/java-connector-dev.html#plugin-client).
+
+### Examples
+
+The example connectors are a great place to start understanding how to build a Java SDK Connector.
+Have a look at the [example connectors documentation](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/README.md).
+
+### Security
+
+Read more on how to set up a secure environment for Java SDK connectors
+[here](https://doc.lucidworks.com/how-to/java-connector-dev.html#java-sdk-security).
+
+## Java SDK Framework Overview
+
+Only a few components must be implemented to compile and build a functioning plugin.
+Here, we give an overview of each of these primary components and related concepts. We start by describing a minimal
+project directory layout, followed by details on the components.
+
+### Project Layout
+
+This documentation and examples use Gradle for building connectors. Other build tools can be used instead.
+Check out the [Gradle quickstart](https://docs.gradle.org/current/userguide/tutorial_java_projects.html) for Java Projects.
+
+The minimal project layout is as follows:
+
+```
+my-connector
+├── build.gradle
+├── gradle.properties
+├── settings.gradle
+└── src
+    └── main
+        └── java
+            └── Plugin.java
+            └── Config.java
+            └── Fetcher.java
+
+```
+
+#### build.gradle
+
+This is a typical Gradle build file. A few important settings are required. You can have a look
+at an example
+[here](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/build.gradle).
+
+#### gradle.properties
+
+The build utility used for packaging up a connector depends on this file and contains required metadata about the connector,
+including its name, version, and the version of Fusion it can connect to.
+Have a look at the example [here](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/simple-connector/gradle.properties).
+
+#### src/main/java
+
+This is where Java code lives by default. This location can be changed, but in this documentation we use the Gradle default.
+
+### The Plugin
+
+The `Plugin` class describes the various subcomponents of a connector, as well as its dependencies.
+The current set of subcomponents include the `Fetcher`, validation, security filtering, and configuration suggestions.
+
+You can think of the `Plugin` class as the component that glues everything together for an implementation. It is also a place where fetch 'phases' are defined, by binding fetcher classes to phase names.
+
+You can see an example
+[here](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/simple-connector/src/main/java/com/lucidworks/fusion/connector/plugin/RandomContentPlugin.java).
+Notice that each subcomponent can have a set of unique dependencies, or several subcomponents can share dependencies.
+
+### The Configuration
+
+The configuration component is an interface, which extends a base `Model` interface. By simply adding methods
+with `@Property` annotations, you can dynamically generate a type-safe configuration object from a connector’s configuration data.
+Similarly, you can generate a Fusion-compatible JSON schema by implementing `Model`.
+
+You can see an example of a configuration implementation
+[here](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/simple-connector/src/main/java/com/lucidworks/fusion/connector/plugin/RandomContentConfig.java).
+
+More detailed information on the configuration and schema capabilities can be found
+[here](https://doc.lucidworks.com/how-to/java-connector-dev.html#java-sdk-configuration).
+
+### The Fetcher
+
+The `Fetcher` is where most of the work is done for any connector.
+This interface provides methods that define how data is fetched and indexed.
+
+For a connector to have its content indexed into Fusion, it must emit messages, which are simple objects
+that contain metadata and content. See the [message definitions](#message-definitions) below for more details.
+
+#### Lifecycle
+
+The `Fetcher` has a simple lifecycle for dealing with fetching content.
+The flow outline is as follows:
+
+```
+    start()       - called once for each fetcher when the Job is started
+        fetch()   - called for each input to fetch
+    stop()        - called once for each fetcher when the Job is stopped
+```
+
+##### start()
+
+When a `ConnectorJob` starts, the Fetcher’s `start()` method is called. The main use case for a start() call
+is to run setup code. This method is called on every fetcher bound to a phase once per job run.
+
+##### fetch()
+
+This is the primary fetch method for a crawler-like connector (for example, a file system or web connector). Messages emitted here
+can include `Documents`, which are indexed directly into the associated content collection. There are several other
+types of messages; see [Message Definitions](#message-definitions).
+
+##### stop()
+
+Called once per job run, at the end, on every fetcher bound to a phase.
+
+#### Phases
+
+Connectors can define "phases", which are distinct blocks of fetch processing. This makes it possible to break up
+fetching into steps, so that (for example), the first phase may fetch only metadata, while the second fetches content etc..
+
+Phases are defined in the 'Plugin' class, by binding a fetcher class to a phase name. A single fetcher class can be bound to multiple phases.
+
+For each phase, the `start`, `fetch`, and `stop` methods are called on the fetcher instance bound to the phase.
+
+See the example
+[here](https://github.com/lucidworks/connectors-sdk-resources/blob/master/java-sdk/connectors/simple-connector/src/main/java/com/lucidworks/fusion/connector/plugin/RandomContentPlugin.java).
+
+#### Message Type Definitions
+
+##### Candidate
+
+A `Candidate` is metadata emitted from a `Fetcher` that represents a resource to *eventually* fetch.
+Once this message is received by the controller service, it is persisted, then added to a fetch queue.
+When this item is then dequeued, a connector instance within the cluster is selected, and the message is sent as a `FetchInput`.
+The `FetchInput` is received in the `fetch()` method of the connector.
+At this point, the connector normally emits a [`Content`](#message-definitions.content) or [`Document`](#message-definitions.document) message, which is then indexed into Fusion.
+
+The general flow of how Candidates are processed is the key to enabling distributed fetching within the connectors framework.
+
+##### FetchInput
+
+The `FetchInput` represents an item to be fetched. Example values of `FetchInput` are a file path, a URL, or a SQL statement. `FetchInputs` are passed to the fetch() method of a Fetcher and are derived from `Candidate` metadata.
+
+##### Document
+
+A `Document` is a value that is emitted from a connector and represents structured content.
+Once the controller service receives a `Document` message, its metadata is persisted in the crawl-db
+and then sent to the associated `IndexPipeline`.
+
+##### Content
+
+A `Content` message represents raw content that must be parsed in order to be indexed into Fusion. They are analogous to InputStreams, and their bytes are streamed to Fusion.
+`Content` types are actually composed of three different subtypes:
+* ContentStart - this tells Fusion that a stream of raw content is coming. It includes the `content-type` and any other metadata related to the source data.
+* ContentItem - this is a message that contains one smaller chunk of the raw content. These messages are streamed sequentially from a connector to Fusion, and these are feed (without explicit buffering) directly to the index pipeline.
+* ContentStop - this messages indicates to Fusion that the `Content` is done.
+The end result of sending a `Content` stream, is a set of parsed documents within the Fusion Collection associated with the connector.
+
+##### Skip
+
+`Skip` messages represent items that were not fetched for some reason.
+For example, items that fail validation rules related to path depth or availability.
+Each Skip can contains details on why the item was skipped.
+
+##### Error
+
+`Error` messages indicate errors for a specific item. For example, when a connector’s `fetch()` method is called
+with an nonexistent `FetchInput`, the connector can emit an error that captures the details ("not found", for example).
+
+Errors are recorded in the data store, but are not sent to the associated `IndexPipeline`.
+
+##### Delete
+
+`Deletes` tell the controller service to remove a specific item from the data store and associated Fusion collection.
+
+##### AccessControlItem
+
+`AccessControlItem` message represent group, user, role, etc. used for security filtering.
+
+#### Item state transitions
+
+| Initial Item state | Valid transition state | Comment |
+| --- | --- | --- |
+| **Candidate** | FetchInput | Candidates emitted are stored as FetchInput |
+| **FetchInput** | Document |  |
+| Skip |  |
+| Error |  |
+| AccessControlItem |  |
+| **Document** | Skip |  |
+| Error |  |
+| **Skip** | Document |  |
+| Error |  |
+| **Error** | Document |  |
+| Skip |  |
+| **Checkpoint** | Checkpoint | Checkpoint should not transition to any other state |
+| **Delete** | No transition state |  |
+| **AccessControlItem** | No transition state |  |
+
+### Understanding when and when not to make a Candidate "transient"
+
+The term `transient` refers to a Candidate’s persistance with respect to the Crawl-db.
+
+* When an emit candidate is `transient=true`, this means that we will clear the candidate from the Crawl-db after each crawl completes. Transient candidates will not be re-fetched in the next crawl. This means that subsequent crawls will need to create new candidates using the data source properties and checkpoints. An example of when you would want to do this is with a connector that has an "delta change" feature that can provide you the Created/Updated/Removed documents since you last crawled. You can avoid having to revisit every candidate from previous crawls because you have the means to know exactly what was changed. This is much faster than revisiting each candidate in the entire crawl database…​ so you should always prefer this option when it is a possibility.
+* When an emit candidate is `transient=false`, this means that we want to store the candidate in the CrawlDB, then we will send them to be fetched again so that they are reevaluated in each subsequent crawl. An example of when you want to do this is in a "Re-crawl Strategy" where you must revisit an item previously crawled explicitly each time subsequent crawls are run. Because revisiting each item is typically quite slow, you would only do this when the data source you are crawling provides no "delta change" feature that can provide you the Created/Updated/Removed documents since you last crawled.
+
+## Developing a Connector
+
+The simplest way to get started developing a connector is to review the [examples](https://github.com/lucidworks/connectors-sdk-resources/tree/master/java-sdk/connectors/simple-connector).
+
+### Dependencies
+
+At a minimum, all plugins require the connector SDK dependency.
+And more than likely, a handful of other dependencies as well.
+Examples would be an HTTP client, a special client for connecting to a third-party REST API, or maybe a parser library that
+can handle parsing video files.
+
+Specify these dependencies with the Java build tool of your choice (for example, Gradle or Maven).
+But getting them into your code and even instantiating them is partly handled by the connector SDK.
+
+#### Dependency Injection
+
+Allowing these plugins to specify runtime dependencies makes them simpler to unit test, and generally more flexible.
+When defining a connector plugin, the object used for the definition also supports adding bindings for these dependencies.
+A general guideline to follow when determining if something should be injected or not:
+
+1. Is it desirable to have multiple implementations of the component?
+2. Is the component a third-party library that has either difficult to control side effects?
+
+The connectors use the [Guice](https://github.com/google/guice) framework for dependency injection and can be directly used when defining a connector plugin.
+
+#### Repositories
+
+The Fusion connectors SDK is currently not published to any public repositories.

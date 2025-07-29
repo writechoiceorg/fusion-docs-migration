@@ -1,0 +1,39 @@
+---
+title: "Environments"
+permalink: "zm43ol"
+---
+
+Managed Fusion clients have access to multiple environments. The number and type of environments depends on your setup and agreement. Usually, you have one production environment and multiple non-production environments, which you can use to try out new features, test configurations, and stage changes before pushing them into production.
+
+## Types of environments
+
+There are five types of enviroments that Lucidworks supports. A typical Managed Fusion client has access to two (development and production) or three (development, stage, and production) environments.
+
+### Production
+
+This is the environment where production workloads are served. Any changes made are publicly available to end users.
+
+### Performance
+
+This environment is used for performing load tests against production-equivalent configurations.
+
+### Stage
+
+This environment is where you can test development changes in a more scalable environment. This is also the environment where work is staged for promotion to the production environment.
+
+### Quality Assurance
+
+Smaller than stage, this environment is intended for running automated tests.
+
+### Development
+
+Also known as the sandbox or POC (proof of concept) environment, this is where you can perform application and system development tasks, such as designing, programming, and debugging.
+
+## Roles and environments
+
+The [roles](/managed-fusion/5.9/ydvorx/roles) Managed Fusion clients have depend on the type of environment.
+
+| Environment | Roles |
+| --- | --- |
+| **Development, Stage, Performance, Quality Assurance** | [developer](/managed-fusion/5.9/ydvorx/roles#developer), [readonly](/managed-fusion/5.9/ydvorx/roles#readonly) |
+| **Production** | [rules](/managed-fusion/5.9/ydvorx/roles#rules), [readonly](/managed-fusion/5.9/ydvorx/roles#readonly) |

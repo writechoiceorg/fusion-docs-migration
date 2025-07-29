@@ -1,0 +1,40 @@
+---
+title: "Tips for scripts and code fields"
+permalink: "o72zno"
+---
+
+ConfigSync can be set up to automatically detect and separate fields containing scripts or code.
+By moving these bits of code into separate files, it makes them much easier to view, edit, and manage.
+
+## Setting up inline fields
+
+Setup is done through a configuration that specifies which fields to inline based on their type and location.
+Here are the basics:
+
+* **Selectors**: These are like filters that tell ConfigSync which types of objects and fields it should look for.
+  For example, you might have a selector for SQL templates within spark jobs.
+* **Extensions**: This tells ConfigSync what file extension to use when it creates a new file for the inlined content, like `.sql` for SQL scripts or `.scala` for Scala scripts.
+* **Properties**: These are the specific fields within your JSON objects that contain the script or code you want to inline.
+
+## Default configuration
+
+It can be found in the `application.yml` file.
+
+## How it works
+
+For every piece of content that matches a selector, ConfigSync creates a new file in a subfolder named after the object ID and the property name, with the specified extension.
+This means your scripts get their own dedicated file, making them much easier to work with.
+
+## Example in action
+
+Imagine you have a JSON file for a spark job that includes a Scala script.
+ConfigSync can automatically detect this script and move it into a separate `.scala` file, based on your configuration.
+
+* **Original JSON file**: `spark-jobs/export_aad_acls.json` might contain a Scala script under the script property.
+* **Inline setup**: According to the config, since it’s a type=script, ConfigSync creates a new file at `spark-jobs/scala/export_aad_acls/script.scala`, containing just the script.
+* **The benefit**: You can now edit the Scala script directly in its own file, which is much simpler than editing inline JSON.
+
+## Managing changes
+
+You can make changes either directly in the new script file or in the original JSON.
+However, if there are changes in both places, ConfigSync prioritizes the changes made in the separate script file.

@@ -1,0 +1,128 @@
+export const schema = {
+  "type": "object",
+  "title": "Apache Tika Parser (deprecated)",
+  "description": "A stage that uses Apache Tika for parsing rich document formats like PDF, Word, etc.",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "includeImages": {
+      "type": "boolean",
+      "title": "Include Images",
+      "default": false
+    },
+    "flattenCompound": {
+      "type": "boolean",
+      "title": "Flatten Compound Documents",
+      "default": false
+    },
+    "addFailedDocs": {
+      "type": "boolean",
+      "title": "Add Failed Documents",
+      "default": false
+    },
+    "addOriginalContent": {
+      "type": "boolean",
+      "title": "Add Original Document Content (Raw Bytes)",
+      "default": false
+    },
+    "contentField": {
+      "type": "string",
+      "title": "Field Name Where Content is Expected",
+      "default": "_raw_content_"
+    },
+    "contentEncoding": {
+      "type": "string",
+      "title": "Content Transport Encoding of the Content (per RFC1341)",
+      "enum": [
+        "binary",
+        "base64"
+      ],
+      "default": "binary"
+    },
+    "returnXml": {
+      "type": "boolean",
+      "title": "Return Parsed Content as XML or HTML",
+      "default": false
+    },
+    "keepOriginalStructure": {
+      "type": "boolean",
+      "title": "Return Original XML and HTML Instead of Tika XML Output",
+      "default": false
+    },
+    "extractHtmlLinks": {
+      "type": "boolean",
+      "title": "Extract XHTML Links",
+      "description": "Collect links explicitly declared in document structure (e.g. using HTML tags, bookmarks, etc)",
+      "default": true
+    },
+    "extractOtherLinks": {
+      "type": "boolean",
+      "title": "Extract Other Links",
+      "description": "Use regex-based heuristic extractor to collect likely links from plain text content in all fields.",
+      "default": false
+    },
+    "includeContentTypes": {
+      "type": "array",
+      "title": "Content Types to Include",
+      "description": "List of content types to parse",
+      "items": {
+        "type": "string"
+      }
+    },
+    "excludeContentTypes": {
+      "type": "array",
+      "title": "Content Types to Exclude",
+      "description": "List of content types to exclude from parsing",
+      "items": {
+        "type": "string"
+      }
+    },
+    "zipBombCompressionRatio": {
+      "type": "integer",
+      "title": "Maximum input-to-output byte ratio",
+      "description": "Maximum number of output bytes fusion will generate per input byte. If you are indexing highly compressed files, you may increase this value to avoid triggering 'Zip Bomb' detection",
+      "default": 200
+    },
+    "zipBombMaxDepth": {
+      "type": "integer",
+      "title": "Maximum nesting depth",
+      "description": "Returns the maximum XML element nesting level. If you are indexing highly nested files, you may increase this value to avoid triggering 'Zip Bomb' detection",
+      "default": 200
+    },
+    "zipBombMaxPackageEntryDepth": {
+      "type": "integer",
+      "title": "Maximum package entry depth",
+      "description": "Sets the maximum package entry nesting level. If you are indexing highly nested files, you may increase this value to avoid triggering 'Zip Bomb' detection",
+      "default": 20
+    }
+  },
+  "category": "Deprecated",
+  "categoryPriority": 1,
+  "unsafe": false
+}

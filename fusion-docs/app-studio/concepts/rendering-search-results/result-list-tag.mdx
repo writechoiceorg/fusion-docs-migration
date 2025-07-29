@@ -1,0 +1,58 @@
+---
+title: "Result List tag"
+permalink: "3095"
+---
+
+The Result List tag displays the results for a given Response. While it can be used as a standalone tag to output every field for each result, it is most often contains a Result tag with numerous Field tags.
+
+## Usage
+
+This example shows how to display all results returned by the Platform. It shows two alternative methods of referencing the fields of each item:
+
+* Using angular syntax to use the value directly
+* Using the Field tag to produce strictly valid XHTML with comprehensive CSS selectors.
+
+```xml
+<search:result-list response="response">
+     <search:result>
+          <h2><a ng-href="{{result | field:'url' | actual}}" target="_top">{{result | field:'title' | actual}}</a></h2>
+          <search:field name="body" label=""></search:field>
+          <search:field name="concepts" label="concepts" query="query" separator=";"></search:field>
+     </search:result>
+</search:result-list>
+```
+
+While not strictly required, the nested `<search:result>` tag is recommended. For more details, refer to the [Result tag](/fusion/5.9/3094/result-tags).
+
+## Nested Result Lists
+
+Some search platforms, such as Solr (when using Grouping) will create Results with further nested Results. In Appkit terminology these are named 'related results'. A JOIN will produce a secondary set of hits for each result in the response. This secondary set of hits can be accessed and output using a nested Result List tag:
+
+```xml
+<search:result-list response="response">
+    <search:result>
+        <search:field name="country" label="" value-element="h2"></search:field>
+        <search:field name="text" label=""></search:field>
+        <search:field name="climate" label="Climate" query="query"></search:field>
+        <h3>Cities in {{result | field:'title' | actual}}</h3>
+
+        <!-- Nested list of related Results -->
+        <search:result-list results="result.related">
+            <search:result>
+                <search:field name="city" label=""></search:field>
+            </search:result>
+        </search:result-list>
+    </search:result>
+</search:result-list>
+```
+
+See the [`search:result-list`](/fusion/5.9/1200/search-result-list) tag doc for all available attributes.
+
+### Tag body variables
+
+The body of the tag will be repeated for every result in the Response.
+
+`${result} (twigkit.model.Result)`  
+The result being output. See the Result for available properties.
+
+* To get a String representation of a Field use: `{{result | field:'name' | actual}}` or `{{result | field:'title' | display}}`.

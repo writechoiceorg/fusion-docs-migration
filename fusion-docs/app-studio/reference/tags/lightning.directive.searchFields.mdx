@@ -1,0 +1,50 @@
+---
+title: "search:fields"
+permalink: "1116"
+---
+
+## Description
+
+A dropdown to select the fields which should be returned in the
+response, if no fields are selected all fields will be returned.
+
+The fields tag should be wrapped in a
+[Layout Controls Tag](/app-studio/4.2/1062/layout-controls).
+
+## Usage
+
+as element:
+
+```xml
+<search:fields
+       [title="{string}"]
+       [fields="{string}"]
+       [hidden-fields="{string}"]>
+</search:fields>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| title  *(optional)* | **string** | The title to display for the dropdown. |
+| fields  *(optional)* | **string** | A comma separated list of the fields that can be selected. Fields can be added with a display value like so actualFieldName=Display Field Name, anotherActual=My Field. |
+| hidden-fields  *(optional)* | **string** | A comma separated list of fields to be included with fields the user selects. Eg. id,firstname,lastname |
+
+## Example
+
+#### Source
+
+```xml
+<layout:controls>
+    <search:fields fields="name=Name,current_address=Address,Gender"></search:fields>
+</layout:controls>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchFields.png)</Frame>

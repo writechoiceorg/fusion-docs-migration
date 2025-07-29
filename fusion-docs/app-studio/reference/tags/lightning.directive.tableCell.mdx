@@ -1,0 +1,52 @@
+---
+title: "table:cell"
+permalink: "1172"
+---
+
+## Description
+
+Creates a table cell `<td>`
+
+## Usage
+
+as element:
+
+```xml
+<table:cell
+       name="{string}"
+       [default-value="{string}"]
+       [separator="{string}"]
+       [date-format="{string}"]
+       [number-format="{string}"]
+       [show="{Number}"]
+       [prefix="{string}"]
+       [suffix="{string}"]
+       [url="{string}"]
+       [url-field="{string}"]
+       [target="{string}"]
+       [action="{string}"]
+       [query="{string}"]>
+</table:cell>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | **string** | Name of the field to render |
+| default-value  *(optional)* | **string** | Default value to show when no value is present in the index. |
+| separator  *(optional)* | **string** | Separator character or sequence to split a Field into multiple values. Setting the separator to “;” would turn the value “company1; company2; company3” into a list of 3 values. |
+| date-format  *(optional)* | **string** | How to format the date. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+| number-format  *(optional)* | **string** | Format string for the numbers used using the Java DecimalFormat pattern. Default: ',0.' |
+| show  *(optional)* | **Number** | Number of values to show if the field is multivalued. Default: No limit (-1) |
+| prefix  *(optional)* | **string** | Text to prepend to index values (not applied to default value). E.g. if the index field 'money' contains the value '10'. A prefix="£" would result in '£10' being displayed as the value. |
+| suffix  *(optional)* | **string** | Text to append to index values (not applied to default value). E.g. if the index field 'weight' contains the value '10'. A suffix=" kg." would result in '10 kg.' being displayed as the value. |
+| url  *(optional)* | **string** | URL to redirect to when the field is clicked; |
+| url-field  *(optional)* | **string** | Field containing a URL to redirect to when the field is clicked; |
+| target  *(optional)* | **string** | Set an HTML target attribute for the anchor tag. For example use _blank to have the generated link open the results in a new window. (Not applicable to query) |
+| action  *(optional)* | **string** | Alternative page to submit the query parameters to - defaults to current page. If a 'url' attribute is provided the action is ignored and query parameters are not included in the request. |
+| query  *(optional)* | **string** | When set, the value of the named field will be displayed as a hyperlink that submits the query again with this field and its value as a search constraint. |

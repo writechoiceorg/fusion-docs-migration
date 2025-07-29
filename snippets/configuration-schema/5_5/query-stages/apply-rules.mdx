@@ -1,0 +1,183 @@
+export const schema = {
+  "type": "object",
+  "title": "Apply Rules",
+  "description": "Look up and apply rules to the query",
+  "required": [
+    "handler",
+    "method"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "asyncConfig": {
+      "type": "object",
+      "title": "Asynchronous Execution Config",
+      "required": [
+        "enabled",
+        "asyncId"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Async Execution",
+          "description": "Run the expensive data loading or processing part of this stage in a separate thread allowing the pipeline to continue executing. The results of this asynchronous execution can be merged into the pipeline request using a downstream \"Merge Async Results\" stage.",
+          "default": false
+        },
+        "asyncId": {
+          "type": "string",
+          "title": "Async ID",
+          "description": "A unique value to use as reference in downstream \"Merge Async Results\" stages."
+        }
+      }
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection",
+      "description": "The collection to read rules from. Leave blank to use the default rules collection for the current application. Supports template expressions."
+    },
+    "handler": {
+      "type": "string",
+      "title": "Request Handler",
+      "default": "select"
+    },
+    "method": {
+      "type": "string",
+      "title": "HTTP Method",
+      "enum": [
+        "GET",
+        "POST"
+      ],
+      "default": "POST"
+    },
+    "ruleLimit": {
+      "type": "string",
+      "title": "Rule Triggering Limit",
+      "description": "Max number of business rules to be triggered by the same query. The default rules matching limit is 100. This config overwrites \"rows\" param set in \"Query Parameters\" section",
+      "default": "100"
+    },
+    "params": {
+      "type": "array",
+      "title": "Query Parameters",
+      "description": "Additional query parameters to use when querying the rules collection. NOTE: \"rows\" parameter set here will be overwritten by the config in \"Rule Triggering Limit\" section",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "subqueryRewritePipelineId": {
+      "type": "string",
+      "title": "Subquery Rewrite Pipeline Id",
+      "description": "Option to call a Fusion query pipeline to modify rule-retrieving subquery. Supports template expressions."
+    },
+    "hierarchicalFilter": {
+      "type": "array",
+      "title": "Hierarchical Filter",
+      "description": "Specify hierarchical filter and delimiter, e.g. category: clothing/dress/cocktail",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "delimiter"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field Name"
+          },
+          "delimiter": {
+            "type": "string",
+            "title": "Field Delimiter"
+          }
+        }
+      }
+    },
+    "headers": {
+      "type": "array",
+      "title": "Headers",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "useOriginalQueryIfNoRulesMatch": {
+      "type": "boolean",
+      "title": "Use Original Query If No Rules Match",
+      "description": "If checked, then this stage will try to match rules using the original query (un-tagged) sent into the tagger stage if available.",
+      "default": true
+    },
+    "matchPartialFilterQueries": {
+      "type": "boolean",
+      "title": "Partially Matched Filter Queries Will Trigger the Rule",
+      "description": "If checked, then this stage will trigger filter rules as long as there is one filter query in the query parameter that matches the filter specified in the rule.",
+      "default": true
+    },
+    "maxWaitMs": {
+      "type": "integer",
+      "title": "Max Wait for Lookup (ms)",
+      "description": "Max time to wait for call to remote tagger collection to return; set to -1 to disable.",
+      "default": 500
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 6,
+  "unsafe": false
+}

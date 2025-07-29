@@ -1,0 +1,14 @@
+---
+title: "Query-to-Query Collaborative Similarity"
+description: "Job configuration specifications"
+permalink: "43a5xr"
+---
+
+Train a collaborative filtering matrix decomposition recommender using [SparkML’s Alternating Least Squares (ALS)](https://spark.apache.org/docs/2.1.0/ml-collaborative-filtering.html) to batch-compute query-query similarities. This can be used for [items-for-query recommendations](/managed-fusion/5.9/g8cwr6/items-for-query-recommendations) as well as [queries-for-query recommendations](/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/query-to-query-collaborative-similarity-deprecated.mdx";
+
+<SchemaParamFields schema={schema}/>

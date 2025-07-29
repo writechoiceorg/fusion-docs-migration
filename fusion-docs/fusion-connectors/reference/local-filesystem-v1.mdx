@@ -1,0 +1,22 @@
+---
+title: "Local Filesystem V1"
+description: "Connector Configuration Reference"
+permalink: "42"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.1.5
+
+This connector traverses a network file system (NFS), where a shared drive is mounted to the same location on all hosts in the cluster that are running this connector.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-file.mdx";
+
+<SchemaParamFields schema={schema}/>

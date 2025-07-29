@@ -1,0 +1,56 @@
+---
+title: "SolrAdmin API"
+permalink: "309"
+---
+
+
+The Solr Admin API lets you send commands to Solr through Fusion’s proxy service.
+This allows you to protect your Solr instances from outside connections, and apply roles and user permissions from Fusion when running Solr commands.
+Requests sent to this API are subject to access restrictions above the collection level.
+
+*Note that because one searchCluster may host several collections, it is not recommended to use this with a collection-level command (such as a query, or document update).*
+
+## Example
+
+Here is an example to GET all CORE [MBeans](https://solr.apache.org/guide/solr/latest/deployment-guide/mbean-request-handler.html) for the 'default' searchCluster, formatted in JSON:
+
+**REQUEST**
+
+```
+https://FUSION_HOST:8764/api/solrAdmin/default/admin/mbeans?cat=CORE&wt=json
+```
+
+**RESPONSE**
+
+```json
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 1
+    },
+    "solr-mbeans": [
+        "CORE",
+        {
+            "searcher": {
+                "class": "org.apache.solr.search.SolrIndexSearcher",
+                "version": "1.0",
+                "description": "index searcher",
+                "src": null
+            },
+            "core": {
+                "class": "collection1",
+                "version": "1.0",
+                "description": "SolrCore",
+                "src": null
+            },
+            "Searcher@435cf502[collection1] main": {
+                "class": "org.apache.solr.search.SolrIndexSearcher",
+                "version": "1.0",
+                "description": "index searcher",
+                "src": null
+            }
+        }
+    ]
+}
+```
+

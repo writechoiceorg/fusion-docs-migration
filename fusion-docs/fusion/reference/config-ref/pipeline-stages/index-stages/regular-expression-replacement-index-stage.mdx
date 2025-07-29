@@ -1,0 +1,20 @@
+---
+title: "Regex Field Replacement Index Stage"
+permalink: "219"
+---
+
+The Regex Field Replacement index stage lets you match against a source field and append or overwrite that field or another one with a replacement string. It uses the
+[java.util.regex](https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html) library.
+
+One notable feature is support for flags in the prefix of the pattern, such as `(?iu)\w+` where the `i` flag means case-insensitive and `u` means Unicode-aware case folding. You can also configure the desired behavior when there is no match. Additionally, you can use capture groups in your replacement configuration using `$1` to denote the first capture group.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/regex-field-replacement.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,36 @@
+---
+title: "Windows Share SMB 2/3 Connector"
+permalink: "20"
+---
+
+The Windows Share connector can access content in a Windows Share or Server Message Block (SMB 2 and 3 protocols)/Common Internet File System (CIFS) filesystem. Available in Fusion 5.x.x releases.
+
+## Access Control Lists (ACLs)
+
+For each document, two ACL fields are populated. The data in these fields can be used at search time to filter the results so that only people that have been granted access at the share level, at the user level, or through group membership can see them.
+
+* `acl_share`
+
+  This field honors the DFS share access restrictions. This means that if everyone has access to a folder inside a share, but only a small group has access to the share itself, then all users can access the folder.
+* `acl`
+
+  For each document, the `acl` field is populated with data that can be used at search time to filter the results so that only people that have been granted access at the user level or through group membership can see them. Two kinds of tokens are stored: Allow and Deny. The format used is as follows:
+
+  ```
+  Allow:`WINA<SID>`
+  Deny:`WIND<SID>`
+  
+  ```
+
+  Where `SID` is the security identifier commonly used in Microsoft Windows systems. There are some well known SIDs that can be used in the `acl` field to make documents that are crawled through some other mechanism than by using SMB data source behave, from the `acl pow`, the same way as the crawled SMB content:
+
+  | SID | Description |
+  | --- | --- |
+  | S-1-1-0 | Everyone. |
+  | S-1-5-domain-500 | A user account for the system administrator. By default, it is the only user account that is given full control over the system. |
+  | S-1-5-domain-512 | Domain Admins: a global group whose members are authorized to administer the domain. By default, the Domain Admins group is a member of the Administrators group on all computers that have joined a domain. |
+  | S-1-5-domain-513 | Domain Users. |
+
+  Note that some of the listed SIDs contain a `domain` token. This means that the actual SIDs differ from system to system. To find out the SIDs for particular user in particular system you can use the information provided by the Windows command line tool `whoami` by executing command `whoami /all`.
+
+  You can populate the `acl` field in your documents with these Windows SIDs to make them searchable in Fusion. For example, if you wanted to make some documents available to "Everyone" you would populate the `acl` field with the `WINAS-1-1-0` token. If you wanted to make all docs from one data source available to everybody you can use the literal definitions in the data source configuration.

@@ -1,0 +1,19 @@
+---
+title: "Query Fields Stage"
+permalink: "289"
+---
+
+The Query Fields query pipeline stage defines common Solr query parameters for the [edismax query parser](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser). If using a less-than sign (\<) with DisMax, it must be escaped using a backslash.
+An alternative to this stage is the
+[Additional Query Parameters stage](/fusion-server/4.2/294/additional-query-parameters-stage).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/query-fields.mdx";
+
+<SchemaParamFields schema={schema}/>

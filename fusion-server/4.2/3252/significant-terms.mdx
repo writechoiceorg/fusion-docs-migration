@@ -1,0 +1,14 @@
+---
+title: "significantTerms"
+permalink: "3252"
+---
+
+The `significantTerms` UDF allows the user to query data for significant terms within the results. This identifies terms that appear an unusaully frequently in a specific result set relative to the index. It can be used to identify anomalies in data.
+
+This UDF can be used on tokenized text and multi-value and single-value string fields.
+
+Example:
+
+```sql
+select significantTerms(fieldX), score from collectionName where fieldy = 'my-query' limit 10
+```

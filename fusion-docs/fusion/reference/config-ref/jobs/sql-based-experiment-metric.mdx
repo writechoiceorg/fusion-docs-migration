@@ -1,0 +1,23 @@
+---
+title: "SQL-Based Experiment Metric Jobs"
+permalink: "571"
+---
+
+This job is created by an experiment in order to calculate an objective.
+
+<Note>
+This job is deprecated in Fusion 5.2.x.
+</Note>
+
+
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: |  | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/sq-l-based-experiment-metric.mdx";
+
+<SchemaParamFields schema={schema}/>

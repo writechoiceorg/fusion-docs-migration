@@ -1,0 +1,220 @@
+---
+title: "Apache Solr"
+permalink: "3214"
+---
+
+Solr is the open source search engine at the core of Fusion. When you [index your data](/fusion/5.9/155/indexing-your-data), it is stored in a Solr collection.
+
+## Collections
+
+Your data is organized into collections. When you create an app, Fusion automatically creates a collection with the same name. You can create additional collections in any app.
+
+A primary collection contains the data that your users will search. Every primary collection is associated with a set of auxiliary collections that contain related data, such as signals, aggregations, and more.
+
+Under the hood, a Fusion collection is a distributed index in Solr, defined by a named configuration stored in ZooKeeper, with these properties:
+
+* Number of shards
+
+  Documents are distributed across this number of partitions.
+* Document routing strategy
+
+  How documents are assigned to shards.
+* Replication factor
+
+  How many copies of each document in the collection.
+* Replica placement strategy
+
+  Where to place replicas in the cluster.
+
+If your data is already stored in a Solr instance or cluster, you can manage this collection
+in Fusion by creating a Fusion collection that imports the existing Solr collection.
+
+<Note>
+Collection names are case-insensitive, but Fusion preserves case when displaying collection names.
+</Note>
+
+
+
+### Auxiliary Collections
+
+Every primary collection is associated with a set of auxiliary collections that contain related data, such as signals, aggregations, and more.
+
+Some auxiliary collections are created for every primary collection. Others are created only for the app’s default collection, one per app.
+
+Auxiliary collections are described below:
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 16.6666%;" />
+    <col style="width: 66.6666%;" />
+    <col style="width: 16.6668%;" />
+  </colgroup>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>APP_NAME_job_reports</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          Output from Fusion <a href="/fusion/5.9/460/experiments">experiments</a>, <a href="/fusion/5.9/575/ranking-metrics-jobs">Ranking Metrics jobs</a>, and <a href="/fusion/5.9/552/head-tail-analysis-jobs">Head/Tail Analysis jobs</a>.
+        </p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per app</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>APP_NAME_query_rewrite</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          A collection of documents to use for <a href="/fusion/5.9/489/query-rewriting">rewriting queries</a>, optimized for high‑volume traffic. These documents originate from the <code>COLLECTION_NAME_query_rewrite_staging</code> collection. Certain Fusion query pipeline stages read from this collection:
+        </p>
+        <ul>
+          <li><p class="tableblock"><a href="/fusion/5.9/520/text-tagger-stage">Text Tagger</a></p></li>
+          <li><p class="tableblock"><a href="/fusion/5.9/535/apply-rules-stage">Apply Rules</a></p></li>
+          <li><p class="tableblock"><a href="/fusion/5.9/537/modify-response-with-rules-stage">Modify Response with Rules</a></p></li>
+        </ul>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per app</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>APP_NAME_query_rewrite_staging</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          A collection of documents created by the Rules Editor or by certain <a href="/fusion/5.9/385/jobs-configuration-reference">Fusion jobs</a>, not optimized for production traffic.
+        </p>
+        <p class="tableblock">
+          Documents move from this collection to the <code>COLLECTION_NAME_query_rewrite</code> collection as follows:
+        </p>
+        <ul>
+          <li>
+            <p class="tableblock">
+              Job output documents with high confidence contain a <code>review=auto</code> field and are moved to the <code>COLLECTION_NAME_query_rewrite</code> collection automatically.
+            </p>
+          </li>
+          <li>
+            <p class="tableblock">
+              Job output documents with low confidence contain a <code>review=pending</code> field. When these are approved by a Fusion user, Fusion copies them to the <code>COLLECTION_NAME_query_rewrite</code> collection.
+            </p>
+          </li>
+        </ul>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per app</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>COLLECTION_NAME_signals</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">A search query logs and signals collection.</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per collection</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>COLLECTION_NAME_signals_aggr</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">A collection for aggregated signals.</p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per collection</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock"><code>APP_NAME_user_prefs</code></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+          A collection of data to support App Studio’s social features, such as user‑generated tags, bookmarks, comments, ratings, and so on.
+        </p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">1 per app</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<Note>
+Do not create primary collections with names that end in the suffixes above; these are reserved for Fusion auxiliary collections, which are created and managed by Fusion directly.
+</Note>
+
+
+
+Fusion maintains a set of Solr collections that store Fusion’s own
+log files and other internal information.
+These are called [System Collections](#Collections-SystemCollections), described below.
+
+<Note>
+Do not create primary collections named "logs" or beginning with "system_".
+These names are reserved for Fusion system collections.
+</Note>
+
+Fusion uses ZooKeeper to register information about all collections,
+and the Fusion components and services related to a collection.
+The Fusion components associated with a collection include:
+
+* Datasources
+* Pipelines
+* Profiles
+* Signals and aggregations
+* Analytics dashboards
+
+### System Collections
+
+Fusion automatically creates some collections that are used for internal purposes and shared across all apps:
+
+* **system_autocomplete** store the content that the Fusion UI displays when you use the search bar.
+* **system_blobs** stores [blobs](/fusion/5.9/153/blob-storage) in Solr. This is used to store model files for the NLP components and other binary files used by Fusion components.
+* **system_history** keeps a record of configuration changes, start and stop times for services and experiments, and more.
+* **system_jobs_history** keeps a record of Fusion [jobs](/fusion/5.9/184/jobs-and-scheduling), including start/stop times and status.
+* **system_messages** is used by Fusion’s [messaging services](/fusion/5.9/135/messaging-and-alerting).
+
+### Collection Configuration Properties
+
+Collections have three properties that you can configure only when you are creating a collection using the
+[Collections API](/fusion/5.9/307/collections-api).
+
+| Property | Description | Default behavior |
+| --- | --- | --- |
+| signals* | The `signals` property determines whether to create auxiliary collections with suffixes `_signals` and `_signals_aggr`. | When you create a collection in the Fusion UI, `signals` defaults to **true**.  When you create a collection using the Fusion API, this property defaults to **false**. |
+| searchLogs | The `searchLogs` property determines whether to create an auxiliary search query logs collection with suffix `_logs`. | When you create a collection in the Fusion UI, this property defaults to **true**.  When you create a collection using the Fusion API, this property defaults to **false**. |
+
+*Signals are events with timestamps that can be used to improve search results.
+For more information about signals in Fusion, see [Signals](/fusion/5.9/469/signals) in the Fusion documentation.
+
+**In schemaless mode, if a document contains a field not currently in the Solr schema, Solr processes the field value to determine what the field type should be defined as, and then adds a new field to the schema with the field name and field type.
+This behavior can be convenient during preliminary application development, but it is rarely appropriate in a production environment.
+
+### Using profiles to associate collections with pipelines
+
+Index pipelines and query pipelines are not connected to a specific collection by default. Index profiles and query profiles are configurations that create consistent endpoints for indexing and querying, each with a specific pipeline and collection.
+
+* [Index Profiles](/fusion/5.9/160/index-profiles) work with index pipelines for getting content into the system.
+* [Query Profiles](/fusion/5.9/174/query-profiles) work with query pipelines for user queries.
+
+### Field Editor UI
+
+The Fusion UI includes a space under Collections to edit Fields. The Fusion UI includes a space under Collections to edit Fields. Descriptions for these fields can be found in the Field Type Definitions section of the [Solr Reference Guide](/fusion/5.9/10902/solr-reference-guide) associated with your Fusion release.
+
+Field options displayed in the UI include:
+
+* **Dynamic** checkbox (cannot change via UI)
+* **Field Name** (cannot change via UI)
+* **Field Type** (a preset value is shown that can be changed using edit mode)
+* Checkboxes for **Indexed**, **Stored**, **Multivalued**, **Required**
+* Text field to enter a **Default Value**
+* **Copy Fields** uses the plus sign to add rows (**static** can copy to `raw_content` or `text`; **dynamic** can copy to any `raw_content`/`text` or any other dynamic field)
+* **Advanced** toggles checkboxes for **Doc Values**, **Omit Norms**, **Omit Positions**, **Omit term freq and positions**, **Term Vectors**, **Term Positions**, **Term Offsets**

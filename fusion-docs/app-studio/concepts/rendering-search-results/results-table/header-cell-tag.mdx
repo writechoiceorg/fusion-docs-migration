@@ -1,0 +1,23 @@
+---
+title: "Header Cell tag"
+permalink: "3100"
+---
+
+The Header Cell tag outputs a single header cell in a results table. The tag must be nested within a [Header tag](/fusion/5.9/3102/header-tag).
+
+## Usage
+
+Place the Header Cell tag inside the body of a [Header tag](/fusion/5.9/3102/header-tag). The order of the cell tags within a header should match the order of the [Cell tags](/fusion/5.9/3098/cell-tag) within the table’s [Row tag](/fusion/5.9/3097/row-tag). In this example, a table contains three columns and displays the "full_name", "address", and "dob" fields for each document in the given search response.
+
+```xml
+<table:result-list response="response">
+    <table:header>
+        <table:header-cell name="full_name" label="Name" sort="true"></table:header-cell>
+        <table:header-cell name="address" label="Address" sort="true"></table:header-cell>
+        <table:header-cell name="dob" label="Date of birth" sort="true"></table:header-cell>
+    </table:header>
+    ...
+</table:result-list>
+```
+
+For a complete list of attributes, see the [`table:header-cell`](/fusion/5.9/1128/table-header-cell) tag doc.

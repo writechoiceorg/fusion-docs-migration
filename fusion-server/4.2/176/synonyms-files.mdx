@@ -1,0 +1,129 @@
+---
+title: "Synonyms Files"
+permalink: "176"
+---
+
+## Synonyms
+
+Synonyms are:
+
+* Words that mean the same thing, within the context where they are used.
+* Used in searches. And synonym expansion allows Fusion to return results that match the meaning of the query terms, but not the words themselves.
+* Important for mapping query terms such as:
+
+  + Acronyms to their names
+  + Jargon to public terms
+  + Misspellings to correct spellings
+  + Old to new personal or corporate names
+  + Bridging the gap between the user vocabulary and terms in the original text
+
+Fusion uses the Solr `synonyms.txt` and Solr collections, which are managed by Fusion.
+
+Solr itself manages a set of [resources](https://cwiki.apache.org/confluence/display/solr/Managed+Resources) to apply synonym expansion, with configuration through the Fusion API and the Fusion UI.
+However, Fusion synonyms are not interchangeable with Solr synonyms files.
+
+If you have a Fusion AI license, see also the [Synonym and Similar Queries Detection job](/fusion-ai/4.2/563/synonym-and-similar-queries-detection-jobs) which automatically detects synonyms to use in [query rewriting](/fusion-ai/4.2/489/query-rewriting).
+
+<Note>
+See [Use Synonym Detection](/how-to/649/using-synonym-detection.asciidoc) for more information.
+</Note>
+
+
+
+## Synonym types
+
+There are three kinds of search synonyms, depending on the requirements of the search for each specific term.
+
+### Replacement synonyms
+
+Replacements are used to change the query, to replace it with a more standard term or terms. For example:
+
+```
+ lucid => lucidworks
+```
+
+In this case, "lucid" by itself not an approved term, so there should be no instances where the company name is a partial word.
+
+### One-way expansion synonyms
+
+One-way expansions expand original terms with more standard terms while retaining the original term; they do not do the opposite, expand standard terms to the original non-standard terms
+
+```
+ monitor => monitor, display
+```
+
+In this case, "display" is the standard term, but "monitor" is used in some older user-generated content.
+
+### Multi-way expansion synonyms
+
+Where each term is considered equally standard, multiway synonyms expand the query so any items with any of the terms is retrieved.
+
+```
+ login,logon,signin,signon
+```
+
+This example shows terms that are used interchangeably by authors. For this search engine, there is no need to distinguish among them, and considerable value in increasing recall to find all items discussing this topic. However, other content stores may use them differently.
+Note that "logging" and "signing" have specific meanings in many contexts, so they might not be candidates for synonyms.
+
+Example of synonym expansion:
+
+<table class="tableblock frame-all grid-all stretch">
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Results before synonyms</th>
+<th class="tableblock halign-left valign-top">Results after synonyms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top">
+<p class="tableblock">
+<span class="image">
+<img src="/assets/images/common/synonyms-query-before-0-matches.png" alt="0 results for query &quot;logon&quot; before synonyms" width="98%"/>
+</span>
+</p>
+</td>
+<td class="tableblock halign-left valign-top">
+<p class="tableblock">
+<span class="image"
+><img src="/assets/images/common/synonyms-query-after-18-matches.png" alt="18 results for query &quot;logon&quot; after synonyms" width="98%"/>
+</span>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+
+Viewing the query using the debug=true parameter shows how it is expanded:
+
+```
+ "querystring": "logon",
+ "parsedquery": "(+DisjunctionMaxQuery((Synonym(_text_:login _text_:logon _text_:signin _text_:signon))))/no_coord",
+ "parsedquery_toString": "+(Synonym(_text_:login _text_:logon _text_:signin _text_:signon))",
+```
+
+## Multiword synonyms
+
+Lucene/Solr supports multiword synonyms in version 6.6 and later, and Fusion in version 3.1 and later. There are significant technical complexities in performing graphed phrased expansion that had to be overcome.
+
+To enable multiword synonyms in Fusion, create an Additional Parameter stage for disabling the split on whitespace tokenization process (which applies to synonyms only):
+
+```
+ sow=false
+```
+
+Using EDismax, this allows the new Solr SynonymGraphFilter to create the graph representations of token streams containing overlapping synonyms of varying word counts, and expand the queries with additional terms. If using a less-than sign (\<) with EDismax, it must be escaped using a backslash.
+
+Examples:
+
+```
+ appstudio => app studio
+ signup =>signup,sign up
+ login,log in,logon,log on,signin,sign in,signon,sign on
+```
+
+Multiword synonyms work just like single-word synonyms, expanding the parsed query with additional query terms. For Solr details, see: [Multi-Word Synonyms: Solr Adds Query-Time Support](https://lucidworks.com/post/multi-word-synonyms-solr-adds-query-time-support//).
+
+## Synonyms Editor API
+
+The [Synonyms Editor API](/fusion-server/4.2/335/synonyms-editor-api) provides complete REST access to all aspects of the synonyms.

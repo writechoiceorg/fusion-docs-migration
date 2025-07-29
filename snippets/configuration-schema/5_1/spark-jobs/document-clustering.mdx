@@ -1,0 +1,448 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to cluster a set of documents and attach cluster labels based on topics.",
+  "properties": {
+    "analyzerConfig": {
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"patternreplace\", \"pattern\": \"^[\\\\d.]+$\", \"replacement\": \" \", \"replace\": \"all\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "hints": [
+        "code/json",
+        "advanced",
+        "lengthy"
+      ],
+      "minLength": 1,
+      "title": "Lucene Analyzer Schema",
+      "type": "string"
+    },
+    "clusterIdField": {
+      "default": "cluster_id",
+      "description": "Output field name for unique cluster id.",
+      "title": "Output Field Name for Cluster Id",
+      "type": "string"
+    },
+    "clusterLabelField": {
+      "default": "cluster_label",
+      "description": "Output field name for top frequent terms that are (mostly) unique for each cluster.",
+      "title": "Detected Cluster Keywords Field Name",
+      "type": "string"
+    },
+    "clusteringMethod": {
+      "default": "hierarchical",
+      "description": "Choose between hierarchical vs kmeans clustering.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Clustering Method (hierarchical or kmeans)",
+      "type": "string"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Data format",
+      "type": "string"
+    },
+    "distToCenterField": {
+      "default": "dist_to_center",
+      "description": "Output field name for doc distance to its corresponding cluster center (measure how representative the doc is).",
+      "title": "Output Field Name for doc distance to its cluster center",
+      "type": "string"
+    },
+    "docLenTrim": {
+      "default": true,
+      "description": " Whether to separate out docs with extreme lengths.",
+      "title": "Find Extreme Length Doc Flag",
+      "type": "boolean"
+    },
+    "fieldToVectorize": {
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1,
+      "title": "Field to Vectorize",
+      "type": "string"
+    },
+    "freqTermField": {
+      "default": "freq_terms",
+      "description": "Output field name for top frequent terms in each cluster. These may overlap with other clusters.",
+      "title": "Top Frequent Terms Field Name",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "kDiscount": {
+      "default": 0.7,
+      "description": "Applies a discount to help favor large/small K (number of clusters). A smaller value pushes K to assume a higher value within the [min, max] K range.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Discount for K when choosing number of clusters",
+      "type": "number"
+    },
+    "kExact": {
+      "default": 0,
+      "description": "Exact number of clusters.",
+      "title": "Number of Clusters",
+      "type": "integer"
+    },
+    "kMax": {
+      "default": 20,
+      "description": "Max possible number of clusters.",
+      "title": "Max Possible Number of Clusters",
+      "type": "integer"
+    },
+    "kMin": {
+      "default": 2,
+      "description": "Min possible number of clusters.",
+      "title": "Min Possible Number of Clusters",
+      "type": "integer"
+    },
+    "longLen": {
+      "default": 0.99,
+      "description": "Length threshold to define long document. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number. ",
+      "title": "Length Threshold for Long Doc",
+      "type": "number"
+    },
+    "maxDF": {
+      "default": 0.5,
+      "description": "Max number of documents the term can show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "title": "Max Doc Support",
+      "type": "number"
+    },
+    "minDF": {
+      "default": 5,
+      "description": "Min number of documents the term has to show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "title": "Min Doc Support",
+      "type": "number"
+    },
+    "minDivisibleSize": {
+      "default": 0,
+      "description": "Clusters must have at least this many documents to be split further. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number. ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Minimum divisible cluster size",
+      "type": "number"
+    },
+    "modelId": {
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Model ID",
+      "type": "string"
+    },
+    "norm": {
+      "default": 2,
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Vector normalization",
+      "type": "integer"
+    },
+    "numKeywordsPerLabel": {
+      "default": 5,
+      "description": "Number of Keywords needed for labeling each cluster.",
+      "title": "Number of Keywords for Each Cluster",
+      "type": "integer"
+    },
+    "outlierK": {
+      "default": 10,
+      "description": "Number of clusters to help find outliers.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Number of outlier groups",
+      "type": "integer"
+    },
+    "outlierThreshold": {
+      "default": 0.01,
+      "description": "Identify as outlier group if less than this percent of total documents. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number. ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Outlier cutoff",
+      "type": "number"
+    },
+    "outlierTrim": {
+      "default": true,
+      "description": " Whether to perform outlier detection.",
+      "title": "Find Outliers Flag",
+      "type": "boolean"
+    },
+    "outputCollection": {
+      "description": "Solr Collection to store model-labeled data to",
+      "minLength": 1,
+      "title": "Output Collection",
+      "type": "string"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "randomSeed": {
+      "default": 1234,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "shortLen": {
+      "default": 5,
+      "description": "Length threshold to define short document. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number. ",
+      "title": "Length Threshold for Short Doc",
+      "type": "number"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "stopwordsList": {
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "List of stopwords",
+      "type": "array"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing documents to be clustered",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to use when loading training data",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 3,
+      "title": "Training data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "doc_clustering",
+      "enum": [
+        "doc_clustering"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "uidField": {
+      "default": "id",
+      "description": " Field containing the unique ID for each document.",
+      "minLength": 1,
+      "title": "ID Field Name",
+      "type": "string"
+    },
+    "w2vDimension": {
+      "default": 0,
+      "description": "Word-vector dimensionality to represent text (choose > 0 to use, suggested dimension ranges: 100~150)",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0,
+      "title": "Word2Vec Dimension",
+      "type": "integer"
+    },
+    "w2vWindowSize": {
+      "default": 8,
+      "description": "The window size (context words from [-window, window]) for word2vec",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 3,
+      "title": "Word2Vec Window Size",
+      "type": "integer"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "uidField",
+        "clusterIdField",
+        "freqTermField",
+        "clusterLabelField",
+        "distToCenterField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "clusteringMethod",
+        "outlierTrim",
+        "outlierK",
+        "outlierThreshold",
+        "kExact",
+        "kMax",
+        "kMin",
+        "w2vDimension",
+        "w2vWindowSize",
+        "maxDF",
+        "minDF",
+        "norm",
+        "numKeywordsPerLabel",
+        "minDivisibleSize",
+        "kDiscount"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig",
+        "docLenTrim",
+        "longLen",
+        "shortLen"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "outputCollection",
+    "uidField",
+    "type"
+  ],
+  "title": "Document Clustering",
+  "type": "object"
+}

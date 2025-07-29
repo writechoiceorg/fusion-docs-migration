@@ -1,0 +1,66 @@
+---
+title: "Configurations API"
+description: "Fusion Admin APIs"
+permalink: "342"
+---
+
+
+The Configurations API allows setting global properties for Fusion.
+
+Some settings are not set by any configuration file but are reported as settings from the operating system. Those settings cannot be changed with this API.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+*Show the configuration items that include the pattern 'zk-connect', with verbose enabled:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/configurations?verbose=true&pattern=zk-connect
+
+```
+
+**RESPONSE**
+
+```json
+{
+  "com.lucidworks.apollo-admin.config/zk-connect" : [ {
+    "value" : "FUSION_HOST:9983",
+    "location" : "system properties"
+  } ]
+}
+
+```
+
+*Get the configuration items that include the term 'connect':*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8984/api/configurations?pattern=connect
+
+```
+
+*Get the configuration items from the Fusion JVM that start with 'com.lucidworks':*
+
+**REQUEST**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/configurations?prefix=com.lucidworks
+
+```
+
+*Change the default allowed recommendation types to include 'itemsForItem":*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-type: application/json' -d '{"itemsForQuery", "termsForDocument", "itemsforItem"}' https://FUSION_HOST:FUSION_PORT/api/configurations/com.lucidworks.apollo.service.recommend.allowed.types
+
+```
+
+**RESPONSE**
+
+None. Check the setting again to confirm the changes.

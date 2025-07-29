@@ -1,0 +1,66 @@
+export const schema = {
+  "type": "object",
+  "title": "Include Documents",
+  "description": "This stage passes a document through if any of the specified rules match; drops the document otherwise",
+  "required": [
+    "matchRules"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "matchRules": {
+      "type": "array",
+      "title": "Fields and Patterns",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "pattern"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The name of the field to match"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "Regex Pattern",
+            "description": "Pattern to match the field value against. The value may be a regex pattern.",
+            "format": "regex"
+          }
+        }
+      }
+    }
+  },
+  "category": "Document Filtering and Enrichment",
+  "categoryPriority": 8,
+  "unsafe": false
+}

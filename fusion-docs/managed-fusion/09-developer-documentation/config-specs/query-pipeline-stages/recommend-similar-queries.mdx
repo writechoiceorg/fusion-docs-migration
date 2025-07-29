@@ -1,0 +1,28 @@
+---
+title: "Recommend Similar Queries"
+description: "Query pipeline stage configuration specifications"
+permalink: "wnf8a4"
+---
+
+This stage provides query-to-query recommendations.
+
+The stage works in the following way:
+
+1. Perform an exact match of the incoming query to queries stored in the similar queries collection. Return results if a match is found.
+2. If **Match non-exact matches** is enabled, the pipeline attempts a normal query and returns the results.
+3. If Enable POS tagging is checked, the stage will perform POS tagging on the incoming query and use only the noun parts for the non-exact match.
+
+<Note>
+The spaCy model for part-of-speech (POS) tagging no longer ships with fusion. It needs to be deployed as a Seldon container using the [Create Seldon Model deployment job](/managed-fusion/5.9/zgaklc/create-seldon-core-model-deployment).
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/recommend-similar-queries.mdx";
+
+<SchemaParamFields schema={schema}/>

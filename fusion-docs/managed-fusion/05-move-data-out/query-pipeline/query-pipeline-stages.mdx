@@ -1,0 +1,82 @@
+---
+title: "Query pipeline stages"
+permalink: "ch321e"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+A query pipeline is made up of a series of query stages that process incoming search queries.
+
+A pipeline stage definition associates a unique ID with a set of properties.
+These definitions are registered with the Managed Fusion API service and stored in ZooKeeper for re-use across pipelines and search applications.
+
+Managed Fusion includes a number of specialized query stages as well as a JavaScript stage that allows advanced processing via a JavaScript program.
+
+<Tip>
+The [Query Pipeline Stages configuration specifications](/managed-fusion/5.9/vtzxh4/query-pipeline-stages) section contains articles that detail the configuration for each of the Managed Fusion query pipeline stages. The configuration information includes field names and values, as well as examples and other key reference information.
+</Tip>
+
+## Configuring query pipeline stages
+
+* In the Managed Fusion UI, the [Query Workbench](/managed-fusion/5.9/ukxc4p/query-workbench) provides an environment for configuring the stages in a query pipeline.
+* The [Query Stages API](/managed-fusion/5.9/g5jma3/query-stages-api) is used to create, list, update, or delete query stages using JSON. See also the [Query Pipelines API](/managed-fusion/5.9/hd4an7/query-pipelines-api).
+
+### Pipeline stage JSON editor
+
+The pipeline stage JSON editor gives the ability to create and copy pipeline stages by pasting JSON objects in the Managed Fusion UI. Only JSON is supported, and JSON validation is included to prevent the user from saving an invalid object.
+
+Navigate to your pipelines, select a pipeline stage, and click the **JSON View** button to open the editor:
+
+<Frame>![JSON View button](/assets/images/5.2/pipeline-stage-json-edit.png)</Frame>
+
+Existing stages are considered **READ-ONLY**. They will have only a copy button which can be used to create stages. New stages will have the option to copy or paste valid JSON. Changes are applied to the stage with the **Apply** button.
+
+<Note>
+Users will still need to **Save** the stage for the changes made in the editor to be saved.
+</Note>
+
+The editor has several elements worth noting:
+
+| Elements | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.2/json-editor/copy.png"/> | Copies the JSON to the clipboard. |
+| <InlineImage src="/assets/images/5.2/json-editor/paste.png"/> | Pastes the clipboard into the editor. Only valid JSON is accepted. |
+| <InlineImage src="/assets/images/5.2/json-editor/expand.png"/> | Expands the editor to a fullscreen view. |
+| <InlineImage src="/assets/images/5.2/json-editor/condense.png"/> | Condenses the editor to a compact view. |
+| <InlineImage src="/assets/images/5.2/json-editor/apply.png"/> | Applies the JSON in the editor and updates the stage. The stage must be saved to preserve the changes. |
+| <InlineImage src="/assets/images/5.2/json-editor/reset.png"/> | Resets changes made since the last time changes were applied. |
+
+
+For instructions, see [Use the Pipeline Stage JSON Editor](/how-to/3294/use-the-pipeline-stage-json-editor).
+
+## Asynchronous query pipeline processing
+
+Query pipeline processing performance can be improved by enabling asynchronous processing for certain stages that make requests to secondary collections, external databases, and so on. The following stages support asynchronous processing:
+
+* [Active Directory Security Trimming](/managed-fusion/5.9/pu7wfp/active-directory-security-trimming-stage)
+* [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage)
+* [JDBC Lookup](/managed-fusion/5.9/a8d5qj/jdbc-lookup-stage)
+* [Security Trimming](/managed-fusion/5.9/hnw5gy/security-trimming-stage)
+* [Solr Subquery](/managed-fusion/5.9/0cmi4z/solr-subquery-stage)
+
+This feature uses the fork-and-join model, where any of the stages above can create a fork on the pipeline. The parallel processes are joined again using the [Merge Async Results stage](/managed-fusion/5.9/xh02h2/merge-async-results-stage) at a later point in the pipeline.
+
+## Conditional query processing
+
+Query Pipeline stages are used to modify Request objects
+and Response objects. Each stage can include a conditional JavaScript expression (the `condition` property in its configuration) that can access these objects.
+
+For example, this condition first checks that the property `fusion-user-name` is specified in the Request object, then checks for a particular value:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+```
+
+## JavaScript selector
+
+Now your pipeline definitions can include your choice of JavaScript engine, either Nashorn or OpenJDK Nashorn.
+While Nashorn is the default option, it is in the process of being deprecated and will eventually be removed, so it is recommended to use OpenJDK Nashorn when possible.
+You can select the JavaScript engine in the pipeline views or in the workbenches.
+Your JavaScript pipeline stages are interpreted by the selected engine.
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>

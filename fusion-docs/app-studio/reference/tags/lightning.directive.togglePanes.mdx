@@ -1,0 +1,158 @@
+---
+title: "toggle:panes"
+permalink: "1088"
+---
+
+## Description
+
+The toggle panes directive
+
+## Usage
+
+as element:
+
+```xml
+<toggle:panes
+       id="{string}"
+       [allow-multiple="{boolean}"]>
+</toggle:panes>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id | **string** | Id of the element |
+| allow-multiple  *(optional)* | **boolean** | Whether or not multiple widgets should be shown at once. Default: false. |
+
+## Example
+
+#### Source
+
+```xml
+<p>Default tabs</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="panes"></toggle:controls>
+<toggle:panes id="panes">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Line</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="line" styling="line"></toggle:controls>
+<toggle:panes id="line">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Pills</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="pills" styling="pill"></toggle:controls>
+<toggle:panes id="pills">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Simple</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="simple" styling="simple"></toggle:controls>
+<toggle:panes id="simple">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<p>Tabs Bordered</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="bordered" styling="bordered"></toggle:controls>
+<toggle:panes id="bordered">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Line Bordered</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="line-b" styling="line bordered"></toggle:controls>
+<toggle:panes id="line-b">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Pills Bordered</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="pills-b" styling="pill bordered"></toggle:controls>
+<toggle:panes id="pills-b">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+
+<br>
+<p>Simple Bordered</p>
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="simple-b" styling="simple bordered"></toggle:controls>
+<toggle:panes id="simple-b">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/togglePanes.png)</Frame>

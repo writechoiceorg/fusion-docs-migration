@@ -1,0 +1,70 @@
+---
+title: "drawer"
+permalink: "1203"
+---
+
+## Description
+
+Adds a class for the drawer
+
+## Usage
+
+as attribute
+
+```xml
+<ANY drawer="{number}">
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| drawer | **string** | The direction the drawer should come from (left or right); |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block tiny="1-4">
+        <layout:box>
+            <search:offcanvas-toggle target="#left-sidebar"></search:offcanvas-toggle>
+        </layout:box>
+    </layout:block>
+    <layout:block tiny="1-2">
+    </layout:block>
+    <layout:block tiny="1-4">
+        <layout:box>
+            <search:offcanvas-toggle target="#right-sidebar" style="float:right;"></search:offcanvas-toggle>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+<layout:grid style="row-offcanvas">
+    <layout:block medium="1-4" drawer="left" id="left-sidebar" >
+        <layout:box class="tk-stl-bg-red" >
+            <layout:sidebar>
+                <h4 id="example_left-sidebar-content">Left Sidebar Content</h4>
+            </layout:sidebar>
+        </layout:box>
+    </layout:block>
+    <layout:block medium="1-2">
+        <layout:box>
+            <p style="text-align:center;">Shrink your browser window to toggle sidebars</p>
+        </layout:box>
+    </layout:block>
+    <layout:block medium="1-4" drawer="right" id="right-sidebar" >
+        <layout:box class="tk-stl-bg-blue" >
+            <layout:sidebar>
+                <h4 id="example_right-sidebar-content">Right Sidebar Content</h4>
+            </layout:sidebar>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/drawer.png)</Frame>

@@ -1,0 +1,79 @@
+---
+title: "layout:animate"
+permalink: "1132"
+---
+
+## Description
+
+Creates an animation when the value (on) is available.
+
+## Usage
+
+as element:
+
+```xml
+<layout:animate
+       animation="{string}"
+       on="{object}">
+</layout:animate>
+```
+
+as attribute
+
+```xml
+<ANY layout-animate
+     animation="{string}"
+     on="{object}">
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| animation | **string** | The animation to use when the value is available |
+| on | **object** | The object to watch for a value |
+
+## Example
+
+#### Source
+
+```xml
+<button class="tk-stl-button" ng-click="fadeInUp()">Show Fade In Up Animation</button>
+<layout:animate animation="animate-fadeInUp" on="fadeInUpValue">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</layout:animate>
+<br /><br />
+<button class="tk-stl-button" ng-click="fadeInDown()">Show Fade In Down Animation</button>
+<layout:animate animation="animate-fadeInDown" on="fadeInDownValue">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</layout:animate>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+            $scope.fadeInUp = undefined;
+
+            $scope.fadeInUp = function(){
+            if($scope.fadeInUpValue == undefined){
+                $scope.fadeInUpValue = 'A Value';
+            } else {
+                $scope.fadeInUpValue = undefined;
+            }
+            }
+
+            $scope.fadeInDown = function(){
+            if($scope.fadeInDownValue == undefined){
+                $scope.fadeInDownValue = 'A Value';
+            } else {
+                $scope.fadeInDownValue = undefined;
+            }
+            }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/layoutAnimate.png)</Frame>

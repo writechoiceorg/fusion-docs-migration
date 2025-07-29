@@ -1,0 +1,201 @@
+---
+title: "Lucidworks Fusion"
+permalink: "3200"
+---
+
+The Fusion search adapter brokers all communication with the [Lucidwork’s Fusion platform](https://lucidworks.com/products/fusion/) using its REST API to query Solr.
+
+## Setup
+
+To add Fusion search connectors to a Maven project, you must add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.fusion</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+## Usage
+
+Assuming you have added the correct dependencies to your project (see above), the Fusion platform configuration can be accessed by pointing to it in the search:platform tag. In this case the platform is placed in a variable named `platform` using the `var` attribute, and points to a platform configuration in ../conf/platforms/fusion/search.conf:
+
+```xml
+<search:platform var="platform" conf="platforms.fusion.search"></search:platform>
+```
+
+### platforms/fusion/search.conf
+
+In this example platform configuration, we set some general settings for the platform:
+
+```yaml
+name: twigkit.search.fusion.Fusion
+timeOut: 30000
+resultIDField: id
+highlight: true
+defaultQuery: *:*
+query-profile: my-profile
+```
+
+With a Fusion platform, we also need to set some additional parameters in the following files:
+
+### services/api/fusion.conf
+
+This file controls which Fusion to use:
+
+```yaml
+# Hostname of your Fusion
+host: myHostname
+
+# Port of your Fusion
+port: 6764
+
+# Protocol of your Fusion - e.g. http or https
+protocol: http
+
+# Optional: Fusion Authorization mode - native, serviceaccount, or jwt.
+#   If not configured, this will default to the first configured option in the order JWT > Service Account > Native
+#   Native auth requires no config here, but does require the twigkit.security.provider.fusion module to be loaded.
+# auth: native
+
+# Service Account config
+userName: admin
+password: password
+
+# JWT config
+# issuer:
+# key:
+# groups:
+
+# Optional: If a JWT subject is configured, all requests to Fusion will be sent as the JWT realm user whose name matches the subject
+# subject:
+```
+
+### platforms/fusion/social.conf
+
+This file configures the Lucidworks Appkit Social Module:
+
+```yaml
+# For every Fusion App, a corresponding YOUR_FUSION_APP_user_prefs collection is automatically created.
+# Appkit uses this collection for storing collaboration user-data.
+
+# Name of the collection to store user data in
+collection: Supp-Demo_user_prefs
+
+# Name of the Query & Index pipelines to use - _system is the Fusion default
+# pipeline: _system
+
+# Enable writing new Social entities into the platform
+readOnly: false
+
+# Prevent users from searching this platform directly
+webservice-enabled: false
+```
+
+### message/service/fusion.conf
+
+This file configures how Signals are sent to Fusion:
+
+```yaml
+# Fusion Signals config
+
+# Name of the Query profile to send Signals through
+query-profile: Supp-Demo
+
+# The index pipeline to send Signals to
+# signals-index-pipeline: _signals_ingest
+
+# Whether to commit Signals to disk inside Fusion immediately or not
+# commit: true
+
+# Whether to index to Fusion asynchronously or not
+# async: true
+```
+
+### Required attributes
+
+- `query-profile (java.lang.String)`
+    The Fusion query profile being accessed. If you have created an app via the Fusion UI called MyAwesomeApp, then you will have a default Query Profile called MyAwesomeApp as well - this is a good starting point.  
+    Applied in: configuration
+
+### Optional attributes
+
+- `requestHandler (java.lang.String)`
+    Name of the Request Handler to use. Use this to specify an alternate Request Handler to use for example, the '/dismax' request handler. Note you can override this by specifying a 'custom' attribute on the query.
+
+- `requestMethod (java.lang.String)`
+    Which HTTP request method to use (GET or POST).
+
+- `strategy (java.lang.String)`
+    Whether to cluster multiple hosts (value should be either combine, or round-robin). To enable sharding, set strategy to combine.
+
+- `groupField (java.lang.String)`
+    Setting this enables Solr Result Grouping or Field Collapsing on the given field.
+    This will create a Result for each Group returned. Matching documents for the group will be available as related results.
+
+- `timeOut (java.lang.Integer)`
+    Time out for platform query requests (in milliseconds).  
+    Default: 5000
+
+- `ignoreAppliedFilters (java.lang.Boolean)`
+    If this is set to false, facet filters that have already been applied to the Query are added to the list of filters for the facet.  
+    Default: true
+
+- `backwardsCompatible (java.lang.Boolean)`
+    For Solr 1.x (for example, 1.4) set backwardsCompatible to true.  
+    Default: false
+
+- `highlight (java.lang.Boolean)`
+    Whether to enable hit highlighting (hl parameter) in Solr.  
+    Default: true
+
+### Attributes shared across platforms
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified. For Solr use `:` to bring back all items (for example, for 'zero term search').
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).  
+Applied in: configuration
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result. Should correspond to the \<uniqueKey> element in the Solr schema.xml.  
+    Applied in: JSP tag, configuration
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.  
+    Applied in: JSP tag, configuration
+
+## Hit highlighting
+
+Hit highlighting is enabled by default, and assumes that the unique uniqueKey field in the Solr `schema.xml` file is named id. If your uniqueKey is set to a different field highlighting will not work unless you set the resultIDfield key in the Appkit configuration to the right field.
+
+```
+resultIDField = yourUniqueKey
+```
+
+Appkit expects that Solr’s default highlighting tags of `<em></em>` are used. Ensure that this has not been set to something different using `hl.simple.pre` and `hl.simple.post` settings in the Solr or request handler configurations.
+
+## Related articles
+
+* [Fusion Impersonation via a Service Account](/how-to/3021/fusion-impersonation-via-a-service-account)
+* [Query Terms and Suggestions](/how-to/940/fusion-query-terms-and-suggestions)

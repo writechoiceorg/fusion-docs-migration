@@ -1,0 +1,44 @@
+---
+title: "Data Sources"
+permalink: "3117"
+---
+
+Appkit can obtain and present information from multiple sources simultaneously, and seamlessly integrate with all common search engines, data warehouses, web service endpoints. The platform abstraction covers both the storage and sides, meaning that Appkit implements for each platform the necessary protocols to save and index content. A number of platform adapters are available out-of-the-box with Appkit, and [adding new ones](/fusion/5.9/3109/developing-platforms) is a straightforward exercise.
+
+Appkit is not limited to presenting information from search engines. It also supports data warehouses, web service endpoints, and other information sources that expose an API.
+
+## Platform adapters
+
+The layer that relays Appkit specific instructions to the underlying data provider is referred to as as Platform Adapters. This is responsible for translating for example, an Appkit query to a corresponding command the underlying platform will understand; and conversely an engine specific response to a generic Appkit response.
+
+The platform abstraction covers both search and storage sides, meaning that Appkit will implement for each platform the necessary protocols to save or index content for any platform.
+
+A number of platform adapters are available out-of-the-box with Appkit, and adding new ones is a fairly trivial exercise.
+
+### Search engines
+
+* [Fusion](/fusion/5.9/3200/lucidworks-fusion)
+* [Solr](/fusion/5.9/3206/solr)
+* [SolrCloud](/fusion/5.9/3204/solr-cloud)
+* [Elasticsearch](/fusion/5.9/3190/elasticsearch)
+
+### Other data sources
+
+* [Wolfram|Alpha](/fusion/5.9/3208/wolfram-alpha)
+* [Wikipedia](/fusion/5.9/3193/wikipedia)
+* [Pipl](/fusion/5.9/3194/pipl)
+* [YouTube](/fusion/5.9/3192/you-tube)
+* [Twitter](/fusion/5.9/3198/twitter)
+* [Google Custom Search](/fusion/5.9/3191/google-custom-search)
+
+## Store, search, load, delete
+
+Appkit (assuming storage backend capabilities) provides support for storing or indexing, deleting, fetching individual records, and searching the backing data store.
+
+## Task support
+
+Appkit supports long-running, managed objects called [Tasks](/how-to/3072/using-the-appkit-tasks-module). This is useful for operations that can take longer to complete such as Map/Reduce processes. In that case Appkit will manage the lifecycle, initiate the task, track and report progress, and finally present the response. After a response is received, it can be rendered using Appkit user interface components, or even passed to another platform for persistence which might give you low-latency searching and faceting.
+
+## Batch operation support
+
+Appkit can cursor and retrieve entire indexes by combining Task Support and our Batch Platform Wrapper which will automatically offset through any number of results from a platform and combine the responses.

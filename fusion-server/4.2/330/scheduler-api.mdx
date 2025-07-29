@@ -1,0 +1,369 @@
+---
+title: "Scheduler API"
+permalink: "330"
+---
+
+
+The scheduler REST API is used to define a schedule for system activities and manage the jobs that result from the schedule.
+
+<Note>
+This API is deprecated in favor of the [Jobs API](/fusion-server/4.2/327/jobs-api).
+</Note>
+
+All of the Fusion services are available for scheduling, as are any Solr activities and any other HTTP-based URI.
+
+See [Jobs and Schedules](/fusion-server/4.2/184/jobs-overview) for more information about all of the options available for scheduling, and instructions for configuring scheduler jobs using the Fusion UI.
+
+## Schedule Definition Properties
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Parameter</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">
+        id<br/>
+        <em>Required</em>
+        </p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">The ID of the schedule. This is required when creating a schedule with a POST request.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">creatorType<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">The type of user that created the schedule. If you have resources creating schedules programmatically, you could define a type that helps distinguish those schedules from others created by people.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">creatorId<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">An ID for the user that created the schedule.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">startTime<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">A time when the schedule should be started. If this is not set, it will be set to the date/time when the schedule was created.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">endTime<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">A time when the schedule should be terminated, i.e., when it will not run any more in the future. If not set, the schedule will run until it is disabled (i.e., "active" is set to false) or deleted.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">repeatUnit<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>A unit of time that when combined with the interval property defines how often the schedule will run. Allowed values are:</p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>"millisecond" or "ms"</p>
+              </li>
+              <li>
+                <p>"second" or "sec"</p>
+              </li>
+              <li>
+                <p>"minute" or "min"</p>
+              </li>
+              <li>
+                <p>"hour" or "hr"</p>
+              </li>
+              <li>
+                <p>"day"</p>
+              </li>
+              <li>
+                <p>"week"</p>
+              </li>
+              <li>
+                <p>"month"</p>
+              </li>
+            </ul>
+          </div>
+          <div class="paragraph">
+            <p>These time units are not case sensitive.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">interval<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">An integer that when combined with the repeatUnit property defines how often the schedule will run. If this is not set, or set to a number lower than '1' (i.e., '0'), the schedule will only be run once.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">active<br/>
+        <em>Optional</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">If <strong>true</strong>, the schedule will be executed according to the defined interval. If <strong>false</strong>, the schedule will be disabled and will not run at the defined time.</p>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">callParams<br/>
+        <em>Required</em></p>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>The callParams define the API call to execute at the defined time intervals. It allows several properties:</p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p><strong>uri.</strong> A fully-qualified service URI. This can be an HTTP call, a Solr request, or a Fusion service call. Supported URI schemas are:</p>
+                <div class="ulist">
+                  <ul>
+                    <li>
+                      <p><code>http://</code> or <code>https://</code></p>
+                    </li>
+                    <li>
+                      <p><code>solr://{collection}/…​</code></p>
+                      <div class="paragraph">
+                        <p>A SolrCloud request.</p>
+                      </div>
+                    </li>
+                    <li>
+                      <p><code>service://{serviceName}/{path}</code></p>
+                      <div class="paragraph">
+                        <p>A load-balanced Fusion service request.</p>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+              <li>
+                <p><strong>method.</strong> The method to use, as in GET, POST, PUT, or DELETE.</p>
+              </li>
+              <li>
+                <p><strong>queryParams.</strong> Query parameters to be passed with the request. For Solr calls, this could be parameters such as "q", "fq", "commit", etc.</p>
+              </li>
+              <li>
+                <p><strong>headers.</strong> Any additional protocol headers, such as "Content-type".</p>
+              </li>
+              <li>
+                <p><strong>entity.</strong> An optional payload to be sent with the request.</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+## Examples
+
+*Run a crawl of the datasource "LocalDocs2" every day:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d '{"id":"1", "creatorType":"human", "creatorId":"admin1", "repeatUnit":"DAY", "interval":1, "active":true, "callParams":{"uri":"service://connectors/jobs/LocalDocs2", "method":"POST"}}' https://FUSION_HOST:8764/api/scheduler/schedules
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "1",
+  "trigger" : "1_1400007488512_-9223372036854775808",
+  "schedule" : {
+    "id" : "1",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T18:58:08.512Z",
+    "startTime" : "2014-05-13T18:58:08.512Z",
+    "endTime" : null,
+    "repeatUnit" : "DAY",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "service://connectors/jobs/LocalDocs2",
+      "method" : "POST",
+      "queryParams" : { },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}
+```
+
+*Issue a commit to the SolrCloud collection "demo" every hour:*
+
+**REQUEST**
+
+```bash
+curl-u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d '{"id":"2", "creatorType":"human", "creatorId":"admin1", "repeatUnit":"HOUR", "interval":1, "active":true, "callParams":{"uri":"solr://demo/update", "method":"GET", "queryParams":{"stream.body":"<commit/>"}}}' https://FUSION_HOST:8764/api/scheduler/schedules
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "2",
+  "trigger" : "2_1400011854443_-9223372036854775807",
+  "schedule" : {
+    "id" : "2",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T20:10:54.443Z",
+    "startTime" : "2014-05-13T20:10:54.443Z",
+    "endTime" : null,
+    "repeatUnit" : "HOUR",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "solr://demo/update",
+      "method" : "GET",
+      "queryParams" : {
+        "stream.body" : "<commit/>"
+      },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}
+```
+
+*Set schedule "2" to inactive:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: application/json' -d '{"creatorType":"human", "creatorId":"admin1", "repeatUnit":"HOUR", "interval":1, "active":false, "callParams":{"uri":"solr://demo/update", "method":"GET", "queryParams":{"stream.body":"<commit/>"}}}' https://FUSION_HOST:8764/api/scheduler/schedules/2
+```
+
+There will be no response if the PUT request was successful.
+
+*List all scheduled jobs:*
+
+**REQUEST**
+
+```bash
+ curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/scheduler/jobs
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "id" : "2",
+  "trigger" : "2_1400011854443_-9223372036854775807",
+  "schedule" : {
+    "id" : "2",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T20:10:54.443Z",
+    "startTime" : "2014-05-13T20:10:54.443Z",
+    "endTime" : null,
+    "repeatUnit" : "HOUR",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "solr://demo/update",
+      "method" : "GET",
+      "queryParams" : {
+        "stream.body" : "<commit/>"
+      },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}, {
+  "id" : "1",
+  "trigger" : "1_1400007488512_-9223372036854775808",
+  "schedule" : {
+    "id" : "1",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T18:58:08.512Z",
+    "startTime" : "2014-05-13T18:58:08.512Z",
+    "endTime" : null,
+    "repeatUnit" : "DAY",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "service://connectors/jobs/LocalDocs2",
+      "method" : "POST",
+      "queryParams" : { },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+} ]
+```
+
+*List the history of job ID '1':*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/history/scheduler/items/1
+```
+
+**RESPONSE**
+
+```json
+{
+  "events" : [ 
+    {
+      "start" : "2014-05-16T15:34:49.008Z",
+      "end" : "2014-05-16T15:34:49.435Z",
+      "source" : "scheduler",
+      "type" : "execute",
+      "status" : "ok",
+      "details" : {
+        "status" : 200,
+        "entity" : "{\n \"id\" : \"TwitterSearch\",\n \"dataSourceId\" : \"TwitterSearch\",\n \"state\" : \"RUNNING\",\n \"message\" : null,\n \"startTime\" : 1400254489000,\n \"endTime\" : -1,\n \"finished\" : false,\n \"counters\" : { },\n \"exception\" : null,\n \"running\" : true\n}"
+      },
+      "error" : null
+    },
+    {
+      "start" : "2014-05-16T15:38:32.536Z",
+      "end" : "2014-05-16T15:38:32.559Z",
+      "source" : "scheduler",
+      "type" : "execute",
+      "status" : "ok",
+      "details" : {
+        "status" : 200,
+        "entity" : "{\n \"id\" : \"TwitterSearch\",\n \"dataSourceId\" : \"TwitterSearch\",\n \"state\" : \"RUNNING\",\n \"message\" : null,\n \"startTime\" : 1400254712000,\n \"endTime\" : -1,\n \"finished\" : false,\n \"counters\" : { },\n \"exception\" : null,\n \"running\" : true\n}"
+      } 
+    }
+  ]
+}
+```
+

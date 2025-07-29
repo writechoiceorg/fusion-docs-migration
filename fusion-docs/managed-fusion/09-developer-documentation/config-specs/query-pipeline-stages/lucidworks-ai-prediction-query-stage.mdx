@@ -1,0 +1,23 @@
+---
+title: "LWAI Prediction"
+description: "Query pipeline stage configuration specifications"
+permalink: "hnuyky"
+---
+
+The LWAI Prediction query stage is an integration between Fusion and Lucidworks AI to enrich your search results with [Generative AI](/lw-platform/ai/r7ai90/generative-ai) predictions.
+More detailed information to configure this stage is in [Configure the LWAI Prediction query stage](/how-to/6w8lxy/configure-fusion-lwai-prediction-query-stage).
+
+To use this stage, non-admin Fusion users must be granted the `PUT,POST,GET:/LWAI-ACCOUNT-NAME/**` permission in Fusion, which is the Lucidworks AI API Account Name defined in [Lucidworks AI Gateway](/lw-platform/ai/41gdb7/lucidworks-ai-gateway) when this stage is configured.
+
+For additional reference information, see [LWAI Prediction API](/lw-platform/ai/8bx4m9/prediction-api) and [LWAI Async Prediction API](/lw-platform/ai/55ug0f/async-prediction-api).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/lwai-prediction.mdx";
+
+<SchemaParamFields schema={schema}/>

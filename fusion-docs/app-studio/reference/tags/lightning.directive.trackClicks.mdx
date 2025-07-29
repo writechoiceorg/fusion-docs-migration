@@ -1,0 +1,167 @@
+---
+title: "track:clicks"
+permalink: "1072"
+---
+
+## Description
+
+## Usage
+
+as element:
+
+```xml
+<track:clicks
+       [query="{query}"]
+       [type="{string}"]
+       [response="{string}"]
+       [fields="{string|expression}"]
+       [any_attribute="{string}"]>
+</track:clicks>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query  *(optional)* | **query** | The name of the query associated with the click. |
+| type  *(optional)* | **string** | Type of click event, (Default: link or result if click event happens in a search:result) |
+| response  *(optional)* | **string** | The name of the response to get the fact called `tracking` from so that this information can be sent to the activity endpoint. If a response is not provided and the click happens in a [Search Result List](/app-studio/4.2/1200/search-result-list) we will get the name of the response from the result-list if applicable. |
+| fields  *(optional)* | **string]link:[expression** | If the click happens within a result send the following fields (comma separated) to the endpoint. (e.g - `name,title,url`) |
+| any_attribute  *(optional)* | **string** | You can add any custom attribute here such as `foo="bar"` and this data will be sent to the endpoint. The attribute must not start with `ng-` and also cannot be `url`,`label`,`type`,`query`,`offset`,`pos`,`fields`,`id`, `response` or `class`. |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block md="1-1">
+        <strong>To see the data being sent to the endpoint click one of the links below with the network tab open,
+            close the window that opens and view the request which fails with a 405 in the network tab of your console
+        </strong>
+        <h3 id="example_wrapped-around-a-field">Wrapped Around a Field</h3>
+        <search:result-list response="response" styling="cards-sm-1 cards-md-2">
+            <search:result>
+                <layout:block>
+                    <div class="tk-stl-card">
+                        <search:field name="name" styling="title" urlfield="url"></search:field>
+                        <search:field name="age" styling="label-left" label="Age"></search:field>
+                        <search:field name="date" styling="label-left" label="Created Date" date-format="dd/MM/yy"></search:field>
+                        <track:clicks>
+                            <search:field name="blank" styling="label-left" label="Contact Number" default-value="No Contact Number on File." url="http://twigkit.com" target="_blank"></search:field>
+                        </track:clicks>
+                        <track:clicks>
+                            <search:field name="number" styling="label-left" label="Worth" number-format="£#,###.##" url="http://twigkit.com" target="_blank"></search:field>
+                        </track:clicks>
+                        <search:field name="madeup" styling="label-left" label="Test"></search:field>
+                    </div>
+                </layout:block>
+            </search:result>
+        </search:result-list>
+        <h3 id="example_wrapped-around-a-result-list">Wrapped Around a Result List</h3>
+        <track:clicks type="foo">
+            <search:result-list response="response" styling="cards-sm-1 cards-md-2">
+                <search:result>
+                    <layout:block>
+                        <div class="tk-stl-card">
+                            <collaborate:bookmark></collaborate:bookmark>
+                            <search:field name="name" styling="title" urlfield="url"></search:field>
+                            <search:field name="age" styling="label-left" label="Age"></search:field>
+                            <search:field name="date" styling="label-left" label="Created Date" date-format="dd/MM/yy"></search:field>
+                            <search:field name="blank" styling="label-left" label="Contact Number" default-value="No Contact Number on File." url="http://twigkit.com" target="_blank"></search:field>
+                            <search:field name="number" styling="label-left" label="Worth" number-format="£#,###.##" url="http://twigkit.com" target="_blank"></search:field>
+                            <search:field name="madeup" styling="label-left" label="Test"></search:field>
+                        </div>
+                    </layout:block>
+                </search:result>
+            </search:result-list>
+        </track:clicks>
+    </layout:block>
+</layout:grid>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                hits:{
+                    act:['long','1234']
+                },
+                facets: {
+                },
+                results: [
+                    {
+                        result: {
+                            id:"123456abcdefgh",
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Testing Tester']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 35]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2014-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[123456789]
+                                },
+                            },
+                        },
+                    },{
+                        result: {
+                            id:"abcdefgh123456",
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Foo (Bar)']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 26]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2015-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[-123456789]
+                                }
+                            },
+                        },
+                    },
+                ],
+            }
+            $scope.results = $scope.response.results;
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/trackClicks.png)</Frame>

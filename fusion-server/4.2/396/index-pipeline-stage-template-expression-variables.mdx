@@ -1,0 +1,11 @@
+---
+title: "Index Pipeline Stage Template Expression Variables"
+permalink: "396"
+---
+
+Index stages have the following variables available:
+
+* `ctx`. [Context](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/context): used to pass variables between stages
+* `doc`. [PipelineDocument](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/common/pipeline/pipelinedocument): Fusion internal representation of a Solr Document. Please note that if you change this class in ways that affect the serialized form (adding fields, for example) you need to change the deserialization code in `GenericJSONDocumentMessageReader`.
+
+The format required is `<request.q>`.

@@ -1,0 +1,33 @@
+---
+title: "Transfer Collection to Cloud Job"
+permalink: "9ogu67"
+---
+
+The Transfer Collection to Cloud job lets you to migrate or copy your Solr collection to cloud storage.
+
+To create a Transfer Collection to Cloud job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Custom and Others Jobs section, select **Transfer Collection To Cloud**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Collection.** The Solr collection to transfer or copy to cloud storage. This is the `inputCollection` field in the configuration file. Required field.
+* **Output location.** The name or location (URI) where the Solr collection is being transferred or copied. This is the `outputLocation` field in the configuration file. Required field.
+* **Overwrite output.** If this checkbox is selected (set to `true`), overwrite any information that currently exists in the **Output location** with the data in the **Collection** being transferred or copied. If this checkbox is not selected and data exists in the output collection, the collection is not copied to the output location and the system generates an error. If this checkbox is not selected and data does not exist in the output collection, the collection is copied to the output location. This is the `overwriteOutput` field in the configuration file. Optional field.
+* **Output format.** The format for the output transferred or copied to the cloud. Values include `parquet`, `json`, and `csv`. This is the `outputFormat` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use for Spark configuration. This is the `sparkConfig` field in the configuration file.
+* **Set minimum Spark partitions for input.** The number of partitions that Spark sets for the input. For greater parallelism, increase the value in this field. This is the `sparkPartitions` field in the configuration file.
+* **Read Options.** This section lets you enter `parameter name:parameter value` options to use when reading input from Solr. This is the `readOptions` field in the configuration file.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/transfer-collection-to-cloud.mdx";
+
+<SchemaParamFields schema={schema}/>

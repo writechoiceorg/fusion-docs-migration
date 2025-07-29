@@ -1,0 +1,55 @@
+---
+title: "collaborate:like"
+permalink: "1163"
+---
+
+## Description
+
+Creates a like button.
+
+If used within a result you will need to add the following workflow processor to your platform configuration file in order to get the status of the like and the number of people who have liked the result. The default file is `platforms/fusion/data.conf`.
+
+```yaml
+workflow:
+    twigkit.social.processor.AddLikeFactsProcessor
+```
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:like
+       target="{string}"
+       [topic="{number}"]
+       platform="{string}"
+       [collection="{string}"]
+       [enable-tooltip="{boolean}"]>
+</collaborate:like>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | A unique identifier for a document that is being liked. Example values: document123 Maximum length: 2083 characters |
+| topic  *(optional)* | **number** | A topic to which the new like should belong. |
+| platform | **string** | Name of the platform to send the data to. |
+| collection  *(optional)* | **string** | The collection to which the target document belongs. |
+| enable-tooltip  *(optional)* | **boolean** | Whether to enable the tooltip (Default:true). |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_traditional">Traditional</h3>
+<collaborate:like></collaborate:like>
+<hr/>
+<h3 id="example_without-tooltip">Without Tooltip</h3>
+<collaborate:like enable-tooltip="false"></collaborate:like>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/collaborateLike.png)</Frame>

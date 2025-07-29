@@ -1,0 +1,444 @@
+export const schema = {
+  "type": "object",
+  "title": "File System (v2)",
+  "description": "Connector for file systems",
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipeline"
+  ],
+  "properties": {
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "connector": {
+      "title": "Connector Type",
+      "description": "Connector type.",
+      "minLength": 1,
+      "type": "string",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default": 0,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default": false
+            },
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default": 20,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingInactivityTimeout": {
+              "type": "number",
+              "title": "Indexing inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default": 86400,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInactivityTimeout": {
+              "type": "number",
+              "title": "Plugin inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default": 600,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default": false
+            },
+            "asyncParsing": {
+              "type": "boolean",
+              "title": "Async Parsing",
+              "description": "When enabled, content will be indexed asynchronously.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Connector for file systems",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Plugin Configuration",
+      "description": "Plugin specific properties.",
+      "required": [
+        "initialFilePaths"
+      ],
+      "properties": {
+        "initialFilePaths": {
+          "type": "array",
+          "title": "File Paths to crawl",
+          "description": "Set of initial paths to crawl.",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "addFileMetadata": {
+          "type": "boolean",
+          "title": "Add File Metadata",
+          "description": "Add information about documents found in the file system to the index, such as document owner, ACLs, etc.",
+          "default": true
+        },
+        "includeDirectories": {
+          "type": "boolean",
+          "title": "Index Directories",
+          "description": "When true, directory items are indexed as documents.",
+          "default": false
+        },
+        "sizeLimitProperties": {
+          "type": "object",
+          "title": "Item Size Limits",
+          "description": "Options for including or excluding items based on size, in bytes.",
+          "required": [],
+          "properties": {
+            "maxSizeBytes": {
+              "type": "number",
+              "title": "Maximum",
+              "description": "Used for excluding items when the item size is larger than the configured value.",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "minSizeBytes": {
+              "type": "number",
+              "title": "Minimum",
+              "description": "Used for excluding items when the item size is smaller than the configured value.",
+              "default": 1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig$Properties"
+          ]
+        },
+        "namePatternConfig": {
+          "type": "object",
+          "title": "Name Pattern Rules",
+          "required": [],
+          "properties": {
+            "inclusiveRegexes": {
+              "type": "array",
+              "title": "Inclusive regexes",
+              "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "exclusiveRegexes": {
+              "type": "array",
+              "title": "Exclusive regexes",
+              "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "Regex Cache Size",
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "default": 10000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "includedFileExtensions": {
+              "type": "array",
+              "title": "Included file extensions",
+              "description": "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "excludedFileExtensions": {
+              "type": "array",
+              "title": "Excluded file extensions",
+              "description": "A set of all file extensions to be skipped from the fetch.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.localfs.fs.config.FSNamedPatterConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "depthLimitConfig": {
+          "type": "object",
+          "title": "Item Depth Limits",
+          "required": [],
+          "properties": {
+            "maxDepth": {
+              "type": "number",
+              "title": "Maximum Item Depth",
+              "description": "Maximum depth level for fetch items. If an item has a depth greater than the configured value, it will not be fetched. The default is \"no limit\" (-1).",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.DepthLimitConfig$Properties"
+          ]
+        },
+        "maximumItemLimitConfig": {
+          "type": "object",
+          "title": "Item Count Limits",
+          "required": [],
+          "properties": {
+            "maxItems": {
+              "type": "number",
+              "title": "Maximum Output Limit",
+              "description": "Limits the number of items emitted to the configured IndexPipeline. The default is no limit (-1).",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig$Properties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.connector.plugins.localfs.LocalFSConfig$Properties",
+        "com.lucidworks.connector.plugins.localfs.fs.config.FSProperties",
+        "com.lucidworks.connector.plugins.localfs.fs.config.FSNamedPatterConfig",
+        "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig",
+        "com.lucidworks.fusion.connector.checker.config.DepthLimitConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.plugin.api.config.MaximumItemLimitConfig"
+      ]
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Connector for file systems",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    }
+  },
+  "category": "File System",
+  "categoryPriority": 1
+}

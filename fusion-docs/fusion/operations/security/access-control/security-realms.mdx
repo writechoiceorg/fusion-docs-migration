@@ -1,0 +1,125 @@
+---
+title: "Security Realms"
+permalink: "127"
+---
+
+Fusion uses *security realms* to authenticate users of the Fusion UI. Each user has an assigned security realm, which the user must choose when logging in. Choosing a different realm results in an authentication failure.
+
+A security realm also provides a list of roles:
+
+* The list always includes the role(s) that are specified in the security realm.
+* (Optional) The security realm can reference one or more Fusion roles and/or get groups to which the user belongs from an external directory service that is the authentication provider. Fusion maps the group names to role names and adds these roles to the user’s list of roles.
+
+<Note>
+Fusion does not use permissions from the LDAP to authorize UI access or API requests. It only obtains group names (optionally), which are used as role names or are mapped to role names.
+If an [Active Directory Security Query Trimming Stage](/fusion/5.9/296/active-directory-security-trimming-stage) is used,
+then directory-service permissions *are* used for trimming. If a connector supports security trimming, then connector permissions *are* used for trimming.
+</Note>
+
+Requests to the Fusion REST API must specify a security realm for per-request authentication, unless a session cookie is used (which contains information about the security realm).
+
+Fusion authorizes requested operations based on API permissions specified for the user and for the user’s role(s). Fusion considers the role(s) specified in the user definition and in the security realm. Fusion creates a list of roles when a session is created, that is, when a user logs in or when the [Sessions](/fusion/5.9/339/sessions-api) REST API creates a session. Authorization based on permissions is at request time.
+
+You can define multiple security realms for a Fusion instance. This lets you give different sets of users different levels of access to specific Fusion collections.
+
+<Note>
+The directory service that you use to return group information must be the same one that is used for authentication.
+</Note>
+
+## Security Realm Types
+
+When you create a security realm, you can choose among the following security realm types:
+
+### OpenID Connect
+
+OpenID Connect is an identity authorization layer which supplements the OAuth 2.0 protocol.
+
+<Tip>
+**Important**
+
+
+Fusion’s OpenID Connect security realm has been tested with [Google](https://developers.google.com/identity/protocols/OpenIDConnect) and [Okta](https://developer.okta.com/docs/reference/api/oidc).
+</Tip>
+
+
+
+See [Configure Fusion for OpenID Connect](/how-to/650/configure-open-id-connect-authentication).
+
+### Native
+
+Fusion has a single preconfigured security realm named *native*. The admin user is in the native realm.
+The native realm also provides a fallback mechanism in case of LDAP server or communication failure.
+
+This realm is required to bootstrap Fusion. Because all requests to Fusion require authentication and authorization,
+on initial startup you must access the Fusion UI to set the admin password.
+After Fusion has a valid admin password, it creates the admin account in the Fusion native realm.
+
+For the native realm, Fusion manages all authentication and permissions information directly.
+
+You can create Fusion user accounts and manage them using either the Fusion UI or the [User API](/fusion/5.9/340/user-api).
+
+Passwords are not stored, but are hashed using [bcrypt](https://en.wikipedia.org/wiki/Bcrypt).
+
+### SSO Trusted HTTP
+
+The "SSO Trusted HTTP" realm type (`trusted-http` in the REST API) is useful in single sign-on (SSO) environments.
+
+If the SSO environment contains groups that make sense regarding partitioning Fusion functionality for Fusion users (that is, giving Fusion users different UI and API permissions based on the SSO groups), then you can configure an SSO Trusted HTTP security realm to return a list of group names, and then map the groups to Fusion roles in the security realm definition.
+
+See [Configure Fusion for SSO](/how-to/816/configure-fusion-for-sso).
+
+### JWT
+
+The JSON Web Token (JWT) realm uses an “Authorization” header in the request to authenticate the user and the data inside the JWT token for the authorization.
+You can configure Fusion to use a shared secret key to encrypt the JWT payload.
+
+For Fusion’s JWT realm, first create a JWT token, with the tool you use to validate users. Then create a Fusion realm.
+
+See [Configure Fusion for JWT](/fusion/5.9/cvrcam/configure-fusion-for-jwt).
+
+### Kerberos
+
+In the case where a host domain uses Kerberos for authentication and LDAP for authorization,
+Fusion can be configured to do the same, by configuring a realm of type "LDAP" and then
+specifying Kerberos as the authentication mechanism.
+
+<Note>
+Kerberos support requires Fusion 5.9.5.
+</Note>
+
+Fusion stores a local user record in ZooKeeper and a mapping to the Kerberos [principal](https://docs.oracle.com/cd/E21455_01/common/tutorials/kerberos_principal.html).
+
+[SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is used for authentication via Kerberos.
+
+See how to configure Fusion for Kerberos in [Unix](/how-to/741/configure-fusion-for-kerberos-in-unix) and [Windows](/how-to/674/configure-fusion-for-kerberos-in-windows).
+
+### LDAP
+
+You can use LDAP as an authentication provider for Fusion. If the LDAP contains groups that make sense regarding partitioning Fusion functionality for Fusion users (that is, giving Fusion users different UI and API permissions based on the LDAP-group memberships of LDAP users), then you can configure an LDAP security realm to search for LDAP groups and to map the LDAP groups to Fusion roles.
+
+Fusion stores a local user record in ZooKeeper, and authentication is performed by the LDAP server.
+User accounts can be managed by Fusion, or created automatically, in which case the
+Fusion user ID maps directly to the LDAP [Distinguished Name](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol#Directory_structure) (DN).
+Fusion permissions can be assigned automatically based on LDAP group membership.
+
+See [Configure Fusion for LDAP](/how-to/dr4445/configure-fusion-5-x-for-ldap).
+
+### SAML
+
+Fusion stores a local user record in ZooKeeper and the URL and information about the SAML Identity Provider. The SAML 2.0 protocol is used to provide web browser single sign-on.
+
+See [Configure Fusion for SAML](/how-to/863/configure-fusion-for-saml).
+
+## Manage Security Realms
+
+Only Fusion users with [admin privileges](/fusion/5.9/126/roles) can manage security realms. There are two ways to manage security realms:
+
+In the Fusion UI
+
+Navigate to **System** > **Access Control** > **Security Realms**.
+
+Using the Realms API
+
+Use the `http://FUSION_HOST:FUSION_PORT/api/realm-configs/` endpoint to manage security realms. See the
+[Realms API](/fusion/5.9/337/realms-api)
+reference for details. In production environments, use port 8765.

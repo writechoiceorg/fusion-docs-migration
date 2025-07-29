@@ -1,0 +1,140 @@
+---
+title: "FAQs"
+permalink: "gsckfz"
+---
+
+This section contains a list of frequently-asked questions regarding Managed Fusion.
+
+## Managed Fusion and self-hosted Fusion
+
+Managed Fusion is similar to self-hosted Fusion in terms of supported features and capabilities, but differs when it comes to day-to-day operations and change promotion procedures.
+This section details the differences between the two offerings.
+
+### How do I know if Managed Fusion is the right choice for me?
+
+Generally speaking, Managed Fusion is a great choice if you meet the following criteria:
+
+* You want help managing your Fusion deployment and infrastructure.
+* You lack experience with Kubernetes or Kubernetes is not available within your organization’s solutions.
+* You want to leverage API-based cloud solutions.
+* You have limited resources to manage the day-to-day backend operations.
+* You want to eliminate server costs, storage costs, or the overhead of managing physical or virtual machines.
+* You want automatic software updates and security patches applied by Lucidworks.
+* You want Lucidworks to promote and manage any changes in production.
+* You want early access to the latest features.
+
+Alternatively, self-hosted Fusion might be the better choice if you meet the following criteria:
+
+* You want to host and manage your Fusion deployment.
+* You want to leverage a cloud provider other than GCP to host Fusion.
+* You have limitations on data being hosted on external platforms.
+* You need access to APIs and features that aren’t available in Managed Fusion, such as custom Docker images.
+* You need to implement custom [Solr plugins](https://solr.apache.org/guide/solr/latest/configuration-guide/solr-plugins.html) to support custom functionality.
+
+### What are the differences between self-hosted Fusion and Managed Fusion?
+
+In self-hosted Fusion, you host and manage your own Fusion deployment. In Managed Fusion, Lucidworks handles the backend operations, promotes changes, and performs updates.
+Some features are only available in self-hosted or Managed Fusion. See [Managed Fusion versus Fusion](/managed-fusion/5.9/j0znfn/managed-fusion-versus-fusion).
+
+### Why are some features only available in self-hosted Fusion and not Managed Fusion?
+
+Some features, like custom Docker images and custom stages are not supported in Managed Fusion.
+Limiting the amount of custom configurations in Managed Fusion helps to ensure uptime and improves customer support.
+Limiting custom components also helps to streamline the upgrade process and simplifies troubleshooting.
+
+### Can I migrate to Managed Fusion from self-hosted Fusion?
+
+Yes, you can migrate from any self-hosted Fusion version to Managed Fusion. Lucidworks Professional Services can assist with the migration. For more information, contact your Client Success Representative.
+
+### How do the day-to-day operations change when moving from self-hosted to Managed Fusion?
+
+In a Managed Fusion deployment, there are different environments used for development, staging, and production.
+You make changes in a development environment, perform tests in a staging environment, and create promotion requests to apply those changes to a production environment.
+Lucidworks reviews promotion requests and publishes your changes to production within three (3) business days of the request.
+For more information, see [Promotion to production](/managed-fusion/5.9/4n1x54/promotion-to-production).
+
+### How do you size clusters for different customers?
+
+Lucidworks sizes clusters based on customer size, but can adjust ranges based on customer needs.
+
+### What is a typical Managed Fusion multi-region Solr deployment?
+
+Managed Fusion uses a Four 9s (99.99%) availability architecture with primary and secondary clusters.
+
+In a 4 9s deployment, Region A hosts the primary ("hot") cluster responsible for real-time data indexing and query processing, while Region B hosts the secondary ("warm") cluster, acting as a backup for historical data and disaster recovery.
+The primary and secondary clusters are automatically kept in sync for proper failover in case the primary cluster becomes unavailable.
+
+## Promotions and environments
+
+Managed Fusion features a change promotion process to help ensure uptime and multiple environments for testing, staging, and production.
+
+### How many environments are there?
+
+The number and type of environments you have depends on your setup and agreement. The typical setup includes three environments: Development, Staging, and Production. See [Managed Fusion environments](/managed-fusion/5.9/zm43ol/environments).
+
+### Why can’t I have developer access in Production?
+
+Lucidworks restricts access to production environments to guarantee client SLAs and provide confidence of uptime.
+Managed Fusion is highly configurable.
+Guardrails enable uptime and success, and business rules allow modifications while minimizing the risk of errors, failure, and downtime.
+You can test and promote changes per the process outlined in [Promotion to Production](/managed-fusion/5.9/4n1x54/promotion-to-production).
+
+### What if I need to promote a change sooner than the three day SLA?
+
+Lucidworks will evaluate the request but cannot commit to timelines outside of the SLA.
+If you require a shorter turnaround time for promotions requests, contact your Lucidworks Client Success representative.
+
+### How are code changes promoted so that multiple clusters are upgraded without downtime?
+
+Because clusters have their own config sync branches, Lucidworks promotes the code changes to any or all clusters depending on your needs.
+For more information, see [promotion requests for 4 9s clients](/managed-fusion/5.9/4n1x54/promotion-to-production#special-notes-for-4-9s-clients).
+
+### For multi-region prod environments, how do both clusters get upgraded without downtime?
+
+Each cluster has their own config sync branches, so changes can be promoted to any or all branches depending on your needs.
+
+## Monitoring and alerts
+
+Managed Fusion includes dashboards for monitoring performance data and tracking entitlement usage.
+
+### What is Lucidworks' monitoring and alerting process?
+
+There are several built-in monitoring tools available in Managed Fusion. Lucidworks and Managed Fusion clients receive alerts for the following:
+
+* Pod pending and error states
+* Fusion license expiration
+* High CPU and disk usage
+* Solr errors
+* API gateway errors
+* Node errors
+
+See [Monitoring](/managed-fusion/5.9/tfhq50/monitoring) for more information.
+
+### Does Lucidworks capture its own search performance data?
+
+The data is available through [Grafana](/managed-fusion/5.9/lxm4ct/managed-fusion-log-access). You can track all logs in a namespace, or query for specific services, hosts, or errors.
+
+### What usage gets counted against my entitlements (RPY, records, QPS) and how is that tracked?
+
+To learn more about consumption, see [Consumption dashboard](/managed-fusion/5.9/by1c84/consumption-dashboard).
+
+### How do I monitor Lucidworks cloud performance?
+
+The data is available through [Grafana](/managed-fusion/5.9/lxm4ct/managed-fusion-log-access). You can request the link and credentials to your Managed Fusion Grafana Dashboard from your Client Success Representative.
+
+### How do I access Solr Logs?
+
+The data is available through [Grafana](/managed-fusion/5.9/lxm4ct/managed-fusion-log-access). You can request the link and credentials to your Managed Fusion Grafana Dashboard from your Client Success Representative.
+These logs contain information about Solr cores, nodes, and overall system performance.
+
+## Upgrades and security
+
+Upgrading Managed Fusion to the latest version ensures you have access to the latest features and security fixes.
+
+### Can I skip an upgrade?
+
+No. Managed Fusion is a hosted platform that needs to keep up with vendors' upgrade cadence.
+
+### What is Lucidworks' preference for indexing datasources behind firewalls or other secured areas?
+
+For most applications, Lucidworks recommends using [remote connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors). In some cases, you may prefer to use a [VPN](/managed-fusion/5.9/349r8/vp-ns).

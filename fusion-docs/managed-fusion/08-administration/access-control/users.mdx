@@ -1,0 +1,73 @@
+---
+title: "Users"
+permalink: "1abcqy"
+---
+
+All Managed Fusion requests must come from a registered user.
+
+## Add Users
+
+The first user who logs in becomes the user `admin`.
+
+There are two approaches for adding users:
+
+* **Manual** – Add users manually to a security realm that does not auto-create users.
+* **Automatic** – For a security realm that uses an external authentication provider, Managed Fusion can add users automatically. When creating the security realm, check **auto-create users**. Managed Fusion creates a user the first time someone logs into Managed Fusion.
+
+When you add a new user manually, you must provide a unique username and valid password.
+All other information is optional. However, unless either roles or permissions are specified (or both),
+this user will not be able to do anything in Managed Fusion.
+
+If you specify API permissions in a user definition, those permissions *override* corresponding permissions defined in the user’s roles. See [Permissions](/managed-fusion/5.9/ro1m7q/permissions) for more information about how permissions supplied by multiple roles and by user definitions combine.
+
+## Manage Users in the Managed Fusion UI
+
+Only Managed Fusion users with administrative privileges (for example, those who are assigned the built-in role `admin`) can manage users.
+
+Manage users in the Managed Fusion UI. Click **System > Access Control > Users**.
+
+## Manage Users via HTTP Requests to the Users API
+
+See page [Users API](/managed-fusion/5.9/1zank4/user-api).
+
+## User Information
+
+Managed Fusion stores user information in [Apache ZooKeeper](http://zookeeper.apache.org/).
+
+Each User entry in ZooKeeper contains the following:
+
+* `id`– A globally unique user ID (UUID), created by Managed Fusion based on username, realm-name
+* `realm-name`– The Managed Fusion [security realm](/managed-fusion/5.9/sq6b80/security-realms) name; the default is "native".
+* `username`– The username string, which is unique within the specified security realm
+* `permissions`– List of permissions that have been explicitly assigned to the user in the Managed Fusion UI (in **System > Access Control**)
+* `role-names`– List of roles assigned to the user in the Managed Fusion UI (in **System > Access Control**)
+* `created-at`– Timestamp; created by Managed Fusion
+* `updated-at`– Timestamp for the last edit; created by Managed Fusion
+
+The following JSON shows the ZooKeeper record for the Managed Fusion admin user:
+
+```json
+{
+  "id":"57f539d2-3f53-4011-ad6f-257a3f00fc6b",
+  "username":"admin",
+  "realm-name":"native"
+  "password-hash":"$2a$08$3I82umlXLPSshQIW6ngj.Or06DOVgDLGohGmCB9GC0yRtvy5Nfkn6",
+  "permissions":[],
+  "role-names":["admin"],
+  "created-at":"2016-01-28T00:00:18Z"
+}
+```
+
+The following JSON shows the ZooKeeper record for a user entry managed by Managed Fusion:
+
+```json
+{
+  "id":"ae9b345a-79e2-4e6d-8620-e6ed4ed2cc16",
+  "username":"firstname.lastname",
+  "realm-name":"lwLDAP",
+  "permissions":[{"path":"collections/**","methods":["GET"]}],
+  "role-names":[],
+  "created-at":"2016-04-01T21:17:36Z",
+  "updated-at":"2016-04-01T21:42:15Z"
+}
+```

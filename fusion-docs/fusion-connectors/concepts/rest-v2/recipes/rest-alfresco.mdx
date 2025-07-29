@@ -1,0 +1,411 @@
+---
+title: "Alfresco"
+description: "REST V2 connector"
+permalink: "6y4vwx"
+---
+
+The Alfresco recipe is used to retrieve data from the Alfresco platform for information management.
+
+The configuration details and JSON recipe are added here for convenience, but you can also view them directly at the public [REST configuration repository](https://github.com/lucidworks/rest-configurations/tree/main/alfresco) on GitHub.
+
+# Alfresco REST Configuration
+
+This documentation describes aspects of the Alfresco REST file configuration `alfresco-v1.json`, such as the authentication, data fetched, requests configured (endpoints, query params, pagination) and variables needed. Terminology is also provided as a reference.
+
+* The `alfresco-v1.json` is configured to retrieve the initial folders from the root folder `-root-` (Company Home) and then retrieve the folders, nestedFolders and files.
+* The following objects are indexed into separate solr document:
+
+  + Folders (this also include the 'Sites' folder)
+  + Files
+
+## Authentication
+
+The Alfresco REST configuration supports:
+
+* Basic Authentication using the username and password from an Alfresco account.
+
+## Supported crawl options
+
+The Alfresco REST configuration supports the following crawl options:
+
+* Full crawl:
+
+  + All the content from the source is fetched.
+* Re-Crawl:
+
+  + Per re-crawl, all the content from the source is retrieved as it were a full-crawl
+  + Orphan files/folders (deleted in the alfresco source that are not retrieved with a current crawl), will be deleted from the index using the strayContentDeletion feature from connectors-service, which is run when a crawl finishes.
+
+## Parser
+
+The default parser is set to `_system` but can be changed to any parser based on index needs.
+
+## Variables used
+
+The Alfresco REST configuration use the following variables, which are created with the rest-connector:
+
+* `${LW_BATCH_SIZE}` - Used with pagination feature. Used to set the `maxItems` query parameter, which controls the number of entries (folder/files) that are returned in the response.
+* `${LW_INDEX_START}` - Used with pagination feature. Used to set the `skipCount` query parameter, which is used to traverse the pagination.
+* `${LW_PARENT_DATA_KEY}` - Used with the Child Request Configurations. In crawl-time, this variable is replaced with the parent object ID value extracted by setting the property 'Parent Data Key'. Note: The parent object is retrieved with a previous request (parent-request).
+
+## Pagination Setup
+
+Pagination by Batch Size is configured per Request. Needs to configure properties: 'Query Params', and 'Pagination By BatchSize'
+
+### Configure the 'Pagination By BatchSize' properties:
+
+* IndexStart: The starting point. It replaces the variable `${LW_INDEX_START}`
+* BatchSize: The number of elements to retrieve. Set to 50 by default. It replaces the variable `${LW_BATCH_SIZE}`
+* Stop Condition Key: Reference the “key” in the response, that needs to be met in order to stop the pagination. For the Alfresco Config, use “list.entries”
+* Stop Condition Value: Reference the “value” in the response, that needs to be met in order to stop the pagination. For the Alfresco Config, to stop pagination the list of objects retrieved must be empty, then the stop condition should be []
+
+### Query Params:
+
+* maxItems=`${LW_BATCH_SIZE}`, where `${LW_BATCH_SIZE}` is replaced with the value of property `BatchSize`. For more information about `maxItems`, see Alfresco documentation for [limiting-result-items](https://docs.alfresco.com/content-services/7.3/develop/rest-api-guide/#limiting-result-items)
+* skipCount=`${LW_INDEX_START}`, where `${LW_INDEX_START}` is replaced with the value of property `IndexStart` to request the first page, then internally replaced with 'IndexStart + BatchSize' to request next pages. For more information about `skipCount`, see Alfresco documentation for [skipping-result-items](https://docs.alfresco.com/content-services/7.3/develop/rest-api-guide/#skipping-result-items)
+
+## Endpoints Configuration with Alfresco REST connector
+
+* The following table describes the Alfresco REST connector endpoints needed to retrieve the files and folders, and how those are configured with the rest-connector.
+* Each requests in configured under the property **List of Requests Configuration** (`requestConfigurations` in the alfresco-v1.json` file)
+
+| Request type | ObjectType | Parent ObjectType | Endpoint | HTTP operation | Query parameters | Description |
+| --- | --- | --- | --- | --- | --- | --- |
+| Root Request | INITIAL_FOLDER |  | `/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children` | GET | `include=path,properties&skipCount=${LW_INDEX_START}&maxItems=${LW_BATCH_SIZE}&where=(isFolder=true` | Returns the folders from -root- folder (Company Home) |
+| Child Request | FOLDER | INITIAL_FOLDER | `/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/children` | GET | `include=path,properties&skipCount=${LW_INDEX_START}&maxItems=${LW_BATCH_SIZE}&where=(isFolder=true)` | Return children folders from each parent folder retrieved with the previous request 'INITIAL_FOLDER'. Internally, the variable `${LW_PARENT_DATA_KEY}` is replaced with the 'id' of the parent folder, which is extracted by setting the property `Response Handling → parentDataKey=entry.id`. This request enable the property 'Recursive Request'. |
+| Child Request | FILE | FOLDER | `/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/children` | GET | `include=path,properties&skipCount=${LW_INDEX_START}&maxItems=${LW_BATCH_SIZE}&where=(isFile=true)` | Returns children files from each parent folder retrieved with the previous request 'FOLDER'. Internally, the variable `${LW_PARENT_DATA_KEY}` is replaced with the 'id' of the parent folder, which is extracted by setting the property `Response Handling → parentDataKey=entry.id`. This request enable the property 'Skip Indexation'. |
+| Child Request | FILE_DOWNLOAD | FILE | `/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/content` | GET |  | Download the content from each file retrieved with the previous request 'FILE'. Internally, the variable `${LW_PARENT_DATA_KEY}` is replaced with the 'id' of the file, which is extracted by setting the property `Response Handling → parentDataKey=entry.id` |
+
+## Response Parsing Configuration
+
+Per request, configure the property **Response Handling** to set up how to parse the response (`responseConfiguration` in the alfresco-v1.json` file)
+
+### Plugin Parsing:
+
+* This parsing happens by default. The responses are parsed as a JSON Object structure using JsonPath.
+* Plugin Parsing will happen for requests: INITIAL_FOLDER, FOLDER, FILE
+* Properties `Response Handling → Data ID, Data Path`, Parent Data Key can be configured to extract certain information from the Objects parsed (see section **Terminology** for more information
+
+### Binary Parsing:
+
+* Enable by setting the property `Response Handling → Parse Binary Data` (`binaryResponse` in the alfresco-v1.json` file). Send the whole response to the Fusion Parsers. If disabled (default), the response is parsed as a JSON object
+* This parsing is configured for request: FILE_DOWNLOAD
+
+## Skip Indexation of Objects
+
+When enabled, the response is not indexed. This is useful when objects are requested solely to discover their child objects, without needing to index the parent object itself.
+
+* For Alfresco Configuration:
+
+  + Given a parent Request FILE, to retrieve a list of files metadata. The request is needed to discover the IDs of files to be downloaded in a following request.
+  + Given a child Request FILE_DOWNLOAD to download the binary content from the files found previously
+  + Both request will index two solr-docs that represents the same file: 1) doc the file-metadata only, 2) doc with the file-metadata joined with the file-content.
+
+```json
+1) doc the file-metadata only (Request FILE)
+
+id: "serverURL_/<parent-request>/fileID"
+size_i: 10
+author_s: "any"
+_lw_rest_object_type_s: "file"
+
+```
+
+```json
+2) doc with the file-metadata joined with the file-content (Request FILE_DOWNLOAD)
+
+id: "serverURL_/<child-request>/fileID_binary"
+size_i: 10
+author_s: "any"
+body_s: "body of txt"
+_lw_rest_object_type_s: "file_download"
+
+```
+
+* There is no need to index the first solr-doc. To avoid indexing this, the property **'Skip Indexation'** for the Request FILE is enabled in the 'alfresco-v1.json' file.
+* If needed to avoid indexing another objects, enable the property **'Skip Indexation'** in the corresponding request configuration.
+
+## Limit Documents
+
+### Exclude by RegEx:
+
+Allows specifying a list of key-value pairs to exclude objects from indexing:
+
+* Key: Reference the field name of the object to exclude. It also accepts JsonPath expressions for navigating through nested object, e.g. objects.nested.path
+* Value: The value contains a regular expression that will be matched against the field value in the object. If the match succeeds, the entire object will be excluded.
+
+For Alfresco Rest Configuration, this property can be used to exclude objects that matches values from certain fields.
+
+* e.g. Exclude objects from the field 'entry.path.name'. Let’s consider the Alfresco object named "testFolder" belonging to the path /Company Home/Sites/sample1.
+
+```json
+{
+    "entry": {
+        "path": {
+            "name": "/Company Home/Sites/sample1",
+            "isComplete": true,
+            "elements": [...]
+        },
+        "isFolder": true,
+        "isFile": false,
+        "name": "testFolder",
+        "id": "c2bf6e7d-db3e-4f21-850a-90389fe1d2e1",
+
+```
+
+In order to exclude all objects under the path `'/Company Home/Sites/sample1'`, add a key-value pair to the exclusion list:
+
+* Key: entry.path.name (points to the field containing the path)
+* Value: /Company Home/Sites/sample1 (regular expression to match the path)
+
+More key-value pairs can be added using different keys, or the same key
+
+<Frame>![ExcludeByRegexSample](/resources/ExcludeByRegexSample.png)</Frame>
+
+### Exclude by File Size:
+
+Allows specifying minimum and maximum sizes that will exclude all files that do not meet the requirements.
+
+* Key: Reference the field name of the object with the file size. This property also accepts JsonPath expressions e.g. objects.nested.path
+* Minimum File Size: Used for excluding files with sizes smaller than the configured value.
+* Maximum File Size: Used for excluding files with sizes larger than the configured value. Set to -1 when there is no limit
+
+For the Alfresco Rest Configuration, this property can be used to exclude files that is above or below a certain size.
+
+* For example: Let’s consider this sample snippet from an Alfreco response
+
+```json
+                "entry": {
+                    "createdAt": "2011-03-03T10:31:30.596+0000",
+                    "isFolder": false,
+                    "isFile": true,
+                    "createdByUser": {
+                        "id": "mjackson",
+                        "displayName": "Mike Jackson"
+                    },
+                    "modifiedAt": "2011-03-03T10:31:31.651+0000",
+                    "modifiedByUser": {
+                        "id": "mjackson",
+                        "displayName": "Mike Jackson"
+                    },
+                    "name": "Project Objectives.ppt",
+                    "id": "5515d3e1-bb2a-42ed-833c-52802a367033",
+                    "nodeType": "cm:content",
+                    "content": {
+                        "mimeType": "application/vnd.ms-powerpoint",
+                        "mimeTypeName": "Microsoft PowerPoint",
+                        "sizeInBytes": 2117632,
+                        "encoding": "UTF-8"
+                    },
+                    "parentId": "38745585-816a-403f-8005-0a55c0aec813"
+                }
+
+```
+
+You can specify the path to the property that has the size, as well as what the minimum and maximum sizes should be. Therefore:
+
+* Set `key` = `entry.content.sizeInBytes`
+* Then set `minimum`, all sizes below the minimum will be excluded.
+* Then set `maximum`, all sizes above the maximum will be excluded (Set to -1 when there should be no
+
+Example of configuration based on the above snippet to only index files of 2117632 bytes and below.
+
+<Frame>![ExcludeByFileSizeSample](/resources/ExcludeByFileSizeSample.png)</Frame>
+
+## Terminology
+
+The following terms are provided as a reference.
+
+| Term | Description |
+| --- | --- |
+| **List of Requests Configuration** | Configure List of Requests to extract data from the Rest source. Requests are linked hierarchically by using the properties ObjectType and ParentObjectType. |
+| **Object Type** | The unique name to identify the request. |
+| **Parent Object Type** | Reference an existent Object Type. Create a parent-child hierarchy, where the current request becomes the child of the specified Parent Object Type. If blank, the current request is considered a Root-Request. |
+| **Root Request** | The request to retrieve the initial objects. |
+| **Child Request** | The type of request to retrieve additional information for the root data objects. The child requests will be performed per each root data object. |
+| **Recursive Request** | When enabled, extra-requests are performed to retrieve nested objects within the objects found with the current-request. For example, the request ObjectType=FOLDER enable this property, then extra-request is made per Folder found to retrieve NestedFolders. This process will continue until no more NestedFolders are found. |
+| **Skip Indexation** | When enabled, the response is not indexed. Useful when requests of objects are needed only to discover child-objects, without need to index the object itself. |
+| **Response Handling** | The responseConfiguration Defines the mapping between the response and data objects to be indexed. |
+| **Data Path** | The path to access a specific data object within a response. For example, to access a list of elements named with key `objects`, the DataPath would be `objects`. If not provided, the entire response body will be indexed. This property accepts JsonPath expressions e.g. `objects`, `objects[*]`, or `list.entries` to extract the list of alfresco objects. |
+| **Data ID** | The identifier key for the data objects extracted with 'Data Path'. This value will be used to build the solr-document’s ID. If not provided, a random UUID will be used. This property accepts JsonPath expressions, e.g. `entry.id` to extract the ID of the alfresco file/folder |
+| **Parent Data Key** | Only configure with Child Requests. Set the 'key' to extract the ID of the root/parent response, which value is used to replace the ${LW_PARENT_DATA_KEY} variable in the child request configuration (endpoint, query params or body). For example, /alfresco/api/-default-/public/alfresco/versions/1/nodes/`${LW_PARENT_DATA_KEY}`/content |
+| **Parse Binary Data** | Enable to send the whole response to the Fusion Parsers. If enabled, properties `Data Path, Data ID` will be ignored and pagination will not happen. |
+
+## Recipe
+
+```json
+{
+  "parserId": "_system",
+  "coreProperties": {},
+  "id": "rest-alfresco",
+  "type": "lucidworks.rest",
+  "properties": {
+    "serviceURL": "https://{add alfresco url}",
+    "authenticationMode": {
+      "basicAuth": {
+        "password": "xXx-Redacted-xXx",
+        "user": "{add username here!!!}"
+      }
+    },
+    "requestConfigurations": [
+      {
+        "request": {
+          "recursiveRequest": false,
+          "linkRequest": {
+            "objectType": "INITIAL_FOLDER"
+          },
+          "requestConfiguration": {
+            "endpoint": "/alfresco/api/-default-/public/alfresco/versions/1/nodes/-root-/children",
+            "pagination": {
+              "paginationByBatchSize": {
+                "paginationStopConditionValue": "[]",
+                "paginationStopConditionKey": "list.entries",
+                "batchSize": 50,
+                "indexStart": 0
+              }
+            },
+            "httpMethod": "GET",
+            "queries": [
+              {
+                "queryKey": "include",
+                "queryValue": "path,properties"
+              },
+              {
+                "queryKey": "where",
+                "queryValue": "(isFolder=true)"
+              },
+              {
+                "queryKey": "skipCount",
+                "queryValue": "${LW_INDEX_START}"
+              },
+              {
+                "queryKey": "maxItems",
+                "queryValue": "${LW_BATCH_SIZE}"
+              }
+            ]
+          },
+          "responseConfiguration": {
+            "dataId": "entry.id",
+            "binaryResponse": false,
+            "dataPath": "list.entries",
+            "parentIdKey": ""
+          }
+        }
+      },
+      {
+        "request": {
+          "recursiveRequest": true,
+          "linkRequest": {
+            "parentObjectType": "INITIAL_FOLDER",
+            "objectType": "FOLDER"
+          },
+          "requestConfiguration": {
+            "endpoint": "/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/children",
+            "pagination": {
+              "paginationByBatchSize": {
+                "paginationStopConditionValue": "[]",
+                "paginationStopConditionKey": "list.entries",
+                "batchSize": 50,
+                "indexStart": 0
+              }
+            },
+            "httpMethod": "GET",
+            "queries": [
+              {
+                "queryKey": "include",
+                "queryValue": "path,properties"
+              },
+              {
+                "queryKey": "where",
+                "queryValue": "(isFolder=true)"
+              },
+              {
+                "queryKey": "skipCount",
+                "queryValue": "${LW_INDEX_START}"
+              },
+              {
+                "queryKey": "maxItems",
+                "queryValue": "${LW_BATCH_SIZE}"
+              }
+            ]
+          },
+          "responseConfiguration": {
+            "dataId": "entry.id",
+            "binaryResponse": false,
+            "dataPath": "list.entries",
+            "parentIdKey": "entry.id"
+          }
+        }
+      },
+      {
+        "request": {
+          "recursiveRequest": false,
+          "linkRequest": {
+            "parentObjectType": "FOLDER",
+            "objectType": "FILE"
+          },
+          "requestConfiguration": {
+            "endpoint": "/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/children",
+            "pagination": {
+              "paginationByBatchSize": {
+                "paginationStopConditionValue": "[]",
+                "paginationStopConditionKey": "list.entries",
+                "batchSize": 50,
+                "indexStart": 0
+              }
+            },
+            "httpMethod": "GET",
+            "queries": [
+              {
+                "queryKey": "where",
+                "queryValue": "(isFile=true)"
+              },
+              {
+                "queryKey": "include",
+                "queryValue": "path,properties"
+              },
+              {
+                "queryKey": "skipCount",
+                "queryValue": "${LW_INDEX_START}"
+              },
+              {
+                "queryKey": "maxItems",
+                "queryValue": "${LW_BATCH_SIZE}"
+              }
+            ]
+          },
+          "skipIndexation": true,
+          "responseConfiguration": {
+            "dataId": "entry.id",
+            "binaryResponse": false,
+            "dataPath": "list.entries",
+            "parentIdKey": "entry.id"
+          }
+        }
+      },
+      {
+        "request": {
+          "recursiveRequest": false,
+          "linkRequest": {
+            "parentObjectType": "FILE",
+            "objectType": "FILE_DOWNLOAD"
+          },
+          "requestConfiguration": {
+            "endpoint": "/alfresco/api/-default-/public/alfresco/versions/1/nodes/${LW_PARENT_DATA_KEY}/content",
+            "httpMethod": "GET"
+          },
+          "responseConfiguration": {
+            "binaryResponse": true,
+            "parentIdKey": "entry.id"
+          }
+        }
+      }
+    ],
+    "serviceEndpoints": [],
+    "collection": "{add collection name here}"
+  },
+  "pipeline": "{add pipeline name here}",
+  "connector": "lucidworks.rest"
+}
+
+```

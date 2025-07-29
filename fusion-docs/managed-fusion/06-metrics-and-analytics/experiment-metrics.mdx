@@ -1,0 +1,184 @@
+---
+title: "Experiment metrics"
+permalink: "wkwyg1"
+---
+
+This section describes metrics available for experiments.
+
+## Click-Through Rate
+
+The Click-Through Rate (CTR) metric provides the rate of clicks per query for a variant. The CTR is a number between 0 and 1, that is, what proportion of queries lead to clicks. Variants with a CTR closer to 1 perform better than variants with a lower rate.
+
+CTR is *cumulative*, that is, each time it is calculated, it is calculated from the beginning of the experiment. After each variant has reached a stable level, you should not see large day-to-day fluctuations in the CTR.
+
+The automatically-created job that generates the Click-Through Rate metrics is named `<EXPERIMENT-NAME>-<METRIC-NAME>`, for example, `Experiment-CTR`.
+
+## Conversion Rate
+
+The Conversion Rate metric provides the rate of some type of signal per variant, that is, what proportion of queries lead to some type of signal, such as `cart`, `purchase` or `like` signals. (These signal types are not predefined.)
+
+For example, if you are interested in how many queries convert into `cart` signals, specify the `cart` signal type in the conversion rate metric.
+
+The Click-Through Rate metric is a conversion rate for `click` signals.
+
+The automatically-created job that generates the Conversion Rate metrics is named `<EXPERIMENT-NAME>-<METRIC-NAME>`, for example, `Experiment-Conversion`.
+
+## Mean Reciprocal Rank (MRR)
+
+The Mean Reciprocal Rank (MRR) metric measures the position of documents that were clicked on in ranked results. It ranges from 0 (at the very bottom) to 1 (at the very top). MRR penalizes clicks that occur further down in the results, which indicate a ranking issue where relevant documents are not ranked high enough. Variants with an MRR closer to 1 indicate that users are clicking on documents that have higher ranks.
+
+The automatically-created job that generates the Mean Reciprocal Rank metrics is named `<EXPERIMENT-NAME>-<METRIC-NAME>`, for example, `Experiment-MRR`.
+
+## Response Time
+
+The Response Time metric computes the named statistic (for example, `mean`, `variance` or `max`) from response-time data. The default statistic is `avg` (average, the same as `mean`).
+
+You can use the Response Time metric to evaluate the impact of adding additional stages to a query pipeline, for example, a recommendation or machine learning stage.
+
+The response time is the end-to-end processing time from when a query pipeline receives a query to when the pipeline supplies a response:
+
+* **No Experiment stage.** If a query pipeline does not have an Experiment stage, then there is no experiment-processing overhead in the response times.
+* **Experiment stage.** If a query pipeline includes an Experiment stage, then processing by that stage is included in the response times.
+
+The automatically-created job that generates the Response Time metrics is named `<EXPERIMENT-NAME>-<METRIC-NAME>`, for example, `Experiment-Response_time`.
+
+### Supported functions
+
+When adding the Response Time metric to an experiment, specify one of these Spark SQL function names or aliases for the **Statistic**.
+
+| Function name or alias | Description |
+| --- | --- |
+| `avg` | Mean response time |
+| `kurtosis` | Kurtosis of the response times |
+| `max` | Maximum response time |
+| `mean` | Mean response time |
+| `median` | Median response time. This is an alias for `percentile(query_time,0.5)`. |
+| `min` | Minimum response time |
+| `percentile_N` | Nth percentile of the response times, that is, the value at or closest to the percentile. `N` is an integer between 1 and 100. This is an alias for the function `percentile(query_time,N/100)`. |
+| `skewness` | Skewness of the response times |
+| `sum` | Sum of the response times |
+| `stddev` | Standard deviation of the response times |
+| `variance` | Variance of the response times |
+
+For more information about these functions, see the documentation for [Spark SQL Built-in Functions](https://spark.apache.org/docs/latest/api/sql/index.html).
+
+## Custom SQL
+
+Under the covers, Managed Fusion computes all experiment metrics using Managed Fusion’s [SQL aggregation](/managed-fusion/5.9/78vsm6/sql-aggregation) engine.
+
+The Custom SQL metric lets you define your own SQL to compute a metric per variant. The SQL must project these three columns in the final output, and perform a GROUP BY on `variant_id`:
+
+* `value`.* A double field that represents the metric provided by this custom SQL
+* `count`.* The number of rows used to compute the value for a variant, that is, how many signals contributed to this value
+* `variant_id`. The unique identifier of the variant
+
+An internal view named `variant_queries` is built into the experiment job framework. This view is transient and is not defined in the table catalog; it only exists for the duration of the metrics job. The `variant_queries` view exposes all response signals for a given variant ID. The `variant_queries` view exposes the following fields pulled from response signals:
+
+| Field | Description |
+| --- | --- |
+| `id` | Response signal ID set by a query pipeline and returned to the client application using the `x-fusion-query-id` response header |
+| `variant_id` | Experiment variant this response signal is associated with |
+| `query_doc_ids` | Comma-delimited list of document IDs returned in the response, in ranked order |
+| `query_timestamp` | ISO-8601 timestamp for the time when Managed Fusion executed the query |
+| `query_user_id` | User associated with the query. The front-end application must supply this. |
+| `query_rows` | Number of rows returned for this query, that is, the page size |
+| `query_hits` | Total number of documents that match this query, that is, the number of documents that were found |
+| `query_offset` | Page offset |
+| `query_time` | Total time to execute the query (in milliseconds) |
+
+You can use the `fusion_query_id` field to join the `variant_signals` view with other signal types such as `click`. For example, if you want to get a count of clicks per variant, you would use:
+
+```
+1:     SELECT COUNT(1) AS value, COUNT(1) AS count, vq.variant_id as variant_id
+2:       FROM ${inputCollection} c
+3: INNER JOIN variant_queries vq ON c.fusion_query_id = vq.id
+4:      WHERE c.type = 'click'
+5:   GROUP BY variant_id
+```
+
+In this SQL:
+
+* At line 1, we project the required `value`, `count`, and `variant_id` columns as the output for our custom SQL; this is required for all custom SQL metrics.
+* At line 2, we use a built-in macro that represents the input collection for our metrics job. The SQL engine replaces the `${inputCollection}` variable with the correct collection name at runtime, which is typically a signals collection.
+* At line 3, we use the `fusion_query_id` column to join `click` signals with the `id` column of the `variant_queries` view. This illustrates how the `variant_queries` view helps simplify the SQL you have to write to build a custom metric.
+* At line 4, we filter signals to only include `click` signals. Behind the scenes, Managed Fusion will send a query to Solr with `fq=type:click`.
+* At line 5, we group by the variant_id to compute the aggregated metrics for each variant; all Custom SQL must perform a group by variant_id.
+
+To illustrate the power of Custom SQL metrics for experiments, let us build the SQL to compute the average page depth of clicks for each variant, to indicate if users are having to navigate beyond the first page to find results. The intuition behind this metric is that variants having a higher average page depth might indicate a ranking problem. Users are not finding relevant documents on the first page of results.
+
+Specifically, to build our query, we need the `query_offset` and `query_rows` columns associated with each click in a variant:
+
+```
+SELECT AVG((vq.query_offset/vq.query_rows)+1) as value,
+     COUNT(1) as count,
+          vq.variant_id as variant_id
+     FROM ${inputCollection} c
+INNER JOIN variant_queries vq ON c.fusion_query_id = vq.id
+     WHERE c.type = 'click'
+     GROUP BY variant_id
+```
+
+In practice, MRR is a better metric for determining the ranked position of clicks, but this SQL gives a basic illustration of how to build Custom SQL metrics.
+
+Lastly, when building Custom SQL metrics, you have the full power of Spark SQL functions, see: https://spark.apache.org/docs/latest/api/scala/index.html#org.apache.spark.sql.functions$.
+
+The automatically-created job that generates the Custom SQL metrics is named `<EXPERIMENT-NAME>-<METRIC-NAME>`, for example, `Experiment-SQL`.
+
+## Query Relevance
+
+The Query Relevance metric calculates the performance of queries against a "gold standard" or "ground truth" dataset that lists which documents should be returned for each query. You can either predetermine the queries that will be used and the documents that should be returned, and place them in a Solr collection in the correct format, or let the `groundTruth` job use historical click signals to generate the ground truth data automatically.
+
+Note that the Query Relevance metric *does not* calculate metrics based on live traffic. Instead, it issues the queries specified in the ground truth collection against each variant, and calculates the performance of the queries.
+
+The jobs that generate the Query Relevance metrics are named `<EXPERIMENT-NAME>-groundTruth-<METRIC-NAME>` and `<EXPERIMENT-NAME>-rankingMetrics-<METRIC-NAME>`, for example, `Experiment-groundTruth-QR` and `Experiment-rankingMetrics-QR`.
+
+<Note>
+**Important**
+
+You must run the `groundTruth` job by hand the first time. Query Relevance `rankingMetrics` jobs that run before the `groundTruth` job runs do not produce metrics. Subsequently, the `groundTruth` job runs once a month.
+</Note>
+
+### Ground Truth Queries
+
+Query relevance metrics rely on having a set of queries and a list of documents that should be returned for those queries in ranked order. Specifically, a ground truth dataset contains tuples of query + document ID + weight, such as the following data for a fictitious Home Improvement search application:
+
+| Query | Document ID | Weight |
+| --- | --- | --- |
+| hammer | 123 | 0.9 |
+| hammer | 456 | 0.8 |
+| hammer | 789 | 0.7 |
+| masking tape | 234 | 0.85 |
+| masking tape | 567 | 0.82 |
+| masking tape | 890 | 0.76 |
+
+Typically, the queries included in the ground truth set represent important queries for a given search application. The weight assigned to each document is used to determine the expected ranking order for the query. Ideally, your ground truth dataset should specify the same number of documents per query, for example. 10. But this is not required technically for computing query relevance metrics. In other words, one query can have 10 documents specified and another query can only specify 5.
+
+In Managed Fusion, you can either load a curated ground truth dataset into a Managed Fusion collection or use Managed Fusion’s ground truth job to build a ground truth dataset using signals. If you use the ground truth job, Managed Fusion looks at click/skip behavior for documents by analyzing response and click signals. It follows that you need a sufficient number of signals to generate an accurate ground truth dataset.
+
+The basic intuition behind the ground truth job is that for queries that occur frequently in your search application, whether a user clicks or skips over a document serves as a relevance judgement of a document for a given query. With a sufficient sample size per query, Managed Fusion can decide which documents are relevant and which are not for any given query. It is important to note, however, that, because the ground truth dataset is generated from your click signals, if you have relevant documents that are never clicked (maybe because they are on the second page of results), then they will never appear in your ground truth set.
+
+### Calculating Performance vs. Ground Truth
+
+After you have a ground truth dataset loaded into Managed Fusion, the Query Relevance metric will calculate all of the following metrics:
+
+**Precision**
+
+Precision is the fraction of returned documents that are relevant to the query (that is, how many of the documents returned by this variant exist in the ground truth dataset).
+
+**Recall**
+
+Recall is the fraction of total relevant docs that are returned by this query (that is, how many of the documents in the ground truth set appear in the result set for this variant).
+
+**Normalized Discounted Cumulative Gain (nDGC)**
+
+The Normalized Discounted Cumulative Gain (nDCG) indicates whether a variant is returning highly relevant documents near the top of results.
+
+The nDCG has a value between 0 and 1. Larger values indicate that more highly relevant documents occur earlier in the results for a query. Conversely, if a variant returns highly relevant documents lower in the results, then its nDCG score will be lower, penalizing the ranking strategy used by the variant for returning highly relevant documents lower in the results. For more details on nDCG, see https://en.wikipedia.org/wiki/Discounted_cumulative_gain.
+
+**F1**
+
+The F1 score is the harmonic mean between precision and recall at a given depth (10 by default). The F1 score ranges between 0 and 1, with larger values indicating that a variant is achieving a better balance of precision and recall than variants with lower F1 scores. For more details, see https://en.wikipedia.org/wiki/F1_score.
+
+**Mean Average Precision (MAP)**
+
+The Mean Average Precision (MAP) metric indicates how many documents returned for a query, down to a specific depth, are considered relevant to a query averaged over all queries in the ground truth dataset. MAP is a value between 0 and 1. Larger values mean that the variant returns more relevant than non-relevant documents. For example, if the relevance judgement for a result set containing 3 documents is: 1, 0, 1, then the average precision for that query will be 1/1, 0, ⅔ ~ 0.834 (1.667/2).

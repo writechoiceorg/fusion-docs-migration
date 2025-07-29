@@ -1,0 +1,55 @@
+---
+title: "Supported objects"
+permalink: "u8n1i5"
+---
+
+ConfigSync supports a wide range of objects that can be synchronized.
+This topic lists the supported objects in order of processing.
+
+* System objects are processed before app objects.
+* Within each group (system or app), objects are processed in a specific order.
+* ConfigSync applies updates in the following order:
+
+  1. `DELETE`
+  2. `CREATE`
+  3. `UPDATE`
+
+The table below lists the object types supported by the ConfigSync service in order of processing by group:
+
+| Object Type | Group | Path | Description |
+| --- | --- | --- | --- |
+| Configurations | sys: 0 | `_lw_system/configurations` | Custom system settings |
+| Solr config-sets | sys: 0 | `_lw_system/solr-configs` | [Solr config-sets](/fusion/5.9/0ksttl/solr-configs), such as `solrconfig.xml`, `managed-schema`, and so on. |
+| Solr collections | sys: 1 | `_lw_system/solr-collections` | [Solr collections](/fusion/5.9/011kpa/solr-collections) metadata |
+| Rules |  | `_lw_system/collections-data` | Query rewrite [rules](/fusion/5.9/mt9mtl/rules) |
+| Users | sys: 2 | `_lw_system/users` | [User](/fusion/5.9/ce5jc6/users) accounts and permissions |
+| Roles | sys: 2 | `_lw_system/roles` | Roles and access levels |
+| Realms | sys: 2 | `_lw_system/realms` | Security realms and configurations |
+| API keys | sys: 2 | `_lw_system/api-keys` | API keys for Fusion API access |
+| Connectors plugins | sys: 2 | `_lw_system/connectors-plugins` | [Connector plugins](/fusion/5.9/gxge5x/connector-plugins) for data connectivity |
+| Query stage plugins | sys: 2 | `_lw_system/query-stage-plugins` | [Query stage plugins](/fusion/5.9/l1mi38/query-stage-plugins) for query pipelines |
+| Index stage plugins | sys: 2 | `_lw_system/index-stage-plugins` | [Index stage plugins](/fusion/5.9/dnjquf/index-stage-plugins) for index pipelines |
+| JDBC drivers | sys: 2 | `_lw_system/jdbc-drivers` | [JDBC drivers](/fusion/5.9/3dussz/jdbc-drivers) for data connectivity |
+| Apps | app: 0 | `<APP>/apps` | Fusion Applications |
+| Blobs | app: 1 | `<APP>/blobs` | [Objects stored in the `system_blobs` collection](/fusion/5.9/kslobm/blobs) |
+| Fusion collections | app: 1 | `<APP>/collections` | Metadata for Solr collections in Fusion |
+| Data models | app: 1 | `<APP>/data-models` | Data models |
+| Zones | app: 1 | `<APP>/zones` | Predictive Merchandiser config |
+| Datasources | app: 2 | `<APP>/datasources` | V1 Connectors config |
+| Datasources V2 | app: 2 | `<APP>/datasources-v2` | V2 Connectors config |
+| Query pipelines | app: 2 | `<APP>/query-pipelines` | [Query pipelines](/fusion/5.9/jjg5pb/js-based-stages-in-pipelines) |
+| Query profiles | app: 2 | `<APP>/query-profiles` | Query profiles |
+| Experiments | app: 2 | `<APP>/experiments` | Query pipeline experiments |
+| Parsers | app: 2 | `<APP>/parsers` | Index pipeline parsers |
+| Index profiles | app: 2 | `<APP>/index-profiles` | Index profiles |
+| Index pipelines | app: 2 | `<APP>/index-pipelines` | [Index pipelines](/fusion/5.9/jjg5pb/js-based-stages-in-pipelines) |
+| Spark jobs | app: 2 | `<APP>/spark-jobs` | [Spark jobs config](/fusion/5.9/o72zno/tips-for-scripts-and-code-fields) |
+| Tasks | app: 2 | `<APP>/tasks` | Tasks config |
+| Subscriptions | app: 2 | `<APP>/subscriptions` | Subscriptions config |
+| Groups | app: 2 | `<APP>/groups` | Object groups, including non-system and `_shared` groups |
+| Links | app: 2 | `<APP>/links` | Fusion object links, supported only for non-system groups |
+| Templates | app: 3 | `<APP>/templates` | Predictive Merchandiser config |
+| Schedules | app: 3 | `<APP>/schedules` | For data-sources, Spark jobs and tasks |
+
+Replace `<APP>/*` in the folder column with your Fusion app name.
+The `_lw_system/*` folders are system objects folders.

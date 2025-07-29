@@ -1,0 +1,948 @@
+export const schema = {
+  "type": "object",
+  "title": "Jira",
+  "description": "Atlassian JIRA connector to retrieve issues, comments, worklogs and attachments.",
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Repository",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Atlassian JIRA connector to retrieve issues, comments, worklogs and attachments.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting"
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "startLinks"
+      ],
+      "properties": {
+        "startLinks": {
+          "type": "array",
+          "title": "Start Links",
+          "description": "The JIRA instance URL to be crawled, e.g., https://jira.example.com",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "forceRefreshClearSignatures": {
+          "type": "boolean",
+          "title": "Clear signatures",
+          "description": "If true, signatures will be cleared if force recrawl is enabled.",
+          "default": true,
+          "hints": [
+            "hidden"
+          ]
+        },
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "db": {
+          "type": "object",
+          "title": "Connector DB",
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Implementation Class Name",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength": 1
+            },
+            "inlinks": {
+              "type": "boolean",
+              "title": "Process Inlinks?",
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "aliases": {
+              "type": "boolean",
+              "title": "Process Aliases?",
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "inv_aliases": {
+              "type": "boolean",
+              "title": "Process Inverted Aliases?",
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default": false
+            }
+          },
+          "hints": [
+            "hidden"
+          ]
+        },
+        "dedupe": {
+          "type": "boolean",
+          "title": "Dedupe documents",
+          "description": "If true, documents will be deduplicated. Deduplication can be done based on an analysis of the content, on the content of a specific field, or by a JavaScript function. If neither a field nor a script are defined, content analysis will be used.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "dedupeField": {
+          "type": "string",
+          "title": "Dedupe field",
+          "description": "Field to be used for dedupe. Define either a field or a dedupe script, otherwise the full raw content of each document will be used.",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "dedupeScript": {
+          "type": "string",
+          "title": "Dedupe script",
+          "description": "Custom javascript to dedupe documents. The script must define a 'genSignature(content){}' function, but can use any combination of document fields. The function must return a string.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "dedupeSaveSignature": {
+          "type": "boolean",
+          "title": "Save dedupe signature",
+          "description": "If true,the signature used for dedupe will be stored in a 'dedupeSignature_s' field. Note this may cause errors about 'immense terms' in that field.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "delete": {
+          "type": "boolean",
+          "title": "Delete dead URIs",
+          "description": "Set to true to remove documents from the index when they can no longer be accessed as unique documents.",
+          "default": true
+        },
+        "deleteErrorsAfter": {
+          "type": "integer",
+          "title": "Fetch failure allowance",
+          "description": "Number of fetch failures to tolerate before removing a document from the index. The default of -1 means no fetch failures will be removed.",
+          "default": -1
+        },
+        "fetchThreads": {
+          "type": "integer",
+          "title": "Fetch threads",
+          "description": "The number of threads to use during fetching. The default is 5.",
+          "default": 5
+        },
+        "emitThreads": {
+          "type": "integer",
+          "title": "Emit threads",
+          "description": "The number of threads used to send documents from the connector to the index pipeline. The default is 5.",
+          "default": 5
+        },
+        "chunkSize": {
+          "type": "integer",
+          "title": "Fetch batch size",
+          "description": "The number of items to batch for each round of fetching. A higher value can make crawling faster, but memory usage is also increased. The default is 1.",
+          "default": 1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "fetchDelayMS": {
+          "type": "integer",
+          "title": "Fetch delay",
+          "description": "Number of milliseconds to wait between fetch requests. The default is 0. This property can be used to throttle a crawl if necessary.",
+          "default": 0,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshAll": {
+          "type": "boolean",
+          "title": "Recrawl all items",
+          "description": "Set to true to always recrawl all items found in the crawldb.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshStartLinks": {
+          "type": "boolean",
+          "title": "Recrawl start links",
+          "description": "Set to true to recrawl items specified in the list of start links.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshErrors": {
+          "type": "boolean",
+          "title": "Recrawl errors",
+          "description": "Set to true to recrawl items that failed during the last crawl.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshOlderThan": {
+          "type": "integer",
+          "title": "Recrawl age",
+          "description": "Number of seconds to recrawl items whose last fetched date is longer ago than this value.",
+          "default": -1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "refreshIDPrefixes": {
+          "type": "array",
+          "title": "Recrawl ID prefixes",
+          "description": "A prefix to recrawl all items whose IDs begin with this value.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshIDRegexes": {
+          "type": "array",
+          "title": "Recrawl ID regexes",
+          "description": "A regular expression to recrawl all items whose IDs match this pattern.",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "refreshScript": {
+          "type": "string",
+          "title": "Recrawl script",
+          "description": "A JavaScript function ('shouldRefresh()') to customize the items recrawled. ",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "forceRefresh": {
+          "type": "boolean",
+          "title": "Force recrawl",
+          "description": "Set to true to recrawl all items even if they have not changed since the last crawl.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "retryEmit": {
+          "type": "boolean",
+          "title": "Retry emits",
+          "description": "Set to true for emit batch failures to be retried on a document-by-document basis.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "depth": {
+          "type": "integer",
+          "title": "Max crawl depth",
+          "description": "Number of levels in a directory or site tree to descend for documents.",
+          "default": -1
+        },
+        "maxItems": {
+          "type": "integer",
+          "title": "Max items",
+          "description": "Maximum number of documents to fetch. The default (-1) means no limit.",
+          "default": -1
+        },
+        "failFastOnStartLinkFailure": {
+          "type": "boolean",
+          "title": "Fail crawl if start links are invalid",
+          "description": "If true, when Fusion cannot connect to any of the provided start links, the crawl is stopped and an exception logged.",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "crawlDBType": {
+          "type": "string",
+          "title": "Crawl database type",
+          "description": "The type of crawl database to use, in-memory or on-disk.",
+          "enum": [
+            "in-memory",
+            "on-disk"
+          ],
+          "default": "on-disk",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "commitAfterItems": {
+          "type": "integer",
+          "title": "Commit After This Many Items",
+          "description": "Commit the crawlDB to disk after this many items have been received. A smaller number here will result in a slower crawl because of commits to disk being more frequent; conversely, a larger number here will cause a resumed job after a crash to need to recrawl more records.",
+          "default": 10000,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "initial_mapping": {
+          "type": "object",
+          "title": "Initial field mapping",
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties": {
+            "skip": {
+              "type": "boolean",
+              "title": "Skip This Stage",
+              "description": "Set to true to skip this stage.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "title": "Label",
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255
+            },
+            "condition": {
+              "type": "string",
+              "title": "Condition",
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ]
+            },
+            "reservedFieldsMappingAllowed": {
+              "type": "boolean",
+              "title": "Allow System Fields Mapping?",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "retentionMappings": {
+              "type": "array",
+              "title": "Field Retention",
+              "description": "Fields that should be kept or deleted",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: keep (default) or delete",
+                    "enum": [
+                      "keep",
+                      "delete"
+                    ],
+                    "default": "keep",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "updateMappings": {
+              "type": "array",
+              "title": "Field Value Updates",
+              "description": "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "The value to add to or set on the field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: add (default) or set.",
+                    "enum": [
+                      "add",
+                      "set"
+                    ],
+                    "default": "add",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "translationMappings": {
+              "type": "array",
+              "title": "Field Translations",
+              "description": "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default": [
+                {
+                  "source": "charSet",
+                  "target": "charSet_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "fetchedDate",
+                  "target": "fetchedDate_dt",
+                  "operation": "move"
+                },
+                {
+                  "source": "lastModified",
+                  "target": "lastModified_dt",
+                  "operation": "move"
+                },
+                {
+                  "source": "signature",
+                  "target": "dedupeSignature_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "length",
+                  "target": "length_l",
+                  "operation": "move"
+                },
+                {
+                  "source": "mimeType",
+                  "target": "mimeType_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "parent",
+                  "target": "parent_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "owner",
+                  "target": "owner_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "group",
+                  "target": "group_s",
+                  "operation": "move"
+                }
+              ],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "target"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "title": "Source Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "title": "Target Field",
+                    "description": "The name of the target field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: copy (default) or move.",
+                    "enum": [
+                      "copy",
+                      "move"
+                    ],
+                    "default": "copy",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "unmappedRule": {
+              "type": "object",
+              "title": "Unmapped Fields",
+              "description": "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "title": "Keep",
+                  "description": "Keep all unmapped fields",
+                  "default": true,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "delete": {
+                  "type": "boolean",
+                  "title": "Delete",
+                  "description": "Delete all unmapped fields",
+                  "default": false,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToMoveValuesTo": {
+                  "type": "string",
+                  "title": "Move",
+                  "description": "Move all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToCopyValuesTo": {
+                  "type": "string",
+                  "title": "Copy",
+                  "description": "Copy all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToAddToUnmappedFields": {
+                  "type": "string",
+                  "title": "Add",
+                  "description": "Add this value to all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToSetOnUnmappedFields": {
+                  "type": "string",
+                  "title": "Set",
+                  "description": "Set this value on all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                }
+              },
+              "default": {
+                "keep": true,
+                "delete": false,
+                "fieldToMoveValuesTo": "",
+                "fieldToCopyValuesTo": "",
+                "valueToAddToUnmappedFields": "",
+                "valueToSetOnUnmappedFields": ""
+              }
+            }
+          },
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "hints": [
+            "advanced"
+          ],
+          "unsafe": false
+        },
+        "excludeExtensions": {
+          "type": "array",
+          "title": "Excluded file extensions",
+          "description": "File extensions that should not to be fetched. This will limit this datasource to all extensions except this list.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "excludeRegexes": {
+          "type": "array",
+          "title": "Exclusive regexes",
+          "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includeExtensions": {
+          "type": "array",
+          "title": "Included file extensions",
+          "description": "File extensions to be fetched. This will limit this datasource to only these file extensions.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "includeRegexes": {
+          "type": "array",
+          "title": "Inclusive regexes",
+          "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "f.jira_username": {
+          "type": "string",
+          "title": "JIRA username",
+          "description": "Username for accessing the JIRA REST API. This user must be a project-level administrator to index single projects, or a global or system-level administrator to index all projects. Leave empty if your JIRA system does not require authentication to see projects, issues, comments and attachments."
+        },
+        "f.jira_password": {
+          "type": "string",
+          "title": "JIRA Password or API Token",
+          "description": "Password/API Token for the JIRA user.",
+          "hints": [
+            "secret"
+          ]
+        },
+        "rewriteLinkScript": {
+          "type": "string",
+          "title": "URI rewrite script",
+          "description": "A Javascript function 'rewriteLink(link) { }' to modify links to documents before they are fetched.",
+          "hints": [
+            "advanced",
+            "code",
+            "code/javascript"
+          ]
+        },
+        "diagnosticMode": {
+          "type": "boolean",
+          "title": "Diagnostic mode",
+          "description": "Enable to print more detailed information to the logs about each request.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "fetchDelayMSPerHost": {
+          "type": "boolean",
+          "title": "Fetch delay per host",
+          "description": "If true, the 'Fetch delay (ms)' property will be applied for each host.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "legalURISchemes": {
+          "type": "array",
+          "title": "Legal URI schemes",
+          "description": "Legal URI schemes; use '*' to allow all schemes",
+          "hints": [
+            "advanced",
+            "hidden"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "retainOutlinks": {
+          "type": "boolean",
+          "title": "Retain links in the crawldb",
+          "description": "Set to true for links found during fetching to be stored in the crawldb. This increases precision in certain recrawl scenarios, but requires more memory and disk space.",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "aliasExpiration": {
+          "type": "integer",
+          "title": "Alias expiration",
+          "description": "The number of crawls after which an alias will expire. The default is 1 crawl.",
+          "default": 1,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "reevaluateCrawlDBOnStart": {
+          "type": "boolean",
+          "title": "Reevaluate crawldb on start?",
+          "description": "Reevaluate exisiting crawldb entries for legality on startup?",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "f.index_projects": {
+          "type": "boolean",
+          "title": "Index Projects",
+          "description": "Select to index project-level information."
+        },
+        "f.index_issues": {
+          "type": "boolean",
+          "title": "Index Documents",
+          "description": "Select to index issues.",
+          "default": true
+        },
+        "f.index_comments": {
+          "type": "boolean",
+          "title": "Index Comments",
+          "description": "Select to index comments on issues.",
+          "default": true
+        },
+        "f.index_attachments": {
+          "type": "boolean",
+          "title": "Index Attachments",
+          "description": "Select to index attachments on issues.",
+          "default": true
+        },
+        "f.index_worklogs": {
+          "type": "boolean",
+          "title": "Index Worklogs",
+          "description": "Select to index worklogs on issues.",
+          "default": false
+        },
+        "f.timeoutMS": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "Time in milliseconds to wait for server response.",
+          "default": 10000
+        },
+        "f.avoid_ssl_verification": {
+          "type": "boolean",
+          "title": "Avoid SSL verification",
+          "description": "Enable this to skip SSL certificate verification.",
+          "default": false
+        },
+        "f.cacheSize": {
+          "type": "integer",
+          "title": "Cache size (number of entries)",
+          "description": "Number of entries to cache when making REST requests.",
+          "default": 2000
+        },
+        "f.maxSizeBytes": {
+          "type": "integer",
+          "title": "Maximum file size (bytes)",
+          "description": "Maximum size, in bytes, of a project description, issue description, worklog, issue comment, or attachment.",
+          "default": 32000
+        },
+        "f.minSizeBytes": {
+          "type": "integer",
+          "title": "Minimum file size (bytes)",
+          "description": "Minimum size, in bytes, of a project description, issue description, worklog, issue comment, or attachment.",
+          "default": 0
+        },
+        "f.maxResults": {
+          "type": "integer",
+          "title": "Max results per page",
+          "description": "The number of items to retrieve with each request.",
+          "default": 100
+        },
+        "f.retryDelay": {
+          "type": "integer",
+          "title": "Retry delay(in ms)",
+          "description": "The milliseconds to wait until repeat a failed request.",
+          "default": 100,
+          "minimum": 100,
+          "exclusiveMinimum": false
+        },
+        "f.stopRetry": {
+          "type": "integer",
+          "title": "Stop retry after a given delay",
+          "description": "The minutes to wait until stop retry.",
+          "default": 5,
+          "minimum": 1,
+          "exclusiveMinimum": false
+        },
+        "f.issueFieldsToIndex": {
+          "type": "array",
+          "title": "Issue fields to index",
+          "description": "A list of fields to be indexed for JIRA issues",
+          "default": [
+            "assignee",
+            "issuetype",
+            "priority",
+            "project",
+            "reporter",
+            "status",
+            "summary",
+            "updated"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "enable_security_trimming": {
+          "type": "object",
+          "title": "Enable Security Trimming",
+          "properties": {}
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Recrawl Rules",
+          "properties": [
+            "f.timeoutMS",
+            "f.cacheSize",
+            "refreshAll",
+            "refreshStartLinks",
+            "refreshErrors",
+            "refreshOlderThan",
+            "refreshIDPrefixes",
+            "refreshIDRegexes",
+            "refreshScript",
+            "forceRefresh"
+          ]
+        },
+        {
+          "label": "Security Trimming",
+          "properties": [
+            "enable_security_trimming"
+          ]
+        },
+        {
+          "label": "Dedupe",
+          "properties": [
+            "dedupe",
+            "dedupeSaveSignature",
+            "dedupeField",
+            "dedupeScript"
+          ]
+        },
+        {
+          "label": "Crawl History",
+          "properties": [
+            "retainOutlinks",
+            "aliasExpiration",
+            "crawlDBType",
+            "commitAfterItems",
+            "reevaluateCrawlDBOnStart"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "f.maxSizeBytes",
+            "f.minSizeBytes",
+            "f.maxResults",
+            "f.index_projects",
+            "f.index_issues",
+            "f.index_comments",
+            "f.index_attachments",
+            "f.index_worklogs",
+            "f.[\"assignee\", \"issuetype\", \"priority\", \"project\", \"reporter\", \"status\", \"summary\", \"updated\"]",
+            "depth",
+            "maxItems",
+            "includeExtensions",
+            "includeRegexes",
+            "excludeExtensions",
+            "excludeRegexes",
+            "delete",
+            "deleteErrorsAfter"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "chunkSize",
+            "fetchThreads",
+            "fetchDelayMS",
+            "fetchDelayMSPerHost",
+            "emitThreads",
+            "retryEmit",
+            "failFastOnStartLinkFailure"
+          ]
+        }
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

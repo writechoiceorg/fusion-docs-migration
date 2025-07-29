@@ -1,0 +1,54 @@
+---
+title: "Shared Platform Attributes"
+permalink: "3195"
+---
+
+This is a list of shared attributes common to all [search platforms](/fusion/5.9/3196/search-platforms).
+
+Where applicable, default values are given, for example, the default value for the `spellcheck` attribute is set to `true`. An indication is also given of where these attributes can be applied. For example, some attributes can be applied either in the JSP tag or a configuration file (for example, `gsa.conf`). Other attributes can only be applied in the JSP tag or in the configuration file.
+
+On some platforms, the values following `Applied in:` might not be exactly the same as those shown below. For confirmation, also refer to the list of standard attributes specified on that platform page.
+
+## Attributes shared across platforms
+
+- `host (java.lang.String)`
+    The URI of the platform. Must be specified using the full URI (for example, `http://localhost:1234`; `localhost:1234` will not work).
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified.
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fields (java.lang.String)`
+    Names of fields to request. This is a comma separated list. Fields set on the query take precedence over fields set here.
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.
+
+- `webservice-enabled (java.lang.String)`
+    Whether the platform web service should be accessible (defaults to 'true'). Set to 'false' if you do not want to expose the web service for the platform to authenticated users. Useful when a workflow platform implements additional security trimming so the underlying platform web service should be switched off to avoid unauthorized access to a wider set of documents.

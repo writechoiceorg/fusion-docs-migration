@@ -1,0 +1,100 @@
+---
+title: "Grafana Dashboards"
+permalink: "136"
+---
+
+Lucidworks provides several Grafana dashboards designed for Fusion.
+
+For more information, see:
+
+* [Configure Grafana, Prometheus, Promtail, and Loki in Fusion](/how-to/jpemcg/configure-grafana-prometheus-promtail-loki-in-fusion)
+
+## Dashboards
+
+### Pipeline and Stage Metrics
+
+Both the Indexing and Query service provide per-pipeline, per-stage execution times for the 99th, 95th, 75th, and 50th percentiles. These are commonly used to determine where there may be a performance bottleneck when pipelines are executing slowly.
+
+#### Indexing Service Dashboard
+
+The Indexing Service has its own Grafana dashboard, which highlights key performance metrics for understanding the behavior of the Fusion 5 Indexing pipelines. It provides per-pipeline and per-stage execution time metrics, along with metrics for document indexing.
+
+#### Query Service Dashboard
+
+The Query Service also has its own Grafana dashboard that shows the performance of the pipelines and query stages that are being run. It shows the global and per-pod request metrics, in addition to per-pipeline query stage execution times.
+
+### Gateway Metrics Dashboard
+
+The Gateway Metrics provides visibility into the behavior of the API Gateway, which stands in front of Fusion 5 services.
+It includes global request rate gauge, in addition to per-handler and per-route request metrics. This dashboard can be used for locating service slowdowns, as it can highlight particular routes or handlers that are responding slowly.
+
+### JVM Metrics Dashboard
+
+The JVM Metrics Dashboard provides information about the CPU and memory utilization of Fusion 5 services, along with some GC metrics. These can be used to assess the JVM performance of Fusion 5 microservices and may help locate bottlenecks, such as being CPU-pegged or hitting frequent garbage collection events that pause the application. Issues relating to garbage collection can often be solved by modifying the JVM options of the process and can then be monitored with this dashboard.
+
+### Solr Dashboards
+
+Solr has its metrics split into three distinct dashboards, each covering a separate area of concern for monitoring Solr performance.
+
+##### Core Dashboard
+
+The Solr Core dashboard contains metrics by the associated Solr core, including per-core metrics for requests, file system utilization, document processing and access, and handler usage.
+
+##### Node Dashboard
+
+The Solr Node dashboard contains per-node metrics including information about requests, errors, cores, thread pool utilization, and connections. Per-node metrics are useful for tracking down issues with a particular Solr node, especially when these issues do not affect all nodes.
+
+##### System Dashboard
+
+The Solr System Dashboard shows high-level system stats, including requests/response statistics, JVM metrics, and common operating system metrics, such as memory usage, file descriptor usage, and cpu utilization.
+
+### Kubernetes Dashboards
+
+The set of Kubernetes performance dashboards requires the installation of additional daemonsets to collect performance metrics from Kube.
+
+Ensure that at least one namespace in your cluster uses the following configuration in the Prometheus `values.yaml` file for the `stable/prometheus` Helm chart.
+
+```yaml
+kubeStateMetrics:
+    enabled: true
+nodeExporter:
+    enabled: true
+```
+
+Additionally you will want to install cadvisor (likely into an infrastructure/system namespace):
+
+```sh
+helm repo add code-chris https://code-chris.github.io/helm-charts
+helm repo update
+helm install cadvisor code-chris/cadvisor
+```
+
+#### Kube Metrics Dashboard (replaced by Kube Node Dashboard)
+
+There are Kubernetes metrics that can be queried through Grafana. However, these require installing a daemonset when setting up Prometheus, which displays information about running pods, memory allocation, and CRON jobs.
+
+#### Kube Node Dashboard
+
+There are Kubernetes metrics that can be queried through Grafana. However, these require installing a daemonset when setting up Prometheus, which displays information about running pods, load, network traffic, memory allocation and more. Some dashboards may not be rendered until you drill down into one or more specific nodes/instances at the top of the dashboard.
+
+#### Kubernetes Persistence Volumes Dashboard
+
+This dashboard shows you all of your Kubernetes PVCs, filterable by namespace and/or node. It provides you with information about disk utilization so you can monitor for PVCs that are nearing capacity.
+
+#### Docker Host and Container Overview Dashboard
+
+This dashboard provides you a great view of your running containers, filterable by namespace, node, and/or container name. It provides information about number of running containers, network traffic, memory utilization, disk IO, and load metrics.
+
+## Downloads
+
+* [Indexing Service](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_indexing_metrics.json)
+* [Query Service](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_query_pipeline.json)
+* [Gateway Metrics](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_gateway_metrics.json)
+* [JVM Metrics](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_jvm_metrics.json)
+* [Core](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_solr_core.json)
+* [Node](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_solr_node.json)
+* [System](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_solr_system.json)
+* [Dashboard Kafka Overview](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_kafka_overview.json)
+* [Dashboard Kube Node](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_kube_node.json)
+* [Dashboard PVC Metrics](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_pvc_metrics.json)
+* [Dashboard Templating](https://raw.githubusercontent.com/lucidworks/fusion-cloud-native/master/monitoring/helm/fusion-monitoring-stack/dashboards/dashboard_templating.json)

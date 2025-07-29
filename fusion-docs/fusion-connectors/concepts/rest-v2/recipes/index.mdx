@@ -1,0 +1,228 @@
+---
+title: "Recipes"
+description: "REST V2 connector"
+permalink: "h9szba"
+---
+
+Recipes are preconfigured [datasource configurations](/fusion-connectors/h9szba/recipes#json-guide) that can be loaded into Fusion for quicker testing and setup of connectors. Parameter values are already entered into recipes for quick population of the required fields. Recipes are created in a JSON format and contain all of the parameters required to get a connector up and running. You can configure a connector using a recipe by issuing a POST request with the JSON as the body. Any minor adjustments required can be made directly in the JSON and sent to Fusion, where it will show in the UI. After the recipe has been sent to Fusion, you can also go into the Fusion UI and make changes.
+
+A selection of datasources with existing recipes in the public [REST V2 connector GitHub repository](https://github.com/lucidworks/rest-configurations) are listed and described in these pages.
+
+You can view the details directly at the repository or read it on this site. The pages include an overview of configuring the connector for a specific recipe, the example JSON recipe, and any additional information that can be helpful when using the REST connector.
+
+This guide lists and describes some of the parameters you might see in recipes contained in the REST V2 public GitHub repository.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Using the REST V2 Connector** focuses on how to ingest a datasource using REST V2 connector recipes:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/using-the-rest-v2-connector" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/rest-v2-connector-ql.png" alt="Using the REST V2 Connector" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## JSON guide
+
+REST V2 recipes are JSON files appended to cURL calls that can be [sent to Fusion](/how-to/pcv59j/use-rest-v-2-recipes) where their contents show up in the UI. From there, Fusion can use the APIs created by external software companies to crawl the content stored in those datasources. The way the JSON is set up allows the REST V2 connector to work with multiple different products, attesting to its flexibility. This article breaks down the different parts of a recipe’s JSON file and how it can be used when creating a Fusion datasource. The structure and parameters included will vary, but you can use this guide as a reference for information that has been used in some of the recipes.
+
+A parent request, also referred to as a root request, is set using the path for an endpoint. Child requests drill further down into an endpoint and can be looped through to add more information to the documents in the index. This is useful when the content being crawled has additional objects that are not picked up by the parent request alone, for example, comments on pages.
+
+A cURL call to the REST V2 connector has headers to use within the request definition that include content type and authorization to Fusion. Calls for the REST V2 connector go through the [Connector Datasources API](/fusion/5.9/353/connector-datasources-api).
+
+Here is an example call. The headers in this call are used to define the content type as JSON and to enter your Lucidworks login details.
+
+Replace:
+
+* `FUSION_HOST:FUSION_PORT` with your Fusion address.
+* `AUTHORIZATION_CREDENTIALS` with your Lucidworks login information in Base64.
+* `JSON_RECIPE` with the preconfigured recipe obtained from GitHub, making sure to update any placeholders found in that recipe.
+
+```bash
+curl --location --request POST 'https://FUSION_HOST:FUSION_PORT/api/apps/APP_NAME/connectors/datasources' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Basic AUTHORIZATION_CREDENTIALS=' \
+--data-raw '{JSON_RECIPE}'
+
+```
+
+Calls to the REST V2 connector use the JSON-formatted recipe as the body definition. The JSON request for a REST V2 recipe is generally divided into sections that include general parameters, properties, and app settings.
+
+After Fusion receives the recipe, the connector shows under the list of datasources by going to **Indexing** > **Datasources**.
+
+### General parameters
+
+The JSON recipe contains connector information with the general parameters used to handle the service. This table contains a selection of parameters that you might see.
+
+| Parameter | Description |
+| --- | --- |
+| `parserId` | The parser ID is the name of the parser as set up in the Fusion UI under Indexing > Parsers. |
+| `id` | This populates the Configuration ID for the connector in the Fusion UI. You can name this whatever you want as long as the name does not already exist as another Configuration ID in your Fusion instance. |
+
+### Properties
+
+The **properties** section of the JSON file contains the bulk of the information being sent and includes the API base URL, authentication mode, service endpoints, HTTP method, query parameters, pagination settings, and any loop configurations.
+
+### API base URL
+
+| Parameter | Description |
+| --- | --- |
+| `serviceURL` | REST API base URL for the external service from where the data is extracted. Endpoints for the API call are added in the service endpoints section described below. Be sure to add additional levels of security for any content you do not want indexed, otherwise the connector will include all of the content it finds through that URL. |
+
+### Authentication mode
+
+The authentication mode in the JSON body request contains the way to authenticate using the API. This will be the login information for the external service. For example, if indexing content from Confluence, you would use this section to include your Confluence login details.
+
+| Parameter | Description |
+| --- | --- |
+| `basicAuth` | Uses password and user properties for authentication. Depending on the API used to connect to resources outside of Lucidworks, it may require an API Key to authenticate. In this case, enter the username and replace the password with the API Key. |
+| `oAuth` | Allows for fetching an authentication token used to authorize the request for the service endpoints crawl. See [how to authenticate using OAuth](/fusion-connectors/h66upi/use-oauth). |
+
+### Service endpoints and list of requests configuration
+
+The service endpoints section (`serviceEndpoints`), known as list of requests configuration in some recipes (`requestConfigurations`), specifies the API endpoint paths appended to the base URL (`serviceURL`) used to crawl a datasource. Query parameters will not work if added directly in the endpoints, so be sure to include any query parameters using `queryKey` and `queryValue` fields, as the query fields are mapped to Solr using a `queryKey` and populated with results from `queryValue`.
+
+### Parent (root) requests
+
+Parent requests target an API endpoint to crawl content. These endpoints are higher in the structure than child requests (described below), which are used to crawl objects embedded at a deeper level to add more content to a document being indexed.
+
+| Parameter | Description |
+| --- | --- |
+| `endpoint` | The endpoint to append to the cURL location base URL path, for example `/rest/api/content`. |
+| `httpMethod` | HTTP method to use for the request, for example `GET` and `POST`. |
+| `queryKey` | The name of the field as it will appear in the Solr documents in the index. |
+| `queryValue` | The name of the field being queried in the datasource. Used in Solr documents to populate the value of the field entered in `queryKey`. |
+
+### Pagination
+
+Pagination has two options: pagination by next page URL and pagination by batch size. For pagination by next page URL, the URL that starts the next page is sent by the request. For pagination by batch size, you can configure pagination in the query parameters by indicating the start number of the index and the batch size.
+
+| Parameter | Description |
+| --- | --- |
+| `paginationKey` | Key that contains the `nextPageUrl` in the response. If the key is nested, use dot notation, for example `list.nextPageUrl`. |
+| `batchSize` | Number of objects to retrieve per page, for example `"batchSize": 20`. This value must be indicated in the parent (root) query parameters from the data request. An example of such a query parameter is `{"queryKey": "limit", "queryValue": "${LW_BATCH_SIZE}"}`. All parent objects that are located are then indexed as Solr documents, and the batch size sets a limit and determines how many of those documents are displayed in the results at a time. The pagination is automatically set to stop when a response object returns as empty, indicating it has reached the end. |
+| `indexStart` | Index from where to start pagination. The default is `"indexStart": 0`. This value must be indicated in the parent (root) query parameters from the data request. An example of such a query parameter is `{"queryKey": "start", "queryValue": "${LW_INDEX_START}"}`. |
+
+### Root response mapping
+
+Root response mapping is used to separate the parent objects being crawled into individual Solr documents by assigning each document a unique ID. The data obtained from child requests is added to the same document by association with this parent ID.
+
+This is also the area where you can choose to index content other than text by enabling `binaryResponse`. For attachments, ensure **Send as Binary Response** is enabled. If it is not, then no attachments are received and indexed. When enabled, the connector looks for MIME type other than .json for attachments to index. For a JSON response, ensure **Send as Binary Response** is not enabled.
+
+| Parameter | Description |
+| --- | --- |
+| `dataId` | Name of the field in the data objects extracted with `dataPath` used to create the unique ID for Solr documents. If not provided, a random UUID will be used. This property also accepts JSONPath expressions. |
+| `dataPath` | The name of a specific data object from a datasource that is returned within a response. For example, in order to extract a list of elements named `objects` in the datasource, the `dataPath` would be `objects`, with each element indexed as a separate Solr document. If not provided or left blank as `""`, the entire response body will be indexed as a single Solr document. This property also accepts JSONPath expressions,for example, `objects[]` or `$.objects[]`. |
+| `binaryResponse` | Set to `true` for indexing content other than text, for example images and attachments. This selects the **Send as Binary Response** checkbox in the Fusion UI. If `true`, the response will be sent as binary data to Fusion, properties `dataId` and `dataPath` will be ignored, and pagination will not be performed. |
+
+### Loops using child requests
+
+Loops, also known as child requests, contain an array of queries to extract more information from a datasource for the documents being indexed. The loop will iterate over the data request for each parent ID and associate the response with the parent. This is useful in cases where the parent endpoint has additional endpoints that can be appended for data contained further down within the endpoint path. Loops perform a separate request for each data object.
+
+The REST V2 connector supports hierarchical discovery, meaning when content is located, that content is recursively checked to see if it has additional information associated with it for the child request and will continue collecting information for each request until no more content is located. For example, if the connector is crawling for comments and attachments, it will check each of those items for any comments and attachments connected to them. If any are found it will check for comments and attachments associated with those, and continue until all relevant content is collected. This is also useful in cases where the connector is searching through folders with multiple levels of subfolders.
+
+| Parameter | Description |
+| --- | --- |
+| `endpoint` | The API endpoint to append to the cURL location base URL path, for example `/rest/api/content/${LW_PARENT_DATA_KEY}/child/comment`. |
+| `httpMethod` | HTTP method to use for the request. GET and POST are supported. |
+| `queries` | Contains the array of queries to use within the request definition, each with a `queryKey` and `queryValue` pair. |
+| `queryKey` | The name of the field as it will appear in the Solr documents in the index. |
+| `queryValue` | The name of the field being queried in the datasource. Used in Solr documents to populate the value of the field entered in `queryKey`. |
+
+### Child response mapping
+
+The child responses are mapped to the parent through the `dataId` and `dataPath` in the root response mapping described earlier through the use of a `parentIdKey`. The `parentIdKey` should match the `dataId` in the root response mapping.
+
+For example, with root response mapping:
+
+```json
+    "rootResponseMapping" : {
+       "dataId" : "id",
+       "dataPath" : "results"}
+
+```
+
+The child response mapping would be:
+
+```json
+    "childResponseMapping" : {
+       "parentIdKey" : "id"}
+
+```
+
+### Other mappings
+
+Additional mapping configures the data objects. Recipes do not necessarily include all parameters described here.
+
+| Parameter | Description |
+| --- | --- |
+| `idKey` | This creates the ID Key in the Data Object Mapping section of the UI as the Solr document ID. Fill this property when Destination Key is empty. If neither `idKey` or `destinationKey` are specified, the document’s ID will be automatically assigned as a random UUID. When using some recipes with multiple endpoints, documents run the risk of being assigned the same `idKey` value, which can cause missing documents when indexing. To avoid this, set the `idKey` to `self` instead of `id`. |
+| `objectKey` (optional) | The key from the data object entry. This value is used to perform the additional requests. It is mapped to the variable `${LW_PARAM_KEY}`, which should be referenced in the additional data request configuration (endpoint, query parameters, or body). Endpoint example: `/api/path/${LW_PARAM_KEY}/additionalInfo`. Query parameter example: `queryValue=${LW_PARAM_KEY}`. |
+| `accessKey` (optional) | The key to access the data objects in the response. If not set, the response is assumed to be the whole response body. |
+| `destinationKey` (optional) | The key used to store the additional data objects in the main data objects. If not set, the additional data objects will be indexed as individual Solr documents. |
+
+### App settings
+
+The rest of the JSON can include settings for the collection name, pipeline name, and connector type.
+
+| Parameter | Description |
+| --- | --- |
+| `collection` | The name of the app used in the Fusion UI. This must match the name of the app, or the connector will not show up in datasources. |
+| `pipeline` | The name for the Pipeline ID used. For example, `rest_connector`. |
+| `connector` | The value for the connector in the Datasources API. For the REST V2 connector, this will be `lucidworks.rest`. |
+
+### Advanced settings in the UI
+
+Within Fusion, opening the datasource and enabling the **Advanced** toggle displays optional settings to be applied. Under **Core Properties** > **Fetch Settings** you can modify the settings to help control the speed at which the connector crawls the source. For example, increasing **Fetch Threads** might increase the crawl speed. Setting timeout limits can be useful to end a crawl when something is causing the crawl to get hung up.
+
+## How to get a recipe into Fusion
+
+This section shows how to get a recipe from GitHub into Fusion. Recipes are JSON files used as a quick method to create a Fusion datasource.
+
+1. Open the REST V2 connector [public GitHub repository](https://github.com/lucidworks/rest-configurations).
+2. Locate the recipe you want and open the file.
+3. Copy the JSON.
+4. Add the JSON as the body to a call to the [Connector Datasources API](/fusion/5.9/353/connector-datasources-api).
+
+   An example cURL call looks like this:
+
+   ```bash
+   curl --location --request POST 'https://FUSION_HOST:FUSION_PORT/api/apps/APP_NAME/connectors/datasources' \
+   --header 'Content-Type: application/json' \
+   --header 'Authorization: Basic AUTHORIZATION_CREDENTIALS=' \
+   --data-raw '{JSON_RECIPE}'
+   
+   ```
+5. In the above, replace:
+
+   1. `FUSION_HOST:FUSION_PORT` with the URL of your Fusion instance.
+   2. `APP_NAME` with the name of the app you are using in Fusion.
+   3. `AUTHORIZATION_CREDENTIALS` with your Lucidworks login information in Base64.
+   4. `JSON_RECIPE` with the recipe you copied from GitHub.
+6. Change the following in the JSON:
+
+   1. `id`: This populates the **Configuration ID** for the connector in the Fusion UI and sets the name of the datasource. You can keep the default or choose a different name to fit your needs.
+   2. `serviceURL`: API base URL from where the data is extracted. Change this to match your own datasource URL.
+   3. `password` and `user`: Change these values to your login information.
+   4. `collection`: This must match the name of the Fusion app that you are using.
+   5. Any other values marked for replacement, such as `parserId` or `pipeline`.
+7. Once values are changed, send the API request.
+8. Log into Fusion in a web browser and open the app associated with the request.
+9. Go to **Indexing** > **Datsources** and select the REST V2 connector in the list with the `id` as the name of the datasource.
+10. Make any additional changes within the UI.
+11. If indexing content other than text, for example images and attachments, select **Send as Binary Response**.
+12. **Save** the datasouce.
+13. After it saves, you can click **Run** > **Start** to begin indexing.

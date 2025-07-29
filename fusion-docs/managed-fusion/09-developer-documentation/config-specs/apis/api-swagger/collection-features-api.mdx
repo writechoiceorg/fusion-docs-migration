@@ -1,0 +1,45 @@
+---
+title: "Collection Features API"
+description: "Managed Fusion Admin APIs"
+permalink: "j6rvui"
+---
+
+The Collection Features API lets you observe the status of features across collections. To manipulate features for a specific collection, use the [Collections API](/managed-fusion/5.9/buqh5a/collections-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Features
+
+There are four available features:
+
+| Property | Description |
+| --- | --- |
+| signals | Create a parallel collection for the storage of signals data (such as user clicks, or ratings). Signals will need to be indexed and aggregated in order to be used. See the section on [Signals](/managed-fusion/5.9/ws4w2h/signals) for more information. |
+| partitionByTime | Partition incoming data in the corresponding Solr collection by time without manual maintenance. Once a collection is configured for time-base partitioning, Fusion automatically ages out old partitions and creates new ones, using the configured partition sizes, expiration intervals, and so on. |
+| recommendations | Get configuration information about recommendations. Parameters (`params`) are:  `idField`. The document field that contains the document ID.  `itemsForUser`. Whether items-for-user recommendations are enabled (`true`) or disabled (`false`).  `itemsForQuery`. Whether items-for-query recommendations are enabled (`true`) or disabled (`false`).  `itemsForItem`. Whether items-for-query recommendations are enabled (`true`) or disabled (`false`).  `queriesForQuery`. Whether queries-for-query recommendations are enabled (`true`) or disabled (`false`). |
+
+## Examples
+
+*List the status of all features:*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/features/status
+```
+
+**RESPONSE**
+
+```json
+ [ {
+  "name" : "searchLogs",
+  "collectionId" : "demo",
+  "params" : { },
+  "enabled" : false
+}, {
+  "name" : "signals",
+  "collectionId" : "demo",
+  "params" : { },
+  "enabled" : false
+} ]
+```

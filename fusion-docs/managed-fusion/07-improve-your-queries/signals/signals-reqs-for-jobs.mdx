@@ -1,0 +1,211 @@
+---
+title: "Required signals for jobs"
+permalink: "b5t0a6"
+---
+
+A number of Managed Fusion jobs ingest signals. Make sure your signals include the fields required by the jobs you plan to use. The table below shows which jobs require specific fields in your signals.
+
+<table>
+  <thead>
+    <tr>
+      <th></th>
+      <th><div><span>query</span></div></th>
+      <th><div><span>count_i</span></div></th>
+      <th><div><span>type</span></div></th>
+      <th><div><span>timstamp_tdt</span></div></th>
+      <th><div><span>user_id</span></div></th>
+      <th><div><span>doc_id</span></div></th>
+      <th><div><span>session_id</span></div></th>
+      <th><div><span>fusion_query_id</span></div></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td colspan="9">
+        <div>*Created by default*</div>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/78vsm6/aggregation-jobs">COLLECTION_NAME_click_signals_aggregation</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td>✅</td>
+      <td></td>
+      <td>[<a href="#param-1"><strong>1</strong></a>]</td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/xzyz7w/phrase-extraction-jobs">COLLECTION_NAME_phrase_extraction</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/9pf532/token-and-phrase-spell-correction-job">COLLECTION_NAME_spell_correction</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/a2jy7t/synonym-detection-jobs">COLLECTION_NAME_synonym_detection</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/14bjqz/head-tail-analysis-jobs">COLLECTION_NAME_head_tail</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs#prefs">COLLECTION_NAME_user_item_prefs_agg</a></td>
+      <td></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs#history">COLLECTION_NAME_user_query_history_agg</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="9">
+        <div>Created when recommendations are enabled</div>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs">COLLECTION_NAME_bpr_item_recs</a></td>
+      <td></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td colspan="9">
+        <div>Created when experiments are enabled</div>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/mykfo7/experiments">Experiments</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+    </tr>
+    <tr>
+      <td colspan="9">
+        <div>Created manually</div>
+      </td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/43a5xr/query-to-query-collaborative-similarity-job">Query-to-Query Collaborative Similarity</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity-jobs">Query-to-Query Session-Based Similarity</a></td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>[<a href="#param-2"><strong>2</strong></a>]</td>
+      <td>[<a href="#param-3"><strong>3</strong></a>]</td>
+      <td>[<a href="#param-4"><strong>4</strong></a>]</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><a href="/managed-fusion/5.9/qdbucu/trending-recommender-jobs">Trending Recommender</a></td>
+      <td>[<a href="#param-5"><strong>5</strong></a>]</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td>✅</td>
+      <td></td>
+      <td>✅</td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+
+<ParamField path="1">
+Required if you are using response signals.
+</ParamField>
+
+<ParamField path="2">
+Required if you want to weight types differently.
+</ParamField>
+
+<ParamField path="3">
+Required if you want to use time decay.
+</ParamField>
+
+<ParamField path="4">
+Required if no `session_id` field is available. Either `user_id` or `session_id` is needed on response signals if doing any click path analysis from signals.
+</ParamField>
+
+<ParamField path="5">
+Required when identifying trending queries instead of trending items.
+</ParamField>
+
+
+The fields mentioned above are defined as follows:
+
+| Field Name | Example Value | Description |
+| --- | --- | --- |
+| `count_i` | 1 | Number of times an interaction event occurred with this item |
+| `doc_id` | NMDDV | Product ID or Item ID |
+| `query` | xwearabletech | A query string from the user |
+| `session_id` | 91aa66d11af44b6c90ccef44d055cf9a | Id for session in which user generated the signal |
+| `type` | quick_view_click | Type of session the user used to interact with the platform |
+| `user_id` | 11506893 | ID of user during the session |
+| `timestamp_tdt` | 2018-11-20T17:58:57.650Z | Time when signal was generated |
+
+Some [signal types](/managed-fusion/5.9/ws4w2h/signals#types), including [custom signal types](/managed-fusion/5.9/ws4w2h/signals#custom), may include additional fields.

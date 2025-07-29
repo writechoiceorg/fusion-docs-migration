@@ -1,0 +1,58 @@
+---
+title: "Modify Response with Rules Stage"
+permalink: "537"
+---
+
+Most rules operate on the request, but some [rule types](/fusion/5.9/489/query-rewriting#types), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+See [Rules](/fusion/5.9/8835/business-rules) for additional details about how to configure this set of features.
+
+TIPS:
+
+* The [Apply Rules](/fusion/5.9/535/apply-rules-stage) stage must be enabled as a prerequisite for this stage.
+* This stage has no configuration keys; simply enable or disable the stage.
+* Although this stage is available without a Fusion license, it is only effective after creating [rules](/fusion/5.9/489/query-rewriting) in Fusion.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/modify-response-with-rules.mdx";
+
+<SchemaParamFields schema={schema}/>

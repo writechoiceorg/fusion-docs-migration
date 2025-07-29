@@ -1,0 +1,101 @@
+---
+title: "Fusion Server 4.2.5 Release Notes"
+permalink: "90"
+---
+
+**Release date:** 22 October 2019
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.7.2 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.19.v20190610 | Ignite 2.6.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+### Lucidworks Fusion Smart Answers
+
+Fusion 4.2.5 introduces [Lucidworks Fusion Smart Answers](/fusion-ai/4.2/461/smart-answers), an AI-driven question answering system which combines the power of Solr and neural dense vectors to recommend solutions to users.
+
+### New Rules UI features
+
+Fusion 4.2.5 introduces several new features to the Rules UI:
+
+* Double-click to expand and collapse UI panels.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-double-click-expand.webm)
+    </Frame>
+
+* Drag-and-drop and dropdown reordering for table rows.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-drag-and-drop.webm)
+    </Frame>
+
+* Drag-and-drop for facets.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-drag-and-drop-facets.webm)
+    </Frame>
+
+* Conditionally displayed fields.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-conditional-fields.webm)
+    </Frame>
+
+* Toggle for advanced fields.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-advanced-toggle.webm)
+    </Frame>
+
+* Click to delete table rows.
+
+    <Frame>
+      [](/assets/images/4.2/animations/rules-delete-table-rows.webm)
+    </Frame>
+
+### Other new features
+
+* Fusion services now support SSL and certificate authentication.
+
+## Improvements
+
+* Improved the default sort behavior for [aggregations](/fusion-ai/4.2/473/aggregations).
+
+* The SQL query `IS NULL` now seeks out empty values as expected.
+
+* Fixed a bug with the Fusion SQL service that prevented a collection from sharing a name with an collection alias.
+
+* Previously, SQL aggregations were limited to 250 aggregations. Now, the default limit is 5,000 aggregations, and the limit is configureable. To set the limit to 10,000 aggregations, use the following command:
+
+  ```bash
+  curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '10000' http://localhost:8764/api/apollo/configurations/fusion.sql.bucket_size_limit
+  ```
+  
+
+* Improved how multi-word synonyms are handled by [query rewriting](/fusion-ai/4.2/489/query-rewriting).
+
+## Bug Fixes
+
+* Fixed an issue with the [XML Transformation index pipeline stage](/fusion-server/4.2/245/xml-transformation-index-stage) that prevented it from parsing information from an RSS feed.
+
+* Fixed a bug that sometimes caused the [Token and Phrase Spell Correction Job](/fusion-ai/4.2/566/token-and-phrase-spell-correction-job) to fail with an `ArrayIndexOutOfBoundsException` error.
+
+* Fixed a bug that prevented security trimming from working on the Alfescro connector in Fusion 4.2.4.
+
+* Fixed a bug that sometimes resulted in documents on CrawlDB being marked as incomplete when crawl operations were started and stopped multiple times.
+
+* Performance is improved in aggregation collections.
+
+* Fixed a bug that caused [Head/Tail Analysis jobs](/fusion-ai/4.2/552/head-tail-analysis-jobs) to fail due to a misconfigured collection name.
+
+## Known issues
+
+* The Couchbase connector does not work with Couchbase versions 5 or later. This will be addressed in Fusion 4.2.6.
+
+* The FTP connector sometimes prevents files with non-English filenames from being indexed.

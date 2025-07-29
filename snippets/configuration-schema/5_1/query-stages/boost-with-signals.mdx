@@ -1,0 +1,258 @@
+export const schema = {
+  "type": "object",
+  "title": "Boost with Signals",
+  "description": "Uses recommended items for search time boosting",
+  "required": [
+    "boostingMethod",
+    "boostingParam"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "asyncConfig": {
+      "type": "object",
+      "title": "Asynchronous Execution Config",
+      "required": [
+        "enabled",
+        "asyncId"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Async Execution",
+          "description": "Run the expensive data loading or processing part of this stage in a separate thread allowing the pipeline to continue executing. The results of this asynchronous execution can be merged into the pipeline request using a downstream \"Merge Async Results\" stage.",
+          "default": false
+        },
+        "asyncId": {
+          "type": "string",
+          "title": "Async ID",
+          "description": "A unique value to use as reference in downstream \"Merge Async Results\" stages."
+        }
+      }
+    },
+    "numRecommendations": {
+      "type": "integer",
+      "title": "Number of Recommendations",
+      "description": "Number of documents to set for the main query to return.",
+      "default": 10
+    },
+    "numSignals": {
+      "type": "integer",
+      "title": "Number of Signals",
+      "description": "Number of signals to process when getting recommended items.",
+      "default": 100
+    },
+    "aggrType": {
+      "type": "string",
+      "title": "Aggregation Type",
+      "default": "click@doc_id,filters,query"
+    },
+    "boostId": {
+      "type": "string",
+      "title": "Solr Field to Boost On",
+      "description": "Which Solr field to use when applying recommendation boosts.",
+      "default": "id"
+    },
+    "boostingMethod": {
+      "type": "string",
+      "title": "Boost Method",
+      "description": "The boost method to use. query-parser should be chosen if defType!=edismax for main query.",
+      "enum": [
+        "query-param",
+        "query-parser"
+      ],
+      "default": "query-param",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "boostingParam": {
+      "type": "string",
+      "title": "Boost Param",
+      "description": "’Boost' multiplies scores by the boost values whereas 'bq' adds optional clauses to main query.",
+      "enum": [
+        "boost",
+        "bq"
+      ],
+      "default": "boost",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "scaleRange": {
+      "type": "object",
+      "title": "Scale Boosts",
+      "description": "Scale the boost values to a [min,max] range",
+      "required": [
+        "scaleMin",
+        "scaleMax"
+      ],
+      "properties": {
+        "scaleMin": {
+          "type": "number",
+          "title": "Minimum value of the scale range"
+        },
+        "scaleMax": {
+          "type": "number",
+          "title": "Maximum value of the scale range"
+        }
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "queryParams": {
+      "type": "array",
+      "title": "Solr Query parameters",
+      "description": "Parameters for querying Signal aggregation collection",
+      "default": [
+        {
+          "key": "qf",
+          "value": "query_t"
+        },
+        {
+          "key": "pf",
+          "value": "query_t^50"
+        },
+        {
+          "key": "pf",
+          "value": "query_t~3^20"
+        },
+        {
+          "key": "pf2",
+          "value": "query_t^20"
+        },
+        {
+          "key": "pf2",
+          "value": "query_t~3^10"
+        },
+        {
+          "key": "pf3",
+          "value": "query_t^10"
+        },
+        {
+          "key": "pf3",
+          "value": "query_t~3^5"
+        },
+        {
+          "key": "mm",
+          "value": "50%"
+        },
+        {
+          "key": "boost",
+          "value": "map(query({!field f=query_s v=$q}),0,0,1,20)"
+        },
+        {
+          "key": "defType",
+          "value": "edismax"
+        },
+        {
+          "key": "sort",
+          "value": "score desc, weight_d desc"
+        },
+        {
+          "key": "fq",
+          "value": "weight_d:[* TO *]"
+        }
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "rollupField": {
+      "type": "string",
+      "title": "Rollup Field",
+      "description": "Field to use for rolling up documents that have same doc id's",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "rollupWeightField": {
+      "type": "string",
+      "title": "Rollup weight field",
+      "description": "Field to use for signal weights",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "rollupWeightStrategy": {
+      "type": "string",
+      "title": "Rollup weight strategy",
+      "description": "Strategy to use for rolling up the weight: max or sum",
+      "enum": [
+        "sum",
+        "max"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "weightExpression": {
+      "type": "string",
+      "title": "Final Boost Weight Expression",
+      "description": "Optional expression to compute the final boost weight using a combination of fields returned by Solr, such as score and weight_d. Set to weight_d for similar behavior as older versions ",
+      "default": "math:log(weight_d + 1) + 10 * math:log(score+1)"
+    },
+    "contextKey": {
+      "type": "string",
+      "title": "Document Weights Context Key",
+      "description": "Context key to save docId:weight_d boosts to"
+    },
+    "queryParamToBoost": {
+      "type": "string",
+      "title": "Query Param",
+      "description": "Name of the parameter in the request containing query to boost, defaults to 'q'",
+      "default": "q"
+    },
+    "includeEnrichedQuery": {
+      "type": "boolean",
+      "title": "Include Enriched Query",
+      "description": "If enabled, the stage combines the user's original query with the output of any stages that enrich the query, such as the tagger stage. Enabling this option expands the recall of the boost lookup but may impact precision. If enabled, the stage may change the configured 'mm' parameter to accommodate additional terms added to the boost lookup query."
+    }
+  },
+  "category": "Results Relevancy",
+  "categoryPriority": 7,
+  "unsafe": false
+}

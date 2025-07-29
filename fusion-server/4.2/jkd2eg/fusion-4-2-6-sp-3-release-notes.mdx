@@ -1,0 +1,33 @@
+---
+title: "Fusion 4.2.6 SP3 Release Notes"
+permalink: "jkd2eg"
+---
+
+**Release date:** 27 June 2022
+
+**Component versions:**
+
+|  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+| Solr 7.7.3  See Solr updates below. | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.35.v20201120 | Ignite 2.6.0 | Log4j 2.17.1 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+**Looking for download links?**
+
+Check out the [Fusion 4.2.6 Service Pack application files](/fusion-server/4.2/kvgqn7/fusion-server-4-x-file-download-links#fusion-4-2-6-service-pack-application-files).
+</Tip>
+
+
+## Improvements
+
+### Log4j
+
+* Insights and App Studio log4j2.17.2 upgraded.
+* Removed `log4j-1.2.17.jar` from Spark library.
+* Removed log4j1.*x* `JMSAppender` and `SocketServer` classes from `apps/libs/hive-jddc-shaded.jar`.
+
+## Bug fixes
+
+* Fixed asynchronous Tika metadata parsing.

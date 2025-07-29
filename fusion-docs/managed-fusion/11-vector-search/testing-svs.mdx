@@ -1,0 +1,63 @@
+---
+title: "Semantic vector search test guidelines"
+permalink: "9yfvck"
+---
+
+To ensure the system retrieves relevant results, Lucidworks recommends you implement comprehensive testing of semantic vector searches.
+
+<Note>
+**Important**
+
+This feature is currently only available to clients who have contracted with Lucidworks for features related to Neural Hybrid Search and Lucidworks AI.
+</Note>
+
+<Note>
+This feature is only available in Managed Fusion 5.9.x for versions 5.9.6+.
+</Note>
+
+## Golden dataset
+
+A key component is to set a "gold standard", which is also referred to as a golden dataset. This dataset is:
+
+* A carefully curated [query collection](#query-collection) that:
+
+  + Is used as a benchmark to determine vector search performance
+  + Represents frequent queries and variations to ensure optimal relevancy
+  + Contains [ground truth](#ground-truth-definition) that defines the most relevant results for each query
+* Most effective when it contains a significant number of diverse queries that are updated periodically to reflect the most pertinent information
+* Enhanced when automated testing frameworks are incorporated, which can result in more extensive coverage of search scenarios and provide continuous system performance monitoring
+
+### Query collection
+
+The dataset needs to include a wide range of queries that reflect your organization’s real-world user interactions. The types of queries to include are:
+
+* Typical use cases that comprise frequent queries
+* A variety of queries that test system rules and functions such as misspellings, ambiguous terms, synonyms, and phrasing differences
+
+### Ground truth definition
+
+The ground truth definition must specify known, valid results for each query and can be built using:
+
+* Knowledgeable users and other experts familiar with the data, who select the most relevant items
+* Previous data that exemplifies relevant results for each query
+
+## Evaluate semantic vector searches
+
+Query results from vector searches using the golden dataset are compared to the ground truth data. The system calculates metrics that provide information to help you enhance the search and return more relevant results.
+
+Typically, performance metrics can be categorized as follows:
+
+* Precision metrics focus on results that adhere most closely with the criteria specified in the query. The most relevant items are reported in the top results. For example, precision metrics display the top 3 results.
+* Recall metrics evaluate the overall results retrieved and how relevant they are to ground truth specifications.
+* Ranking analysis metrics report results in order of relevance, with the most relevant results ranked the highest.
+
+For more information about metrics available to:
+
+* Self-hosted Fusion clients, see [Fusion experiment metrics query relevance](/fusion/5.9/3229/experiment-metrics#query-relevance)
+* Managed Fusion clients, see [Managed Fusion experiment metrics query relevance](/managed-fusion/5.9/wkwyg1/experiment-metrics#query-relevance)
+
+### Related information
+
+Lucidworks Platform clients can also view [metrics](/lw-platform/ai/6bb9s5/lw-ai-custom-embedding-model-training-user-interface/index#metrics) for custom trained models.
+
+While these metrics are about the associated model, and not the golden dataset, they provide a solid basis for understanding if your model is suitable for deployment with your dataset.

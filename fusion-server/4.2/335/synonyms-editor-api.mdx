@@ -1,0 +1,215 @@
+---
+title: "Synonyms Editor API"
+permalink: "335"
+---
+
+
+**API Objective:**
+Update a synonyms file.
+
+See [Synonyms Files](/fusion-server/4.2/176/synonyms-files) for an overview
+and examples of how to specify a set of synonyms.
+
+## Examples
+
+### Managing synonym file states
+
+#### List all available synonyms files along with its READY / NOT_READY statuses
+
+```bash
+curl '/collections/logs/synonyms'
+[ {
+  "path" : "synonyms.txt",
+  "state" : "NOT_READY"
+} ]
+```
+
+#### Changing the synonym file’s state to READY opens all the synonyms browsing/editing APIs
+
+```
+`curl -XPUT -H 'Content-type: application/json' '/collections/logs/synonyms/synonyms.txt' -d '{"state":"READY"}'`
+```
+
+#### Check editing READY / NOT_READY status for a single synonym file
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt'
+{
+  "path" : "synonyms.txt",
+  "state" : "READY"
+}
+```
+
+### Managing synonym file entries
+
+#### List all entries in a synonyms file
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt/items'
+{
+  "count" : 8,
+  "items" : [ {
+    "id" : "37488777-a668-49d8-a3fa-bc81a95a8d96",
+    "mapping" : "aaafoo => aaabar",
+    "enabled" : true,
+    "type" : "EXPLICIT"
+  }
+...
+  }, {
+    "id" : "d68f2a35-93d3-41a0-8b10-4768bd4619e8",
+    "mapping" : "MB,mib,megabyte,megabytes",
+    "enabled" : true,
+    "type" : "EQUIVALENT"
+  }
+...
+```
+
+#### Add new entry to a synonyms file
+
+<Note>
+`POST` will return items with all of its data, including the ID and modified timestamp.
+Also note, the `type` property is read-only and is returned based on `⇒` and not `,` mapping.
+</Note>
+
+
+
+```bash
+curl -XPOST -H 'Content-type: application/json' '/collections/logs/synonyms/synonyms.txt/items' -d '
+{
+  "mapping": "term1, term2",
+  "category": "cat1",
+  "enabled": "false"
+}'
+
+{
+  "id" : "01cd53f7-1941-499e-ba5e-fb35ec6bd20c",
+  "mapping" : "term1, term2",
+  "category" : "cat1",
+  "modified" : "2015-11-03T01:30:21.530Z",
+  "enabled" : false,
+  "type" : "EQUIVALENT"
+}
+```
+
+#### Update an entry in a synonyms file
+
+```bash
+curl -XPUT -H 'Content-type: application/json' '/collections/logs/synonyms/synonyms.txt/items/01cd53f7-1941-499e-ba5e-fb35ec6bd20c' -d '
+{
+  "mapping": "term1, term2, term3",
+  "category" : "cat1",
+  "enabled": "true"
+}'
+```
+
+#### Delete an entry in a synonyms file
+
+```bash
+curl -XDELETE '/collections/logs/synonyms/synonyms.txt/items/58f94a0e-473d-4719-b87c-d9908c84c89b'
+```
+
+#### Search, filter, or sort synonyms
+
+<Tip>
+
+Fusion supports Solr query language, so you can use it to refine your search in the following ways:
+
+* Show only explicit mappings with `q=type:EXPLICIT`
+* Show only disabled mappings with `q=enabled:false`
+* Sort using `sort=category asc` , `sort=modified desc` , or `sort=type asc`
+* Filter by user (`q=user:<username>`) and modified date (`modified:[NOW-1DAY TO *]`)
+
+</Tip>
+
+
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt/items?q=category:cat1'
+{
+  "count" : 1,
+  "items" : [ {
+    "id" : "01cd53f7-1941-499e-ba5e-fb35ec6bd20c",
+    "mapping" : "term1, term2, term3",
+    "category" : "cat1",
+    "modified" : "2015-11-03T01:33:58.132Z",
+    "enabled" : true,
+    "type" : "EQUIVALENT"
+  } ]
+}
+```
+
+#### Get term suggestions from synonyms or categories for autocomplete/autosuggest purposes
+
+* Get suggestions for categories
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt/suggestions?field=category&q=ca'
+[ "cat1" ]
+```
+
+* Get suggestions for terms
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt/suggestions?field=mapping&q=te'
+[ "term1", "term2", "television", "televisions", "term3" ]
+```
+
+* Get suggestions for both terms and categories
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt/suggestions?q=c'
+[ "cat1", "cccbar", "cccbaz", "cccfoo" ]
+```
+
+### Committing and flushing
+
+#### Determine whether a commit or flush is required
+
+```bash
+curl '/collections/logs/synonyms/synonyms.txt'
+{
+  "path" : "synonyms.txt",
+  "state" : "NOT_SAVED"
+}
+```
+
+#### Flush or commit changes
+
+```bash
+curl -XPUT -H 'Content-type: application/json' '/collections/logs/synonyms/synonyms.txt' -d '{"state":"READY"}'
+```
+
+### Importing and exporting
+
+#### Export synonyms into a csv file
+
+```bash
+curl -v -H 'Accept: text/csv' '/collections/test/synonyms/synonyms.txt/items'
+...
+< HTTP/1.1 200 OK
+< Set-Cookie: id=81e42c0c-bb71-43a4-ae79-39a832f2f3ab;HttpOnly;Path=/api
+< Content-Type: text/csv
+...
+id,mapping,category,enabled,modified,user,type
+"f52a08c5-6a32-4ff5-8603-2540ef9d7899","aaafoo => aaabar",,true,,,EXPLICIT
+"da061429-37a0-439a-8117-2e2691d4de1a","bbbfoo => bbbfoo bbbbar",,true,,,EXPLICIT
+"d1260556-eb2d-4fb2-83b0-f124b82a3c88","cccfoo => cccbar cccbaz",,true,,,EXPLICIT
+"4c6955d7-1f1c-4b7a-92a2-de46fad310d0","fooaaa,baraaa,bazaaa",,true,,,EQUIVALENT
+"a61a74db-41a0-4103-8738-111ae507bfdd","GB,gib,gigabyte,gigabytes",,true,,,EQUIVALENT
+"e54f3477-7838-4b09-b048-415e1baeeb30","MB,mib,megabyte,megabytes",,true,,,EQUIVALENT
+"ebf9e483-80c5-4bcf-b4f2-f0d59c14ef87","Television, Televisions, TV, TVs",,true,,,EQUIVALENT
+"e9e32949-751d-4461-897f-3be04be3575b","pixima => pixma",,true,,,EXPLICIT
+```
+
+#### Import synonyms from csv file
+
+```bash
+curl -v '/collections/test/synonyms/synonyms.txt/items' -H 'Content-type: text/csv' -X POST -d 'id,mapping,category,enabled,modified,user,type
+"f52a08c5-6a32-4ff5-8603-2540ef9d7899","aaafoo => aaabar",,true,,,EXPLICIT
+'
+...
+> Content-type: text/csv
+...
+< HTTP/1.1 204 No Content
+```
+

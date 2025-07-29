@@ -1,0 +1,28 @@
+---
+title: "Connectors and Datasources"
+permalink: "p36ivh"
+---
+
+A datasource is a complete data ingest configuration that consists of the following components:
+
+* **Connector.** Connectors are out-of-the-box components for pulling your data into Managed Fusion. Lucidworks provides a wide variety of connectors, each specialized for a particular data type. For a list of connectors, see [Lucidworks Connectors](/fusion-connectors/2/fusion-connectors).
+* **Parser.** Parsers provide fine-grained configuration for inbound data. See [Parsers](/managed-fusion/5.9/8ds9gm/parsers) for more information.
+* **Index pipeline.** Index pipelines transform incoming data for indexing by Managed Fusion. See [Index pipelines](/managed-fusion/5.9/4mm52v/index-pipelines) for more information.
+
+Managed Fusion includes all available connectors in **Indexing > Datasources**. Some connectors come pre-installed, but you must install others manually. See [Install a connector](/how-to/myikd2/install-a-connector) for more information.
+
+<Frame>![Datasources](/assets/images/common/ingest.png)</Frame>
+
+See [Configure a new datasource](/how-to/by9e8v/configure-a-new-datasource) for complete instructions.
+
+## Connector logs
+
+You can find connector logs in `https://EXAMPLE_COMPANY.lucidworks.cloud/var/log/connectors`.
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+Most connectors support Diagnostic Mode (also known as Diagnostic Logging), which enables Managed Fusion to print more detailed information to the logs about each request, including the ID of every document inserted, updated, or deleted in the oplog. More information on Diagnostic Mode can be found in the Configuration section of the connectors which offer it. You may need to click on the Advanced slider to show more settings.
+
+<Frame>![Diagnostic mode](/assets/images/5.9/diagnostic-mode.png)</Frame>

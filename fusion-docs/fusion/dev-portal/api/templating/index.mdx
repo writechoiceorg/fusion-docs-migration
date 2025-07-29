@@ -1,0 +1,20 @@
+---
+title: "Templating API"
+permalink: "wm0epz"
+---
+
+Used for template operations.
+
+Use this API for CRUD operations on [templates](/fusion/5.9/3289/templates#templates) and [zones](/fusion/5.9/3289/templates#zones). This API also assists with retrieving and rendering templates for particular navigation states.
+
+For more information, [view the API specification.](?open-api=true)
+
+To learn how to use templates in the UI, see [Use Predictive Merchandiser Templates](/how-to/3293/use-predictive-merchandiser-templates).
+
+<Tip>
+**Important**
+
+
+Use `/api/` before the templating operation, particularly if you are using this API for load testing. For example, use `/api/templating/render/APP_NAME` instead of `/templating/render/APP_NAME`. This ensures the API call does not go through the Fusion UI, which can slow down your response time.
+</Tip>
+

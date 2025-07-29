@@ -1,0 +1,95 @@
+---
+title: "geo:map"
+permalink: "1077"
+---
+
+## Description
+
+The geoMap directive provides an abstraction layer to other map
+directives.
+
+#### Google Maps
+
+##### API Key
+
+To add the API for Google Maps you need to include a constant on your
+index page like so with your API Key.
+`<helper:constant name="googleMapApi" value="YOUR_API_KEY_HERE"></helper:constant>`
+Doing this means you do not have to add the Google Map scripts to your
+index page
+
+#### Esri Maps
+
+For ESRI you will need to include the CSS and JavaScript from ESRI on
+your index page.
+
+```html
+<script type="text/javascript" src="//js.arcgis.com/3.17/"></script>
+<link rel="stylesheet" href="//js.arcgis.com/3.17/esri/css/esri.css">
+```
+
+## Usage
+
+as element:
+
+```xml
+<geo:map
+       provider="{string}"
+       [response="{string}"]
+       [address-field="{string}"]
+       [latitude-field="{string}"]
+       [longitude-field="{string}"]
+       [api-key="{string}"]
+       [zoom-level="{string}"]
+       [height="{string}"]
+       [width="{string}"]
+       [scroll-to-zoom="{boolean}"]
+       [target="{string}"]
+       [url-field="{string}"]
+       [url-prefix="{string}"]
+       [label-field="{string}"]
+       [loading-overlay="{boolean}"]
+       [icon="{string}"]
+       [icon-field="{string}"]
+       [weight-field="{string}"]
+       [geocode-server-url="{string}"]
+       [javascript-api-url="{string}"]
+       [basemap="{string}"]
+       [webmap-id="{string}"]
+       [options="{object}"]
+       [events="{string}"]>
+</geo:map>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| provider | **string** | Map provider to use (Supported values: google, esri) |
+| response  *(optional)* | **string** | Name of the response |
+| address-field  *(optional)* | **string** | The field containing a full address to geocode to obtain latitude and longitude values. Use this or latitudeField/longitudeField, not both. |
+| latitude-field  *(optional)* | **string** | The field containing the latitude. |
+| longitude-field  *(optional)* | **string** | The field containing the longitude. |
+| apiKey  *(optional)* | **string** | An API key to use with the map platform (if applicable) |
+| zoom-level  *(optional)* | **string** | The default zoom level to use for the map. Default is 13 for single results, with a group of results the map will scale automatically to fit the pins into the bounds, zoom level will be applied if the pins still fit within the new bounds.. |
+| height  *(optional)* | **string** | The height of the map container. Default is 400px. |
+| width  *(optional)* | **string** | The width of the map container. Default is 100%. |
+| scroll-to-zoom  *(optional)* | **boolean** | Whether the scroll wheel should control the map zoom. Disabled by default. |
+| target  *(optional)* | **string** | Specify the link target to use for the map pins. Can be one of '_blank', '_parent', '_self', '_top' or the name of a window. Default value is '_blank'." |
+| url-field  *(optional)* | **string** | The field containing the URL to make clickable from the map marker. |
+| url-prefix  *(optional)* | **string** | Use this if the URL retrieved from the URLField needs to be prefixed with a value. |
+| label-field  *(optional)* | **string** | The field containing the label to use as tooltip for the marker. |
+| loading-overlay  *(optional)* | **boolean** | Whether to show an overlay when the map is loading new points. |
+| icon  *(optional)* | **string** | The location of the marker image to use for this set of coordinates. |
+| icon-field  *(optional)* | **string** | The field from the response to get the icon from. |
+| weight-field  *(optional)* | **string** | The field containing information about the weight of the result. (Google Only) |
+| geocode-server-url  *(optional)* | **string** | The URL of the geocode server to turn addresses into coordinates (Esri only) |
+| javascript-api-url  *(optional)* | **string** | The URL with the location of the JavaScript API (Esri only must be 3.15 or greater) |
+| basemap  *(optional)* | **string** | The map to use to display the points on (Esri and Google only)  Google defaults to: ROADMAP Google Options - HYBRID, ROADMAP, SATELLITE, TERRAIN.  Esri defaults to: topo - [Esri options](https:///developers.arcgis.com/javascript/latest/api-reference/) |
+| webmap-id  *(optional)* | **string** | The id of the web map to add to the esri map. (Only for esri, you must include the [esri webmap tag](/app-studio/4.2/1102/esri-webmap) within the geo:map directive). |
+| options  *(optional)* | **object** | Extend the current options for the Map (Google Only) [(Options Here)](https://developers.google.com/maps/documentation/javascript/reference#MapOptions) |
+| events  *(optional)* | **string** | Adds support for filtering results based on the current map position (apply), on zoom (zoom), on drag (drag) and also when drawing a rectangle (draw). (You must define latitude and longitude fields for this to work).  Valid values:  * **draw**  Allows the user to draw a box on the map which will then return results within the box.  * **apply**  Allows the user to search the currently visible area. (Google only)  * **zoom**  When the user zooms in or out of an area the event "zoom_changed_gmaps" will fire with an object containing the coordinates of the box. (Google only)  * **drag**  When the user drags the map and the selected area changes the event "dragend_gmaps" will fire with an object containing the coordinates of the box. (Google only) |

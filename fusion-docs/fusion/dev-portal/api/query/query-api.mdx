@@ -1,0 +1,84 @@
+---
+title: "Query Profiles API"
+description: "Fusion Query APIs"
+permalink: "361"
+---
+
+The [Query Profiles API](?open-api=true#/operations/getStatus), formerly known as the Query API, is used to send queries to a [query profile](/fusion/5.9/174/query-profiles).
+
+You can run a query through a query profile by specifying the profile ID and appending the request with a [Solr query string](/fusion/5.9/199/solr-query-language-cheat-sheet), as in `/api/query/<id>?<solrQuery>`.
+
+For query profile CRUD operations, see the [Query Profiles CRUD API](/fusion/5.9/363/query-profiles-crud-api).
+
+You can use the Query Profiles CRUD API to [find the profile ID](?open-api=true#/operations/getAllEntities) that you want to use with the Query Profiles API:
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/query-profiles
+```
+
+### Examples to retrieve query results
+
+To [retrieve query results](?open-api=true#/operations/query), a simple query is sent to a profile ID using a question mark (?) as the query string separator, followed by the query term as indicated to Solr as `q`.
+
+REQUEST
+
+This request sends `comedy` as a query to a profile that is set up with a movies collection.
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/query/PROFILE_ID?q=comedy
+
+```
+
+RESPONSE
+
+The response here is truncated due to length. Ellipses (…​) were used to show where additional information might be seen.
+
+```json
+{  "response": {"docs": [
+      { "...
+        "_lw_data_source_collection_s": " PROFILE_ID",
+        ...
+        "title_t": "Original Kings of Comedy, The (2000)",
+        "_lw_pipeline_ss": ["PIPELINE_ID"],
+        "genres_t": "Comedy|Documentary",
+        ...
+      },
+      { "...
+        "_lw_data_source_collection_s": " PROFILE_ID ",
+        ...
+        "title_t": "Blue Collar Comedy Tour: The Movie (2003)",
+        "_lw_pipeline_ss": ["PIPELINE_ID"],
+        "genres_t": "Comedy|Documentary",
+      },
+     ...
+}
+```
+
+You can use multiple words in a query:
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/query/PROFILE_ID?q=kings%20of
+```
+
+RESPONSE
+
+```json
+{  "response": {"docs": [
+      {...
+        "title_t": "Original Kings of Comedy, The (2000)",
+        ...
+      },
+      {...
+        "title_t": "Kings of Summer, The (2013)",
+       ...
+      },]
+}
+```
+
+For a specific match, use double quotes (`”`) around the query:
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/query/PROFILE_ID?q="Kings%20of%20Comedy"
+```

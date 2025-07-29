@@ -1,0 +1,177 @@
+---
+title: "Date Parsing Index Stage"
+permalink: "241"
+---
+
+The Date Parsing Stage (previously called the Date Parser stage) is an index pipeline stage that performs parsing and normalization of date/time data in document fields which uses the Fusion DateUtils library. The resulting date/time information is available both as a timestamp in UTC time zone as well as a local date/time in the original local time zone.
+
+The time zone name, offset and the epoch time are stored in separate fields, too. Additionally the formatted dates can be split into their components, and each component added to separate document fields.
+
+Note that this stage works only with data that consists solely of the date/time information, i.e. it will not work correctly if dates are a part of a larger piece of text.
+
+## Timestamp splitting options
+
+Splitting options help in processing timestamp information without resorting to scripting - e.g. in order to index day of week information it is more convenient and faster to split the timestamp in this stage, and then just discard other components that are not needed (using a field mapping stage), rather than using a JavaScript stage to parse and split the timestamp manually.
+
+Please note that time zone name and time zone offset, as well as epoch time, are always added as separate fields regardless of the splitting options.
+E.g. for a field named `test` these values will be added as fields `tz.test`, `tz_offset.test`, and `epoch.test`.
+
+The option `splitLocal` splits the timestamp in its original timezone, while the option `splitUTC` first converts the timestamp to UTC and then splits it. The resulting date and time components are stored in fields that follow patterns \<part>.local.\<fieldName> and \<part>.utc.\<fieldName> respectively.
+
+The following parts are extracted and added to the document:
+
+* **year.** year component
+* **month.** month in year, from 1 to 12
+* **day.** day in month, from 1 to 31
+* **yday.** day in year, from 1 to 356
+* **weekday.** day of week, 1 being Monday and 7 being Sunday
+* **week.** week in year, from 1 to 52. Note: in the standard ISO8601 week algorithm, the first week of the year is that in which at least 4 days are in the year. As a result of this definition, day 1 of the first week may be in the previous year, which will be indicated by weekyear. The opposite is also true - last day of the last week may be in the next year, and weekyear will show the next year.
+* **weekyear.** year corresponding to the week value. This can be either the current year or previous one, or the next one.
+* **hour.** hour in day, from 0 to 23
+* **min.** minute in hour, from 0 to 59
+* **sec.** second in minute, from 0 to 59
+* **ms.** millisecond in second, from 0 to 999
+
+Example: given this normalized timestamp in the original timezone `2015-01-01 00:00:00.000 Europe/Warsaw` in a field `test`, the corresponding normalized UTC timestamp will be `2014-12-31T23:00:00.00Z`.
+
+### Example: `splitLocal` parsing
+
+The following table shows the additional fields added to a document as the result of applying `splitLocal` parsing to the contents a field named `test` which contains the value `2015-01-01 00:00:00.000 Europe/Warsaw`:
+
+| Field name | value |
+| --- | --- |
+| tz.test | Europe/Warsaw |
+| tz_offset.test | +01:00 |
+| epoch.test | 1420066800000 |
+
+### Example: `splitUTC` parsing
+
+The following table shows the additional fields added to a document as the result of applying `splitUTC` parsing to the contents a field named `test` which contains the value `2015-01-01 00:00:00.000 Europe/Warsaw`:
+
+| Field name | value |
+| --- | --- |
+| tz.test | Europe/Warsaw |
+| tz_offset.test | +01:00 |
+| epoch.test | 1420066800000 |
+| year.utc.test | 2014 |
+| year.local.test | 2015 |
+| month.utc.test | 12 |
+| month.local.test | 1 |
+| day.utc.test | 31 |
+| day.local.test | 1 |
+| yday.utc.test | 365 |
+| yday.local.test | 1 |
+| weekday.utc.test | 3 |
+| weekday.local.test | 4 |
+| week.utc.test | 1 |
+| week.local.test | 1 |
+| weekyear.utc.test | 2015 |
+| weekyear.local.test | 2015 |
+| hour.utc.test | 23 |
+| hour.local.test | 0 |
+| min.utc.test | 0 |
+| min.local.test | 0 |
+| sec.utc.test | 0 |
+| sec.local.test | 0 |
+| ms.utc.test | 0 |
+| ms.local.test | 0 |
+
+Note: The following:
+
+* weekday is different. UTC day of week is Wednesday, and local day of week is already Thursday.
+* yday in UTC points to the last day of the year, while it is the first day of the year in local time zone, similarly with day.
+* week and weekyear are the same in both cases. because according to the ISO 8601 definition all days of this week belong to year 2015 so it does not matter whether it is Wednesday or Thursday.
+
+## Configuration
+
+### Adding a New Format
+
+If no new format is added, a default list of formats will be used. The default formats are listed in the table below:
+
+| Pattern | Notes |
+| --- | --- |
+| `EEE yyyy-MM-dd HH:mm:ss.SSS zzz` |  |
+| `yyyy-MM-dd’T’HH:mm:ss.SSSZ` | With numeric +-HHmm timezone at the end |
+| `yyyy-MM-dd’T’HH:mm:ss.SSSZZ` | With numeric +-HH:mm timezone at the end |
+| `yyyy-MM-dd’T’HH:mm:ss.SSSz` | With symbolic XXX timezone at the end |
+| `yyyy-MM-dd’T’HH:mm:ssz` | With symbolic XXX timezone at the end |
+| `yyyy-MM-dd’T’HH:mm:ssZ` | With offset |
+| `EEE MMM d HH:mm:ss z yyyy` |  |
+| `EEE MMM d HH:mm:ss Z yyyy` |  |
+| `EEE MMM d HH:mm:ss z yyyy` |  |
+| `EEE MMM d HH:mm:ss.SSS z yyyy` |  |
+| `EEE, dd MMM yyyy HH:mm:ss zzz` |  |
+| `EEEE, dd-MMM-yy HH:mm:ss zzz` |  |
+| `yyyy-MM-dd HH:mm:ss Z` |  |
+| `yyyy-MM-dd HH:mm:ss ZZ` |  |
+| `yyyy-MM-dd HH:mm:ss z` |  |
+| `yyyy-MM-dd HH:mm:ss.SSS Z` |  |
+| `yyyy-MM-dd HH:mm:ss.SSS ZZ` |  |
+| `yyyy-MM-dd HH:mm:ss.SSS z` |  |
+| `yyyy-MM-dd HH:mm:ss zzz` | With full time zone (e.g. America/New_York) |
+| `yyyy-MM-dd’T’HH:mm:ss’GMT’Z` | With literal "GMT" and offset |
+| `yyyy-MM-dd’T’HH:mm:ss.SSS’GMT’Z` | With literal "GMT" and offset |
+| `yyyy-MM-dd’T’HH:mm:ss’UTC’Z` | With literal "UTC" and offset |
+| `yyyy-MM-dd’T’HH:mm:ss.SSS’UTC’Z` | With literal "UTC" and offset |
+| `yyyy-MM-dd HH:mm:ss 'UTC’Z` |  |
+| `yyyy-MM-dd HH:mm:ss.SSS 'UTC’Z` |  |
+| `yyyy-MM-dd HH:mm:ss 'GMT’Z` |  |
+| `yyyy-MM-dd HH:mm:ss.SSS 'GMT’Z` |  |
+| `dd-MM-yyyy HH:mm:ss zzz` |  |
+
+The list of accepted symbols for constructing a new format are listed below:
+
+| Symbol | Meaning | Example |
+| --- | --- | --- |
+| `G` | era | `AD` |
+| `C` | century of era (>=0) | `20` |
+| `Y` | year of era (>=0) | `1996` |
+| `x` | weekyear | `1996` |
+| `w` | week of weekyear | `27` |
+| `e` | day of week | `2` |
+| `E` | day of week | `Tuesday` `Tue` |
+| `y` | year | `1996` |
+| `D` | day of year | `189` |
+| `M` | month of year | `July` `Jul` `07` |
+| `d` | day of month | `10` |
+| `a` | halfday of day | `PM` |
+| `K` | hour of halfday (0~11) | `0` |
+| `h` | clockhour of halfday (1~12) | `12` |
+| `H` | hour of day (0~23) | `0` |
+| `k` | clockhour of day (1~24) | `24` |
+| `m` | minute of hour | `30` |
+| `s` | second of minute | `55` |
+| `S` | fraction of second | `978` |
+| `z` | time zone | `Pacific Standard Time`; `PST` |
+| `Z` | time zone offset/id | `-0800` `-08:00` `America/Los_Angeles` |
+| `'` | escape for text |  |
+| `''` | single quote | `'` |
+
+The number of symbols used determine the format of the output.
+
+For text output, if 4 or more symbols are used, the full form is used. `EEEE` would output `Tuesday`, while `E` outputs `Mon`.
+
+For numeric outputs, the amount of symbols used is the same as the minimum digits used for representation.
+
+If the number is smaller, then it will be padded with zeroes. `HH` would be `09`, while `H` is `9`.
+
+For the year, the representation for year and weekyear is different. For example, if the count of `y` is two, the year would be the two digit, zero-based year of the century.
+
+For the month, if there are three or more symbols, then the text is used. For example, `MM` would output `03`, `MMM` outputs `Mar`, and `MMMM` outputs `March`.
+
+For the zone, `Z` outputs the offset without a colon, `ZZ` outputs the offset with a colon, and `ZZZ` or more outputs the zone id.
+
+For the zone name, time zone names `'z'` cannot be parsed.
+
+Any characters in the imput that are not in the range of `['a'…​'z']` and `['A'…​'Z']` will be treated like quoted text. So, characters like `','` or `'-'` will appear in the output time text even if they are not wrapped in single quotes.
+
+A new configuration can be made using a combination of the symbols and regular characters. For example, the pattern `E MM/dd/yyyy HH:mm:ss.SSS` would output the formatted date `Mon 01/16/2017 10:53:32.939`.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/date-parsing.mdx";
+
+<SchemaParamFields schema={schema}/>

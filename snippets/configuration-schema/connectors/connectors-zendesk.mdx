@@ -1,0 +1,538 @@
+export const schema = {
+  "type": "object",
+  "title": "Zendesk",
+  "description": "Connector to index Zendesk tickets, ticket attachments, and ticket comments.",
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Repository",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting",
+      "default": "_system"
+    },
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Connector to index Zendesk tickets, ticket attachments, and ticket comments.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "base_url",
+        "use_token_auth",
+        "auth_key",
+        "auth_value"
+      ],
+      "properties": {
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "db": {
+          "type": "object",
+          "title": "Connector DB",
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Implementation Class Name",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength": 1
+            },
+            "inlinks": {
+              "type": "boolean",
+              "title": "Process Inlinks?",
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "aliases": {
+              "type": "boolean",
+              "title": "Process Aliases?",
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "inv_aliases": {
+              "type": "boolean",
+              "title": "Process Inverted Aliases?",
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default": false
+            }
+          },
+          "hints": [
+            "hidden"
+          ]
+        },
+        "article_containers": {
+          "type": "array",
+          "title": "Article Containers",
+          "description": "Specify the Category or Section Id to retrieve articles from. Don't add entries to index all articles from all categories",
+          "items": {
+            "type": "object",
+            "required": [
+              "container_type",
+              "container_id"
+            ],
+            "properties": {
+              "container_type": {
+                "type": "string",
+                "title": "Container Type",
+                "description": "Container type can be a Category or a Section",
+                "enum": [
+                  "Category",
+                  "Section"
+                ]
+              },
+              "container_id": {
+                "type": "string",
+                "title": "Container Id",
+                "description": "The Category or Section ID",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "initial_mapping": {
+          "type": "object",
+          "title": "Initial field mapping",
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties": {
+            "skip": {
+              "type": "boolean",
+              "title": "Skip This Stage",
+              "description": "Set to true to skip this stage.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "title": "Label",
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255
+            },
+            "condition": {
+              "type": "string",
+              "title": "Condition",
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ]
+            },
+            "reservedFieldsMappingAllowed": {
+              "type": "boolean",
+              "title": "Allow System Fields Mapping?",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "retentionMappings": {
+              "type": "array",
+              "title": "Field Retention",
+              "description": "Fields that should be kept or deleted",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: keep (default) or delete",
+                    "enum": [
+                      "keep",
+                      "delete"
+                    ],
+                    "default": "keep",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "updateMappings": {
+              "type": "array",
+              "title": "Field Value Updates",
+              "description": "Values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overwritten.",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "The value to add to or set on the field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: add (default) or set.",
+                    "enum": [
+                      "add",
+                      "set"
+                    ],
+                    "default": "add",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "translationMappings": {
+              "type": "array",
+              "title": "Field Translations",
+              "description": "Fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "target"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "title": "Source Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "title": "Target Field",
+                    "description": "The name of the target field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: copy (default) or move.",
+                    "enum": [
+                      "copy",
+                      "move"
+                    ],
+                    "default": "copy",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "unmappedRule": {
+              "type": "object",
+              "title": "Unmapped Fields",
+              "description": "Fields not mapped by the above rules. By default, any remaining fields will be kept on the document.",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "title": "Keep",
+                  "description": "Keep all unmapped fields",
+                  "default": true,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "delete": {
+                  "type": "boolean",
+                  "title": "Delete",
+                  "description": "Delete all unmapped fields",
+                  "default": false,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToMoveValuesTo": {
+                  "type": "string",
+                  "title": "Move",
+                  "description": "Move all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToCopyValuesTo": {
+                  "type": "string",
+                  "title": "Copy",
+                  "description": "Copy all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToAddToUnmappedFields": {
+                  "type": "string",
+                  "title": "Add",
+                  "description": "Add this value to all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToSetOnUnmappedFields": {
+                  "type": "string",
+                  "title": "Set",
+                  "description": "Set this value on all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                }
+              }
+            }
+          },
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "hints": [
+            "advanced"
+          ],
+          "unsafe": false
+        },
+        "enable_security_trimming": {
+          "type": "object",
+          "title": "Enable Security Trimming",
+          "description": "Enable indexing and query-time security-trimming of Zendesk articles. Zendesk tickets and ticket comments don't support security trimming, these will be public by default",
+          "properties": {}
+        },
+        "base_url": {
+          "type": "string",
+          "title": "Base API URL",
+          "description": "A properly formatted v2 Zendesk API URL. Example: https://yourcompany.zendesk.com/api/v2"
+        },
+        "use_token_auth": {
+          "type": "boolean",
+          "title": "Token Auth",
+          "description": "Used to determine how the authentication credentials will be formatted. If set to true, the auth_key value will be formatted according to the Zendesk token auth specifications (<email>/<token>).",
+          "default": true
+        },
+        "auth_key": {
+          "type": "string",
+          "title": "Authentication Key",
+          "description": "An email address of a valid Zendesk user which must have an admin role.",
+          "minLength": 1
+        },
+        "auth_value": {
+          "type": "string",
+          "title": "Authentication Value",
+          "description": "This value can be a user password, or an API token. If an API token is used, the Token Auth must be set to true.",
+          "hints": [
+            "secret"
+          ]
+        },
+        "organization_id": {
+          "type": "string",
+          "title": "Organization ID",
+          "description": "The ID of a Zendesk Organization. This optional setting will allow the Connector to skip records that don't have the same Organization ID."
+        },
+        "proxy_url": {
+          "type": "string",
+          "title": "Proxy URL",
+          "description": "HTTP(S) proxy server URL."
+        },
+        "proxy_username": {
+          "type": "string",
+          "title": "Proxy username",
+          "description": "Proxy server username/login."
+        },
+        "proxy_password": {
+          "type": "string",
+          "title": "Proxy password",
+          "description": "Proxy server password.",
+          "hints": [
+            "secret"
+          ]
+        },
+        "index_tickets": {
+          "type": "boolean",
+          "title": "Index Tickets",
+          "description": "If enabled, tickets will be indexed",
+          "default": true
+        },
+        "index_articles": {
+          "type": "boolean",
+          "title": "Index Articles",
+          "description": "If enabled, Help Center articles will be indexed using settings on Article Container section",
+          "default": false
+        },
+        "page_size": {
+          "type": "integer",
+          "title": "Page size",
+          "description": "The number of items to be retrieved on each call. Maximum value is 100",
+          "default": 100,
+          "maximum": 100,
+          "exclusiveMaximum": false,
+          "minimum": 1,
+          "exclusiveMinimum": false
+        },
+        "zendesk_account_plan": {
+          "type": "string",
+          "title": "Zendesk Account Plan",
+          "description": "Zendesk applies plan-specific rate limits to API requests. Check https://developer.zendesk.com/rest_api/docs/core/introduction#rate-limits for more information.",
+          "enum": [
+            "essential",
+            "team",
+            "professional",
+            "enterprise",
+            "high_volume"
+          ],
+          "default": "essential"
+        },
+        "index_article_attachments": {
+          "type": "boolean",
+          "title": "Index article attachments",
+          "description": "If enabled, article attachments will be retrieved",
+          "default": false
+        },
+        "security_trimming_cache_timeout": {
+          "type": "integer",
+          "title": "Security trimming cache timeout",
+          "description": "Security trimming cache timeout in seconds.",
+          "default": 3600
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "page_size",
+            "zendesk_account_plan"
+          ]
+        },
+        {
+          "label": "Limit Articles Documents",
+          "properties": [
+            "index_articles",
+            "index_article_attachments",
+            "article_containers"
+          ]
+        },
+        {
+          "label": "Security Trimming",
+          "properties": [
+            "enable_security_trimming",
+            "security_trimming_cache_timeout"
+          ]
+        },
+        {
+          "label": "Limit Tickets Documents",
+          "properties": [
+            "index_tickets"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

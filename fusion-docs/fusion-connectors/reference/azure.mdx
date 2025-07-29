@@ -1,0 +1,36 @@
+---
+title: "Azure V1"
+description: "Connector Configuration Reference"
+permalink: "59"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Azure connector is used to crawl an Azure instance. Its connector type is "lucid.azure" and its plugin type is "azure".
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-azure.mdx";
+
+<SchemaParamFields schema={schema}/>

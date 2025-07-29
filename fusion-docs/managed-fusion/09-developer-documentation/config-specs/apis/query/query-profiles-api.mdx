@@ -1,0 +1,57 @@
+---
+title: "Query Profiles CRUD API"
+description: "Managed Fusion Query APIs"
+permalink: "cym2qh"
+---
+
+The [Query Profiles CRUD API](?open-api=true#/operations/getStatus_3), formerly known as the Query Profiles API, lets you manage query profiles. Query profiles allow users to change query pipelines during search time while pointing the search toward a static endpoint. This gives flexibility to test different stage combinations without reconfiguration.
+
+[Query profiles](/managed-fusion/5.9/qsrh89/query-profiles) are the way you select which pipeline and collection combination to use when querying. You can use different pipelines with the same collection to test different stage combinations. Another way profiles can be used is to switch to another pipeline to allow different search results for special occasions.
+
+To run a query through a query profile, use the [Query Profiles API](/managed-fusion/5.9/eqky5t/query-profiles-api), formerly known as the Query API.
+
+### Examples to manage query profiles
+
+A simple GET request to the `/query-profiles` endpoint [returns a list of all profiles](?open-api=true#/operations/getAllEntities) that have been created in a Managed Fusion instance. Relevant information returned includes profile ID, which pipeline is being used for the profile, and which collection is targeted by the profile. You can also use this to find the profile ID that you want to use with the Query Profiles API.
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-profiles
+```
+
+To view the JSON-formatted schema for a [single query profile](?open-api=true#/operations/getEntity), include the profile ID in the cURL call:
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-profiles/PROFILE_ID
+```
+
+You can [create a new query profile](?open-api=true#/operations/createEntity) using POST to the `query-profiles` endpoint. Here the `USERNAME:PASSWORD` is base64 encoded. See the API specification for additional fields that can be included.
+
+```sh
+curl --request POST \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-profiles \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic USERNAME:PASSWORD_' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "id": "PROFILE_ID",
+  "queryPipeline": "QUERY_PIPELINE_NAME",
+  "collection": "COLLECTION_NAME",
+  "searchHandler": "select"
+}'
+```
+
+A successful request will return an HTTP response code of `200` along with a copy of the JSON that was sent in the request body.
+
+A PUT request can be used to [update fields for a query profile](?open-api=true#/operations/updateEntity). The profile ID cannot be changed and must match an existing profile ID.
+
+```sh
+curl --request PUT \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-profiles \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic USERNAME:PASSWORD_' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "id": "PROFILE_ID",
+  "queryPipeline": "QUERY_PIPELINE_NAME_2",
+}'
+```

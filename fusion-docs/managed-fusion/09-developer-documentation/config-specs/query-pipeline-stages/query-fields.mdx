@@ -1,0 +1,29 @@
+---
+title: "Query Fields"
+description: "Query pipeline stage configuration specifications"
+permalink: "iv9chb"
+---
+
+The Query Fields query pipeline stage defines common Solr query parameters for the [edismax query parser](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser). If using a less-than sign (`<`) with DisMax, it must be escaped using a backslash.
+An alternative to this stage is the
+[Additional Query Parameters stage](/managed-fusion/5.9/8eo8x3/additional-query-parameters-stage).
+
+## Collapsing results
+
+In Managed Fusion 5.9.13 and up, you can configure this stage to collapse search results based on a field, such as `product_id`, to group all variations of each item into a single search result.
+This is useful for ecommerce sites where you want to show a single product with multiple SKUs or variations.
+
+Unresolved directive in `<stdin> - include::collapse-enable.asciidoc[]`
+
+For additional collapse options, see the configuration reference below.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/query-fields.mdx";
+
+<SchemaParamFields schema={schema}/>

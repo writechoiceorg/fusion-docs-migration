@@ -1,0 +1,135 @@
+---
+title: "Built-in SQL Aggregation Jobs"
+permalink: "585"
+---
+
+In addition to information about built-in SQL aggregation jobs, this topic describes how to use the Catalog API to set up a project and data asset that can be used as input for SQL aggregation jobs.
+
+SQL aggregation jobs can also be set up using source files in Cloud Storage buckets. For more information, see [Built-in SQL Aggregation Jobs Using Cloud Storage Buckets](/how-to/umau00/built-in-sql-aggregation-jobs-using-cloud-storage-buckets).
+
+When you create a new Fusion app, Fusion automatically creates the `COLLECTION_NAME_signals` and `COLLECTION_NAME_signals_aggr` collections, plus the aggregation jobs described below. You can view these jobs at **collections** > **jobs**.
+
+| Job | Default input collection | Default output collection | Default schedule |
+| --- | --- | --- | --- |
+| [`COLLECTION_NAME_click_signals_aggregation`](#click_aggr) | `COLLECTION_NAME_signals` | `COLLECTION_NAME_signals_aggr` | Every 15 minutes |
+| [`COLLECTION_NAME_session_rollup`](#rollup) | `COLLECTION_NAME_signals` | `COLLECTION_NAME_signals` | Every 15 minutes |
+
+When you [enable recommendations](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#enable-recommendations), Fusion automatically creates these additional aggregation jobs:
+
+| Job | Default input collection | Default output collection | Default schedule |
+| --- | --- | --- | --- |
+| [`COLLECTION_NAME_user_item_prefs_agg`](#prefs) | `COLLECTION_NAME_signals` | `COLLECTION_NAME_recs_aggr` | Once per day |
+| [`COLLECTION_NAME_user_query_history_agg`](#history) | `COLLECTION_NAME_signals` | `COLLECTION_NAME_signals_aggr` | Once per day |
+
+## COLLECTION_NAME_click_signals_aggregation
+
+The `COLLECTION_NAME_click_signals_aggregation` job computes a time-decayed weight for each document, query, and filters group in the signals collection. Fusion computes the weight for each group using an exponential time-decay on signal count (30 day half-life) and a weighted sum based on the signal type. This approach gives more weight to a signal that represents a user purchasing an item than to a user just clicking on an item.
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: | required | required | required | required |  | required |  | [[**1**](#note1)] |
+
+**1** Required if you are using response signals.
+
+You can customize the signal types and weights for this job by changing the `signalTypeWeights` SQL parameter in the Fusion Admin UI.
+
+<Frame>![signalTypeWeights](/assets/images/4.0/signaltypeweights.png)</Frame>
+
+When the SQL aggregation job runs, Fusion translates the `signalTypeWeights` parameter into a `WHERE IN` clause to filter signals by the specified types (click, cart, purchase), and also passes the parameter into the `weighted_sum` SQL function. Notice that Fusion only displays the SQL parameters and not the actual SQL for this job. This is to simplify the configuration because, in most cases, you only need to change the parameters and not worry about the actual SQL. However, if you need to change the SQL for this job, you can edit it under the **Advanced** toggle on the form.
+
+<Tip>
+A user can configure the `COLLECTION_NAME_click_signals_aggregation` job to use a parquet file as the source of raw signals instead of a signal Fusion collection.
+</Tip>
+
+1. Use [catalog api](/fusion/5.9/329/catalog-api#httpfusion-host6764apicatalog) to set up a "catalog project” in Fusion:
+
+    ```
+    sample code:
+    curl -u <username>:<pw> -X POST -H "Content-type:application/json" --data-binary '{
+      "name": "fusion_test",
+      "assetType": "project",
+      "description": "test",
+      "cacheOnLoad": false
+    }' http://FUSION_HOST:FUSION_PORT/api/catalog
+    ```
+
+2. Create an assets table in the project created in previous step:
+
+    ```
+    sample code:
+    curl -u <username>:<pw> -X POST -H "Content-type:application/json" --data-binary '{
+      "name": "doc_test",
+      "assetType": "table",
+      "projectId": "fusion_test",
+      "description": "for documentation",
+      "tags": ["fusion"],
+      "format": "parquet",
+      "cacheOnLoad": false,
+      "options" : [ "path -> <path to your .parquet file>"]
+    }' http://FUSION_HOST:FUSION_PORT/api/catalog/fusion_test/assets
+    ```
+
+    <Note>
+    The parquet file listed above needs to have all the fields in the SQL script which the `COLLECTION_NAME_click_signals_aggregation` job is selecting/using.
+    </Note>
+
+
+3. In the `COLLECTION_NAME_click_signals_aggregation` job, change “source” from `${collection}_signals` to `catalog:${project_name}.${asset_name}` (e.g. `catalog:fusion_test.doc_test` per the sample code).
+
+    <Frame>![catalog input](/assets/images/4.2/catalog_input.png)</Frame>
+4. Start the job.
+
+## COLLECTION_NAME_session_rollup
+
+The `COLLECTION_NAME_session_rollup` job aggregates related user activity into a session signal that contains activity count, duration, and keywords (based on user search terms).
+
+The Fusion App Insights application uses this job to show reports about user sessions.
+
+Use the `elapsedSecsSinceLastActivity` and `elapsedSecsSinceSessionStart` parameters to determine when a user session is considered to be complete. You can edit the SQL using the **Advanced** toggle.
+
+The `COLLECTION_NAME_session_rollup` job uses signals as the input collection and output collection. Unlike other aggregation jobs that write aggregated documents to the `COLLECTION_NAME_signals_aggr` collection, the `COLLECTION_NAME_session_rollup` job creates session signals and saves them to the `COLLECTION_NAME_signals` collection.
+
+## COLLECTION_NAME_user_item_prefs_agg
+
+The `COLLECTION_NAME_user_item_preferences_aggregation` job computes an aggregated weight for each user/item combination found in the signals collection. The weight for each group is computed using an exponential time-decay on signal count (30 day half-life) and a weighted sum based on the signal type.
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: |  | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |
+
+<Note>
+This job is a prerequisite for the [BPR Recommender job](/fusion/5.9/8805/bpr-recommender-jobs).
+</Note>
+
+
+
+Job configuration tips:
+
+* In the job configuration panel, click **Advanced** to see all of the available options.
+* When aggregating signals for the first time, uncheck the **Aggregate and Merge with Existing** checkbox. In production, once the jobs are running automatically then this box can be checked. Note that if you want to discard older signals then by unchecking this box those old signals will essentially be replaced completely by the new ones.
+* If the original signal data has missing fields, edit the SQL query to fill in missing values for fields such as “count_i” (the number of times a user interacted with an item in a session).
+* Sometimes the aggregation job can run faster by unchecking the **Job Skip Check Enabled** box. Do this when first loading the signals.
+* Use the `signalTypeWeights` SQL parameter to set the correct signal types and weights for your dataset. Its value is a comma-delimited list of signal types and their stakeholder-defined level of importance. Think of this numeric value as a weight that tells which type of signal is most important for determining a user’s interest in an item. An example of how to weight the signal types is shown below:
+
+  ```
+  signal_type_1:1.0, signal_type_2: 3.0, signal_type_3: 20.0
+  ```
+
+  [Rank your signal types](/fusion/5.9/469/signals#ranking) to determine which types should be added. Add only the signal types that are significant. Signal types that are not added to the list will not be included in the aggregation job, and for some signal types this is fine.
+
+  The weights should be within orders of magnitude of each other. The spread of values should not be wide. For instance, `click:1.0, cart:100000.0` is too wide of a spread. The values of `click:1.0` and `cart:50.0` would be a reasonable setting, indicating that the signal type of `cart` is 50 times more important for measuring a user’s interest in an item.
+* The Time Range field value is used in a weight decay function that reduces the importance of signals the older they are. This time range is in days and the default is 30 days. If you want to increase this time because the time duration of your signals is greater than 30 days, edit the SQL query to reflect the desired number of days. The SQL query is visible when you click **Advanced** in the job configuration panel. Modify the following line in the SQL query, changing "30 days" to your desired timeframe:
+
+  ```
+  time_decay(count_i, timestamp_tdt, "30 days", ref_time, weight_d) AS typed_weight_d
+  ```
+
+If recommendations are enabled for your collection, then the ALS recommender job is automatically created with the name `COLLECTION_NAME_item_recommendations` and scheduled to run after this job completes. Consequently, you should only run this aggregation once or twice a day, because training a recommender model is a complex, long-running job that requires significant resources from your Fusion cluster.
+
+## COLLECTION_NAME_user_query_history_agg
+
+The `COLLECTION_NAME_user_query_history_aggregation` job computes an aggregated weight for each user/query combination found in the signals collection. The weight for each group is computed using an exponential time-decay on signal count (30 day half-life) and a weighted sum based on the signal type. Use the `signalTypeWeights` parameter to set the correct signal types and weights for your dataset. You can use the results of this job to boost queries for a user based on their past query activity.
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: | ✅ | ✅ | ✅ | ✅ | ✅ |  |  |  |

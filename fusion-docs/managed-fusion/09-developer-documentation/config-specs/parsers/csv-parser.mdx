@@ -1,0 +1,17 @@
+---
+title: "CSV"
+description: "Parser stage configuration specifications"
+permalink: "sdlzci"
+---
+
+This parser breaks down incoming CSV files into the most efficient components for Managed Fusion to index.
+It produces one new document per row from the CSV input, excluding comment rows and header rows.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/csv.mdx";
+
+<SchemaParamFields schema={schema}/>

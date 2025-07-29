@@ -1,0 +1,329 @@
+export const schema = {
+  "type": "object",
+  "title": "Trending Recommender",
+  "description": "Trending Recommender",
+  "required": [
+    "id",
+    "trainingCollection",
+    "dataFormat",
+    "refTimeRange",
+    "targetTimeRange",
+    "countField",
+    "typeField",
+    "timeField",
+    "docIdField",
+    "types",
+    "recsCount",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Solr Fields to Read",
+      "description": "Fields to extract from Solr (not used for other formats)",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "default": "solr",
+      "minLength": 1
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data if using Solr",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "sparkSQL": {
+      "type": "string",
+      "title": "Spark SQL filter query",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "default": "SELECT * from spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store model-labeled data to"
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "dataOutputFormat": {
+      "type": "string",
+      "title": "Data output format",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "partitionCols": {
+      "type": "string",
+      "title": "Partition fields",
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "refTimeRange": {
+      "type": "integer",
+      "title": "Reference Time Days",
+      "description": "Number of reference days: number of days to use as baseline to find trends (calculated from today)"
+    },
+    "targetTimeRange": {
+      "type": "integer",
+      "title": "Target Time Days",
+      "description": "Number of target days: number of days to use as target to find trends (calculated from today)"
+    },
+    "numWeeksRef": {
+      "type": "number",
+      "title": "Num Weeks Reference",
+      "description": "If using filter queries for reference and target time ranges, enter the value of (reference days / target days) here (if not using filter queries, this will be calculated automatically)",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "sparkPartitions": {
+      "type": "integer",
+      "title": "Set minimum Spark partitions for input",
+      "description": "Spark will re-partition the input to have this number of partitions. Increase for greater parallelism",
+      "default": 200,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "countField": {
+      "type": "string",
+      "title": "Event Count Field Name",
+      "description": "Field containing the number of times an event (e.g. click) occurs for a particular query; count_i in the raw signal collection or aggr_count_i in the aggregated signal collection.",
+      "default": "aggr_count_i",
+      "minLength": 1
+    },
+    "referenceTimeFilterQuery": {
+      "type": "string",
+      "title": "Reference Filter Time Query",
+      "description": "Add a Spark SQL filter query here for greater control of time filtering",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "targetFilterTimeQuery": {
+      "type": "string",
+      "title": "Target Filter Time Query",
+      "description": "Add a Spark SQL filter query here for greater control of time filtering",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "typeField": {
+      "type": "string",
+      "title": "Type field",
+      "description": "Enter type field (default is type)",
+      "default": "aggr_type_s"
+    },
+    "timeField": {
+      "type": "string",
+      "title": "Time field",
+      "description": "Enter time field (default is timestamp_tdt)",
+      "default": "timestamp_tdt"
+    },
+    "docIdField": {
+      "type": "string",
+      "title": "Document ID field",
+      "description": "Enter document id field (default is doc_id)",
+      "default": "doc_id_s"
+    },
+    "types": {
+      "type": "string",
+      "title": "Event types",
+      "description": "Enter a comma-separated list of event types to filter on",
+      "default": "click,add"
+    },
+    "recsCount": {
+      "type": "integer",
+      "title": "Recommendation Count",
+      "description": "Maximum number of recs to generate (or -1 for no limit)",
+      "default": 500
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "trending-recommender"
+      ],
+      "default": "trending-recommender",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "countField"
+      ]
+    }
+  ]
+}

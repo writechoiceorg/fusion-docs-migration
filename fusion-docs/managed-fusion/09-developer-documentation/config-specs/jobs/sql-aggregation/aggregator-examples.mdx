@@ -1,0 +1,590 @@
+---
+title: "Aggregator functions examples"
+permalink: "ryz2x1"
+---
+
+## Arithmetic Functions
+
+Arithmetic functions operate on all valid numeric values (including string fields that are parseable into double numbers) from source fields and compute a single result to the target field.
+
+**sum**
+
+A sum of numeric values, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "sum",
+    "sourceFields" : [ "count_i" ],
+    "targetField" : "sum_count_d"
+  }
+```
+
+**sumOfLogs**
+
+A sum of natural logs of numeric value, as a double number.
+
+Example:
+
+```json
+   {
+      "type": "sumOfLogs",
+      "sourceFields": [ "script_d" ],
+      "targetField": "script_sum_logs_d"
+   }
+```
+
+**sumOfSquares**
+
+A sum of squares of numeric value, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "sumOfSquares",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "sumOfSquares_position_d"
+  }
+```
+
+**count**
+
+A count of source values, as a long number.
+
+Example:
+
+```json
+  {
+     "type": "count",
+     "sourceFields": [ "id" ],
+     "targetField": "count_d"
+   }
+```
+
+**geoMean**
+
+A geometric mean of numeric values, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "geoMean",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "geoMean_position_d"
+  }
+```
+
+**mean**
+
+An arithmetic mean of numeric values, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "mean",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "mean_position_d"
+  }
+```
+
+**min**
+
+The minimum numeric value.
+
+Example:
+
+```json
+  {
+    "type" : "min",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "min_position_d"
+  }
+```
+
+**max**
+
+The maximum numeric value.
+
+```json
+  {
+    "type" : "max",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "max_position_d"
+  }
+```
+
+**decay_sum**
+
+A sum of time-based exponentially decayed numeric values. The difference between the aggregationTime and the event time will be decayed using an exponential function with a half-life equaling 30 days.
+
+This function has some additional properties:
+
+* halfLife: the number of seconds for the half-life decay function.
+* timestampField: the name of the field that contains the source event’s timestamp. By default, this is `timestamp_dt`.
+* defaultWeight: the weight of an event if all values from source fields are missing. The default is 0.1f, and this is expressed as a float.
+
+Example:
+
+```json
+ {
+    "type" : "decay_sum",
+    "sourceFields" : [ "weight_d" ],
+    "targetField" : "decay_sum_weight_d",
+    "params" : { }
+  }
+```
+
+## String Functions
+
+String functions operate all values from source fields treated as strings.
+
+**cat**
+
+A concatenation of string values.
+
+This function has some additional properties:
+
+* separator: the character to use as a delimiter between values. The default is a single space.
+* maxStringLength: the maximum length of the concatenated values (including separators). When this limit is exceeded, additional values are discarded. The default value is 10485760 characters (10 * 1024 * 1024).
+* maxValueCount: the maximum number of values to concatenate. Any values collected after this limit are discarded. The default is 100.
+
+Example:
+
+```json
+  {
+    "type" : "cat",
+    "sourceFields" : [ "user_id_s" ],
+    "targetField" : "cat_user_id_txt",
+    "params" : { }
+  }
+```
+
+**ucat**
+
+A concatenation of unique string values.
+
+This function has some additional properties:
+
+* separator: the character to use as a delimiter between values. The default is a single space.
+* maxStringLength: the maximum length of the concatenated values (including separators). When this limit is exceeded, additional values are discarded. The default value is 10485760 characters (10 * 1024 * 1024).
+* maxValueCount: the maximum number of values to concatenate. Any values collected after this limit are discarded. The default is 100.
+
+Example:
+
+```json
+  {
+    "type" : "ucat",
+    "sourceFields" : [ "user_id_s" ],
+    "targetField" : "ucat_user_id_txt",
+    "params" : { }
+  }
+```
+
+**split**
+
+A simple regex-based string splitting function.
+
+The following function params are supported:
+
+* regex. (string, required) a regular expression used for splitting.
+* lower. (boolean, optional, false by default) after the regex has been applied the resulting parts are optionally lower-cased (using US locale).
+
+Example:
+
+```json
+ {
+    "type" : "split",
+    "sourceFields" : [ "query_s" ],
+    "targetField" : "event:query_split",
+    "params" : {
+      "regex": "\\s+",
+      "lower": true
+    }
+}
+```
+
+In the example above, the raw signal event field "query_s" is first split on whitespace and then lower-cased, and the result is put back into the raw signal event field "query_split".
+
+**replace**
+
+A simple regex-based string replace. The java.util.regex.Pattern syntax is supported for the regex matching and replacement.
+
+The following function params are supported:
+
+* regex. (string, required) a pattern to match.
+* replace. (string, required) replacement.
+
+Example:
+
+```json
+{
+    "type" : "replace",
+    "sourceFields" : [ "query_split" ],
+    "targetField" : "event:query_split_clean",
+    "params" : {
+      "regex": "\\P{Alpha}+",
+      "replace": "_"
+    }
+}
+```
+
+In the example above, this function takes the "query_split" values and replaces all non-alphabetic characters with underscores, and stores the result in the event’s field "query_split_clean". As an extended example, this function would follow after the example **split** function and would add the field "query_split_clean" to the raw signal event. The "query_split_clean" field could be aggregated via other aggregation functions.
+
+## Collection Functions
+
+Collection functions simply collect values from the source fields and add them as multiple values to the target field.
+
+**discard**
+
+This function discards all values from source fields and the target field. This modifies the source event and any in-progress aggregation result. This creates side-effects for subsequent functions, so should be used with care.
+
+Example:
+
+```json
+  {
+    "type" : "discard",
+    "sourceFields" : [ "user_id_s" ],
+    "targetField" : "collect_user_id_ss",
+    "params" : { }
+  }
+```
+
+**collect**
+
+Collect values from source fields.
+
+This function has one additional property, 'maxValueCount', which defines the number of fields to collect from source fields. Any fields collected after this limit are discarded. The default is 100.
+
+Example:
+
+```json
+  {
+    "type" : "collect",
+    "sourceFields" : [ "user_id_s" ],
+    "targetField" : "collect_user_id_ss",
+    "params" : { }
+  }
+```
+
+**ucollect**Collect unique values from source fields.
+
+This function has one additional property, 'maxValueCount', which defines the number of fields to collect from source fields. Any fields collected after this limit are discarded. The default is 100.
+
+Example:
+
+```json
+  {
+    "type" : "ucollect",
+    "sourceFields" : [ "user_id_s" ],
+    "targetField" : "unique_user_id_ss",
+    "params" : { }
+  }
+```
+
+## Statistical Functions
+
+Statistical functions compute scalar and matrix statistics. When the function has multiple results, such as for matrix or vector results, the data is stored in multiple fields.
+
+**variance**The square of standard deviation of numeric values, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "covariance",
+    "sourceFields" : [ "params.position_s", "position_rnd_1", "position_rnd_2" ],
+    "targetField" : "cov_position_d",
+    "params" : { }
+  }
+```
+
+**stddev**
+
+The standard deviation of numeric values, as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "stddev",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "stddev_position_d",
+    "params" : { }
+  }
+```
+
+**cardinality**
+
+An estimate of the number of unique elements in the set of values from source fields (which are treated as strings). This uses the HyperLogLog implementation.
+
+This function has one additional property, 'error', which defines the acceptable probability of error from real value, specifically the standard deviation from real results. Smaller values cause exponentially higher RAM consumption during processing. For example, the default, 0.1, uses ~8Kb of RAM, while tests have shown 0.0001 uses ~64Mb.
+
+Example:
+
+```json
+  {
+    "type" : "cardinality",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "cardinality_position_l",
+    "params" : { }
+  }
+```
+
+**skewness**
+
+The measure of asymmetry of the distribution around its mean. This function is performed on numeric values and is expressed as a double number.
+
+Example:
+
+```json
+  {
+    "type" : "skewness",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "skewness_position_d",
+    "params" : { }
+  }
+```
+
+**kurtosis**
+
+The adjusted Pearson’s kurtosis of numeric values, expressed as a double. This provides a comparison of the shape of the distribution to that of the normal distribution.
+
+Example:
+
+```json
+  {
+    "type" : "kurtosis",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "kurtosis_position_d",
+    "params" : { }
+  }
+```
+
+**quantiles**
+
+The quantiles of numeric values, stored as a double number in 0-N.targetField, or as a list of values in the target field (depending on the 'multivalued' property, described below). This implementation uses the T-Digest structure.
+
+This function has the following additional properties:
+
+* quantiles: the number of quantiles. The default is 10.
+* multiValued: when true, all quantiles will be stored as multiple values in the target field. If false, then multiple values will be created in the format '0.targetField' to 'N.targetField'.
+
+Example:
+
+```json
+  {
+    "type" : "quantiles",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "quantiles_position_ss",
+    "params" : {
+      "multiValued" : true
+    }
+  }
+```
+
+**topk**
+
+An estimate of the top-K elements in the source fields and their frequency. The result is stored in three multi-valued fields, each with the same number of values. The three fields are:
+
+* counts.targetField: integer counts (frequencies) of elements.
+* values.targetField: elements.
+* errors.targetField: estimation errors.
+
+This function has one additional property, 'k', which is the number of elements to report. The default is 10.
+
+Example:
+
+```json
+  {
+    "type" : "topk",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "topk_position_ss",
+    "params" : { }
+  }
+```
+
+**covariance**
+
+A covariance matrix of numeric values from N > 1 source fields, with no smoothing. Missing or invalid values are treated as 0.0. A row of missing values is ignored. The resulting covariance matrix is stored in `N * (N - 1)` fields following the naming pattern 'sourceField1.sourceField2.targetField'.
+
+If source fields contain multiple values, only the first value from each source field will be used.
+
+This implementation runs in a constant and small memory budget.
+
+Example:
+
+```json
+  {
+    "type" : "covariance",
+    "sourceFields" : [ "params.position_s", "position_rnd_1", "position_rnd_2" ],
+    "targetField" : "cov_position_d",
+    "params" : { }
+  }
+```
+
+**correlation**
+
+A correlation matrix of numeric values from N > 1 source fields. This implementation is based on the covariance function. The resulting correlation matrix is stored in `N * (N - 1)` fields following the naming pattern 'sourceField1.sourceField2.targetField'.
+
+Example:
+
+```json
+  {
+    "type" : "correlation",
+    "sourceFields" : [ "params.position_s", "position_rnd_1", "position_rnd_2" ],
+    "targetField" : "corr_position_d",
+    "params" : { }
+  }
+```
+
+**histogram**
+
+An approximate histogram of values and their counts in source fields, using the T-Digest algorithm. Results are stored as corresponding multiple values in 'means.targetField' (for double values) and 'counts.targetField' (for integer values).
+
+Example:
+
+```json
+  {
+    "type" : "histogram",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "histogram_position_ss",
+    "params" : { }
+  }
+```
+
+**sigmoid**
+
+This function uses hyperbolic tangent (tanh) to limit the impact of source values according to an s-shaped curve. The following parameters control the shape of the curve:
+
+* weight. controls the range of values. Default weight is 1.0, which means that the sigmoid function values will range between (-1, 1). E.g. weight = 2.0 means that values will range between (-2, 2).
+* intercept. sets the constant shift of function values. Default is 0, which means that sigmoid(0) = 0 and sigmoid(Inf) → 1. E.g. intercept = 2.0 means that sigmoid(0) = 2.0 and sigmoid(Inf) = 3.0.
+* slope. this parameter controls the slope of the function, i.e. how quickly it reaches saturation. Default value is 1.0. E.g. slope = 2 will cause the function to saturate quickly, slope = 0.1 will cause the function to saturate for larger values of source.
+* final. boolean, default is true. This controls how the sigmoid is applied to the source value. First, all numeric values from source fields are summed. Then, if final = false the current sum is passed to the sigmoid function and added to the previous total. If final = true then the current sum is added to the total and the sigmoid function is applied only at the end of the aggregation.
+
+Example:
+
+```json
+  {
+    "type" : "sigmoid",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "sigmoid_position_ss",
+    "params" : {
+        "weight" : 2.0,
+        "intercept" : 10.0,
+        "slope" : 0.5,
+        "final" : true
+     }
+  }
+```
+
+## Logical Functions
+
+**when**
+
+A logical function where processing will continue only if this function evaluates to true.
+
+This function takes one additional property, 'expr', which is a JavaScript expression that must evaluate to a Boolean true/false. This property takes the same objects as the 'expr' function, described above. If this property is missing, the function will evaluate to true when any sourceField or targetField is present.
+
+Example:
+
+```json
+  {
+    "type" : "when",
+    "sourceFields" : [ "params.position_s" ],
+    "params" : {
+      "expr" : "parseFloat(params_position_s) < 3"
+    }
+  }
+```
+
+**unless**
+
+A logical function where processing will continue only if this function evaluates to false.
+
+This function takes one additional property, 'expr', which is a JavaScript expression that must evaluate to a Boolean true/false. This property takes the same objects as the 'expr' function, described above. If this property is missing, the function will evaluate to false when any sourceField or targetField is present.
+
+Example:
+
+```json
+  {
+    "type" : "unless",
+    "sourceFields" : [ "params.position_s" ],
+    "params" : {
+      "expr" : "parseFloat(params_position_s) > 1"
+    }
+  }
+```
+
+## Scripting Functions
+
+**script**
+
+A scripted function. Scripts are evaluated as snippets, not as a function, and are expected to operate directly on the source event and the result. Their final values are discarded, since snippets in JavaScript are treated as expressions that evaluate to a specific value.
+
+This function ignores the sourceFields and targetFields properties. Instead, the snippets are passed the following properties:
+
+* startScript: the script defined is executed when the aggregation for the next unique tuple starts.
+* aggregateScript: the script defined is executed for each source event.
+* finishScript: the script is defined when all events for the current tuple have been processed and the result is about to be returned.
+
+Example:
+
+```json
+  {
+    "type" : "script",
+    "sourceFields" : [ ],
+    "params" : {
+      "aggregateScript" : "result.addField('script_event_id_ss', event.getFieldValue('id'));"
+    }
+  }, {
+    "type" : "script",
+    "sourceFields" : [ ],
+    "params" : {
+      "aggregateScript" : "event.addField('position_rnd_1', event.getFieldValue('params.position_s') + 1.0 - Math.random());event.addField('position_rnd_2', event.getFieldValue('params.position_s') + 5.0 - Math.random() * 10.0);"
+    }
+  }
+```
+
+**expr**
+
+A script expression. The script is evaluated as a snippet, and its final value is assigned to the targetField.
+
+This function has only one additional property, 'expr', which contains the script expression.
+
+Example:
+
+```json
+  {
+    "type" : "expr",
+    "sourceFields" : [ "query_s", "filters_s" ],
+    "targetField" : "expr_s",
+    "params" : {
+      "expr" : "v = ''; if (value != null) v = value + ' '; v + query_s + '_' + filters_s"
+    }
+  }, {
+    "type" : "expr",
+    "sourceFields" : [ "params.position_s" ],
+    "targetField" : "expr_d",
+    "params" : {
+      "expr" : "v = 0; if (value != null) v = parseFloat(value); v + parseFloat(params_position_s)"
+    }
+  }
+```
+
+## Special Functions
+
+**noop**
+
+A function that does nothing (is non-operational). This is a fallback function when invalid function parameters or execution errors are encountered.
+
+Example:
+
+```json
+{
+  "type" : "noop"
+}
+```

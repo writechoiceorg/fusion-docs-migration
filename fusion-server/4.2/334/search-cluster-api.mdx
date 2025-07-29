@@ -1,0 +1,198 @@
+---
+title: "Search Cluster API"
+permalink: "334"
+---
+
+
+The search cluster API allows users to connect Fusion with any existing Solr instances in a Zookeeper-managed cluster.
+
+<Note>
+Cluster operations are only supported when connecting through Zookeeper.
+</Note>
+
+Once the Solr cluster is registered with Fusion, requests can be proxied through Fusion to it. The possible requests include search requests, but they can also be content indexing requests, such as the content crawled with a connector.
+
+Once the searchCluster has been configured, the user can create Fusion collections that refer to the Solr collections that have been previously defined.
+
+## Background
+
+Solr has three different approaches on how you can control visibility of new documents in search:
+
+* You can `commit` manually
+* You can rely on Solr’s `autoCommit` setting
+* You can specify `commitWithin` when adding documents
+
+Fusion uses `commitWithin` to avoid relying on specific Solr side configurations. Fusion controls `commitWithin` on a per-collection basis so you can have multiple collections with different commit frequencies (for example, product documents can be committed more often than signals).
+
+Global setting for `commitWithin`:
+
+```bash
+curl http://localhost:8765/api/v1/configurations/com.lucidworks.apollo.solr.commitWithin
+10000
+```
+
+`com.lucidworks.apollo.solr.commitWithin` is a global configuration property that defines default `commitWithin` for all documents added through Fusion. Every time you create a new collection in Fusion, per-collection `commitWithin` is initialized as the global default.
+
+**Per-collection setting**: You can either specify this property when creating collection or update it with `PUT` later.
+
+```
+# create collection without specifying commitWithin
+sh> curl -H 'Content-type: application/json' -X POST 'http://localhost:8765/api/v1/collections' -d '{"id" : "test"}'
+{
+  "id" : "test",
+  ...
+  "commitWithin" : 10000,
+  ...
+}
+
+# create collection and specify non default value
+sh> curl -H 'Content-type: application/json' -X POST 'http://localhost:8765/api/v1/collections' -d '{"id" : "test2", "commitWithin": 20000}'
+{
+  "id" : "test2",
+  ...
+  "commitWithin" : 20000,
+  ...
+}
+
+# update commitWithin at a runtime
+sh> curl -H 'Content-type: application/json' -X PUT 'http://localhost:8765/api/v1/collections/test' -d '
+{
+  "id" : "test",
+  "createdAt" : "2015-01-07T17:44:47.396Z",
+  "searchClusterId" : "default",
+  "commitWithin" : 20000,
+  "solrParams" : {
+    "name" : "test",
+    "numShards" : 1,
+    "replicationFactor" : 1
+  },
+  "type" : "DATA",
+  "metadata" : { }
+}'
+```
+
+## Search Cluster Definition Properties
+
+| Property | Description |
+| --- | --- |
+| id  *Required* | The ID of the search cluster. This is only required when creating a new cluster definition with a POST request. |
+| connectString  *Required* | The string to use to connect to the existing Solr cluster or standalone instance.  If the existing Solr is running in SolrCloud mode, use the connect string for the ZooKeeper ensemble.  If the existing Solr is running as a standalone instance, use the full URL for the Solr instance. |
+| cloud  *Required* | Defines if the "cluster" being defined is a SolrCloud cluster (**true**) or a standalone Solr instance (**false**). |
+| bufferFlushInterval  *Optional* | Defines how often to flush the buffer when writing to this cluster. If not defined, the system will default to 1000 milliseconds. |
+| bufferSize  *Optional* | Defines the size of the buffer. If not defined, the system will default to 100 items in the buffer. |
+| concurrency  *Optional* | Defines the maximum number of concurrent /parallel requests to Solr servers when Fusion index pipeline [Solr Indexer stage](/fusion-server/4.2/227/solr-indexer-stage) has property bufferDocsForSolr set to true. |
+| zkClientTimeout  *Optional* | The maximum amount of time to wait when communicating with the ZooKeeper ensemble for a SolrCloud instance. |
+| zkConnectTimeout  *Optional* | The maximum amount of time to wait when trying to connect to the ZooKeeper ensemble for a SolrCloud instance. |
+
+## Examples
+
+*Create a new search cluster that is an existing SolrCloud cluster:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"mySolrCluster", "connectString":"10.0.1.6:5001,10.0.1.6:5002,10.0.1.6:5003", "cloud":true}' https://FUSION_HOST:8764/api/searchCluster
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "mySolrCluster",
+  "connectString" : "10.0.1.6:5001,10.0.1.6:5002,10.0.1.6:5003",
+  "cloud" : true,
+}
+```
+
+*Create a 'cluster' that is a standalone Solr instance:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"myOtherSolrCluster", "connectString":"https://FUSION_HOST:8983/solr", "cloud":false}' https://FUSION_HOST:8764/api/searchCluster
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "myOtherSolrCluster",
+  "connectString" : "https://FUSION_HOST:8983/solr",
+  "cloud" : false,
+}
+```
+
+*Show the status of each node of 'mySolrCluster':*
+
+**REQUEST**
+
+```bash
+curl https://FUSION_HOST:8764/api/searchCluster/mySolrCluster/nodes
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "name" : "10.0.1.11:7574_solr",
+  "baseUrl" : "http://10.0.1.11:7574/solr",
+  "state" : "active"
+}, {
+  "name" : "10.0.1.8:7574_solr",
+  "baseUrl" : "http://10.0.1.8:7574/solr",
+  "state" : "active"
+} ]
+```
+
+*Show the system information for one named node:*
+
+**REQUEST**
+
+```bash
+curl http://10.0.1.8:8764/api/searchCluster/mySolrCluster/systemInfo?nodeName=10.0.1.8:7574_solr
+```
+
+**RESPONSE**
+
+```json
+{
+  "10.0.1.8:7574_solr" : {
+    "mode" : "solrcloud",
+    "lucene" : {
+      "solr-spec-version" : "4.8.0",
+      "lucene-spec-version" : "4.8.0"
+    },
+    "jvm" : {
+      "version" : "1.8.0_121 25.121-b13",
+      "name" : "Oracle Corporation Java HotSpot(TM) 64-Bit Server VM",
+      "processors" : 4,
+      "memory" : {
+        "raw" : {
+          "free" : 66736272,
+          "total" : 204800000,
+          "max" : 204800000,
+          "used" : 138063728,
+          "used%" : 67.4139296875
+        }
+      }
+    },
+    "system" : {
+      "name" : "Mac OS X",
+      "version" : "10.9.3",
+      "arch" : "x86_64",
+      "systemLoadAverage" : 2.130859375,
+      "committedVirtualMemorySize" : 2963378176,
+      "freePhysicalMemorySize" : 9321914368,
+      "freeSwapSpaceSize" : 1073741824,
+      "processCpuTime" : 313176000000,
+      "totalPhysicalMemorySize" : 17179869184,
+      "totalSwapSpaceSize" : 1073741824,
+      "openFileDescriptorCount" : 208,
+      "maxFileDescriptorCount" : 10240,
+      "uname" : "Darwin MacMini.local 13.2.0 Darwin Kernel Version 13.2.0: Thu Apr 17 23:03:13 PDT 2014; root:xnu-2422.100.13~1/RELEASE_X86_64 x86_64\n",
+      "uptime" : "15:48  up 3 days,  7:08, 7 users, load averages: 2.13 2.01 1.91\n"
+    }
+  }
+}
+```
+

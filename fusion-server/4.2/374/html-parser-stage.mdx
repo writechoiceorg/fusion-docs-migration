@@ -1,0 +1,72 @@
+---
+title: "HTML Parser Stage"
+permalink: "374"
+---
+
+This parser stage processes the following HTML elements:
+
+* `<title>`
+* `<body>` (with tags removed)
+* `<meta>`
+* `<a>` and `<link>`
+
+Additionally, you can configure [JSoup selectors](https://jsoup.org/cookbook/extracting-data/) to extract specific HTML and CSS elements from a document and map them to PipelineDocument fields.
+For example, you could use this to process navigational `DIV` elements one way, then process content-ful `DIV` elements another way.
+
+<Note>
+The HTML Transformation index pipeline stage is deprecated in favor of this parser stage.
+</Note>
+
+HTML and CSS elements can be selected for extraction into new documents or fields:
+
+* To create new documents from selected elements, configure `recordSelector`.
+* To create new fields from selected elements, configure `mappings`.
+
+Title, body, metadata, and links are only populated in the parent document. Both of these parameters support [JSoup selectors](https://jsoup.org/cookbook/extracting-data/), which provides a rich syntax for selecting HTML and CSS elements.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+### Example using HTML elements
+
+The following example retrieves all URL values for links with the CSS class `resources`.
+
+```html
+<p>For more information, consult the following resources:</p><br>
+<ul>
+  <li><a class="resources" href="https://example.com/books">Books on plants and animals</a></li>
+  <li><a class="resources" href="https://example.com/illustrations">Botanical illustrations</a></li>
+  <li><a href="https://example.com/mammals">Small mammal identification</a></li>
+</ul>
+```
+
+The following table provides an explanation of the example:
+
+| Parameter | Example value | Description |
+| --- | --- | --- |
+| **Select rule** | `a.resources` | The JSoup parser finds `<a>` link elements that are assigned the class `resources`. |
+| **Attribute to map** | `href` | The URL of each `<a>` link element, contained within the `href` attribute, is parsed. |
+| **Target field** | `resourceLinks_ss` | The Fusion field to which values are saved. |
+| **Multi-valued** | `false` | If `true`, the parser will save multiple values for the same element. In this case, the `<a>` link element can only contain one `href` value, so the example configuration is `false`. |
+
+<Note>
+In this example, the last link URL, which is for "Small mammal identification," lacks the `resources` class. As a result, it is not captured by this configuration.
+</Note>
+
+## HTML Content Extraction
+
+The Context Extraction setting in the HTML Parser has a special meaning.
+
+By default, when unchecked or false, the HTML parser will essentially attempt to extract the text of the entire HTML page as the text that will be used in the Solr document.
+
+However, when Content Extract is checked, or true, a set of heuristic rules are applied to attempt to automatically determine what node in the entire page is most likely to be the page content, based on the tree of nodes inside it and the text component of all the sub-nodes.
+
+This may be helpful when you have a variety of different page formats, and also significant text on the pages which is not useful to add to the documents, such as significant text in the page header or footer.
+
+However, since the algorithm is based on heuristics , it is possible that the results could change as the site is altered. When you need a high degree of certainty, we recommend that you use explicit rules of which nodes to extract to match your local configuration.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/parsers/html.mdx";
+
+<SchemaParamFields schema={schema}/>

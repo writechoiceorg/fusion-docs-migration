@@ -1,0 +1,185 @@
+---
+title: "url:tabs"
+permalink: "1201"
+---
+
+## Description
+
+The Url Tabs Directive by clicking on a tab will not add the filter to
+the URL it will redirect the user to '/action/tab_value' if the action
+attribute is present on the tag. If not it will just redirect to
+'/tab_value'.
+
+## Usage
+
+as element:
+
+```xml
+<url:tabs
+       response="{object}"
+       tabs="{string}"
+       [field-name="{string}"]
+       [all-label="{string}"]
+       [platform="{string}"]
+       [query="{string}"]
+       [count-number="{string}"]
+       [action="{string}"]>
+</url:tabs>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object |
+| tabs | **string** | The tabs to output. Specified as a comma separated list. When using filter tabs, you can either specify the actual filter name, or the actual filter name with an alternative display name. To substitute actual filter names with alternative display names use the following notation: 'programme=Programmes'. |
+| field-name  *(optional)* | **string** | The field to apply filters to when in 'filter' mode. |
+| all-label  *(optional)* | **string** | Label for the option to turn off all filters. If this attribute is specified, an additional link will be displayed to show all Results (e.g. not applying a Filter). |
+| platform  *(optional)* | **string** | The Platform to use when submitting the facet without any filters applied. This is used to to get the filter counts for the original query after a user clicks on a filter (e.g. drills down). |
+| query  *(optional)* | **string** | The name of the query object used to get the count values. |
+| count-number  *(optional)* | **string** | Specify how the number representing the count should be formatted. Optional values are 'plain', 'formatted' and 'rounded'. |
+| action  *(optional)* | **string** | Url to redirect. |
+
+## Events
+
+### tab_changed
+
+When the tab is changed on this directive an event called tab_changed
+will be fired with the name of the tab that is now active.
+
+This event can be listened to like so.
+
+```js
+$scope.$on('tab_changed', function(e, tab){
+     console.log('New Tab = ' + tab);
+});
+```
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope
+
+## Example
+
+#### Source
+
+```xml
+<search:platform var="platform" conf="platforms.test"></search:platform>
+<search:query var="query" parameters='*'></search:query>
+<h3 id="example_without-counts">Without Counts</h3>
+<url:tabs response="response" tabs="Day 1,Day 2" field-name="test1" all-label="All Records"></url:tabs>
+<hr />
+<h3 id="example_with-counts">With Counts</h3>
+<h4 id="example_with-counts_formatted-count-number">Formatted Count Number</h4>
+<url:tabs response="response" tabs="Day 1,Day 2,Day 3" field-name="test1" all-label="All Records" platform="platform" query="query" count-number="formatted"></url:tabs>
+<hr />
+<h4 id="example_with-counts_plain-count-number">Plain Count Number</h4>
+<urlrch:tabs response="response" tabs="Day 1,Day 2,Day 3" field-name="test1" all-label="All Records" platform="platform" query="query" count-number="plain"></urlrch:tabs>
+<hr />
+<h4 id="example_with-counts_rounded-count-number">Rounded Count Number</h4>
+<url:tabs response="response" tabs="Day 1,Day 2,Day 3,Day 4" field-name="test1" all-label="All Records" platform="platform" query="query" count-number="rounded"></url:tabs>
+<hr />
+
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    test1: {
+                        id:'test1',
+                        display:'test1',
+                        field:'test1',
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+
+                                },
+                                count: 1000,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 2000,
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 3',
+                                    act: 'Day 3',
+                                },
+                                count: 2990,
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 4',
+                                    act: 'Day 4',
+                                },
+                                count: 0,
+                            }
+
+                        ]
+                    },
+                    test2: {
+                        id:'test2',
+                        display:'test2',
+                        field:'test2',
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 20,
+                            }
+
+                        ]
+                    },
+                    empty: {
+                        id:'empty',
+                        display:'Empty',
+                        field:'empty',
+                        filters: []
+                    },
+                },
+                results: []
+            }
+
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/urlTabs.png)</Frame>

@@ -1,0 +1,251 @@
+---
+title: "series:result-list"
+permalink: "1083"
+---
+
+## Description
+
+To render information using fields from a result list you can use the
+Series Result List tag and use the label-field and value-field
+attributes. This tag must be nested in the
+[Chart Display tag](/app-studio/4.2/1056/chart-display).
+
+You can use the `response` attribute to load the data from the response
+or alternatively you can add a platform and this will get only the data
+the series needs to be rendered. You will also need to include the
+`query` directly on this tag if you wish for the user to be able to
+filter using the data of this series or alternatively add the `query` to
+the [Chart Display tag](/app-studio/4.2/1056/chart-display).
+
+For detail on how to change the color and background color see the demo
+below, for more detail on what you can change and set using CSS see
+[here.](http://www.highcharts.com/docs/chart-design-and-style/style-by-css)
+
+## Usage
+
+as element:
+
+```xml
+<series:result-list
+       response="{object}"
+       results="{object}"
+       platform="{string}"
+       label-field="{string|expression}"
+       value-field="{string|expression}"
+       [class-field="{string|expression}"]
+       type="{string}"
+       [title="{string|expression}"]
+       [show-marker="{string}"]
+       [url-field="{string}"]
+       [number-to-show="{number}"]
+       [action="{string}"]
+       [query="{object}"]
+       [selected-by-default="{boolean}"]
+       [select="{string}"]>
+</series:result-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object (please include either a response, results, or a platform not multiple!). |
+| results | **object** | An array of results (please include either a response, results, or a platform not multiple!). |
+| platform | **string** | The name of the platform to get the data from (please include either a response, results, or a platform not multiple!). |
+| label-field | **string]link:[expression** | Name of field containing the label. |
+| value-field | **string]link:[expression** | Name of field containing the value. |
+| class-field  *(optional)* | **string]link:[expression** | Name of the field containing the value you wish to add as a class to the point |
+| type | **string** | The type of chart to render. Types available - 'pie', 'line', 'area', 'column', 'bar', or 'scatter'. |
+| title  *(optional)* | **string]link:[expression** | The title of the series that appears in the legend and tooltip. |
+| show-marker  *(optional)* | **string** | Whether to show marker or not. |
+| url-field  *(optional)* | **string** | The field in the result list containing the URL from which to make the visualisation clickable. |
+| number-to-show  *(optional)* | **number** | Number of results to render on the graph. |
+| action  *(optional)* | **string** | The page/action to which clicking the chart should be submitted. By default the action points to the current page. |
+| query  *(optional)* | **object** | The search query from which to build links. |
+| selected-by-default  *(optional)* | **boolean** | Whether this series should be shown when the chart:display is using select-series="true" mode. Default: true. |
+| select  *(optional)* | **string** | How the data should be filtered when clicking on a part of the chart, a valid query must be present.  Valid values:  * **false**  User selects a filter by clicking the value;  **(default)**  * **multiselect**  Supports selecting multiple filters that get combined with an 'OR'.  * **multiselect-instant**  Supports selecting multiple filters that get combined with an 'OR', filters will be applied automatically. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_tooltip-tag">Tooltip Tag</h3>
+<chart:display response="response" title="Physical Activity">
+    <series:result-list response="response" label-field="name" value-field="runs" type="column"></series:result-list>
+    <series:result-list response="response" label-field="name" value-field="rides" type="line"></series:result-list>
+    <series:result-list response="response" label-field="name" value-field="swims" type="area"></series:result-list>
+</chart:display>
+<div id="colour-demo">
+    <h3 id="example_colour">Colour (since 0.3.0)</h3>
+    <p>Add an ID to the element wrapping your chart and configure the background colour and series colours like so.</p>
+    <pre>
+#colour-demo .highcharts-color-0{
+fill:pink;
+stroke:pink;
+}
+#colour-demo .highcharts-color-1{
+fill:yellow;
+stroke:yellow;
+}
+#colour-demo .highcharts-color-2{
+fill:purple;
+stroke:purple;
+}
+#colour-demo .highcharts-background{
+fill:#f5f0f0;
+}
+</pre>
+    <p>For more detail on what you can change and set using CSS see <a href="http://www.highcharts.com/docs/chart-design-and-style/style-by-css" target="_blank">here.</a></p>
+    <chart:display response="response" title="Physical Activity">
+        <series:result-list response="response" label-field="name" value-field="runs" type="column"></series:result-list>
+        <series:result-list response="response" label-field="name" value-field="rides" type="line"></series:result-list>
+        <series:result-list response="response" label-field="name" value-field="swims" type="area"></series:result-list>
+    </chart:display>
+</div>
+<div id="class-field">
+    <h3 id="example_class-field">Class Field</h3>
+    <p>Add an ID to the element wrapping your chart and configure the point based on the content of the class field you provide.</p>
+    <pre>
+    #class-field .athlete{
+        fill:teal;
+        stroke:teal;
+    }
+    #class-field .iron-man{
+        fill:red;
+        stroke:red;
+    }
+    #class-field .cyclist{
+        fill:blue;
+        stroke:blue;
+    }
+    </pre>
+    <p>For more detail on what you can change and set using CSS see <a href="http://www.highcharts.com/docs/chart-design-and-style/style-by-css" target="_blank">here.</a></p>
+    <chart:display response="response" title="Physical Activity">
+        <series:result-list response="response" label-field="name" value-field="runs" type="column" class-field="type"></series:result-list>
+    </chart:display>
+```
+
+```css
+#colour-demo .highcharts-color-0 {
+    fill: pink;
+    stroke: pink;
+
+    colour-demo .highcharts-color-1 {
+        fill: yellow;
+        stroke: yellow;
+
+        colour-demo .highcharts-color-2 {
+            fill: purple;
+            stroke: purple;
+
+            colour-demo .highcharts-background {
+                fill: #f5f0f0;
+
+
+                class-field .athlete {
+                    fill: teal;
+                    stroke: teal;
+
+                    class-field .iron-man {
+                        fill: red;
+                        stroke: red;
+
+                        class-field .cyclist {
+                            fill: blue;
+                            stroke: blue;
+
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                name:{
+                                    val:'John',
+                                },
+                                runs: {
+                                    val:20,
+                                    },
+                                rides:{
+                                    val:30,
+                                    },
+                                swims:{
+                                    val:2,
+                                    },
+                                type:{
+                                    val:'cyclist'
+                                }
+                            }
+                        },
+
+                    },
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    val:'Paul',
+                                    },
+                                runs: {
+                                    val:50,
+                                    },
+                                rides:{
+                                    val:20,
+                                    },
+                                    type:{
+                                    val:'athlete'
+                                }
+                            }
+                        },
+
+                        hits: {
+                            act: ['Hits', 264]
+                        }
+                    },
+                    {
+                        result: {
+                            fields: {
+                                name:{
+                                    val:'dave',
+                                },
+                                runs: {
+                                    val:20,
+                                    },
+                                rides:{
+                                    val:30,
+                                    },
+                                swims:{
+                                    val:2,
+                                    },
+                                    type:{
+                                    val:'iron man'
+                                }
+                            }
+                        },
+
+                    },
+
+                    ]
+            }
+
+            ResponseService.setResponse('response',$scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/seriesResultList.png)</Frame>

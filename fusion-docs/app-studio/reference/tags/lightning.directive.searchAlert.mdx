@@ -1,0 +1,42 @@
+---
+title: "search:alert"
+permalink: "1174"
+---
+
+## Description
+
+Creates an alert box with the transcluded content
+
+## Usage
+
+as element:
+
+```xml
+<search:alert>
+</search:alert>
+```
+
+## Example
+
+#### Source
+
+```xml
+<tk-example>
+    <search:alert>Did you mean the shop <a href="#">kitchensinks.co.uk</a>?</search:alert>
+    <search:alert styling="alertbox-secondary">Something you can probably ignore has happened.</search:alert>
+    <search:alert styling="alertbox-negative">Something bad has happened.</search:alert>
+    <search:alert styling="alertbox-warning">Something slightly worrying has happened.</search:alert>
+    <search:alert styling="alertbox-positive">Something good has happened.</search:alert>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs hljs-no-escape>&lt;search:alert&gt;...&lt;/search:alert&gt;</code>
+    <code hljs hljs-no-escape>&lt;search:alert styling="alertbox-secondary"&gt;...&lt;/search:alert&gt;</code>
+    <code hljs hljs-no-escape>&lt;search:alert styling="alertbox-negative"&gt;...&lt;/search:alert&gt;</code>
+    <code hljs hljs-no-escape>&lt;search:alert styling="alertbox-warning"&gt;...&lt;/search:alert&gt;</code>
+    <code hljs hljs-no-escape>&lt;search:alert styling="alertbox-positive"&gt;...&lt;/search:alert&gt;</code>
+</tk-code-wrapper>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchAlert.png)</Frame>

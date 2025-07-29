@@ -1,0 +1,381 @@
+---
+title: "SharePoint V2"
+description: "Connector Configuration Reference"
+permalink: "70"
+---
+
+Latest version: v4.0.0
+
+Compatible with Fusion version: 5.1.0 through 5.5.2
+
+The SharePoint connector retrieves content and metadata from an on-premises SharePoint repository.
+
+<Note>
+
+Deprecation and removal notice
+
+This connector is deprecated as of June 19, 2023 and is removed or expected to be removed as of January 31, 2024. The SharePoint V2 connector is not compatible with Fusion 5.6 and later, regardless of the removal date. Use the SharePoint Optimized V2 connector instead.
+
+For more information about deprecations and removals, including possible alternatives, see [Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+
+</Note>
+
+
+
+This connector supports the following SharePoint server versions:
+
+* Microsoft SharePoint 2013
+* Microsoft SharePoint 2016
+* Microsoft SharePoint 2019
+* Microsoft SharePoint Online
+
+## Configuration
+
+This section specifies the configuration properties for the SharePoint V2 connector.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+### Web applications
+
+<Tip>
+**Important**
+
+At least one web application must be defined in the configuration, which represents the SharePoint web application to crawl.
+</Tip>
+
+
+
+| Property | Description |
+| --- | --- |
+| Web Application name | Unique name of the web application in the specific configuration. Required field. Type: string. For example, `webApp1`. |
+| Web Application URL | URL of the web application. Required field. For example, `https://myWebApplication1`. |
+| Site Collection List | List of site collection paths. For example, if the **site collection URL** is `https://webApplication/sites/MySiteCollection`, the **site collection path** is `/sites/MySiteCollection` (which is the last portion of the URL). Multiple paths can be entered. |
+| SharePoint List or libraries in the site collection | A set of list or library names within the site collection to crawl. For example, **Documents**. |
+| SharePoint webs | List of web names to crawl within the parent site collecton. |
+| SharePoint List or library name | Name of a list or library under the SharePoint web context. For example, **Documents**. |
+| SharePoint Folders | Folders within the list to crawl. |
+| Excluded Site Collections | List of site collections to exclude from the crawl. <Note> Exclusions can improve performance. </Note>
+
+ |
+| Included file extensions | Attachments with a file extension from this list are included (and indexed) when filtering occurs. For example, `.txt`. <Note> Attachments are the only object types with file extensions. </Note>
+
+ |
+| Excluded file extensions | Attachments with a file extension from this list are excluded (and discarded) when filtering occurs. For example, `.txt`. |
+| Inclusive regexes | Regular expressions (regex) defined to index SharePoint objects including sites, lists, items, and attachments. The SharePoint object URL is used to match the regular expressions. |
+| Exclusive regexes | Regular expressions (regex) defined to discard SharePoint objects including sites, lists, items, and attachments. The SharePoint object URL is used to match the regular expressions. |
+
+### Authentication
+
+<Tip>
+**Important**
+
+Select only one authentication method for the configuration.
+</Tip>
+
+
+
+#### Windows NT LAN Manager (NTLM) authentication
+
+| Property | Description |
+| --- | --- |
+| User | User name of the authenticating account |
+| Password | Password of the authenticating account |
+| Domain | Domain in which the client workstation has membership |
+| Workstation | Client workstation name |
+
+#### Forms-based authentication (FBA)
+
+| Property | Description |
+| --- | --- |
+| Username | User name created in the membership database |
+| Password | Password of the user name created in the membership database |
+
+#### SharePoint online authentication
+
+| Property | Description |
+| --- | --- |
+| SharePoint online account | Valid SharePoint account |
+| Password | SharePoint online account password |
+| Microsoft login URL | URL of the Microsoft login server |
+
+#### App-only authentication (OAuth)
+
+| Property | Description |
+| --- | --- |
+| Azure AD (Active Directory) client ID | Azure client ID of the application |
+| Azure AD tenant | Office365 tenant name |
+| Azure AD client secret | Azure client secret of the client ID |
+| Azure AD login endpoint | Login URL for authentication |
+
+#### App-only authentication (OAuth) with private key
+
+| Property | Description |
+| --- | --- |
+| Azure AD (Active Directory) client ID | Azure client ID of the application |
+| Azure AD tenant | Office365 tenant name |
+| Azure AD login endpoint | Login URL for authentication |
+| Azure AD PKCS12 key | The base64 string of the PKCS12 keystore loaded with the PFX (personal exchange format) certificate file supplied by Azure AD |
+| Azure AD PKCS12 keystore password | Password of the Azure AD PKCS12 keystore |
+
+#### Requirements to index all site collections
+
+The following conditions *must* be met to index site collections:
+
+* The authentication method must be one of the following:
+
+  + Windows NT LAN Manager (NTLM)
+  + SharePoint online
+  + App-only (OAuth)
+* Credentials must list *all* site collections. For:
+
+  + **NTLM.** Credentials must be an administrative account in the configuration.
+  + **SharePoint online.** Credentials must be a SharePoint admin account in the configuration, *not* a site collection admin account.
+  + **App-only (OAuth).** The application registered in the SharePoint instance must have a tenant scope.
+
+### Crawl searchable content
+
+For detailed information about enabling and crawling searchable content, see [Enable content on a site to be searchable](https://docs.microsoft.com/en-us/sharepoint/make-site-content-searchable).
+
+### Limit documents
+
+These properties limit the documents and how they are processed.
+
+| Property | Description |
+| --- | --- |
+| Fetch lists | If enabled:  * Fetches and indexes lists included in site collection. * Discards lists and associated items not included in site collection. |
+| Fetch list items | If enabled, retrieves and indexes list items. |
+| Fetch attachments | If enabled, retrieves and indexes item attachments. |
+| Index sites | If enabled, indexes sites. <Note> This option does not affect the list or subsites retrieval. </Note>
+
+ |
+| Index lists | If enabled, indexes lists. <Note> This option does not affect the list item retrieval. </Note>
+
+ |
+| Index empty lists | * If enabled, indexes lists with no items (empty lists). * If disabled, discards empty lists. |
+| Index folders | * If enabled, indexes folder items. * If disabled, discards folder items. |
+| Index taxonomy terms  (Experimental) | If enabled, indexes taxonomy terms from the default term store and places those terms in the content collection. |
+| Index Document Metadata | Indexes metadata for files and attachments that do *not* meet maximum or minimum size limits. <Note> Does *not* index the content of the documents. </Note>
+
+ |
+| Included List Base Types | If the **Fetch Lists** property is set to **true** *and* base type is:  * Specified, fetches only SharePoint lists with that base type. * Not specifed, fetches *all* Sharepoint lists.  Base list types are Document Library, Generic List, Issue, and Survey. |
+
+### Request settings
+
+| Property | Description |
+| --- | --- |
+| API query row limit | Number of items to retrieve per page. Default value is **500**. The connector paginates requests to retrieve list items. |
+| Changes API query row limit | Number of events to retrieve per page. Default value is **200**. The connector paginates requests to retrieve changes per site collection. |
+| User agent | Value of the `http` header `User-Agent` for each request. Default value is **ISV|Lucidworks|Fusion/1.0**. |
+
+### Security trimming configuration
+
+| Property | Description |
+| --- | --- |
+| Enable security trimming | If enabled, the connector indexes SharePoint groups and the role assignments of each object type. Object types are sites, lists, items, and attachments. |
+| ACL collection name | Access Control List (ACL) collection name. Role assignments and SharePoint groups are indexed in this collection. |
+
+#### Security filtering
+
+Security filtering in the SharePoint connector requires the ACL (LDAP) connector to function correctly.
+
+<Note>
+For more information, see [Active Directory Connector for ACLs V2 Configuration Reference](/fusion-connectors/69/active-directory-connector-for-ac-ls-v-2-configuration-reference).
+</Note>
+
+
+
+For content collection, the SharePoint connector indexes documents. The value in the `acl_ss` field in each document contains **roleAssignment IDs**, where the role assignments define each object.
+
+For the access control collection, the SharePoint connector indexes:
+
+* SharePoint groups that contain Active Directory (AD) users and groups
+* Role assignment
+
+  <Note>
+  The LDAP ACL connector indexes the AD users and AD groups to the same access control collection.
+  </Note>
+
+
+
+### Common properties
+
+#### Proxy options
+
+| Property | Description |
+| --- | --- |
+| Proxy URL | URL of proxy server |
+| Proxy username | User name to log in to the proxy server |
+| Proxy password | Password of the proxy username |
+
+#### Item count limit
+
+| Property | Description |
+| --- | --- |
+| Maximum output limit | Maximum number of indexed documents. Default value is **-1**, which specifies no maximum limit. |
+
+#### Item size limit
+
+| Property | Description |
+| --- | --- |
+| Maximum | Maximum byte size of an attachment |
+| Minimum | Minimum byte size of an attachment |
+
+#### Item retry options
+
+| Property | Description |
+| --- | --- |
+| Max retry attempts | Maximum of attempts to retry if an item fails. |
+| Retry delay | Number of seconds (delay) between retries if an item fails. |
+
+<Note>
+Other retry options are deprecated.
+</Note>
+
+
+
+#### HTTP timeout options
+
+| Property | Description |
+| --- | --- |
+| Read timeout | Number of milliseconds before timeout occurs. Value is passed to the `http` client. Default value is **300 000 ms**. |
+| Connection timeout | Number of milliseconds before a connection attempt times out. Value is passed to the `http` client. Default value is **6 000 ms**. |
+
+#### HTTP connection options
+
+| Property | Description |
+| --- | --- |
+| Maximum connections | Maximum number of connections available in the pool. Default value is **1000**. |
+| Maximum per route | Maximum number of connections per route in the same target URL. Default value is **200**. |
+| Ignore SSL (Secure Sockets Layer) validation exceptions | If enabled, the `http` client does not fail if the server certificate cannot be validated. Default value is **false**. |
+
+## Test NTLM permissions to successfully crawl a site collection
+
+<Note>
+This is only applicable to Sharepoint on-premise deployments.
+</Note>
+
+
+
+To verify the NTLM account has appropriate permissions to crawl a site collection using the SharePoint V2 connector:
+
+1. Copy the `check-ntlm-account-can-crawl-sharepoint-site-collection.ps1` PowerShell script below to a folder on your computer.
+
+```shell
+$site_col_url="https://your.sharepoint-site.com/sites/mysitecol"
+
+$cred = (Get-Credential)
+
+if (-not ([System.Management.Automation.PSTypeName]'ServerCertificateValidationCallback').Type)
+{
+$certCallback = @"
+    using System;
+    using System.Net;
+    using System.Net.Security;
+    using System.Security.Cryptography.X509Certificates;
+    public class ServerCertificateValidationCallback
+    {
+        public static void Ignore()
+        {
+            if(ServicePointManager.ServerCertificateValidationCallback ==null)
+            {
+                ServicePointManager.ServerCertificateValidationCallback +=
+                    delegate
+                    (
+                        Object obj,
+                        X509Certificate certificate,
+                        X509Chain chain,
+                        SslPolicyErrors errors
+                    )
+                    {
+                        return true;
+                    };
+            }
+        }
+    }
+"@
+    Add-Type $certCallback
+ }
+
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12;
+[ServerCertificateValidationCallback]::Ignore()
+
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Content-Type", "text/xml")
+$headers.Add("SOAPAction", "http://schemas.microsoft.com/sharepoint/soap/GetUpdatedFormDigestInformation")
+$headers.Add("X-RequestForceAuthentication", "true")
+$headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f")
+
+$body = "<?xml version=`"1.0`" encoding=`"utf-8`"?>`n<soap:Envelope xmlns:xsi=`"http://www.w3.org/2001/XMLSchema-instance`" xmlns:xsd=`"http://www.w3.org/2001/XMLSchema`" xmlns:soap=`"http://schemas.xmlsoap.org/soap/envelope/`">`n  <soap:Body>`n    <GetUpdatedFormDigestInformation xmlns=`"http://schemas.microsoft.com/sharepoint/soap/`" />`n  </soap:Body>`n</soap:Envelope>"
+
+$response = Invoke-RestMethod "${site_col_url}/_vti_bin/sites.asmx" -Method 'POST' -Headers $headers -Body $body -Credential $cred
+
+$digest_value = $response.Envelope.Body.GetUpdatedFormDigestInformationResponse.FirstChild.DigestValue
+
+$headers = New-Object "System.Collections.Generic.Dictionary[[String],[String]]"
+$headers.Add("Content-Type", "text/xml")
+$headers.Add("X-RequestForceAuthentication", "true")
+$headers.Add("X-RequestDigest", $digest_value)
+$headers.Add("Accept", "application/json")
+$headers.Add("X-FORMS_BASED_AUTH_ACCEPTED", "f")
+
+$body = @'
+<Request AddExpandoFieldTypeSuffix="true" SchemaVersion="14.0.0.0" LibraryVersion="16.0.0.0"
+         ApplicationName=".NET Library" xmlns="http://schemas.microsoft.com/sharepoint/clientquery/2009">
+    <Actions>
+        <ObjectPath Id="2" ObjectPathId="1"/>
+        <ObjectPath Id="4" ObjectPathId="3"/>
+        <Query Id="5" ObjectPathId="3">
+            <Query SelectAllProperties="false">
+                <Properties>
+                    <Property Name="Webs" SelectAll="true">
+                        <Query SelectAllProperties="false">
+                            <Properties/>
+                        </Query>
+                    </Property>
+                    <Property Name="Title" ScalarProperty="true"/>
+                    <Property Name="ServerRelativeUrl" ScalarProperty="true"/>
+                    <Property Name="RoleDefinitions" SelectAll="true">
+                        <Query SelectAllProperties="false">
+                            <Properties/>
+                        </Query>
+                    </Property>
+                    <Property Name="RoleAssignments" SelectAll="true">
+                        <Query SelectAllProperties="false">
+                            <Properties/>
+                        </Query>
+                    </Property>
+                    <Property Name="HasUniqueRoleAssignments" ScalarProperty="true"/>
+                    <Property Name="Description" ScalarProperty="true"/>
+                    <Property Name="Id" ScalarProperty="true"/>
+                    <Property Name="LastItemModifiedDate" ScalarProperty="true"/>
+                </Properties>
+            </Query>
+        </Query>
+    </Actions>
+    <ObjectPaths>
+        <StaticProperty Id="1" TypeId="{3747adcd-a3c3-41b9-bfab-4a64dd2f1e0a}" Name="Current"/>
+        <Property Id="3" ParentId="1" Name="Web"/>
+    </ObjectPaths>
+</Request>
+'@
+
+$response = Invoke-RestMethod "${site_col_url}/_vti_bin/client.svc/ProcessQuery" -Method 'POST' -Headers $headers -Body $body -Credential $cred
+$response | ConvertTo-Json -Depth 100
+
+```
+
+2. Change the value in the first line: `$site_col_url="https://your.sharepoint-site.com/sites/mysitecol"` to the URL of your site collection.
+3. Execute the script. If the result is:
+
+   * A JSON output of your site’s metadata, the account permissions are set correctly.
+   * An error such as a 403, 401, or other error, the account permissions are *not* set correctly. Set permissions correctly and run the script again to verify it executes successfully.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-sharepoint.mdx";
+
+<SchemaParamFields schema={schema}/>
+

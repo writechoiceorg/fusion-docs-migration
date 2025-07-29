@@ -1,0 +1,30 @@
+---
+title: "Apply Rules"
+description: "Query pipeline stage configuration specifications"
+permalink: "yx85m4"
+---
+
+This stage looks up rules that have been deployed to the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/tw7rlx/query-rewriting#collections) and matches them against the query. Matching rules that perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) are applied at this stage, while matching rules that perform [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) are applied by the [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage) stage later in the pipeline.
+
+<Note>
+To trigger a rule that contains a tag, specify the tagname in the request URL of the user search app. See [Easily define triggers in tags](/managed-fusion/5.9/oitb8y/general-configurations#tags) for more information.
+</Note>
+
+See [Rules](/managed-fusion/5.9/tw7rlx/query-rewriting) for additional details about how to configure this set of features.
+
+This stage supports [asynchronous processing](/managed-fusion/5.9/8qf1w6/query-pipelines#async).
+
+<Note>
+Although this stage is available without a Managed Fusion license, it is only effective after creating rules in Managed Fusion.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/apply-rules.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,92 @@
+---
+title: "ModalService"
+permalink: "1221"
+---
+
+## Description
+
+Twigkit service for registering and un-registering modals
+
+## Methods
+
+### close(name)
+
+Hides the modal in the view.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The ID of the modal to remove. |
+
+#### Example
+
+```js
+ModalService.close(name);
+```
+### onClose(name, callback, scope)
+
+When the modal's close event is fired the callback function will be called.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The name of the modal, if null the callback will fire whenever a modal is closed |
+| callback | Function | The function to be called when the cancel event is fired. |
+| scope | Object | The `$scope` object for unsubscribing to the event when the scope is destroyed. |
+
+#### Example
+
+```js
+ModalService.onClose('MyModal', function (modalId) {
+  console.log('Modal: 'modalId + ' has been closed');
+}, $scope);
+ModalService.close('my_modal');
+```
+
+### register(modal)
+
+Registers the modal to the factory
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| modal | string | The modal object. |
+
+#### Example
+
+```js
+ModalService.register(modal);
+```
+### show(name)
+
+Shows the modal in the view.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The ID of the modal to remove. |
+
+#### Example
+
+```js
+ModalService.show(name);
+```
+### unregister(name)
+
+Un-registers the modal removing it from the view and the factory.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The ID of the modal to remove. |
+
+#### Example
+
+```js
+ModalService.unregister(name);
+```

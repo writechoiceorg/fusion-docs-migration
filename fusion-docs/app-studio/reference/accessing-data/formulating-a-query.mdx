@@ -1,0 +1,213 @@
+---
+title: "Formulating a Query"
+permalink: "3125"
+---
+
+The Appkit Query tag (`<search:query>`) instantiates a search query that can be submitted to the underlying search platform.
+
+## Usage
+
+This example shows how to create a Query using the Query tag. The Query tag can use all applicable parameters from the query string (HTTP request) to create a Query object.
+
+As an example, if the URL of the page is `http://intranet/search?q=guidelines&rpp=10`, then the word 'guidelines' would be set as the query term, and the query would instruct the search engine to limit the results per page (rpp) to 10.
+
+This example shows how you can override the `rpp` (short form of the `results-per-page` attribute) to fix how many results should be displayed per page, or override the value specified in the URL query string. To do this, add the long-form name of the attribute to override to the Query tag:
+
+```xml
+<search:query var="myQuery" parameters="*" results-per-page="5" />
+```
+
+The resulting query object can be accessed using an angular expression in the HTML page on which it is located. For example, `{{myQuery}}`.
+
+You can also create a Query instance from another one using the from attribute for cloning the former:
+
+```xml
+<search:query var="query" from="otherQuery" results-per-page="5" />
+```
+
+## Query Parameters
+
+- `var (java.lang.String)`
+    This is the name of the variable in which the query object will be stored.  
+    Default: `query`
+
+- `parameters (java.lang.String)`
+    Parameters to use from the HTTP request to create the Query object. Set `parameters` to `*` to use all parameters. A comma-separated list of parameters to use is also valid.
+
+- `from (twigkit.model.Query)`
+    Create a new Query from existing Query object.
+
+<Note>
+Adding any of these query parameters means that the value is fixed for all queries, that is, the value overrides any parameters inherited from the URL query string.
+</Note>
+
+- `query (&q=) (java.lang.String)`
+    Use the query (or q) parameter to specify the query term to use. This will override default-query parameter of the Platform.
+
+- `modified-query (&mq=) (java.lang.String)`
+    Specify an alternative query that will be submitted to the search engine in place of the query parameter supplied by the user (but can include user submitted parameter). To the user it will appear as the query parameter had been used, but the modified-query will be submitted to the search engine.
+
+- `type (&t=) (java.lang.String)`
+    Specifies how to interpret multiple query terms. Takes one of three values: any (boolean OR the terms), all (boolean OR/AND the terms), or adv (interpret using search platform-specific advanced query language). For example, take the query apple ipod. With type="all" documents containing both the terms (for example, apple and ipod) will be returned, whereas with type="any" documents containing either term (for example, apple or ipod) will be returned. See special cases section below for type="adv" usage examples.  
+    Default: `any`
+
+- `results-per-page (&rpp=) (java.lang.Integer)`
+    The number of results to display per page.  
+    Default: 10
+
+- `max-results (&max=) (java.lang.Integer)`
+    The maximum number of results to evaluate.  
+    Default: -1, which means no upper limit
+
+- `page (&p=) (java.lang.Integer)`
+    Set the page of results to display. Default values is 1 (1-based index) which would display the first page of results (1 to getResultsPerPage).  
+    Default: 1
+
+- `facets (&fa=) (java.lang.String)`
+    Specifies which facets to evaluate and return. Specified as comma-separated list without spaces (for example, facets="cat,inStock"). Will override defaultFacets parameter of the Platform tag.
+
+- `fields (&fi=) (java.lang.String)`
+    A comma-separated list of fields that should be returned in the Response.
+
+- `sorts (&s=) (java.lang.String)`
+    Specifies fields and order for sorting. Sort order is specified by one of two characters: + for ascending and - for descending. To sort ascending by the field price, the sort would be specified as `sorts="+price"`.
+
+    Multilevel sorting is supported. To sort by multiple levels using the QueryTag use & to separate the values, for example, to sort by price ascending and then sku descending, use `sorts="+price&-sku"`. To do the same using the URL query string use multiple instances of the `s` parameter, for example, `?&s=+price&s=-sku`.
+
+- `view (&v=) (java.lang.String)`
+    Set which search engine view to use. Behavior will vary by installation.
+
+- `filters (&f=) (java.lang.String)`
+    Specifies filters to apply, specified as an ampersand (&) separated String. In the query string however there will be multiple `&f=` arguments. Filters are used to restrict field values in that appear in results. Also see [Alternative way to add Filters](#alternative-way-to-add-filters) below.
+
+- `facetsEnabled (java.lang.Boolean)`
+    Whether to calculate and return facets for the query. Behavior is platform dependent.
+
+- `custom (&c=) (java.lang.String)`
+    The custom attribute lets you send custom parameters to the underlying search platform. Parameters are specified using the format `parameter[value]` for a single parameter and corresponding value. Multiple parameters can be submitted with the QueryTag by separating them with & characters. For example:  
+
+- `custom="parameter1[value1]&parameter2[value2]"`  
+    To submit multiple custom parameters using the URL query string, use multiple instances of the `c` parameter. For example:  
+    `?c=parameter1[value1]&c=parameter2[value2]`
+
+### Short format
+
+Filters are specified using the format `fieldName[value]['display name']`. The `['display name']` part is optional in all cases.
+
+For example, adding `filters="locations['san francisco']"` to the Query tag restricts the results to those with `san francisco` appearing in the locations field.
+
+Multiple filters can be specified on the Query tag by using the separator characters &. For example, `filter="locations['san francisco']&people['obama']"` would restrict the results to those with the value `san francisco` appearing in the locations field and the value `obama` appearing the people field.
+
+Multiple filters can be specified with the URL query string by adding multiple f parameters:
+
+```
+?f=locations['san francisco']&f=people['obama']
+```
+
+<Tip>
+**Important**
+
+
+If the value is a String it should be surrounded by quotes, all other primitives and dates should have the quotes omitted see below (URL query parameter examples).
+</Tip>
+
+For example:
+
+* Filtering on String: `&f=stringField['My String']["String example"]`
+* Filtering on Integer:`&f=integerField[123]["Integer example"]`
+* Filtering on Double: `&f=doubleOrFloatField[123.45]["Double example"]`
+
+### Long format
+
+When the query value of the filter differs from the display value the format is slightly different to accommodate this extra information: `filters="fieldName[value]["display name"]`.
+
+### Range format
+
+Appkit supports range queries for numbers, dates and strings. For example `filters=salary[1000,100000]` will search the salary field for values between 1000 and 100000.
+
+### Date format
+
+To filter by date (on date fields allowing range queries) use the DateFilter format (in all cases the display name is optional):
+
+* To Filter on dates before the provided Date use: `filters=dateFieldName[,yyyy-MM-dd’T’HH:mm:ss]["Before the given date"]`
+* To Filter on dates after the provided Date use: `filters=dateFieldName[yyyy-MM-dd’T’HH:mm:ss,]["After the given date"]`
+* To Filter on dates within a given range use: `filters=dateFieldName[yyyy-MM-dd’T’HH:mm:ss,yyyy-MM-dd’T’HH:mm:ss]["Date range"]`
+* From 2.10 onwards, to exclude the upper or lower limit of a date range it is possible to replace the `[` and `]` with a `(` and `)`. For example: `filters=dateFieldName[yyyy-MM-dd’T’HH:mm:ss,yyyy-MM-dd’T’HH:mm:ss)["Date range excluding upper limit"]`
+
+## Invariant filters
+
+To configure a query with *invariant constraints*, you can add filter tags to the body of the query tag like so:
+
+```xml
+<search:query var="query" ... >
+    <query:filter field="myField" value="myValue"></query:filter>
+</search:query>
+```
+
+This constrains the query to all documents with the value "myValue" in "myField". It is not possible to use ranges with the `<query:filter>` tag. The value will always be interpreted as a string.
+
+See the [`query:filter`](/fusion/5.9/1070/query-filter) tag doc for available parameters.
+
+## Optional Operators
+
+Appkit supports combining filters using different logical operators (connectives).
+
+### Enabling Logical Disjunction for Filters (OR connectives)
+
+There are two ways of combining a set of filters using an inclusive disjunction where each filter represents an logically optional condition whilst keeping filters individually distinct. Each filter’s optional state is represented as being either 'value', 'field' or 'none', with the corresponding Java Enumerations below.
+
+### 'value' - Values within a given field
+
+Filters for the same field that are 'value' optional will be combined using an OR operator. This group of filters will then be combined with the rest of the filters using a logical AND.
+
+This would be the recommended approach when using checkboxes to select values within a facet. In that case the default behavior would be to allow the user to select multiple options which would be combined using an OR. This is encoded in the query URL using an asterisk after the filter value:
+
+```
+&f=foo['bar']&f=marx['groucho']*&f=marx['harpo']*
+```
+
+This would result in a query like: `(foo:bar AND (marx:groucho OR marx:harpo))`
+
+### 'field' - Fully optional condition
+
+To make a given filter’s condition fully optional you would use the `'field'` flag. This would mean that these filters are combined with the rest using an `OR`.
+
+This is encoded in the query URL using a tilde before the field name:
+
+```
+&f=foo['bar']&f=~marx['groucho']&f=~marx['harpo']*
+```
+
+This would result in a query like: `foo:bar) OR (marx:groucho) OR (marx:harpo`
+
+### 'none' - Logical Conjunction, default (AND)
+
+By default, individual filters (&f=) are applied to the query using logical conjunction (AND). This means that the documents returned must satisfy both filter conditions. This is the default connective.
+
+### Alternative way to add Filters
+
+Another way to add Filters to a Query is using dynamic attributes on the Query tag. Any parameters other than the ones detailed above will be treated as field names, and their corresponding value as a filter expression.
+
+For example, this Query tag would create a query from the URL query string and additionally add two hidden filters 1) the source field should contain the value FT and 2) the `bestbets` field should be true:
+
+```xml
+<search:query var="query" parameters="*" results-per-page="5" source="FT" bestbets="true" />
+```
+
+To add exclude filters prefix the filter name with not-. This would add a filter that excludes all documents where the source field contains the value FT:
+
+```xml
+<search:query var="query" parameters="*" not-source="FT" />
+```
+
+## Tag body
+
+Queries may include the [`query:filter`](/fusion/5.9/1070/query-filter) tag and the [`query:custom`](/fusion/5.9/1113/query-custom) tag in the body of a `search:query` tag to add invariant query filters or custom engine parameters, respectively.
+
+```xml
+<search:query var="query" parameters="*" maxResults="5">
+    <query:filter field="myField" value="myValue"></query:filter>
+    <query:custom name="facet.range" value="year"></query:custom>
+    <query:custom name="facet.mincount" value="1"></query:custom>
+</search:query>
+```

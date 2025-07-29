@@ -1,0 +1,351 @@
+export const schema = {
+  "type": "object",
+  "title": "Build Training Data",
+  "description": "Use this job to build training data for query classification by joining signals with catalog.",
+  "required": [
+    "id",
+    "fieldToVectorize",
+    "catalogPath",
+    "catalogFormat",
+    "signalsPath",
+    "outputPath",
+    "categoryField",
+    "catalogIdField",
+    "itemIdField",
+    "countField",
+    "analyzerConfig",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing labeled training data",
+      "hints": [
+        "dummy",
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Query Field",
+      "description": "Field containing query strings.",
+      "default": "query_s",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Signals Format",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "default": "solr",
+      "hints": [
+        "dummy"
+      ],
+      "minLength": 1
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Signal Data Filter Query",
+      "description": "Solr query to additionally filter signals. For non-solr data source use SPARK SQL FILTER QUERY under Advanced to filter results",
+      "default": "*:*",
+      "hints": [
+        "dummy"
+      ]
+    },
+    "sparkSQL": {
+      "type": "string",
+      "title": "Spark SQL filter query",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "default": "SELECT * from spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store model-labeled data to",
+      "hints": [
+        "dummy",
+        "hidden"
+      ]
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "dataOutputFormat": {
+      "type": "string",
+      "title": "Data output format",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "default": "solr",
+      "hints": [
+        "dummy"
+      ],
+      "minLength": 1
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "dummy",
+        "hidden"
+      ]
+    },
+    "partitionCols": {
+      "type": "string",
+      "title": "Partition fields",
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "catalogPath": {
+      "type": "string",
+      "title": "Catalog Path",
+      "description": "Catalog collection or cloud storage path which contains item categories."
+    },
+    "catalogFormat": {
+      "type": "string",
+      "title": "Catalog Format",
+      "description": "Spark-compatible format that contains catalog data (like 'solr', 'parquet', 'orc' etc)"
+    },
+    "signalsPath": {
+      "type": "string",
+      "title": "Signals Path",
+      "description": "Signals collection or cloud storage path which contains item categories."
+    },
+    "outputPath": {
+      "type": "string",
+      "title": "Output Path",
+      "description": "Output collection or cloud storage path which contains item categories."
+    },
+    "categoryField": {
+      "type": "string",
+      "title": "Category Field in Catalog",
+      "description": "Item category field in catalog."
+    },
+    "catalogIdField": {
+      "type": "string",
+      "title": "Item Id Field in Catalog",
+      "description": "Item Id field in catalog, which will be used to join with signals"
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Item Id Field in Signals",
+      "description": "Item Id field in signals, which will be used to join with catalog.",
+      "default": "doc_id_s"
+    },
+    "countField": {
+      "type": "string",
+      "title": "Count Field in Signals",
+      "description": "Count Field in raw or aggregated signals.",
+      "default": "aggr_count_i"
+    },
+    "topCategoryProportion": {
+      "type": "number",
+      "title": "Top Category Proportion",
+      "description": "Proportion of the top category has to be among all categories.",
+      "default": 0.5
+    },
+    "topCategoryThreshold": {
+      "type": "integer",
+      "title": "Minimum Count",
+      "description": "Minimum number of query,category pair counts.",
+      "default": 1,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Text Analyzer",
+      "description": "The style of text analyzer you would like to use.",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "build-training"
+      ],
+      "default": "build-training",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed",
+        "catalogPath",
+        "catalogFormat",
+        "signalsPath",
+        "outputPath",
+        "dataOutputFormat",
+        "partitionCols",
+        "sparkSQL"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "categoryField",
+        "catalogIdField",
+        "itemIdField",
+        "countField"
+      ]
+    },
+    {
+      "label": "Training Parameters",
+      "properties": [
+        "topCategoryProportion",
+        "topCategoryThreshold"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,122 @@
+export const schema = {
+  "type": "object",
+  "title": "Upload Model Parameters To Cloud",
+  "description": "Upload a trained model's parameters to cloud storage",
+  "required": [
+    "id",
+    "modelName",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelName": {
+      "type": "string",
+      "title": "Model name",
+      "description": "The model name of the Seldon Core deployment to upload (must be a valid lowercased DNS subdomain with no underscores).",
+      "maxLength": 30,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    },
+    "cloudPath": {
+      "type": "string",
+      "title": "Cloud Path",
+      "description": "Path to cloud storage location that will contain the saved parameters for this model - the model version will be appended to the filename at the end of the path string. Supports S3, GCS, or Azure Blob Storage URIs"
+    },
+    "cloudSecret": {
+      "type": "string",
+      "title": "Kubernetes secret name for cloud storage access",
+      "description": "Defines the Kubernetes secret that will be used to access cloud storage"
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-upload-model"
+      ],
+      "default": "argo-upload-model",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

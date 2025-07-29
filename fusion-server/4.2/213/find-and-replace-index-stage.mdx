@@ -1,0 +1,126 @@
+---
+title: "Find and Replace Index Stage"
+permalink: "213"
+---
+
+The Find and Replace stage uses exact string matching to standardize or remove a set of specific passages, phrases, or words from a document field.
+
+This stage is configured with one or more rules. Each rule specifies:
+
+* One or more text strings to search for matching text (phrases or words)
+* A *single* text string that is the replacement value
+
+<Tip>
+**Important**
+
+When the replacement string is empty, the system deletes the matched text from the document field.
+</Tip>
+
+Configure the Find and Replace stage in one of the following ways:
+
+* [Fusion blob store setup](#fusion-blob-store-setup)
+* [Fusion UI or REST API setup](#fusion-ui-or-rest-api-setup)
+
+### Fusion blob store setup
+
+Setting up the stage using Fusion’s blob store is referred to as **Find - List - Replace**.
+
+The general procedure for *each* find/list/replace action is:
+
+* Upload a file that contains a list of text passages to be standardized into the [Fusion Blob Store](/fusion-server/4.2/305/blob-store-api).
+* Each file:
+
+  + Contains one line for each text passage
+  + Has a `.lst` suffix
+
+The required rule properties to standardize the text are the:
+
+* Document field to scan
+* Name of the `.lst` file uploaded to the blob store
+
+  <Note>
+  The `.lst` suffix must be included in the file name designated in the rule.
+  </Note>
+
+
+* Value of the replacement text
+
+<Tip>
+**Important**
+
+Multiple `.lst` files can be uploaded and used to perform find/replace actions.
+</Tip>
+
+#### Example
+
+One example could be to remove the country information and replace it with the phrase: **country not displayed for security purposes** to make the data anonymous for reporting.
+
+* The document field to scan is **country**.
+* The name of the `.lst` file in this example is `country.lst`. An excerpt is:
+
+```
+Afghanistan
+Afrique
+Albania
+Albanie
+Alderney
+Algeria
+Algérie
+Allemagne
+America
+Amérique
+Amériques
+American Samoa
+Andorra
+Andorre
+Angleterre
+Anglo-Normandes
+Angola
+Anguilla
+Antigua and Barbuda
+Antigua et Barbuda
+Antilles
+Antilles Néerlandaises
+Arabie Saoudite
+Argentina
+Argentine
+Arménie
+Aruba
+```
+
+* The value of the replacement text is: **country not displayed for security purposes**.
+
+If the text of the passages scanned includes any of the items in the `country.lst` file, it is replaced with the phrase: **country not displayed for security purposes**.
+
+### Fusion UI or REST API setup
+
+Setting up the stage using the Fusion UI or REST API is referred to as **Find - Replace**.
+
+The Fusion UI access path is:
+
+* Sign in to Fusion.
+* Select the application.
+* Select **Indexing > Index Workbench**.
+* Select **Add a Stage**.
+* Select **Find and Replace** in the Field Transformation section.
+* Enter values in the fields as described in the [Configuration section](#configuration).
+
+    <Note>
+    The REST API uses the parameters specified below.
+    </Note>
+
+The required rule properties to standardize the text are the:
+
+* Document field to scan
+* List of find/replace pairs
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/find-and-replace.mdx";
+
+<SchemaParamFields schema={schema}/>

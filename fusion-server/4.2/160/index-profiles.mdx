@@ -1,0 +1,29 @@
+---
+title: "Index Profiles"
+permalink: "160"
+---
+
+Index profiles let your applications
+[send documents for indexing to a consistent endpoint](/how-to/865/import-data-with-the-rest-api)
+(the index profile endpoint) and change the underlying index pipeline as needed.
+
+An index profile is also a simple way to use one pipeline for multiple collections, without any one collection "owning" the pipeline. Associating a profile with an index pipeline, or an index pipeline and a collection, is simply a mapping.
+
+Finally, you can also specify configuration parameters for an index pipeline in the index profile.
+
+You can use the API or UI to manage index profiles.
+
+## Index Profiles in the API
+
+* [Index Profiles API](/fusion-server/4.2/348/index-profiles-api) (`/index-profiles`)
+
+  Create, read, update, and delete index profiles.
+* [Index API](/fusion-server/4.2/350/index-api) (`/index`)
+
+  Index data through an index profile by specifying the profile ID.
+
+## Index Profiles in the UI
+
+Index profiles are configured at **Indexing** > **Index Profiles**.
+
+<Frame>![Index Profiles](/assets/images/4.0/index-profile-menu.png)</Frame>

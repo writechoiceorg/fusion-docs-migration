@@ -1,0 +1,248 @@
+---
+title: "Form"
+permalink: "1033"
+---
+
+## Default Compact Form
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form01.png)</Frame>
+
+```html
+<form styling="form">
+    <fieldset>
+        <legend>A compact inline form (Default)</legend>
+
+        <input type="email" placeholder="Email">
+        <input type="password" placeholder="Password">
+
+        <label for="remember">
+            <input id="remember" type="checkbox"> Remember me
+        </label>
+
+        <button type="submit" styling="button">Sign in</button>
+    </fieldset>
+</form>
+```
+
+## Stacked
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form02.png)</Frame>
+
+```html
+<form styling="form form-stacked">
+    <fieldset>
+        <legend>A Stacked Form</legend>
+
+        <label for="email">Email</label>
+        <input id="email" type="email" placeholder="Email">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" placeholder="Password">
+
+        <label for="state">State</label>
+        <select id="state">
+            <option>AL</option>
+            <option>CA</option>
+            <option>IL</option>
+        </select>
+
+        <label for="remember" class="pure-checkbox">
+            <input id="remember" type="checkbox"> Remember me
+        </label>
+
+        <button type="submit" styling="button">Sign in</button>
+    </fieldset>
+</form>
+```
+
+## Aligned Form
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form03.png)</Frame>
+
+```html
+<form styling="form form-aligned">
+    <fieldset>
+        <legend>Aligned Form</legend>
+        <div styling="control-group">
+            <label for="name">Username</label>
+            <input id="name" type="text" placeholder="Username">
+        </div>
+
+        <div styling="control-group">
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="Password">
+        </div>
+
+        <div styling="control-group">
+            <label for="email">Email Address</label>
+            <input id="email" type="email" placeholder="Email Address">
+        </div>
+
+        <div styling="control-group">
+            <label for="foo">Supercalifragilistic Label</label>
+            <input id="foo" type="text" placeholder="Enter something here...">
+        </div>
+
+        <div styling="controls">
+            <label for="cb" styling="checkbox">
+                <input id="cb" type="checkbox"> I've read the terms and conditions
+            </label>
+
+            <button type="submit" styling="button pure-button-primary">Submit</button>
+        </div>
+    </fieldset>
+</form>
+```
+
+## Multi Column Form (Using Grid)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form04.png)</Frame>
+
+```html
+<form styling="form form-stacked">
+    <fieldset>
+        <div class="tk-rgrid-g">
+            <div class="tk-rgrid-u-1 tk-rgrid-u-md-1-3">
+                <label for="first-name">First Name</label>
+                <input id="first-name" class="tk-rgrid-u-23-24" type="text">
+            </div>
+
+            <div class="tk-rgrid-u-1 tk-rgrid-u-md-1-3">
+                <label for="last-name">Last Name</label>
+                <input id="last-name" class="tk-rgrid-u-23-24" type="text">
+            </div>
+
+            <div class="tk-rgrid-u-1 tk-rgrid-u-md-1-3">
+                <label for="email">E-Mail</label>
+                <input id="email" class="tk-rgrid-u-23-24" type="email" required="">
+            </div>
+
+            <div class="tk-rgrid-u-1 tk-rgrid-u-md-1-3">
+                <label for="city">City</label>
+                <input id="city" class="tk-rgrid-u-23-24" type="text">
+            </div>
+
+            <div class="tk-rgrid-u-1 tk-rgrid-u-md-1-3">
+                <label for="state">State</label>
+                <select id="state" styling="input-1-2">
+                    <option>AL</option>
+                    <option>CA</option>
+                    <option>IL</option>
+                </select>
+            </div>
+        </div>
+
+        <label for="terms" styling="checkbox">
+            <input id="terms" type="checkbox"> I've read the terms and conditions
+        </label>
+
+        <button type="submit" styling="button">Submit</button>
+    </fieldset>
+</form>
+```
+
+## Grouped Inputs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form05.png)</Frame>
+
+```html
+<form styling="form">
+    <fieldset styling="group">
+        <input type="text" styling="input-1-2" placeholder="Username">
+        <input type="text" styling="input-1-2" placeholder="Password">
+        <input type="email" styling="input-1-2" placeholder="Email">
+    </fieldset>
+
+    <fieldset styling="group">
+        <input type="text" styling="input-1-2" placeholder="A title">
+        <textarea styling="input-1-2" placeholder="Textareas work too"></textarea>
+    </fieldset>
+
+    <button type="submit" styling="button input-1-2">Sign in</button>
+</form>
+```
+
+## Input Sizing
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form06.png)</Frame>
+
+```html
+<form styling="form">
+    <input styling="input-1" type="text" placeholder="input-1"><br>
+    <input styling="input-2-3" type="text" placeholder="input-2-3"><br>
+    <input styling="input-1-2" type="text" placeholder="input-1-2"><br>
+    <input styling="input-1-3" type="text" placeholder="input-1-3"><br>
+    <input styling="input-1-4" type="text" placeholder="input-1-4"><br>
+</form>
+```
+
+## Rounded Inputs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form07.png)</Frame>
+
+```html
+<form styling="form">
+    <input type="text" styling="input-rounded">
+</form>
+```
+
+## Checkboxes and Radio Buttons
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form08.png)</Frame>
+
+```html
+<form styling="form">
+    <label for="option-one" styling="checkbox">
+        <input id="option-one" type="checkbox" value="">
+        Here's option one.
+    </label>
+
+    <label for="option-two" styling="radio">
+        <input id="option-two" type="radio" name="optionsRadios" value="option1" checked="">
+        Here's a radio button. You can choose this one..
+    </label>
+
+    <label for="option-three" styling="radio">
+        <input id="option-three" type="radio" name="optionsRadios" value="option2">
+        ..Or this one!
+    </label>
+
+    <h4>Checkboxes that can be styled</h4>
+    <input id="check1" type="checkbox" styling="styled-checkbox">
+    <label for="check1">Some label text</label>
+</form>
+```
+
+## Labelled Inputs
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/form09.png)</Frame>
+
+```html
+<p>Left Label</p>
+<div styling="labelled-input">
+    <div class="label grey">
+        <span class="content">http://</span></div>
+    <input type="text" placeholder="twigkit.com">
+</div>
+<hr>
+
+<p>Right Label</p>
+<div styling="labelled-input label-right input-1-3">
+    <input type="text" placeholder="Find something">
+    <div class="label grey">
+        <button styling="button">Search</button>
+    </div>
+</div>
+<hr>
+
+<p>Both</p>
+<div styling="labelled-input label-right">
+    <div class="label basic">
+        <span class="content">£</span>
+    </div>
+    <input type="text" placeholder="30">
+    <div class="label basic">
+        <span class="content">.00</span>
+    </div>
+</div>
+```

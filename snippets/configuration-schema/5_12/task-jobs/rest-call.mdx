@@ -1,0 +1,81 @@
+export const schema = {
+  "type": "object",
+  "title": "REST Call",
+  "description": "Run arbitrary REST/HTTP/Solr command",
+  "required": [
+    "id",
+    "callParams",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "callParams": {
+      "type": "object",
+      "title": "Call Parameters",
+      "required": [
+        "uri",
+        "method"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "title": "Endpoint URI"
+        },
+        "method": {
+          "type": "string",
+          "title": "Call method",
+          "description": "One of GET, POST, PUT, or DELETE",
+          "enum": [
+            "get",
+            "put",
+            "post",
+            "delete"
+          ]
+        },
+        "queryParams": {
+          "type": "object",
+          "title": "Query parameters",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "headers": {
+          "type": "object",
+          "title": "Request protocol headers",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "entity": {
+          "type": "string",
+          "title": "Request entity (as string)",
+          "hints": [
+            "code",
+            "lengthy"
+          ]
+        }
+      }
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "rest-call"
+      ],
+      "default": "rest-call",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

@@ -1,0 +1,131 @@
+---
+title: "facet:hierarchical"
+permalink: "1094"
+---
+
+## Description
+
+Hierarchical Facets for Solr.
+
+In order to correctly display a taxonomy as a hierarchical facet you
+need to configure the requisite Twigkit service to retrieve the data
+structure [configured in your Solr index][1].
+
+First you need to create a service configuration:
+
+```
+ /conf
+     /services
+         /hierarchical
+             /hierarchical.conf
+```
+
+The file 'hierarchical.conf' should be configured similar to the
+following example:
+
+```
+name: twigkit.search.solr.service.facet.GreedySolrHierarchicalFacetService
+platform: platforms.solr
+parents-suffix: _parent
+```
+
+> **platform** This specifies the configured platform where the taxonomy has
+> been indexed.
+
+> **parents-suffix** The suffix, that if appended to the facet’s fieldname
+> will designate the field containing parent node data. Will depend on how
+> the taxonomy data has been indexed.
+
+Example:
+
+```xml
+<search:platform var="platformHierarchical" conf="services.hierarchical"></search:platform>
+<search:facet facet-name="location" show="6" show-more="6">
+    <facet:hierarchical facet-name="location" platform="platformHierarchical" query="query"></facet:hierarchical>
+</search:facet>
+```
+
+## Usage
+
+as element:
+
+```xml
+<facet:hierarchical
+       query="{string}"
+       [facet-name="{string}"]
+       [platform="{string}"]
+       [count-number="{string}"]
+       [select="{string}"]
+       [max-characters="{Number}"]
+       [expand-root="{boolean}"]>
+</facet:hierarchical>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | **string** | The name of the query object. |
+| facet-name  *(optional)* | **string** | Facet name to use from the response object |
+| platform  *(optional)* | **string** | The name of the platform to use. |
+| count-number  *(optional)* | **string** | Specify how the number representing the count should be formatted. Optional values are 'plain', 'formatted' and 'rounded'. Rounded means the number is represented in a short format (2k for ~2000). Formatted means that the number is comma formatted (2,000,000 for 2000000).Default: 'formatted' |
+| select  *(optional)* | **string** | How to render each FacetFilter. 'click': User selects a filter by clicking the value; and 'mutliselect': Supports selecting multiple filters that get combined with an 'OR'. Default: 'click' |
+| max-characters  *(optional)* | **Number** | Limit display value to a certain number of characters, adding '…​' if maxCharacters is exceeded. |
+| expand-root  *(optional)* | **boolean** | If only one root filter exists, if this is set to true it will expand this filter showing the children. (Default:false). |
+
+## Example
+
+#### Source
+
+```xml
+<search:platform var="platform" conf="platforms.workflow.data.collection.google-directory"></search:platform>
+<search:query var="query" parameters='q' results-per-page="1"></search:query>
+<search:facet-list response="response" styling="facet-list facet-list-step facet-list-wrappedheader facet-list-wrappedheader-noborder">
+    <search:facet facet-name="test1" title="First Pass Files" collapsible="true">
+        <facet:hierarchical facet-name="test1" platform="platform" query="query"></facet:hierarchical>
+    </search:facet>
+</search:facet-list>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    test: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+
+                                },
+                                count: 100,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 200,
+                            }
+
+                        ]
+                    },
+                },
+                results: []
+            }
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```

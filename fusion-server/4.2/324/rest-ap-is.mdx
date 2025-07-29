@@ -1,0 +1,81 @@
+---
+title: "REST APIs"
+permalink: "324"
+---
+
+Fusion API services are designed to be accessed via Fusion’s authentication proxy module which is part of the Fusion UI service (default port 8764). All applications should use this method to access the API service:
+
+```
+https://FUSION_HOST:8764/api/<endpoint>
+```
+
+## List all Fusion component services
+
+The Fusion `introspect` endpoint lists basic information about endpoints and parameters for all Fusion endpoints,
+including the Connectors services endpoints:
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/introspect
+```
+
+## Assign Fusion request IDs
+
+Fusion automatically assigns each API request a Fusion request ID. Optionally, you can assign your own Fusion request IDs.
+
+In this example of a search, the request does not set the Fusion request ID. Fusion assigns one, in this case, `PdNfxc1V2o`:
+
+```bash
+curl -v -u USERNAME:PASSWORD http://127.0.0.1:8764/api/apps/Movie_Search/query/Movie_Profile?q=movieId_s:202
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 8764 (#0)
+* Server auth using Basic with user 'admin'
+> GET /api/apps/Movie_Search/query/Movie_Profile?q=movieId_s:202 HTTP/1.1
+> Host: 127.0.0.1:8764
+> Authorization: Basic YWRtaW46UGFzc3dvcmQxMjM=
+> User-Agent: curl/7.54.0
+> Accept: */*
+> fusion-request-id: Movie202
+>
+< HTTP/1.1 200 OK
+< Server: Jetty(9.3.8.v20160314)
+< fusion-request-id: PdNfxc1V2o
+< Content-Type: application/json;charset=UTF-8
+< x-fusion-query-id: f5KGn9KPvv
+< Set-Cookie: id=c114b816-df6f-4b17-97e0-bb87ef815bf0;Path=/;HttpOnly
+< Content-Length: 1707
+< Connection: close
+<
+* Closing connection 0
+(search result omitted)
+```
+
+Here, we assign the Fusion request ID `Movie202`:
+
+```bash
+curl -v -H 'fusion-request-id: Movie202' -u USERNAME:PASSWORD http://127.0.0.1:8764/api/apps/Movie_Search/query/Movie_Profile?q=movieId_s:202
+*   Trying 127.0.0.1...
+* TCP_NODELAY set
+* Connected to 127.0.0.1 (127.0.0.1) port 8764 (#0)
+* Server auth using Basic with user 'admin'
+> GET /api/apps/Movie_Search/query/Movie_Profile?q=movieId_s:202 HTTP/1.1
+> Host: 127.0.0.1:8764
+> Authorization: Basic YWRtaW46UGFzc3dvcmQxMjM=
+> User-Agent: curl/7.54.0
+> Accept: */*
+> fusion-request-id: Movie202
+>
+< HTTP/1.1 200 OK
+< Server: Jetty(9.3.8.v20160314)
+< fusion-request-id: Movie202
+< Content-Type: application/json;charset=UTF-8
+< x-fusion-query-id: f5KGn9KPvv
+< Set-Cookie: id=c114b816-df6f-4b17-97e0-bb87ef815bf0;Path=/;HttpOnly
+< Content-Length: 1707
+< Connection: close
+<
+* Closing connection 0
+(search result omitted)
+```
+
+With a Fusion request ID, you can trace requests in log files and [filter log file dashboards by the request ID](/how-to/668/use-dashboards-in-fusion-4-1#filter-in-a-logs-dashboard)

@@ -1,0 +1,133 @@
+{
+  "type": "object",
+  "title": "REST Query",
+  "description": "Add results of an REST (RPC) call to the document.",
+  "required": [
+    "params"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "params": {
+      "type": "object",
+      "title": "Call Parameters",
+      "required": [
+        "uri",
+        "method"
+      ],
+      "properties": {
+        "uri": {
+          "type": "string",
+          "title": "Endpoint URI"
+        },
+        "method": {
+          "type": "string",
+          "title": "Call method",
+          "description": "One of GET, POST, PUT, or DELETE",
+          "enum": [
+            "get",
+            "put",
+            "post",
+            "delete"
+          ]
+        },
+        "queryParams": {
+          "type": "object",
+          "title": "Query parameters",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "headers": {
+          "type": "object",
+          "title": "Request protocol headers",
+          "properties": {},
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "entity": {
+          "type": "string",
+          "title": "Request entity (as string)",
+          "hints": [
+            "code",
+            "lengthy"
+          ]
+        }
+      }
+    },
+    "debug": {
+      "type": "boolean",
+      "title": "Add Debugging Information",
+      "description": "Setting to true will add a number of properties to either the context (in the Query case) or the document (in the indexing case)",
+      "default": false
+    },
+    "hasNoSideEffects": {
+      "type": "boolean",
+      "title": "Run in simulation mode",
+      "description": "To run this stage in simulation mode, set to 'true'.",
+      "default": false
+    },
+    "mappingRules": {
+      "type": "array",
+      "title": "Mapping of Returned Values (as XPath Expressions) to Document Fields",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "target"
+        ],
+        "properties": {
+          "path": {
+            "type": "string",
+            "title": "XPath expression"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target field"
+          },
+          "append": {
+            "type": "boolean",
+            "title": "Append to Existing Values in Target Field",
+            "default": false
+          },
+          "xml": {
+            "type": "boolean",
+            "title": "Add as an XML Fragment",
+            "default": false
+          }
+        }
+      }
+    }
+  },
+  "category": "Document Filtering and Enrichment",
+  "categoryPriority": 7,
+  "unsafe": true
+}

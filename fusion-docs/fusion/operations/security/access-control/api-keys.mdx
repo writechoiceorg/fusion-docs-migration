@@ -1,0 +1,212 @@
+---
+title: "API Keys"
+permalink: "7zriph"
+---
+
+API Keys are an access control feature that allows users to create, store, and manage their API credentials in a secure manner. Only Fusion users with admin permissions can manage API Keys.
+
+You can use an API key instead of a username and password combination to power your search application or operations.
+Pass your API key to Fusion using either `apiKey` or `x-api-key`, as in these examples:
+
+```bash
+curl -H "x-api-key: API_KEY" "https://FUSION_HOST/api/query/status"
+curl -H "apiKey: API_KEY" "https://FUSION_HOST/api/query/status"
+curl https://FUSION_HOST/api/query/status?apiKey=API_KEY
+```
+
+There isn’t a hard limit on the amount of API Keys you can create.
+
+<Tip>
+**Important**
+
+
+API keys require an **apikey** realm in Fusion to work. If your Fusion cluster was created prior to Fusion 5.6.0, it lacks the required realm for API keys. Upgrading to Fusion 5.6.0 through 5.10.0 does not create the realm automatically.
+
+For more information, see [Create an apikey realm](#manual-realm).
+</Tip>
+
+
+## Manage API keys in the Fusion UI
+
+You can create, delete, and view the names of API keys in the UI:
+
+1. Navigate to **System > Access Control > API Keys**.
+2. Select **Add API Key**.
+3. Give the API key a name.
+4. Assign the appropriate roles to give the API key the correct permissions for your search application.
+5. Select **Generate Key**.
+6. Copy the API key that appears. Save this key in a secure location.
+
+<Warning>
+**Caution**
+
+API keys are treated like an automatically generated password. They are only visible during the key creation and do not display again. You must copy and securely store the API key to see it again after creation.
+</Warning>
+
+
+
+## Manage API keys with the API
+
+You can use `GET`, `POST`, and `DELETE` HTTP requests to manage your API keys. The following examples use an API key to authenticate. To use an API key in an API request, use the `x-api-key` HTTP request header.
+
+### Create a new API key
+
+Use a `POST` HTTP request to create a new API key. Assign the appropriate roles to give the API key the correct permissions for your search application.
+
+<Warning>
+**Caution**
+
+API keys are treated like an automatically generated password. They are only visible during the key creation and do not display again. You must copy and securely store the API key to see it again after creation.
+</Warning>
+
+
+
+Request
+
+```bash
+curl -H "x-api-key: API_KEY" -X POST "https://FUSION_HOST:FUSION_PORT/api/api-key" -d '
+{
+  "name": "searchaccess",
+  "id": "api-key-searchaccess-16744867518441",
+  "roles": ["rules", "search-template", "search"]
+}
+'
+```
+
+Response
+
+```json
+{
+  "name": "searchaccess",
+  "id": "api-key-searchaccess-16744867518441",
+  "key": "API_KEY",
+  "roles": [
+    "rules", "search-template", "search"
+  ],
+  "createdAt": "2023-01-23T15:12:32Z"
+}
+```
+
+<Note>
+The value of the `key` field is the API key.
+</Note>
+
+
+### List all available API keys
+
+Use a `GET` HTTP request to view all API keys.
+
+The API key values are not included in the response. You can only access API keys at the time of creation.
+
+Request
+
+```bash
+curl -H "x-api-key: API_KEY" -X GET "https://FUSION_HOST:FUSION_PORT/api/api-key"
+```
+
+Response
+
+```json
+[{
+  "name": "searchaccess",
+  "id": "api-key-searchaccess-16744867518441",
+  "createdAt": "2023-01-23T15:12:32Z",
+  "roles": ["rules", "search-template", "search"]
+}, {
+  "name": "adminaccess",
+  "id": "api-key-test-5-16630249022972",
+  "createdAt": "2022-09-12T23:21:42Z",
+  "roles": ["admin"]
+}]
+```
+
+### Get details about an API key
+
+Use a `GET` HTTP request to get the details of a specific API key. You must supply the ID of the API key as part of your request URL.
+
+Request
+
+```bash
+curl -H "x-api-key: API_KEY" -X GET "https://FUSION_HOST:FUSION_PORT/api/api-key/API_KEY_ID"
+```
+
+Response
+
+```json
+{
+  "name": "searchaccess",
+  "id": "api-key-searchaccess-16744867518441",
+  "createdAt": "2023-01-23T15:12:32Z",
+  "roles": ["rules", "search-template", "search"]
+}
+```
+
+### Delete an API key
+
+Use a `DELETE` HTTP request to delete a specific API key. You must supply the ID of the API key as part of your request.
+
+The request returns an HTTP `200 OK` status code when the API key is successfully deleted.
+
+Request
+
+```bash
+curl -H "x-api-key: API_KEY" -X DELETE "https://FUSION_HOST:FUSION_PORT/api/api-key/API_KEY_ID"
+```
+
+## Create an apikey realm
+
+<Note>
+This section only applies to Fusion clusters created prior to Fusion 5.6.0, but have since been updated to 5.6.0 through 5.10.0.
+</Note>
+
+API keys require an **apikey** realm in Fusion to work. If your Fusion cluster was created prior to Fusion 5.6.0, it lacks the required realm for API keys. Upgrading to Fusion 5.6.0 through 5.10.0 does not create the realm automatically.
+
+As a result, when you use an API key, you’ll receive an HTTP `401 Unauthorized` status code:
+
+```json
+{
+  "service": "proxy",
+  "error": "unauthorized",
+  "path": "/api/query/status",
+  "timestamp": "2023-01-25T18:01:44.059096"
+}
+```
+
+In order to use API keys with an upgraded Fusion cluster, you must create the **apikey** realm using a `POST` HTTP request.
+
+This cannot be done in the Fusion UI.
+
+Request
+
+```bash
+curl -u USERNAME:PASSWORD -X POST "https://FUSION_HOST:FUSION_PORT/api/realm-configs" -H 'Content-type: application/json' -d '
+{
+  "realmType": "apikey",
+  "name": "apikey",
+  "enabled": true
+}
+'
+```
+
+After creating the **apikey** realm, you can use API keys to perform API requests as expected.
+
+### Examples
+
+Using an API key for a GET request:
+
+```bash
+curl --request GET \
+  --url https://fusion_host.com/api/query-stage-plugins \
+  --header 'Accept: application/json' \
+  --header 'x-api-key: 123'
+```
+
+Using an API key for a POST request:
+
+```bash
+curl --request POST \
+  --url https://fusion_host.com/api/query/id/ \
+  --header 'Accept: application/*, text/*' \
+  --header 'Content-Type: application/json' \
+  --header 'x-api-key: 123'
+```

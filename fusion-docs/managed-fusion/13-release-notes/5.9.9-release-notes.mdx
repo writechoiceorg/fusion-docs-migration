@@ -1,0 +1,92 @@
+---
+title: "Managed Fusion 5.9.9"
+permalink: "c28ch8"
+---
+
+Released on January 29, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) delivers essential security enhancements, including the latest updates for Kafka and key improvements for future-ready protection, plus bug fixes.
+
+## Key highlights
+
+### Enhanced Security and Future-Ready Safeguards
+
+With the Managed Fusion 5.9.9 release, we’ve upgraded Kafka to version 3.7.0, incorporating the latest security updates to strengthen your platform’s resilience. Additionally, we’ve implemented critical updates for Managed Fusion’s Webapps, Templating, and API Gateway services, ensuring robust protection for your data.
+
+Looking ahead, we’ve introduced enhancements to streamline and expedite the delivery of future security updates, providing you with a safer Managed Fusion environment.
+
+### Secure deployments with immutable root file system
+
+Fusion now supports a read-only root file system to safeguard against unauthorized modifications, protecting your deployment against malicious software and other attacks.
+Most services operate efficiently in this mode, and for components that need write access, a separate writable mount is available.
+
+Read-only mode is enabled by default for some Managed Fusion services.
+See [Read-only root file system](/managed-fusion/5.9/yu6e93/security#read-only-root-file-system) for a list of services that support it or have it enabled by default.
+It should only be enabled for services that do not require CRUD access.
+Contact Lucidworks to customize how read-only root file system access is configured for your Managed Fusion deployment.
+
+## Bug fixes
+
+* This release improves compatibility between Solr and Managed Fusion’s [LWAI Prediction index pipeline stage](/fusion/5.9/bzik28/lwai-prediction) to prevent errors about incompatible characters in field names.
+
+* The Managed Fusion API realm can now authenticate when an API key is passed via an `apiKey` parameter.
+
+    Previously, the key could only be passed in the header, as in these examples:
+
+    ```bash
+    curl -H "x-api-key: API_KEY" "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query/status"
+    curl -H "apiKey: API_KEY" "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query/status"
+    ```
+
+    Now you can also pass the key as a parameter, like this:
+
+    ```bash
+    curl https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query/status?apiKey=API_KEY
+    ```
+
+* The [Configurations](/fusion/5.11/342/configurations-api) and [ZooKeeper Import/Export](/fusion/5.11/320/zoo-keeper-import-export-api) APIs are now accessible only to authorized users from within Managed Fusion.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/managed-fusion/5.9/dv9ib2/deprecations-and-removals#deprecations).
+
+As part of our ongoing initiative to replace our V1 (Classic) connectors with our more secure, flexible, and scalable V2 (Plugin) connectors, the following V1 connectors are deprecated in this release:
+
+* [Windows Share SMB 2/3 V1](/fusion-connectors/54/windows-share-smb-2-3-v-1-connector-configuration-reference)
+* [File Upload V1](/fusion-connectors/41/file-upload-v-1-connector-configuration-reference)
+
+Learn more about [V1 and V2 connectors](/fusion-connectors/331vyj/v-1-and-v-2-connectors).
+
+<Danger>
+**FAQ**
+
+How long will Lucidworks continue to support these connectors?
+
+These connectors will remain available for at least 6 months from the release of Managed Fusion 5.9.9 and will be removed in a release after this 6-month period.
+</Danger>
+
+To prepare for the eventual removal of these connectors in a future release, Lucidworks strongly recommends beginning the migration of your datasources to the following V2 connectors:
+
+* [Windows Share SMB 2/3 V2](/fusion-connectors/10901/windows-share-smb-2-3-v-2)
+* [File Upload V2](/fusion-connectors/r9iys5/file-upload-v-2)
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platform and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.9  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

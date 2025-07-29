@@ -1,0 +1,229 @@
+---
+title: 'Introduction'
+description: ''
+icon: 'chart-line'
+---
+Analytics Studio is a service that receives the [signals](/lw-platform/analytics/0le96f/signals) collected by the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon), and collates the metrics into graphs that provide insights about user actions on your site. Information on the graphs include business metrics, query metrics, user behavior insights, and user action metrics.
+
+For more information about viewing the consolidated metrics, see [Analytics Studio metrics](/lw-platform/analytics/xcd2n5/metrics).
+
+<Frame caption="Partial view of a signals analytics metrics screen">
+  ![Partial view of a signals analytics metrics screen](/images/lw-platform/analytics/signals-analytics.png)
+</Frame>
+
+## Basics of Analytics Studio 
+
+Site analytics is the process of collecting, analyzing, and interpreting data in your digital marketplace to understand customer needs, optimize the shopping experience, and drive growth. It lets you make informed decisions and adapt quickly to changes in consumer behavior and trends in user interactions.
+
+Analytics Studio applies the concepts of site analytics to your search experience to gain insights into product performance and how search settings influence customer behavior. These search analytics include metrics that can help you make data-driven decisions to enhance sales, optimize search result layouts, and improve the customer experience.
+
+Analytics Studio collects data about user (visitor) searches, browsing, facet usage, conversions, and more with the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon). The signals beacon is an HTML code snippet, also known as a tracking pixel, that can be added to your site. After you customize the signals beacon for your search experience, the beacon is used to collect query, click, cart-add, purchase, and facet usage signals to generate a larger picture view of performance and behavior. 
+
+## Key features of Analytics Studio
+
+**Business metrics:**
+
+* Track the impact of merchandising rules and campaigns on user behavior.
+* Provide insights to refine strategies based on real-time data.
+* Track key metrics such as total revenue, average order value (AOV), and conversion rates.
+* Combine conversion rates and order values to assess the revenue per visit (RPV) as a way to evaluate the overall shopping experience.
+
+**Query performance:**
+
+* Track how effectively search queries lead to purchases using search conversion rate (CVR) to offer insights into search result relevancy.
+* Measure user engagement with search results using search click-through rate (CTR), indicating the quality of search results.
+* Identify searches that yield no results to help find gaps in the product catalog or improve search configurations.
+* Identify search trends such as seasonal demand spikes.
+* Provide insights into the performance of product and category searches.
+* Find top performing products with high views and conversions to help enable targeted promotion.
+* Identify underperforming products with high visibility but low conversions.
+
+**User action:**
+
+* Real-time monitoring enables quick adjustments based on live data, such as boosting trending products or addressing a high amount of similar zero-result queries.
+* Track searches that end without user engagement to highlight areas for improvement in search relevance and usability.
+
+**Data visualization:**
+
+* Merchandisers can create personalized dashboards on the Analytics metrics screen that are tailored to specific KPIs and workflows.
+* Charts can be configured for detailed insights on metrics like click-through rates, conversion rates, and revenue. 
+* Dashboards can be used to interpret metrics like keyword trends and search result engagement rates.
+
+## Importance of Analytics Studio
+
+Analyzing search performance gives you better understanding of how your search results influence user interaction.
+By collecting, analyzing, and interpreting data, you can make informed decisions to enhance your digital presence. 
+
+Here are some reasons why Analytics Studio is important:
+
+* Data-driven insights help identify business performance and customer behavior.
+* Customer experience optimization is achieved by assessing how visitors use search and can improve customer interaction and satisfaction.
+* Support inventory and supply chain management to reduce overstocking by promoting the appropriate items in search.
+* Identify opportunities for increasing sales and improving profitability.
+* Enable continuous improvement by adjusting search configuration strategies based on real data.
+
+## Get started
+
+To get started with Analytics Studio, complete the following actions:
+
+1. Ensure you have appropriate user privileges to the Lucidworks Platform environment so you can configure and manage analytics features. For more information, contact your Lucidworks representative.
+2. Set up a [signals store](/lw-platform/analytics/88pjp2/signals-store) on the Analytics Studio screen.
+3. Install and configure the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon) HTML snippet to capture behavioral data such as search queries, clicks, purchases, and facets. In addition, you can tailor the tracking parameters in the signals beacon configuration.
+4. Select your signals store to access the Analytics metrics dashboard. 
+5. Assign roles and permissions for team members to ensure appropriate access to the dashboard and its features.
+6. Customize dashboards and reports to align with KPIs and business goals, such as search performance metrics, product trends, and customer behavior insights on the [Analytics metrics screen](/lw-platform/analytics/xcd2n5/metrics).
+
+## Combine Analytics Studio with Commerce Studio
+
+Using [Analytics Studio with Commerce Studio](/lw-platform/analytics/kvidem/analytics-studio-and-commerce-studio) enhances your ability to measure, monitor, and optimize search and merchandising strategies. 
+
+Analytics Studio processes user behavior data captured by the signals beacon and then Commerce Studio uses this data to assist merchandisers with search and browse rules. 
+Insights from Analytics Studio can provide information about potential rule adjustments in Commerce Studio, such as boosting underperforming products or burying irrelevant results for specific products or categories.
+
+
+## Metrics
+
+The Analytics Studio screen displays consolidated graphic overviews about your application’s query, click, cart-add, purchase, and facet usage signals. The dashboards let you click a period selector for the past hour, day, week, month, year, or custom interval.
+
+## Access Analytics Studio
+
+To access the Analytics Studio screen:
+
+1. Sign in to [Lucidworks Platform](https://platform.lucidworks.com).
+2. In the navigation bar on the Lucidworks Platform screen, select the workspace to access. For example, test or production.
+3. Click **Analytics Studio**. The Signal Stores tab displays by default.
+    <Frame caption="Signals store">
+    ![Signals store](/images/lw-platform/analytics/signals-store.png)
+    </Frame>
+
+4. To view different types of metrics, complete one of the following:
+   * Click the signal store to view the [analytics dashboard](#signals-analytics) for that store.
+   * Click **Signal Usage** to display the Analytics Studio global [signal usage metrics](#signal-usage-metrics). 
+
+<Note>You can also access analytics features if you sign in to Lucidworks Platform, click **Products**, and select an existing AI application. Click Signals Analytics or Signals Usage to view the same screens described in this topic.</Note>
+
+## Signals analytics
+
+The Signals analytics dashboard displays detailed information about user interactions on your site. You can [customize your dashboard](#customize-metrics-dashboards) and view metrics across different date ranges.
+
+To select the date range to view, click the **Duration** field and select a date value, or enter a custom range.
+
+To export data, click the menu icon on a chart and choose a download method.
+
+<Frame caption="Download chart">
+  ![Download chart](/images/lw-platform/analytics/download-chart-data.png)
+</Frame>
+
+### Customize metrics dashboards
+
+You can customize your dashboard by editing sections and charts. Your customizations will not affect other users. To learn more about charts, see [Types of metrics](#types-of-metrics).
+
+To customize your dashboard, do the following:
+
+1. Click **Customize**.
+2. Click **Edit Metrics** in the section where you want to add charts.
+3. Select the checkbox for each chart, and then click **Save**.
+4. When you’re finished adding charts and customizing sections, click **Save**.
+
+<Frame caption="Edit Metrics">
+  ![Edit Metrics](/images/lw-platform/analytics/edit-metrics.png)
+</Frame>
+
+## Types of metrics
+
+The Signals analytics dashboard supports the following metrics:
+
+|     |     |
+| --- | --- |
+| Chart name | Description |
+| Abandoned Cart Rate | Measures the percentage of shopping carts that are created but not converted into purchases. This metric is crucial for understanding issues in the checkout process. |
+| Add to Cart Rate | Measures the percentage of clicks that result in an item being added to the shopping cart. This metric highlights the effectiveness of product pages and user readiness to purchase. For example, a cart add rate of 2.0% indicates that for every 100 product clicks, 2 items are added to the cart. Monitoring this metric can help identify areas where improvements in product descriptions, images, or pricing strategies could drive better results. |
+| Average Order Value | Displays the average price value of orders for the selected time period. This metric is crucial for understanding how much revenue is generated per order, which helps in evaluating pricing strategies and customer spending behavior.  |
+| Conversion Rate | Measures the effectiveness of a website, campaign, or action in achieving a specific goal, such as purchases, sign-ups, or downloads. It reflects how well you convert visitors or actions into successful outcomes. |
+| Facet Usage | Measures facet usage over time for the given period. Shows how many of each facet were selected for the given period.  |
+| Queries with Zero Results | List of query terms that were searched and yielded no results the most frequently. |
+| Revenue Per Visitor | Average revenue generated by each visitor to your site over time, for the given period. It is a combination metric of conversion rate and average order value. Arguably the most important metric in assessing the performance of an ecommerce site. |
+| Search Add to Cart Rate | Measures the percentage of users who add a product to their cart after finding it through the site’s search function. A high search add-to-cart rate indicates that the search function is successfully leading users to products they are interested in.  |
+| Search Click Through Rate | Measures the percentage of users who click on a search result after performing a query. This metric is a direct indicator of how well your search results align with user intent and the relevance of your content. A high CTR suggests that users find the results appealing and useful. |
+| Search Conversion Rate | Measures the percentage of searches that result in a completed purchase. This metric represents the final step in the user journey from query to conversion, offering a clear indicator of overall search effectiveness and customer satisfaction. |
+| Search Exit Rate | The percentage of traffic that does not take positive action after using search for the given duration. A positive action is defined as a click, add-to-cart, or purchase action. |
+| Top Performing Products | Products with the most views and the highest conversions. This metric is useful for understanding which products lead to engagement and conversions. |
+| Top Search Terms | Shows the terms or phrases searched most often over the selected time period. It also provides the corresponding click rate, cart rate, purchase rate, and revenue, helping you identify high-performing queries and trends in user interest. |
+| Total Searches | Shows the total number of searches over the selected time period. This metric highlights user engagement with the search functionality and can guide improvements in content and indexing. |
+| Underperforming Products | Products with the most clicks but lowest conversions (greater than 0). Useful for identifying products that may need attention beyond superficial product information, such as description, images, reviews, and ratings. |
+| Zero Result Search Rate | Displays the average percentage of searches that returned zero results for the selected time period. This metric helps you identify gaps in content or product availability. |
+
+## Signal usage metrics
+
+This screen displays global signal usage metrics for the specified date range. In the **Duration** field, select the date range to view. Values range from today through the past year as well as the ability to select a custom date range.
+
+<Frame caption="Signal usage">
+  ![Signal usage](/images/lw-platform/analytics/signal-usage.png)
+</Frame>
+
+## Signals store
+
+The signals store is the repository in your Lucidworks Platform workspace that holds query, click, cart-add, purchase, and facet usage signals gathered from customer interactions on your site.
+
+### Create a Signal Store
+
+One of the tasks to use signals is to create a repository to store signals. 
+. Sign in to [Lucidworks Platform](https://platform.lucidworks.com).
+
+1. In the navigation bar, select the workspace that will access the signals store.
+2. Click **Analytics Studio**.
+
+<Frame caption="Signals store">
+  ![Signals store](/images/lw-platform/analytics/signals-store.png)
+</Frame>
+
+1. Click **Create New**. 
+
+<Frame caption="Create a signals store">
+  ![Create a signals store](/images/lw-platform/analytics/signals-store-create.png)
+</Frame>
+
+1. In the **Name** field, enter a unique user-defined for the signals store.
+2. In the **Region** field, select the geographical area for the signal store.
+
+   <Note>   This selection cannot be changed. If you need a signal store in a different region, you need to create another signal store with the other region specified.</Note>
+3. Click **Create**.
+After the signal store is created, you can configure the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon).
+
+### Signal fields stored
+
+### Technical components
+
+The properties of each signal store include:
+
+* User-defined name.
+* Universally unique identifier (`uuid`) of the signals store.
+* Location of the signal store, which is also referred to as a data cell
+
+The `uuid` and `data cell` define the endpoint where the signals are sent. For example, `<signals_store.uuid>.signals.lucidworks.com` is a `CNAME` to the appropriate data cell endpoint.
+
+For more information about signals, see [signals](/lw-platform/analytics/0le96f/signals).
+
+## Analytics Studio and Commerce Studio
+
+
+Analytics Studio provides actionable insights by leveraging signals data from your search application. These signals capture essential metrics that reflect the performance and impact of your search experience, helping you measure and optimize its value.
+
+Both merchandisers and data analysts should actively monitor data from Analytics Studio to ensure that decisions about search results and merchandising strategies are informed by actual customer behavior. By leveraging this data, teams can continuously refine their search application to meet business goals and enhance customer satisfaction.
+
+### Key metrics captured by Analytics Studio
+
+Analytics Studio tracks three critical categories of data:
+
+* **Business metrics:** Understand the financial impact of your search application by analyzing metrics like average order value (AOV) and revenue per visitor (RPV).
+* **Query metrics:** Evaluate search effectiveness through data such as top search terms, zero search result rate, and queries with zero result. 
+* **User action metrics:** Monitor customer behavior by analyzing interactions like click through rate and add cart rate. 
+
+These metrics collectively provide a comprehensive view of your search quality and the value your search application delivers to your business and customers.
+
+### How Analytics Studio integrates with Commerce Studio
+In Commerce Studio, metrics from Analytics Studio can be displayed directly on product cards. This integration enables you to make data-driven decisions when curating your search results.
+
+For instance, RPV (revenue per visitor) can highlight products generating significant revenue but lacking sufficient visibility in search results. Such insights help identify opportunities to boost underperforming high-profit items, ensuring they are prioritized appropriately to maximize revenue potential.
+
+For more information about metrics in Commerce Studio, see [Inline Analytics](/lw-platform/cs/l6f36o/visual-editor#inline-analytics).

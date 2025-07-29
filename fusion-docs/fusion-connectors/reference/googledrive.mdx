@@ -1,0 +1,53 @@
+---
+title: "Google Drive V1"
+description: "Connector Configuration Reference"
+permalink: "60"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Google Drive connector is used to index the documents in a Google Drive account.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+## Configuration
+
+The **StartLinks** values for this connector must be one of the following:
+
+* `root` to crawl the whole organization or per-user drive.
+* A folder ID.
+
+  For example, if your folder’s URL is `https://drive.google.com/drive/folders/0B1u0p7N096R6MWgma3gwUj4j` then the start link in the connector configuration should be `0B1u0p7N096R6MWgma3gwUj4j`.
+* A document ID.
+
+  For example, if your document’s URL is `https://docs.google.com/document/d/10HRr5gD0OetzgEL9fsyxryf_AfiKqDQ8cn12YXQ/edit` then the start link in the connector configuration should be `10HRr5gD0OetzgEL9fsyxryf_AfiKqDQ8cn12YXQ`.
+
+<Note>
+Debugging with HTTP is available in Fusion 4.2.6. You can enable `diagnosticMode` to diagnose an issue with HTTP level traffic logging.
+</Note>
+
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-googledrive.mdx";
+
+<SchemaParamFields schema={schema}/>
+

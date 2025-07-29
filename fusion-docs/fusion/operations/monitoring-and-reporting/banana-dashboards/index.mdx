@@ -1,0 +1,33 @@
+---
+title: "Banana Dashboards"
+permalink: "139"
+---
+
+Dashboards are Fusion’s built-in analytics component. Most of the components of dashboards, called *panels*, are for data visualization. Some panels display textual information; for example, records in a table or documents.
+
+Dashboards permit near-real-time views of data. For some types of panels, you can configure how frequently the panel gets new data.
+
+Dashboards also permit users to interact with data. For example, users can submit queries, select facets, and zoom in and out on histograms.
+
+A Fusion dashboard contains one or more controls for search query inputs and one or more quantitive displays over the results for that query.
+
+Dashboards run as a client-side application in a web browser, using JavaScript components for HTML5. Client-side JavaScript provides a dynamic, responsive browsing experience. Solr facets provide the quantifications required for visualizations, for example, charts, graphs, tables, and maps (for geospatial data).
+Dashboards can also have tabular displays for drilling down to the individual documents in a results set.
+
+The underlying browser application is Banana, an open source visualization tool
+based on [Kibana 3](http://www.elastic.co/guide/en/kibana/3.0/index.html).
+Where Kibana communicates with Elasticsearch, Banana communicates with Solr.
+Banana can be downloaded from: https://github.com/LucidWorks/banana/.
+
+Fusion dashboards were first developed for log file analysis.
+Log file entries contain a timestamp plus some amount of additional event information.
+Fusion’s date/time processing aggregates these timestamps at different levels of granularity
+allowing for visualization of historical trends in system and user behaviors.
+
+See these additional topics for details:
+
+* [Create Dashboards](/how-to/632/create-dashboards)
+* [Use Dashboards](/how-to/668/use-dashboards-in-fusion-4-1)
+* [Manage Dashboards](/how-to/948/manage-dashboards)
+* [Input Panels](/fusion/5.9/138/input-panels)
+* [Display Panels](/fusion/5.9/137/display-panels)

@@ -1,0 +1,27 @@
+---
+title: "PubSub mode"
+permalink: "r0xnd3"
+---
+
+The ConfigSync service can work in a mixed mode called PubSub. This mode is a combination of the [Publisher mode](/fusion/5.9/b1rtue/publisher-mode) and [Subscriber mode](/fusion/5.9/t51vvb/subscriber-mode).
+
+In this mode, the changes from Fusion are propagated to GitHub (like in the publisher mode), but you can also restore Fusion applications from GitHub (like in the Subscriber mode).
+
+This mode is more flexible than the Publisher and Subscriber modes, but it requires more resources and is more complex.
+
+See [Configure the ConfigSync mode](/how-to/config-sync/r4vnii/configure-the-config-sync-mode) for steps to configure PubSub mode.
+
+Here’s how PubSub mode works:
+
+1. [`pub:`](https://git-scm.com/docs/merge-strategies#Documentation/merge-strategies.txt-resolve) The first job reads all the configurations from Fusion, adds all the new or changed files to Git, and then performs a `git pull` from the remote GitHub repository using [the `resolve` merge strategy^]
+2. `[pub]:` In case of conflicts during the pull command, the changes from Fusion always take precedence (which should be a rare occurrence).
+3. `[sub]:` After that, all the changes in the GitHub files since the latest commit SHA1 are resolved and applied to Fusion.
+   If the latest commit SHA1 is not set in the Fusion configuration, it is set to the latest commit SHA1 in the GitHub repository.
+   That means that the first time the PubSub mode is enabled, ConfigSync does not apply any changes from GitHub to Fusion.
+4. `[sub]:` The current commit SHA1 is set as the latest commit SHA1 in the Fusion configuration.
+5. `[pub/sub]:` The next job reads all the configurations from Fusion and compares them with the latest commit SHA1 in the GitHub repository. If there are any differences, the changes from GitHub are applied to Fusion.
+6. `[pub/sub]:` The process is repeated in a loop.
+
+## Filters
+
+PubSub mode supports [App filters](/fusion/5.9/7p74hf/apps-filter) and [Object filters](/fusion/5.9/ztfcnr/object-filters).

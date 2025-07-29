@@ -1,0 +1,208 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "use this job to calculate relevance metrics (nDCG etc..) by replaying ground truth queries (see ground truth job) against catalog data using variants from an experiment.",
+  "properties": {
+    "groundTruthConfig": {
+      "description": "Configure properties for Ground truth dataset",
+      "properties": {
+        "docIdField": {
+          "default": "docId",
+          "description": "Field containing ranked doc id's",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Doc ID field",
+          "type": "string"
+        },
+        "filterQueries": {
+          "default": [
+            "type:ground_truth"
+          ],
+          "description": "Solr filter queries to apply against Ground truth collection",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "default": "[\"type:ground_truth\"]",
+            "type": "string"
+          },
+          "title": "Filter queries",
+          "type": "array"
+        },
+        "inputCollection": {
+          "description": "Input collection representing ground truth dataset",
+          "minLength": 1,
+          "title": "Ground Truth Input Collection",
+          "type": "string"
+        },
+        "queryField": {
+          "default": "query",
+          "description": "Query field in the collection",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Query field",
+          "type": "string"
+        },
+        "weightField": {
+          "default": "weight",
+          "description": "Field representing the weight of document to the query",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Weight Field",
+          "type": "string"
+        }
+      },
+      "required": [
+        "inputCollection"
+      ],
+      "title": "Configure ground truth dataset",
+      "type": "object"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "metricsPerQuery": {
+      "default": true,
+      "description": "Calculate ranking metrics per each query in ground truth set and save them to Solr collection",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Calculate metrics per query",
+      "type": "boolean"
+    },
+    "outputCollection": {
+      "description": "Output collection to save the ranking metrics to",
+      "minLength": 1,
+      "title": "Output collection",
+      "type": "string"
+    },
+    "rankingExperimentConfig": {
+      "description": "Configure properties for the experiment",
+      "properties": {
+        "defaultProfile": {
+          "description": "Default query profile to use if not specified in experiment variants",
+          "title": "Default Query Profile",
+          "type": "string"
+        },
+        "docIdField": {
+          "default": "id",
+          "description": "Doc id field to retrieve values (Must return values that match the ground truth data)",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Doc Id Field",
+          "type": "string"
+        },
+        "experimentId": {
+          "description": "Calculate ranking metrics using variants from experiment",
+          "minLength": 1,
+          "title": "Experiment ID",
+          "type": "string"
+        },
+        "experimentObjectiveName": {
+          "description": "Experiment objective name",
+          "minLength": 1,
+          "title": "Experiment metric name",
+          "type": "string"
+        },
+        "inputCollection": {
+          "description": "Collection to run the experiment on",
+          "hints": [
+            "advanced"
+          ],
+          "minLength": 1,
+          "title": "Input Collection",
+          "type": "string"
+        },
+        "queryPipelines": {
+          "description": "Pipeline variants for experiment",
+          "hints": [
+            "advanced"
+          ],
+          "items": {
+            "type": "string"
+          },
+          "title": "Query pipelines",
+          "type": "array"
+        }
+      },
+      "title": "Configure experiment",
+      "type": "object"
+    },
+    "rankingPositionK": {
+      "default": 10,
+      "description": "Ranking position at K for metrics calculation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Ranking Position @K",
+      "type": "integer"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "type": {
+      "default": "ranking_metrics",
+      "enum": [
+        "ranking_metrics"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Ground Truth Parameters",
+      "properties": [
+        "groundTruthConfig"
+      ]
+    },
+    {
+      "label": "Ranking Experiment Parameters",
+      "properties": [
+        "rankingExperimentConfig"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "groundTruthConfig",
+    "rankingExperimentConfig",
+    "outputCollection",
+    "type"
+  ],
+  "title": "Ranking Metrics",
+  "type": "object"
+}

@@ -1,0 +1,55 @@
+---
+title: "Jobs"
+description: "Configuration specifications"
+permalink: "pcjim8"
+---
+
+Managed Fusion provides the ability to run jobs against your data collections.
+
+To create or configure the jobs detailed in reference topics in this section, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** to create a new job or select an existing job you want to configure.
+
+The jobs described in this section have a `subtype` property with one of these values:
+
+* **"task".** Jobs of this type include the following:
+
+  + [REST HTTP calls](/managed-fusion/5.9/3fbcc6/rest-call) that run REST/HTTP commands
+  + [Log cleanup job](/managed-fusion/5.9/vgwq8m/log-cleanup) that deletes log messages from the system logs collection
+* [**"spark".**](/managed-fusion/5.9/2ma2g9/spark-jobs) Jobs of this type process data and include the following:
+
+  + [SQL Aggregation job](/managed-fusion/5.9/78vsm6/sql-aggregation) that injects user-defined parameters into a SQL template
+  + [Custom Python job](/managed-fusion/5.9/fonqz2/custom-python) that runs Python code using Fusion
+  + [Custom Spark job](/managed-fusion/5.9/wbun66/custom-spark) that runs a custom JAR file on Spark
+  + [Script](/managed-fusion/5.9/vmzx60/script) that runs a custom Scala script using Fusion
+
+These additional jobs also have reference topics in this section:
+
+* Supervised classification jobs such as Build Training Data and Classification
+* Recommendation Jobs such as BPR Recommender and Content based Recommender
+* Cluster Labeling and Document Clustering jobs
+
+<Note>
+Jobs with the a subtype of `datasource` have configuration schemas that depend on the connector type. For more information, see [Connectors Configuration Reference](/fusion-connectors/2/fusion-connectors). You cannot create, run, or schedule `datasource` subtype jobs in the **Collections > Jobs** screen.
+</Note>
+
+For conceptual information and instructions about configuring and scheduling jobs, see [Jobs and Schedules](/managed-fusion/5.9/mz6jhc/jobs-overview).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Managing and Scheduling Jobs** focuses on how to create, configure, and schedule jobs using the Fusion UI:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/managing-and-scheduling-jobs" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/managing-and-scheduling-jobs.jpg" alt="Managing and Scheduling Jobs" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+

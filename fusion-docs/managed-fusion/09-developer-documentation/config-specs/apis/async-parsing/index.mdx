@@ -1,0 +1,79 @@
+---
+title: "Async Parsing API"
+permalink: "3uszuk"
+---
+
+The Async Parsing API lets you view, modify, and delete parsers in Managed Fusion.
+You can create a new parser using JSON, as well as view or delete parsers by unique ID.
+The Async Parsing API replaces the [Parsers API](/managed-fusion/5.9/hqxqm1/parsers-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+This feature is only available in Managed Fusion 5.9.11 and later versions of Managed Fusion 5.9.
+</Note>
+
+Configure parsers to handle and transform inbound data streams, prior to sending the data to the index pipeline.
+Parsers are comprised of [parser stages](/managed-fusion/5.9/0e80mp/parsers) and handle whole documents only.
+To parse fields within documents, use the [Field Parser Index Stage](/managed-fusion/5.9/3flw71/field-parser).
+
+To configure an index profile to use a specific parser, see the [Index Profiles API](/managed-fusion/5.9/5kec6y/index-profiles-api).
+
+## Examples
+
+### List parser configuration by Parser ID
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/async-parsing/parsers/solr-update-parser
+```
+
+**Output**
+
+```json
+{
+    "id": "solr-update-parser",
+    "enableMediaTypeDetection": true,
+    "detectMediaTypeBasedOnExtension": true,
+    "maxParserDepth": 16,
+    "maxFieldLength": -1,
+    "parserStages": [
+        {
+            "type": "solr-update",
+            "enabled": true,
+            "mediaTypes": [],
+            "pathPatterns": [],
+            "errorHandling": "mark",
+            "id": "52c57d2b-b504-4023-8a4f-c5db8b471cb7",
+            "enableXml": true,
+            "enableJson": true,
+            "enableCsv": true,
+            "inheritMediaTypes": true,
+            "ignoredMediaTypes": [],
+            "outputFieldPrefix": ""
+        }
+    ]
+}
+```
+
+### Update parser configuration by Parser ID
+
+**Input**
+
+```sh
+curl -X PUT -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/async-parsing/parsers/solr-update-parser -H 'content-type: application/json' -d '{"id": "solr-update-parser","maxParserDepth": 8}'
+```
+
+**Output**
+
+```json
+{
+    "id": "solr-update-parser",
+    "enableMediaTypeDetection": true,
+    "detectMediaTypeBasedOnExtension": true,
+    "maxParserDepth": 8,
+    "maxFieldLength": 1048576,
+    "parserStages": []
+}
+```

@@ -1,0 +1,59 @@
+---
+title: "series:pivot"
+permalink: "1125"
+---
+
+## Description
+
+To render information in a pivot facet use the Series Pivot tag, this
+tag has to be nested within a
+[Chart Display tag](/app-studio/4.2/1056/chart-display). Please note
+it will only render the second level of relevant filters. For more
+details see the data object used in the examples below.
+
+You can use the `response` attribute to load the data from the response.
+You will also need to include the `query` directly on this tag if you
+wish for the user to be able to filter using the data of this series or
+alternatively add the `query` to the
+[Chart Display tag](/app-studio/4.2/1056/chart-display).
+
+For detail on how to change the color and background color see the demo
+below, for more detail on what you can change and set using CSS see
+[here.](http://www.highcharts.com/docs/chart-design-and-style/style-by-css)
+
+When rendering pivot facet data it is recommended that you always
+include the [Chart
+Legend tag](/app-studio/%7Bversion%7D/1112/chart-legend) within your [Chart
+Display tag](/app-studio/4.2/1056/chart-display) as the examples below show.
+
+## Usage
+
+as element:
+
+```xml
+<series:pivot
+       response="{string}"
+       name="{string}"
+       type="{string}"
+       [show-marker="{string}"]
+       [action="{string}"]
+       [query="{object}"]
+       [select="{string}"]>
+</series:pivot>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response to get the facet from. |
+| name | **string** | Name of facet. |
+| type | **string** | Chart type |
+| show-marker  *(optional)* | **string** | Whether to show marker or not. |
+| action  *(optional)* | **string** | The page/action to which clicking the chart should be submitted. By default the action points to the current page. |
+| query  *(optional)* | **object** | The search query from which to build links. |
+| select  *(optional)* | **string** | How the data should be filtered when clicking on a part of the chart, a valid query must be present.  Valid values:  * **false**  User selects a filter by clicking the value;  **(default)**  * **multiselect**  Supports selecting multiple filters that get combined with an 'OR'.  * **multiselect-instant**  Supports selecting multiple filters that get combined with an 'OR', filters will be applied automatically. |

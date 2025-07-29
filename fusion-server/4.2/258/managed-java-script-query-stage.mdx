@@ -1,0 +1,51 @@
+---
+title: "Managed JavaScript Query Stage"
+permalink: "258"
+---
+
+This stage manipulates a query using a script from the [blob store](/fusion-server/4.2/153/blob-storage). The script must have the blob type `file:js-query`.
+
+See also: [Custom JavaScript Stages For Query Pipelines](/fusion-server/4.2/170/custom-java-script-query-stages).
+
+## Uploading a JavaScript blob
+
+In Fusion 4.2, JavaScript blobs must be uploaded using the [Blob Store API](/fusion-server/4.2/305/blob-store-api), like this:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: text/javascript' --data-binary @query-pipeline-js-stage.js http://localhost:8764/api/apps/APP_NAME/blobs/query-pipeline-js-stage.js?resourceType=file:js-query
+```
+
+Open the [blob manager](/fusion-server/4.2/153/blob-storage#the-blob-manager) to verify that the new blob is present:
+
+<Frame>![Uploaded JavaScript blob in the blob manager](/assets/images/4.1/known-issue-APOLLO-15672-query.png)</Frame>
+
+## Referencing a JavaScript blob
+
+Use any of the following formats for the `ref`/**Script Reference** configuration field:
+
+```sh
+query-pipeline-js-stage.js
+```
+
+```sh
+blob:query-pipeline-js-stage.js
+```
+
+```sh
+urn:x-fusion:blob:query-pipeline-js-stage.js
+```
+
+<Note>
+The examples above use `query-pipeline-js-stage.js` as the blob ID.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/managed-javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

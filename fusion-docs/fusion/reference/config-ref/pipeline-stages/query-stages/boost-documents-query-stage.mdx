@@ -1,0 +1,82 @@
+---
+title: "Boost Documents Stage"
+permalink: "536"
+---
+
+The Boost Documents query pipeline stage adds boosting parameters to matched documents based on user-defined rules. Boosts are defined with a term value to boost and the boost factor to add. The boosting parameters are added to the `bq` Solr query parameter.
+
+The Boost Documents rule consists of the following elements:
+
+* `field`. The document field to filter on.
+* `keywords`. The words, phrases, or regex used as the filter.
+* `mode`. Filtering logic applied to keywords, one of:
+
+  + `exact`. The keyword and the query must match exactly. This is case-sensitive.
+  + `phrase`. The phrase matching on the items in the keywords list.
+  + `regex`. Treat items in the keywords list as a regex.
+  + `match`. Must match every item in the keyword list, but does not require phrase matching.
+* `boosts`. Consists of a list of pairs.
+
+  + `value`. One or more terms used for boosting.
+  + `boost`. The numeric boost value. Default `100`.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Boost calculation
+
+In Fusion 5.x.x, numbers entered into boosts are *multiplied* with the score.
+
+<Tip>
+**Important**
+
+
+This differs from Fusion 4.x.x where numbers entered into boosts are *added* to the score.
+</Tip>
+
+As a result of multiplication:
+
+* Negative boosts are not possible. You must use fractional values to deprioritize the score. For example, a boost value of 0.5 decreases the score by half.
+* Do not use values such as 100, which was considered reasonable in Fusion 4.x.x. If those values are entered in Fusion 5.x.x, document scores are boosted to an unrealistically high level.
+* Fusion generates an error when a query is executed on a pipeline that uses negative boost values.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/boost-documents.mdx";
+
+<SchemaParamFields schema={schema}/>

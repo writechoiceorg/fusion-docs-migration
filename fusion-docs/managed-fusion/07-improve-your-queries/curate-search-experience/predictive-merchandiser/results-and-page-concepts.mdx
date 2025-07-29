@@ -1,0 +1,142 @@
+---
+title: "Results and page concepts"
+description: "Predictive Merchandiser"
+permalink: "j802t6"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+This topic provides information about page components you can manage to improve query results in Predictive Merchandiser.
+
+## Hierarchical facets
+
+Hierarchical facets allow faster navigation through facet submenus and breadcrumbs.
+
+A "parent" facet specified as a general category can contain multiple "children" and "grandchildren" levels that are related. A user can click to open a facet that contains children, and then click a specific facet to bypass the results from the parent to display only the facet selected.
+
+In the following example for a clothing site, women is the parent. The children are pants, shirts (and its children), sports bras, coats & jackets, and shorts.
+
+<Frame>![Predictive Merchandiser Hierarchy View](/assets/images/predictive-merchandiser/pm-fusion-hierarchy-view.png)</Frame>
+
+Hierarchical facets are split according to the delimiter set in the [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules) query pipeline stage.
+
+For more information, see [How to Use Hierarchical Facets](/how-to/xbhvb5/use-hierarchical-facets).
+
+## Product grouping
+
+Product grouping lets you group products in different variations such as color, version, or size.
+
+Options to group products include:
+
+* Block or boost. For example, to promote a product group that is on sale, boost the group to the top of the results.
+* Apply rules individually to products within a group. For example, boost the red color version of a product to the top of the group if a specific user typically searches for red.
+
+<Frame>![Red Preference](/assets/images/predictive-merchandiser/product-grouping-example02.png)</Frame>
+
+### Best practices
+
+These parameters group products, and are defined in the Additional Query Parameters Stage:
+
+| Parameter Name | Parameter Value | Update Policy |
+| --- | --- | --- |
+| group | true | default |
+| group.format | grouped | default |
+| group.ngroups | true | default |
+| group.field | style_id_s | default |
+
+For more information about adding a query pipeline and additional query parameters, see:
+
+* [Add a Query Pipeline Stage](/how-to/56fmxr/add-a-query-pipeline-stage)
+* [Additional Query Parameters Stage](/managed-fusion/5.9/8eo8x3/additional-query-parameters-stage)
+
+#### Collapse/Expand parser grouping
+
+The Collapse/Expand parser allows grouping with the following parameters:
+
+| Parameter Name | Parameter Value |
+| --- | --- |
+| expand | true |
+| enableElevation | true |
+| group | false |
+
+<Note>
+See [Collapse and Expand Results](https://solr.apache.org/guide/collapse-and-expand-results.html) for more information.
+</Note>
+
+## Page metdata
+
+Metadata describe the content of a web page. The Page Metadata feature in Predictive Merchandiser lets you configure metadata using [templates](/how-to/5ebds6/use-predictive-merchandiser-templates).
+
+When you trigger Predictive Merchandiser templates, the page metadata is added to the response payload, which looks like this:
+
+```json
+{
+    "triggered": {
+        "app": "test",
+        "id": "5d9cd572-5928-4a16-a9de-5bab582538a2",
+        "name": "example-template",
+...
+            "name": "Metadata of example-template",
+...
+            "inTemplates": ["5d9cd572-5928-4a16-a9de-5bab582538a2"],
+            "pageMetadata": [{
+                "metadata": {
+                    "pageTitle": "Example page title",
+                    "pageDescription": "Example description",
+                    "pageKeywords": ["example"],
+                    "imageUrl": null,
+                    "pageUrl": null
+                }
+        }],
+        "neverPublished": false,
+        "staging": true,
+        "published": false
+    }
+}
+```
+
+The Page Metadata feature also lets you filter your facets by existing tags, clone the values of your facets, or select filters/facets with predefined metadata. If you have a large number of pages, you can also search your domain by **Path URL** using the **URL Search**.
+
+<Frame>![Predictive Merchandiser Page Metadata](/assets/images/predictive-merchandiser/pm-page-metadata.png)</Frame>
+
+For more information, see [How to Use Page Metadata](/how-to/wfrv1i/use-page-metadata).
+
+## Search rewrites
+
+Search rewriting lets you modify search queries to more accurately reflect the intentions of your customers.
+
+These functions let you:
+
+* Create search rewrites manually.
+* Edit, test, review and publish the search rewrites generated automatically from signals data.
+
+For example, create a misspelling search rewrite to correct common spelling mistakes entered for a particular product. The misspelled query will then produce the same results as a correctly spelled search.
+
+Predictive Manager provides four rewrite types:
+
+* [Head/Tail](/how-to/g8lmux/use-predictive-merchandiser-search-rewrites#head-tail) - improves poorly performing searches.
+* [Misspelling detection](/how-to/g8lmux/use-predictive-merchandiser-search-rewrites#misspelling) - corrects common spelling mistakes.
+* [Phrase detection](/how-to/g8lmux/use-predictive-merchandiser-search-rewrites#phrase) - identifies products with matching phrases.
+* [Synonym detection](/how-to/g8lmux/use-predictive-merchandiser-search-rewrites#synonym) - includes alternative words with the same meaning.
+
+## Merchandise zero results
+
+Search queries that return zero results can drive customers away from your site. You can set certain products to display when a customer search generates zero results.
+
+For more information, see [Merchandising zero results](/how-to/qb06q5/merchandising-zero-results).
+
+## Rule conflict resolution
+
+Sometimes, rules created in the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor) and Predictive Merchandiser conflict with each other. For example, if you have three rules to boost, bury, and block the same product, Predictive Merchandiser highlights these conflicting rules so you can address them.
+
+To highlight conflicting rules, the **Rules Fired** section displays a red warning icon next to the dominant rule and a red flag on the conflicting rules.
+
+<Frame>![Highlighted Conflicting Rules](/assets/images/predictive-merchandiser/rules-conflict-resolution-01.png)</Frame>
+
+Click the **Edit** button to view the details of the conflicting rules and resolve the conflict.
+
+<Frame>![Edit Conflicting Rules](/assets/images/predictive-merchandiser/rules-conflict-resolution-02.png)</Frame>
+
+The details of the conflicting rules affecting specific products are found in the details panel. Click the **Start Task** button <InlineImage src="/assets/images/predictive-merchandiser/buttons/pm-task-start.png"/>, hover over a product, and click the **Details** button <InlineImage src="/assets/images/predictive-merchandiser/buttons/pm-product-details.png)"/>.
+
+<Frame>![Edit Conflicting Rules](/assets/images/predictive-merchandiser/rules-conflict-resolution-04.png)</Frame>

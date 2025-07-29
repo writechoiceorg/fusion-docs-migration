@@ -1,0 +1,224 @@
+---
+title: "Monitor Fusion 4.x.x"
+permalink: "892"
+---
+
+There are many ways to monitor Java Virtual Machines, Unix file systems, networks, and applications like Solr and Fusion. This includes the use of a UI, command-line utilities, or REST APIs and JMX Managed Beans (MBeans). A full-fledged monitoring tool such as Datadog, Nagios, Zabbix, New Relic, SolarWinds, or other comparable tool might be helpful. These tools assist in the analysis of the raw JMX values, which tend to be more informative than the numbers alone.
+
+This topic focuses on generally available options, including: command-line utilities such as `top`, `du -h`, and `df`; REST APIs; and JMX MBean metrics.
+
+<Note>
+Lucidworks does not explicitly recommend any particular monitoring product, nor do we imply suitability or compatibility with Lucidworks Fusion. The aforementioned products are not detailed or reviewed in this topic.
+</Note>
+
+## Monitoring via Solr
+
+The Solr Admin console lists information for one Solr node. This can be obtained via HTTP as needed.
+
+### GET JVM metrics for a Solr node
+
+```
+http://${Solr_Server}:8983/solr/admin/info/system?wt=json
+```
+
+You can access detailed metrics in the Solr Admin UI by selecting an individual Solr core and selecting the Plugins/Stats option. Among the published metrics are averages for Query and Index Request Time, Requests Per Second, Commit rates, Transaction Log size, and more.
+
+<Frame>![Solr Admin UI Plugins/Stats](/assets/images/4.2/cluster-monitoring-guide-01.png)</Frame>
+
+Obtain these same metrics via HTTP on a per-core basis:
+
+```
+http://${Solr_server}:8983/solr/${Collection}_${shard}_${replica}/admin/mbeans?stats=true&wt=json
+```
+
+Additionally, you can turn JMX monitoring on by starting Solr with `ENABLE_REMOTE_JMX_OPTS=true`. Refer to Apache’s Solr refernce guide for configuring JMX for more information.
+
+### Finding shard leaders in Solr
+
+#### In Solr admin console
+
+The Solr admin console’s **Cloud > Graph** view can show the Shards and replicas for all Solr collections in a cluster. The nodes on the right-hand side with the filled in dot are the current shard leaders. Query operations are distributed across both leaders and followers but index operations require extra resources from leaders.
+
+<Frame>![Solr Admin UI Cloud Graph](/assets/images/4.2/cluster-monitoring-guide-02.png)</Frame>
+
+#### With the API
+
+The Solr API allows you to fetch the cluster status, including collections, shards, replicas, configuration name, collection aliases, and cluster properties.
+
+Requests are made with the following URL endpoint: `/admin/{parameter}?action=CLUSTERSTATUS`.
+
+| Parameter | Description |
+| --- | --- |
+| collection | The collection or alias name for which information is requested. If omitted, information on all collections in the cluster will be returned. If an alias is supplied, information on the collections in the alias will be returned. |
+| shard | The shard(s) for which information is requested. Multiple shard names can be specified as a comma-separated list. |
+| `route` | This can be used if you need the details of the shard where a particular document belongs to and you don’t know which shard it falls under. |
+
+**Input**
+
+`http://localhost:8983/solr/admin/collections?action=CLUSTERSTATUS`
+
+**Output**
+
+```json
+{
+  "responseHeader":{
+    "status":0,
+    "QTime":333},
+  "cluster":{
+    "collections":{
+      "collection1":{
+        "shards":{
+          "shard1":{
+            "range":"80000000-ffffffff",
+            "state":"active",
+            "replicas":{
+              "core_node1":{
+                "state":"active",
+                "core":"collection1",
+                "node_name":"127.0.1.1:8983_solr",
+                "base_url":"http://127.0.1.1:8983/solr",
+                "leader":"true"},
+              "core_node3":{
+                "state":"active",
+                "core":"collection1",
+                "node_name":"127.0.1.1:8900_solr",
+                "base_url":"http://127.0.1.1:8900/solr"}}},
+          "shard2":{
+            "range":"0-7fffffff",
+            "state":"active",
+            "replicas":{
+              "core_node2":{
+                "state":"active",
+                "core":"collection1",
+                "node_name":"127.0.1.1:7574_solr",
+                "base_url":"http://127.0.1.1:7574/solr",
+                "leader":"true"},
+              "core_node4":{
+                "state":"active",
+                "core":"collection1",
+                "node_name":"127.0.1.1:7500_solr",
+                "base_url":"http://127.0.1.1:7500/solr"}}}},
+        "maxShardsPerNode":"1",
+        "router":{"name":"compositeId"},
+        "replicationFactor":"1",
+        "znodeVersion": 11,
+        "autoCreated":"true",
+        "configName" : "my_config",
+        "aliases":["both_collections"]
+      },
+      "collection2":{
+        "..."
+      }
+    },
+    "aliases":{ "both_collections":"collection1,collection2" },
+    "roles":{
+      "overseer":[
+        "127.0.1.1:8983_solr",
+        "127.0.1.1:7574_solr"]
+    },
+    "live_nodes":[
+      "127.0.1.1:7574_solr",
+      "127.0.1.1:7500_solr",
+      "127.0.1.1:8983_solr",
+      "127.0.1.1:8900_solr"]
+  }
+}
+```
+
+## Monitoring Fusion
+
+The Fusion UI in Fusion 4.2 through 5.5 includes monitoring, troubleshooting, and incident investigation tools in the DevOps Center. The DevOps Center provides a set of dashboards and an interactive log viewer, providing views into this Fusion cluster’s hosts and services using metrics and events.
+
+You can monitor general system state and status via HTTP in several ways. For details, see [Checking System State](/how-to/859/check-the-system-state).
+
+For more information, see the link for your Fusion release:
+
+* [Fusion 4.2.x DevOps Center](/fusion-server/4.2/130/devops-center)
+
+  Fusion 4.x.x publishes a wide variety of metrics, including stage-by-stage performance for pipelines via the Fusion Metrics API. The Fusion metrics provide valuable insight into stage development, hot-spot identification, and overall throughput numbers. See [Use System Metrics](/how-to/719/use-system-metrics) for more information.
+* [Fusion 5.x.x DevOps Center](/fusion/5.9/130/devops-center)
+
+  Fusion 5.x.x includes Grafana, which provides enhanced metrics collection and querying. Kubernetes containers may make some access methods more difficult. For example, JMX beans on a container.
+
+### Check which Fusion services are running
+
+```bash
+curl https://FUSION_HOST:8764/api
+```
+
+#### Check the cluster-wide status for a service
+
+```bash
+curl -u USERNAME:PASSWORD -X POST https://FUSION_HOST:8764/api/system/status
+```
+
+### Monitor the logs collection
+
+In addition to the on-disk log files, most of the key Fusion logging events are written to the Logs collection. You can monitor these logging events with the Logging Dashboard.
+
+<Note>
+The log creation process can be altered in the `fusion.cors` (`fusion.properties` in Fusion 4.x) file located in `/fusion/latest.x/conf/`. If log files are not being created and stored in the logs collection, check the configurations in this file.
+</Note>
+
+<Frame>![Logging Dashboard](/assets/images/4.2/cluster-monitoring-guide-03.png)</Frame>
+
+### See what scheduled jobs are running
+
+The Fusion UI’s Datasources and Jobs pages show the most recent status for data ingestion jobs and other jobs that can be scheduled.
+
+<Frame>![Fusion UI Datasources and Jobs](/assets/images/4.2/cluster-monitoring-guide-04.png)</Frame>
+
+This can also be accomplished using the Jobs API ([Fusion 4.x Jobs API](/fusion-server/4.2/327/jobs-api), [Fusion 5.x Jobs API](/fusion/5.9/327/jobs-api).
+
+## What to monitor
+
+Several levels of information should be monitored, including hardware resources, performance benchmarks, the Java virtual machine, Lucene/Solr, and others. The point at which a monitored metric should trigger a warning or alarm condition is highly dependent on user-specific factors, such as the target audience, time tolerance thresholds, and real-time needs.
+
+## Hardware and resources
+
+This is just knowing what is going on with the overall system resources.
+
+|  |  |
+| --- | --- |
+| CPU Idle | This value helps determine whether a system is running out of CPU resources. Establishing average values, such as `avg(1 min)`, helps determine if the CPU Idle value is too high. Establishing these averages for each individual CPU core helps you avoid confusion if, for example, everything is paused on a single CPU core. |
+| Load Average | This value indicates whether processes are being loaded into a queue to be processed. If this value is higher than the number of CPU cores on a system, the machine is failing to load processes. The Load Average value might not indicate a specific problem, but might rather indicate that a problem exists *somewhere*. |
+| Swap | Most operating systems can extend the capabilities of their RAM by paging portions out to disk before moving it back into RAM as needed. This process is called "swap".<br/> <Warning> Swap may potentially have a ***Severe*** impact on the performance of Solr. Avoid swap by reconfiguring services across different nodes or adding memory. </Warning> |
+| Page In/Out | This value indicates the use of swap space. There might be a small amount of swap space used and little page in/out activity. However, the use of swap space generally indicates the need for more memory. |
+| Free Memory | This value indicates the amount of free memory available to the system. A system with low amounts of free memory can no longer increase disk caching as queries are run. Because of this, index accesses must wait for permanent disk storage, which is much slower.<br/><br/>Take note of the amount of free memory and the disk cache in comparison to the overall index size. Ideally, the disk cache should be able to hold all of the index, although this is not as important when using newer SSD technologies. |
+| I/O Wait | A high I/O Wait value indicates system processes are waiting on disk access, resulting in a slow system. |
+| Free Disk Space | It is critical to monitor the amount of free disk space, because running out of free disk space can cause corruption in indexes. Avoid this by creating a mitigation plan to reallocate indexes, purge less important data, or add disk space. Create warning and alarm alerting for disk partitions containing application or log data. |
+
+## Performance benchmarks
+
+These benchmarks are available via JMX MBeans when using JConsole. They are found under the namespace `solr/<corename>`. Some of these metrics can also be obtained via the fields below.
+
+|  |  |
+| --- | --- |
+| Average Response Times | Monitoring tools can complete very useful calculations by measuring deltas between incremental values. For example, a user might want to calculate the average response time over the last five minutes. Use the [Runtime JMX MBean](#jmxruntime) as the divisor to get performance over time periods.  The JMX MBean for the standard request handler is found at: `solr/<corename>:type=standard,id=org.apache.solr.handler.StandardRequestHandler, totalTime, requests]`  This can be obtained for every Solr requestHandler being used. |
+| nth Percentile Response Times | This value allows a user to see the response time for `75thPercentile`, `95thPercentile`, `99thPercentile`, and `999thPercentiles`. This value is a poor performance benchmark during short spikes in query times, but in other applications, it can show slow degradation problems and baseline behavior.  JMX MBean example: `"solr/collection1:type=standard,id=org.apache.solr.handler.component.SearchHandler", 75thPcRequestTime`  The same format is used for all percentiles. |
+| Average QPS | Tracking peak QPS over several-minute intervals can show how well Fusion and Solr are handling queries and can be vital in benchmarking plausible load.  JMX MBean is found at: `"solr/collection1:type=standard,id=org.apache.solr.handler.StandardRequestHandler"`, requests divided by [JMX Runtime](#jmxruntime) `java.lang:Runtime`. |
+| Average Cache/Hit Ratios | This value can indicate potential problems in how Solr is warming searcher caches. A ratio below 1:2 should be considered problematic, as this may affect resource management when warming caches. Again, this value can be used with the Runtime JMX MBean to find changes over a time period.  JMX MBeans are found at: `"solr/<corename>:type=<cachetype>id=org.apache.solr.search.<cache impl>", hitratio/cumulative hitratio` |
+| External Query "HTTP Ping" | An external query HTTP ping lets you monitor the performance of the system by sending a request for a basic status response from the system. Because this request does not perform a query of data, the response is fast and consistent. The average response time can be used as a metric for measuring system load. Under light to moderate loads, the response to the HTTP ping request is returned quickly. Under heavy loads, the response lags. If the response lags considerably, this might be a sign that the service is close to breaking.  External query HTTP pings can be configured to target query pipelines, which in turn query Solr. Using this method, you can monitor the uptime of the system by verifying Solr, API nodes, and the proxy service are taking requests.  Every important collection should be monitored, as the performance of one collection may differ from another.  There are many vendors which provide these services. This includes Datadog, New Relic, StatusCake, and Pingdom. |
+
+## Java Virtual Machine
+
+The Java Virtual Machine is found via JMX MBeans. Many are also available via REST API calls. See [System API](/fusion/5.9/344/system-api) for details.
+
+## JMX runtime
+
+The JMX runtime value is an important piece of data that helps determine time frames and gather statistics, such as performance over the last five minutes. A user can use the delta of the runtime value over the last time period as a divisor in other statistics. This metric can be used to determine how long a server has been running. This JMX MBean is found at: ``"java.lang:Runtime",Uptime`.
+
+|  |  |
+| --- | --- |
+| Last Full Garbage Collection | Monitoring the total time taken for full garbage collection cycles is important, because full GC activities typically pause processing for a whole application. Acceptable pause times vary, as they relate to how responsive your queries must be in a worst-case scenario. Generally, anything over a few seconds might indicate a problem.  JMX MBean: `"java.lang:type=GarbageCollector,name=<GC Name>", LastGcInfo.duration`  Most fusion log directories also have detailed GC logs. |
+| Full GC as % of Runtime | This value indicates the amount of time spent in full garbage collections. Large amounts of time spent in full GC cycles can indicate the amount of space given to the heap is too little. |
+| Total GC Time as % of Runtime | An indexing server typically spends considerably more time in GC. This is due to all of the new data coming in. When tuning heap and generation sizes, it is important to know how much time is being spent in GC. If too little time is spent, GC triggers more frequently. If too much time is spent, pause frequency increases. |
+| Total Threads | This is an important value to track because each thread takes up memory space, and too many threads can overload a system. In some cases, out of memory (OOM) errors are not indicative of the need for more memory, but rather that a system is overloaded with threads. If a system has too many threads opening, it might indicate a performance bottleneck or a lack of hardware resources.  JMX MBean: `"java.lang:type=Threading,ThreadCount`. |
+
+## Lucene/Solr
+
+This can be found via JMX as well.
+
+|  |  |
+| --- | --- |
+| Autowarming Times | This value indicates how long new searchers or caches take to initialize and load. The value applies to both searchers and caches. However, the `warmupTime` for the searcher is separate from that of caches. There is always a tradeoff between autowarming times and having prewarmed caches ready for search.<br/> <Note> If autowarming times are set to be longer than the interval for initializing new searchers, problems may arise. </Note><br/><br/> Searcher JMX MBean:  ``` "solr/collection1:type=searcher,id=org.apache.solr.search.SolrIndexSearcher", warmupTime. "solr/collection1:type=documentCache,id=org.apache.solr.search.LRUCache" "solr/collection1:type=fieldValueCache,id=org.apache.solr.search.FastLRUCache" "solr/collection1:type=filterCache,id=org.apache.solr.search.FastLRUCache" "solr/collection1:type=queryResultCache,id=org.apache.solr.search.LRUCache" ``` |

@@ -1,0 +1,244 @@
+export const schema = {
+  "type": "object",
+  "title": "SQL-Based Experiment Metric",
+  "description": "This job is created by an experiment in order to calculate an objective",
+  "required": [
+    "id",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "experimentId": {
+      "type": "string",
+      "title": "Experiment ID",
+      "hints": [
+        "readonly"
+      ]
+    },
+    "metricName": {
+      "type": "string",
+      "title": "Objective name",
+      "hints": [
+        "readonly"
+      ]
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes",
+      "description": "A short description about this job.",
+      "hints": [
+        "lengthy"
+      ]
+    },
+    "sql": {
+      "type": "string",
+      "title": "SQL",
+      "hints": [
+        "readonly"
+      ]
+    },
+    "experiment": {
+      "type": "object",
+      "title": "Experiment",
+      "required": [
+        "id",
+        "baseSignalsCollection",
+        "metrics"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "ID",
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        "description": {
+          "type": "string",
+          "title": "Description"
+        },
+        "uniqueIdParameter": {
+          "type": "string",
+          "title": "Unique ID Parameter",
+          "description": "The name of the request parameter containing the user ID",
+          "default": "userId",
+          "format": "uri"
+        },
+        "baseSignalsCollection": {
+          "type": "string",
+          "title": "Base Collection for Signals",
+          "description": "Signals resulting from requests that flow through this experiment will go into the signal collection associated with this collection",
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        "variants": {
+          "type": "array",
+          "title": "Variants",
+          "description": "Specify what varies in this variant, and optionally change the traffic weight",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "title": "Variant id",
+                "hints": [
+                  "hidden"
+                ],
+                "maxLength": 128,
+                "pattern": "^[A-Za-z0-9_\\-]+$"
+              },
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "queryPipeline": {
+                "type": "string",
+                "title": "Query Pipeline"
+              },
+              "params": {
+                "type": "array",
+                "title": "Query Params",
+                "description": "URL parameters to add to queries using this variant",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "value"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string",
+                      "title": "Parameter Name"
+                    },
+                    "value": {
+                      "type": "string",
+                      "title": "Parameter Value"
+                    },
+                    "policy": {
+                      "type": "string",
+                      "title": "Update Policy",
+                      "enum": [
+                        "replace",
+                        "append",
+                        "remove",
+                        "default"
+                      ],
+                      "default": "append"
+                    }
+                  }
+                }
+              },
+              "collection": {
+                "type": "string",
+                "title": "Collection"
+              },
+              "weight": {
+                "type": "number",
+                "title": "Weight",
+                "description": "Proportion of traffic to send to this variant. Higher values mean proportionally more traffic will be routed to this variant",
+                "default": 1,
+                "minimum": 0.01,
+                "exclusiveMinimum": false
+              }
+            }
+          }
+        },
+        "metrics": {
+          "type": "array",
+          "title": "Objectives",
+          "description": "Metrics that will be used to evaluate the variants",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "title": "Name"
+              },
+              "description": {
+                "type": "string",
+                "title": "Description"
+              },
+              "primary": {
+                "type": "boolean",
+                "title": "Primary",
+                "description": "Whether this metric is the primary metric used for evaluating the variants (the 'OEC')."
+              },
+              "jobId": {
+                "type": "string",
+                "title": "Associated Spark Job ID",
+                "hints": [
+                  "hidden"
+                ]
+              },
+              "binary": {
+                "type": "boolean",
+                "title": "Binary-valued metric",
+                "description": "Whether this metric measures a Bernoulli trial (clicks, cart adds, etc) or a continuous-valued event.",
+                "hints": [
+                  "hidden"
+                ]
+              }
+            }
+          }
+        },
+        "enabled": {
+          "type": "boolean",
+          "title": "Enabled",
+          "default": true,
+          "hints": [
+            "readonly"
+          ]
+        },
+        "startTimestamp": {
+          "type": "string",
+          "title": "Start Date",
+          "description": "When the experiment last started",
+          "hints": [
+            "readonly"
+          ],
+          "format": "date-time"
+        },
+        "runId": {
+          "type": "string",
+          "title": "Run Identifier",
+          "hints": [
+            "readonly",
+            "hidden"
+          ]
+        },
+        "automaticallyAdjustTraffic": {
+          "type": "boolean",
+          "title": "Automatically Adjust Weights Between Variants",
+          "default": false
+        }
+      },
+      "hints": [
+        "hidden"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "experiment_sql"
+      ],
+      "default": "experiment_sql",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

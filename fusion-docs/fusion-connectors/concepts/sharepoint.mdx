@@ -1,0 +1,220 @@
+---
+title: "SharePoint and SharePoint Online Connectors"
+permalink: "21"
+---
+
+The SharePoint connector retrieves content and metadata from an on-premises SharePoint repository.
+
+## Platform versions
+
+### V1 connectors
+
+The SharePoint V1 connectors were deprecated in Fusion 5.2. However, the:
+
+* [SharePoint V1 connector](/fusion-connectors/61/share-point-v-1) can be used in Fusion 4.x and Fusion 5.1 - Fusion 5.4.
+* [SharePoint Online V1 connector](/fusion-connectors/51/share-point-online-v-1) can be used in Fusion 4.x and Fusion 5.1 - Fusion 5.3.
+
+### V1 Optimized connectors
+
+SharePoint V1 Optimized connectors can only be used in Fusion 4.2.
+
+* To retrieve data from on-premises SharePoint installation, [SharePoint V1 Optimized connector and datasource configuration](/fusion-connectors/66/share-point-v-1-optimized)
+* To retrieve content from cloud-based SharePoint repositories, [SharePoint Online V1 Optimized connector and datasource configuration](/fusion-connectors/36/share-point-online-v-1-optimized)
+
+### V2 connectors
+
+The [Sharepoint V2 connector](/fusion-connectors/70/share-point-v-2) can be used in Fusion 5.1 - Fusion 5.5. This connector is deprecated as of June 19, 2023 and is no longer available in Fusion 5.6 and later. However, the [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/sharepoint-optimized-v-2) can be used in Fusion 5.6 and later.
+
+## Key differences between V1 and V1 Optimized
+
+<Note>
+
+This section is only relevant to Fusion 4.x and earlier.
+
+</Note>
+
+
+
+### CSOM REST API
+
+V1 platform version
+
+The V1 platform version uses SOAP API. This API style was deprecated as of SharePoint 2013.
+
+V1 Optimized platform version
+
+The V1 Optimized platform version uses CSOM REST API. This API style provides a variety of benefits not found with SOAP API:
+
+* CSOM REST API supports bulk operations for faster crawl operations.
+* CSOM REST API uses [traffic decorating](https://docs.microsoft.com/en-us/sharepoint/dev/general-development/how-to-avoid-getting-throttled-or-blocked-in-sharepoint-online#how-to-decorate-your-http-traffic-to-avoid-throttling) and is therefore less susceptible to throttling.
+* CSOM REST API is considerably more efficient, resulting in less data being transferred during crawl operations.
+
+### Active Directory Connector for ACLs dependency
+
+V1 platform version
+
+The V1 platform version has a key limitation in regard to LDAP/ActiveDirectory access. In order to look up user group memberships, each SharePoint datasource was required to perform LDAP queries. If multiple SharePoint datasources utilized a single LDAP/ActiveDirectory backend, however, multiple LDAP lookup operations took place unnecessarily, and the user would suffer from excessive LDAP overhead.
+
+V1 Optimized platform version
+
+In Fusion 4.2.4, the [Active Directory (AD) Connector for ACLs](/fusion-connectors/11/active-directory-connector-for-ac-ls#incremental-crawls) was introduced.
+
+The SharePoint V1 Optimized connector works in tangent with the AD Connector for ACLs to create a sidecar collection which is used in [graph security trimming queries](#graph-security-trimming). As a result, all LDAP/ActiveDirectory operations are fully dependent on the AD Connector for ACLs.
+
+<Tip>
+**Important**
+
+If you are using SharePoint Online, and it is *not* backed by Azure Active Directory or Active Directory Federation Services (ADFS), the V1 Optimized connector does not depend on the AD Connector for ACLs.
+</Tip>
+
+
+
+### Changes API
+
+V1 platform version
+
+The V1 platform version does not use the SharePoint Changes API. As a result, the recrawl process required all items to be revisited in order. For large SharePoint collections, incremental crawls took an excessive amount of time.
+
+V1 Optimized platform version
+
+The V1 Optimized platform version is able to take advantage of the Changes API to perform incremental crawls. The Changes API tracks all additions, updates, and deletions since the previous crawl operation for a collection.
+
+This improved crawl operation process significantly improves incremental crawl speed.
+
+### Graph security trimming
+
+V1 platform version
+
+The security trimming approach used by the V1 platform version had notable drawbacks:
+
+* **LDAP/ActiveDirectory information is stored in an inefficient manner.** When a document is fetched for indexing, it returns the users and groups with permission to view the document. However, SharePoint does not explicitly list these users and groups. The security trimming approach requires that all nested LDAP/ActiveDirectory groups be fetched and added to the document ACLs.
+
+  As a result, if the nested LDAP/ActiveDirectory group relationships change, the content is sometimes required to be reindexed despite not changing in SharePoint. This can lead to massive reindexing operations.
+* **Each SharePoint datasource requires a separate Solr filter.** With the V1 platform version, SharePoint datasources are unable to share the same security filter, even if they are pointing to the same SharePoint farm. This restriction can be Severely inefficient.
+
+  In a use case with five SharePoint datasources, for example, five Solr filter queries (fqs) would be required. The more fqs you have, the more work is required from Solr while performing queries, resulting in slower queries. This inefficiency scales with the number of SharePoint datasources, and it is not uncommon to have 30-50 datasources in an application.
+* **SharePoint security filters cannot be shared with other connectors.** For example, if a SharePoint datasource and an SMB2 datasource are backed by the same ActiveDirectory, you are still required to have an individual security filter for both datasources. Again, this inefficiency scales with the number of datasources you have.
+
+V1 Optimized platform version
+
+Unlike the V1 platform version, the V1 Optimized platform version uses a Solr graphy query approach. Advantages include:
+
+* **LDAP/ActiveDirectory information is not stored in nested groups on the content document ACL fields.**
+* **ACLs in SharePoint content documents are stored in a field.** Each SharePoint document that you crawl contains ACLs. As the document is indexed by Fusion, a field is populated with any role assignments attached to the document to ensure only users with appropriate permissions can view it. For example when doing a security trimmed query, you can input the username that is performing the search, and a Solr fq is formed with the values that match the ACL field on each document. The documents that are returned are restricted to what the user is permitted to view.
+* **A single filter can perform a security trimming query against datasources backed by the same ActiveDirectory instance.** This is not restricted to the SharePoint V1 Optimized connector. Other connectors, such as the SMB2 connector, can use the same filter.
+* **Group membership lookups (LDAP queries) are separated from the SharePoint connector.** Now, the [AD Connector for ACLs](#ad-acl-connector-dependency) is used to create a separate ACL Solr sidecar collection. First, a Solr graph query is performed to obtain a user’s groups and nested groups from the sidecar collection. Then, a join query is used to match the ACL fields on the content documents.
+
+  <Note>
+  This process is performed behind-the-scenes. The V1 Optimized connector uses the security trimming stage like all other connectors.
+  </Note>
+
+
+
+### Multiple crawl phases
+
+V1 platform version
+
+The V1 platform version does not support multiple crawl phases.
+
+V1 Optimized platform version
+
+The V1 Optimized platform version performs crawl operations in two phases:
+
+* **Pre-fetch phase** - This phase:
+
+  + Utilizes the CSOM REST API to fetch all relevant metadata in large batches. This creates a pre-fetch database, which is exported for use by the post-fetch phase.
+  + Does *not* download the file content of list items. It only fetches the metadata.
+  + Is saved in `$FUSION_HOME/var/log/connectors/connectors-classic/connectors-classic.log` and `$FUSION_HOME/var/log/connectors/connectors-classic/sharepoint-exporter-DSID.log` where `DSID` is the SharePoint optimized datasource ID.
+
+    <Note>
+    The counters in the data source job status window only increase when the content documents begin to index.
+    </Note>
+
+
+* **Post-fetch phase** - After the pre-fetch phase has completed, the crawl operation is ready to index documents during the post-fetch phase. The crawl will iterate through all items identified in the pre-fetch phase and index them into the pipeline. If there is file content associated with a pre-fetch list item, that content will be downloaded and parsed using the Fusion parser.
+
+<Note>
+See [View the SharePoint Export Database File](/how-to/629/view-the-share-point-export-database-file) for information about viewing the database file created when the SharePoint V1 Optimized connector executes a crawl.
+</Note>
+
+
+
+## SharePoint (on-premises)
+
+This connector can access a SharePoint repository running on the following platforms:
+
+* Microsoft SharePoint 2013
+* Microsoft SharePoint 2016
+* Microsoft SharePoint 2019
+
+### Understanding incremental crawls
+
+After you have performed your first successful crawl (it successfully completed with no errors), all subsequent crawls are "incremental crawls".
+
+Incremental crawls use SharePoint’s Changes API. For each site collection, this uses the change token (timestamp) to get all additions, updates, and deletions since the full crawl was started.
+
+If the **Limit Documents > Fetch all site collections** checkbox selected, you are crawling an entire SharePoint Web application, and a site collection was deleted since the last crawl, then the incremental crawl removes it from your index.
+
+<Tip>
+**Important**
+
+If you are filtering on fields, be sure to leave the `lw` fields in place. These fields are required for successful incremental crawling.
+</Tip>
+
+
+
+### Throttling or rate limiting
+
+SharePoint Online is a cloud API. As such, it necessarily has rate limiting policies, which can be an issue during crawling.
+
+Ideally, you want to have a SharePoint Online crawl that runs as fast as possible. But practically, this is not always possible. The [SharePoint Online documentation](https://docs.microsoft.com/en-us/sharepoint/dev/general-development/how-to-avoid-getting-throttled-or-blocked-in-sharepoint-online) has some important information about this.
+
+This section explains how to identify the errors that indicate that throttling is taking place, and how to adjust your connector’s configuration to help avoid it.
+
+* `429. Too many requests`
+
+  This is by far the most common rate limiting error you will see in the logs. This is SharePoint Online’s main mechanism to protect itself from service interruptions due to denial-of-service (DOS) attacks.
+* `503. Server too busy`
+
+  This error is less common, but the result is the same.
+
+<Note>
+See [Avoid SharePoint Throttling](/how-to/692/avoid-share-point-throttling) for information about how to minimize or correct errors.
+</Note>
+
+
+
+## User permission configuration options
+
+The SharePoint connectors provide a variety of configuration options for accessing SharePoint and SharePoint Online. Permissions settings should follow the principle of least privilege, as described in the [Microsoft SharePoint docs](https://docs.microsoft.com/en-us/sharepoint/sites/plan-site-permissions-in-sharepoint-server):
+
+> Follow the principle of least-privileged: Users should have only the permission levels or individual permissions they must have to perform their assigned tasks.
+
+### SharePoint
+
+| Account type | Account config | Description |
+| --- | --- | --- |
+| Active Directory Service Account | Account is set up as a **Site Collection Auditor** | Allows you to list all site collections. |
+| Active Directory Service Account | Account is set up with limited permissions | Does not allow you to list site collections in your SharePoint web application. You must list each site collection you want to crawl manually. Additionally, **noindex** tags are ignored. Sites will always be indexed regardless of their **noindex** settings. |
+
+See the following resources for configuration instructions:
+
+* [Configure A SharePoint V2 Datasource](/how-to/zwnn9g/configure-share-point-v-2-datasource)
+* [Configure A SharePoint V1 Optimized Datasource](/how-to/641/configure-share-point-v-1-optimized-datasource)
+
+### SharePoint Online
+
+<Tip>
+**Important**
+
+For the V2 connector, when the access to SharePoint Online is affected by a Conditional Access Policy (CAP), it’s recommended to set a proper user-agent value (depending on the CAP configuration) in the connector configuration (toggle advanced properties): **Requests settings** > **User agent**.
+</Tip>
+
+
+
+| Account type | Account config | Description |
+| --- | --- | --- |
+| Full Admin | Azure App Only | Allows you to list all site collections in tenant. |
+| Full Admin | OAuth App Only | Does not allow you to list site collections in your SharePoint web application. You must list each site collection you want to crawl manually. |
+| ADFS Account | Account is set up as a **Site Collection Auditor** | Allows you to list all site collections *if the user is a tenant administrator*. |
+| ADFS Account | Account is set up with limited permissions | Does not allow you to list site collections in your SharePoint web application. You must list each site collection you want to crawl manually. Use this option if your deployment requires the Lucidworks crawl account to have the fewest privileges possible. |

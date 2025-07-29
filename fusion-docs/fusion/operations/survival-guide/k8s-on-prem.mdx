@@ -1,0 +1,62 @@
+---
+title: "Fusion 5 On-prem Kubernetes Deployment"
+permalink: "145"
+---
+
+The [`setup_f5_k8s.sh` script](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_k8s.sh) in the [`fusion-cloud-native`](https://github.com/lucidworks/fusion-cloud-native) repository provides deployment support for any Kubernetes platform, including on-premise, private cloud, public cloud, and hybrid platforms.
+
+This script is used by the [`setup_f5_gke.sh`](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_gke.sh), [`setup_f5_eks.sh`](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_eks.sh), and [`setup_f5_aks.sh`](https://github.com/lucidworks/fusion-cloud-native/blob/master/setup_f5_aks.sh) scripts, which provide additional platform-specific support for Google Kubernetes Engine (GKE), Amazon Elastic Kubernetes Service (EKS), and Azure Kubernetes Service (AKS).
+
+See [Fusion 5 Upgrades](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for more information about deployment instructions for:
+
+* Natively supported deployments
+* Other Kubernetes deployments
+
+## Considerations for on-prem deployments
+
+### Solr
+
+Making changes to Solr’s memory settings after the initial installation, including changing the number of pods, is simple. Changing the size and type of disk, however, can be difficult. Before you begin, identify some basic sizing information for Solr:
+
+* Memory settings
+* Disk size
+* Disk type (e.g. SSD)
+
+### Docker images
+
+Fusion’s public Docker images are hosted on DockerHub. If you do not allow your Kubernetes environment to pull images from DockerHub, you will need to copy the images to your internal registry. This can be a time-consuming process.
+
+### Helm charts
+
+Helm is a package manager for Kubernetes that helps you install and manage applications on your Kubernetes cluster. We supply a Helm chart for the Fusion installation.
+
+If you are using Helm V2, the `setup_f5_k8s.sh` script installs Helm’s Tiller component into your Kubernetes cluster with the cluster admin role. If you want to prevent the installation of Tiller, [upgrade to Helm V3](https://v3.helm.sh/docs/topics/v2_v3_migration).
+
+### Nodes
+
+We recommend installing Fusion on at least 3 nodes, each starting in its own namespace. Only 1 Fusion instance per namespace is supported.
+
+Development and test environments only require 1 node with at least 12 GB of RAM.
+
+<Note>
+It is possible to install other apps alongside Fusion in the same namespace, if desired.
+</Note>
+
+
+
+### Pod resources
+
+We recommend not placing resource limits on pods until you have run production-like workloads with your data and fully understand your resource requirements.
+
+### Fusion gateway service
+
+If you will be exposing the Fusion gateway service externally, you will need to consider your Kubernetes Ingress strategy:
+
+* How will you route to internal services, such as the gateway?
+* Will you do TLS termination at the Ingress?
+
+### Deploying with a read-only root file system
+
+Fusion 5.9.9 and up supports a read-only root file system to safeguard against unauthorized modifications. Most services operate efficiently in this mode, and for components that need write access, a separate writable mount is available using specific helm configurations.
+
+See [Enable read-only root file system](/how-to/ybijf6/enable-read-only-root-file-system) for examples of how to configure this feature.

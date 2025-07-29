@@ -1,0 +1,86 @@
+---
+title: "Active Directory Connector for ACLs"
+permalink: "11"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.2.x through Fusion 5.5.2.
+
+</Note>
+
+
+
+The Active Directory Connector for ACLs indexes Access Control List (ACL) information into a configured "sidecar" Solr collection, so that it can be used by other connectors.
+
+Once the users and groups are indexed into the ACL collection, the information is used during security trimming to determine all of the groups and nested groups to which a user belongs. With this information, a connector filters documents based on their ACL metadata. This ensures search results will only contain documents that user has permission to view.
+
+During the security trimming stage, the ACL collection is queried using a Solr graph query, which creates a graph of the results using nodes from one document to another.
+
+For Fusion 4.2, see [How to use the Active Directory ACL collection](/how-to/842/use-the-active-directory-acl-collection-v-1).
+
+<Note>
+This connector is used for security purposes. It does not crawl the Active Directory for data. The output of this connector is not affected by any index profile and will not be visible in queries.
+</Note>
+
+
+
+## Platform versions
+
+For Fusion 5.1 and later, the Active Directory Connector for ACLs is available in [V2 platform version](/fusion-connectors/24/concepts#platform-versions). For detailed information, see [AD Connector for ACLs V2 reference](/fusion-connectors/69/active-directory-connector-for-ac-ls-v-2-configuration-reference).
+
+For Fusion 4.2, see [AD Connector for ACLs V1 reference](/fusion-connectors/45/active-directory-connector-for-ac-ls-v-1-configuration-reference).
+
+## Graph Query
+
+The ACL collection contains a lookup for all users and groups within your LDAP server.
+
+This is used by the graph query to span out into all nested group relationships of a certain user. The graph query also allows your security trimming stage to input different forms of a username, including the user’s LDAP DN, domain\username, and `username@fqdn.com`, while still being able to fetch the user’s groups.
+
+To use a graph query, it is essential to understand and adhere to graph query limitations. The `graph` parser only works in single node Solr installations, or with Solr Cloud collections that use exactly 1 shard. For more information, see the [Solr Reference Guide](/fusion/10902/solr-reference-guide) associated with the Fusion release you are running.
+
+### Limitations when creating the ACL collection using the graph parser
+
+<Tip>
+**Important**
+
+The graph parser only works in single node Solr installations or with SolrCloud collections that use exactly one shard. This means that the ACL collection must have exactly one shard, and the ACL collection must have exactly `{num solr nodes}` replicas. Failure to adhere to these limitations will result in incomplete user ACLs, and users will not see documents they expect to see.
+</Tip>
+
+
+
+### Graph Query example
+
+Let us say you want to run a security trimmed query for the user `username@lucidworks.com`. This type of username is called a "user principal name" in Active Directory. In order for the security trimming stage to run, it will need to use the following graph query:
+
+```json
+{!graph from=inbound_ss to=outbound_ss}id:username@lucidworks.com
+
+```
+
+This query will traverse the Active Directory tree as follows:
+
+<Frame>![Active Directory Traversing](/assets/images/4.2/ad-acls-graph-query.png)</Frame>
+
+The result will be:
+
+```js
+username@lucidworks.com
+CN=username,OU=users,DC=lucidworks,DC=com
+CN=developers,OU=groups,DC=lucidworks,DC=com
+CN=engineering,OU=groups,DC=lucidworks,DC=com
+CN=employees,OU=groups,DC=lucidworks,DC=com
+
+```
+
+The returned IDs can now be used as a Solr filter (`fq`) to match against a document’s ACL metadata field and ensure the user only sees what they have access to.
+
+The graph query can further traverse the Active Directory field. For example, it can map `ldapGroup-dn` to `ldapGroup-sid`, so you can match groups such as `S-1-5-21-3623811015-3361044348-30300820-1013`. This functionality is especially relevant for SharePoint and SMB2 connectors.
+
+## Incremental Crawls
+
+After a crawl has been finished successfully, all subsequent crawls are “incremental crawls”. Incremental crawls are only supported on Active Directory.
+
+An incremental crawl uses the `whenChanged` attribute in order to fetch only records that have changed since the previous crawl(s). Additionally, the `CN=Deleted Objects` Active Directory location is queried to identify objects deleted since the last crawl.
+
+Incremental crawls are typically run with a scheduled jobs in order to keep the ACL collection up-to-date. Because the crawls are incremental, these jobs should run very quickly.

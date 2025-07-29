@@ -1,0 +1,52 @@
+export const schema = {
+  "type": "object",
+  "title": "Geoip Lookup",
+  "description": "This stage will lookup geo location from an ip address field.",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "blobId": {
+      "type": "string",
+      "title": "Geoip Lookup Database Blob ID",
+      "description": "The ID of the Geoip Lookup database file stored in the Fusion blob store. Leave blank to use the default one."
+    },
+    "hostnameField": {
+      "type": "string",
+      "title": "Hostname Field",
+      "description": "Specify the field that contains a hostname to be looked up."
+    },
+    "ipAddrField": {
+      "type": "string",
+      "title": "IP Address Field",
+      "description": "Specify the field that contains an IP address to be looked up."
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 6
+}

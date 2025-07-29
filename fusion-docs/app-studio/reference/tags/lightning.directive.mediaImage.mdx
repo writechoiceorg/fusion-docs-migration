@@ -1,0 +1,87 @@
+---
+title: "media:image"
+permalink: "1076"
+---
+
+## Description
+
+The Image tag displays images from a given field in a result or a `src`.
+It will automatically resize and cache the image for performance.
+
+The following module will need to be added to your pom.xml in order to
+use the twigkit image-service.
+
+```xml
+<dependency>
+     <groupId>twigkit</groupId>
+     <artifactId>twigkit.media</artifactId>
+     <version>${project.parent.version}</version>
+</dependency>
+```
+
+If your image is within an expression you will need to use the trusted
+filter eg (`<media:image src="{{imageUrl | trusted}}"></media:image>`)
+
+If you are combining plain text with a variable it is recommend that you
+do this within a function in a controller. You can see this in the
+example below. This will remove the chance of getting a 404 in the
+JavaScript console caused by a request for the image being sent before
+the values in the src attribute were evaluated.
+
+### Example
+
+#### Controller
+
+```js
+$scope.myImageUrl = function(result){
+   return 'http://placehold.it/' + result.fields.x.val + 'x' + result.fields.y.val;
+}
+```
+
+#### View
+
+```xml
+<media:image src="{{myImageUrl(result) | trusted}}"></media:image
+```
+
+## Usage
+
+as element:
+
+```xml
+<media:image
+       [result="{object}"]
+       [field-name="{string}"]
+       [field-prefix="{string}"]
+       [field-suffix="{string}"]
+       [src="{string}"]
+       [lazy-load="{boolean}"]
+       [fallback-image-url="{string}"]
+       [width="{number}"]
+       [height="{number}"]
+       [alt="{string}"]
+       [url="{string}"]
+       [cache-original="{boolean}"]
+       [image-service-url="{string}"]
+       [use-headers="{boolean}"]>
+</media:image>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| result  *(optional)* | **object** | The result object the field with the image is coming from. |
+| field-name  *(optional)* | **string** | The field in the result to obtain the image URL. |
+| field-prefix  *(optional)* | **string** | If the field contains a relative URL, then prefix it with this value. |
+| field-suffix  *(optional)* | **string** | If the field contains a relative URL, then append this to that value. |
+| src  *(optional)* | **string** | Rather than specify a field-name, provide a URL to the desired image. If you are using an angular expression you will need to add the #/api/lightning.filter:trusted[trusted filter]. For example, (`\<media:image src="\{\{imageUrl | trusted}}">\</media:image>`) |
+| lazy-load  *(optional)* | **boolean** | Whether the images should be lazy loaded. Lazy loading works best if image size is defined. Default:false. |
+| fallback-image-url  *(optional)* | **string** | If no image is found, use the fallback URL provided. If no fallback image URL is provided and the image is not found no image will be displayed. |
+| width  *(optional)* | **number** | Width of the image to resize to. You can specify either width, height or both. |
+| height  *(optional)* | **number** | Height of the image to resize to. You can specify either width, height or both. |
+| alt  *(optional)* | **string** | Provide alternative text for the image. |
+| url  *(optional)* | **string** | Provide a URL to make the image clickable. |
+| cache-original  *(optional)* | **boolean** | Whether the write the original image (prior to resizing) to cache. Defaults to true. |
+| image-service-url  *(optional)* | **string** | Specify an alternative URL for the Twigkit Media Module image service. |
+| use-headers  *(optional)* | **boolean** | Whether to pass HTTP headers to the underlying image service (default: false). |

@@ -1,0 +1,24 @@
+---
+title: "Apache Tika Server"
+description: "Parser stage configuration specifications"
+permalink: "cy28u3"
+---
+
+<Note>
+**Important**
+This stage is deprecated in Fusion 5.8.x and removed in Fusion 5.9.12.
+Use the [Apache Tika Container parser](/managed-fusion/5.9/fi9zfy/apache-tika-container) instead.
+</Note>
+
+Apache Tika Server is a versatile parser that supports parsing many document formats.
+
+This stage is not compatible with asynchronous Tika parsing.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/apache-tika-server-deprecated-.mdx";
+
+<SchemaParamFields schema={schema}/>

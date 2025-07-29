@@ -1,0 +1,18 @@
+---
+title: "Graph Security Trimming"
+description: "Query pipeline stage configuration specifications"
+permalink: "nm4b2l"
+---
+
+The Graph Security Trimming stage restricts query results according to the user ID as an alternative to [Security Trimming Stage](/managed-fusion/5.9/hnw5gy/security-trimming-stage). Whereas the Security Trimming stage has one Solr filter query per data source, Graph Security Trimming uses a single filter query for all data sources.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/graph-security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

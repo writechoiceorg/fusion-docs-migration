@@ -1,0 +1,22 @@
+---
+title: "Forked Apache Tika Parser Stage"
+permalink: "367"
+---
+
+A simplified Apache Tika parser more geared towards an Enterprise Search crawl where all documents are parsed in a forked Java Virtual Machine. If memory issues occur during the parse, such as an Out Of Memory condition, the connector job will be unaffected.
+
+<Tip>
+**Important**
+
+The Forked Apache Tika parser is only available on Fusion 4.2.4+. To use this parser, you will be required to [update](/how-to/616/upgrade-to-fusion-4-x) to the latest version of Fusion.
+</Tip>
+
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/parsers/forked-apache-tika-deprecated.mdx";
+
+<SchemaParamFields schema={schema}/>

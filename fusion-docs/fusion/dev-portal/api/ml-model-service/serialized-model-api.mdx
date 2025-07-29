@@ -1,0 +1,66 @@
+---
+title: "Serialized Model API"
+description: "Fusion Machine Learning Model APIs"
+permalink: "83ujtc"
+---
+
+View API specification
+
+Use these endpoints to deploy and manage models via Seldon Core.
+To fetch predictions, see the [ML Model API](/fusion/5.9/st3vbc/ml-model-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+
+
+```bash Deploy a model
+curl -u USERNAME:PASSWORD -L -X POST 'https://FUSION_HOST/api/ai/ml-models?modelId=opennlp&type=seldon' \
+-d '@/Users/me/opennlp.bin'
+```
+
+```bash Check that the opennlp model exists
+curl -u USERNAME:PASSWORD https://FUSION_HOST/api/ai/ml-models/opennlp
+```
+
+The response is `200 OK` if the model is deployed or `404 Not Found` if it is not.
+
+```bash Download the opennlp model from Fusion
+curl -u USERNAME:PASSWORD https://FUSION_HOST/api/ai/ml-models/opennlp
+```
+
+The response is a binary file.
+
+```bash Delete the opennlp model from Fusion
+curl -u USERNAME:PASSWORD -X DELETE https://FUSION_HOST/api/ai/ml-models/opennlp
+```
+
+The response is `204 No Content` when the deletion succeeds.
+
+## Additional resources
+
+* [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model)
+* [Deploy the `sentiment-reviews` Model](/how-to/943/deploy-the-sentiment-reviews-model)
+* [Deploy the `sentiment-general` Model](/how-to/770/deploy-the-sentiment-general-model)
+* [Deploy a Pre-trained scispaCy Model](/how-to/782/deploy-a-pre-trained-scispa-cy-model)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Machine Learning Demystified** focuses on key concepts in machine learning, plus the available Fusion machine learning jobs you can use to train and deploy models to create a sophisticated search experience:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/machine-learning-demystified" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/ml-demystified.jpg" alt="Machine Learning Demystified" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

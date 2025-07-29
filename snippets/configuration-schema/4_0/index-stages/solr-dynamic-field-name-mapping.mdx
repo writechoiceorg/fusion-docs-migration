@@ -1,0 +1,74 @@
+export const schema = {
+  "type": "object",
+  "title": "Solr Dynamic Field Name Mapping",
+  "description": "Map pipeline document fields to a Solr dynamic fields",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "duplicateSingleValuedFields": {
+      "type": "boolean",
+      "title": "Duplicate Single-Valued Fields as Multi-Valued Fields",
+      "description": "This option enables indexing of a field data into both single-valued and multi-valued Solr fields. For example, a field 'phone' hinted as a \"string\" type and containing only one value will be indexed into a 'phone_s without this option enabled. However, if the option is enabled, the 'phone' field will be indexed into both 'phone_s' (single-valued) and 'phone_ss' (multi-valued) fields.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "fieldsToExclude": {
+      "type": "array",
+      "title": "Field Not To Map",
+      "description": "The list of Pipeline Document fields to exclude from processing.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "advancedTextFieldsIndexing": {
+      "type": "boolean",
+      "title": "Text Fields Advanced Indexing",
+      "description": "This option enables indexing of a text data (not exceeding certain max length) into both tokenized and non-tokenized fields. For example a field 'name' containing \"John Smith\", if not hinted or finalized in previous stages, without this option enabled will be indexed into a \"text\" type field by default (name_t). But if the option is enabled, it will be indexed into both 'name_t' and 'name_s' fields allowing relevant search using 'name_t' field (by matching to a 'Smith' query) and also proper faceting and sorting using 'name_s' field (using value 'John Smith' for sorting or faceting).",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "maxTextLengthForAdvancedIndexing": {
+      "type": "integer",
+      "title": "Max Length for Advanced Indexing of Text Fields",
+      "default": 100,
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 6
+}

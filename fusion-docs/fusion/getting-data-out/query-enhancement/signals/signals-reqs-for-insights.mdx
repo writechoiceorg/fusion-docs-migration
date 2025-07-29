@@ -1,0 +1,313 @@
+---
+title: "Required Signals for App Insights"
+permalink: "drf2uz"
+---
+
+Although there are many fields that are relevant to [signals](/fusion/5.9/469/signals), this topic describes which fields are **required** for each [type of signal](/fusion/5.9/466/signals-types-and-structures). Without these fields, reports and dashboards may not function as expected.
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 13.0434%;" />
+    <col style="width: 13.0434%;" />
+    <col style="width: 8.6956%;" />
+    <col style="width: 26.0869%;" />
+    <col style="width: 26.0869%;" />
+    <col style="width: 13.0438%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Report</th>
+      <th class="tableblock halign-left valign-top">Signal Types Used</th>
+      <th class="tableblock halign-left valign-top">Required Field</th>
+      <th class="tableblock halign-left valign-top">Type</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+      <th class="tableblock halign-left valign-top">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Search queries</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✅ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>query</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Terms of the query.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>physics</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Facets used</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✘ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter_field</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">array of string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">List of filters associated with the query, which in turn is associated with signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>["categories_s"]</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Facet filters applied</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✘ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>filter</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">array of string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">List of <strong>applied</strong> filters associated with the query, which in turn is associated with signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>["categories_s/math.OA"]</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Application servers</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>host</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Host name of the server that is hosting the app, which in turn is generating the signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lucidworks</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Response times</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✘ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✘ Request</p>
+        <p class="tableblock">✅ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>time</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">number</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Response time (in milliseconds).</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>17</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">URLs clicked</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✘ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>url</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">URL of the page that was selected from the search results. This typically results from a click signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>http://arxiv.org/pdf/astro-ph/0611688v1</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Search pages</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✘ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>page_title</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Title of the page that the signal originated from.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Search Preview</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Search platforms</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✅ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>platform</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the search platform.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>fusion</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Visitor countries</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>geo_country_name</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Originating country of the user.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>United States</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Visitor cities</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>geo_city_name</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Originating city of the user.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>San Francisco</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Browsers</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>browser_name</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the browser that generated the signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Firefox</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Operating System</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>os_name</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Name of the operating system used by the user.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Ubuntu</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Device types</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>os_device</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Type of the device used by the user.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Computer</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Websites people are coming from</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✘ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>referrer_domain</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">URL of the page that the signal originated from.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>http://www.google.com</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Users</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✘ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✘ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✘ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>user_id</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Unique ID for the user that generated the signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>admin</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">User domains</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>domain</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Domain of the user that generated the signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>lucidworks.com</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Types of event</p></td>
+      <td class="tableblock halign-left valign-top">
+        <p class="tableblock">✅ Annotation</p>
+        <p class="tableblock">✅ Click</p>
+        <p class="tableblock">✅ Login</p>
+        <p class="tableblock">✅ Request</p>
+        <p class="tableblock">✅ Response</p>
+      </td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">Type of the signal.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock"><code>click</code></p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top" rowspan="6"><p class="tableblock">Head Tail analysis</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✘ Annotation</p></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top" rowspan="6"><p class="tableblock">This report is populated by running a head tail job in Fusion. With a collection called <code>foo</code>, for example, run the <code>foo_head_tail</code> job.</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✅ Click</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✅ Click</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">query</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✘ Login</p></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✘ Request</p></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">✅ Response</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">count_i</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">number</p></td>
+      <td class="tableblock halign-left valign-top"><p class="tableblock">N/A</p></td>
+    </tr>
+  </tbody>
+</table>
+
+The fields mentioned above are defined as follows:
+
+| Field Name | Example Value | Description |
+| --- | --- | --- |
+| `count_i` | 1 | Number of times an interaction event occurred with this item |
+| `doc_id` | NMDDV | Product ID or Item ID |
+| `query` | xwearabletech | A query string from the user |
+| `session_id` | 91aa66d11af44b6c90ccef44d055cf9a | Id for session in which user generated the signal |
+| `type` | quick_view_click | Type of session the user used to interact with the platform |
+| `user_id` | 11506893 | ID of user during the session |
+| `timestamp_tdt` | 2018-11-20T17:58:57.650Z | Time when signal was generated |
+
+Some [signal types](/fusion/5.9/469/signals#types), including [custom signal types](#custom), may include additional fields.

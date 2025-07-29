@@ -1,0 +1,86 @@
+---
+title: "Fusion 5.7.0"
+permalink: "3c6x8l"
+---
+
+**Release date:** December 13, 2022
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 8.11.1  *(based on Solr 8.11.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Kubernetes** | GKE, AKS, EKS 1.24  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.24  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## Improvements
+
+### Fusion
+
+* Fusion now supports Kubernetes 1.24. This applies to GKE, AKS, and EKS. It also applies to Rancher (RKE) and OpenShift 4 versions that are compatible with Kubernetes 1.24.
+
+* Fusion now uses a custom Solr image called fusion-solr. This version of Solr is based on Solr 8.11.1 and adds functionality to support Fusion features.
+
+* Upgraded Fusion to use Tika 2.4.1.
+
+* Disabled browser autofill in Fusion data source configuration forms to prevent accidentally filling fields incorrectly.
+
+### Fusion Connectors
+
+* The recrawl process is updated for the LDAP ACLs V2 connector. For more information, see [LDAP ACLs V2 connector incremental crawls](/fusion-connectors/4selgx/ldap-ac-ls-v-2#incremental-crawls).
+
+* As part of the transition from Pulsar to Kafka, the ability to [Remotely Launch a Plugin](/how-to/o9xois/remotely-launch-a-plugin) is returned.
+
+* A new connector, the [Web V2 Connector](/fusion-connectors/tq6l3z/), is added. This brings our Web connector from the classic framework to our V2 framework.
+
+* The [Kaltura V2 Connector](/fusion-connectors/pzv2ns/) is now available.
+
+### Predictive Merchandiser
+
+* Improved UI elements in the Predictive Merchandiser.
+
+## Bug Fixes
+
+### Fusion
+
+* Fixed an issue where pointing a Fusion collection at a Solr collection with a different name breaks queries to `solrServer` in Javascript stages.
+
+* Fixed an issue when adding a new Graph security trimming stage; now you can enter a comma-separated list of datasources in **Exclude Data Source ID(s)** and **Inclusive Data Source ID(s)** fields with spaces. For example, `ds1, ds2, ds3`.
+
+* Fixed an issue where documentation links pointed to Fusion 5.4 version, instead of the currently used version of Fusion.
+
+### Fusion Connectors
+
+* The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) is updated to reduce crawl bugs, prevent a false error from reporting when the crawl is stopped, and ensure permissions settings are kept in sync.
+
+* Fixed an issue with network policies that prevented the Sharepoint Optimized V2 connector plugin from indexing some data.
+
+* Fixed an issue with the ServiceNow connector where empty fields would cause an error and break the crawl.
+
+### Predictive Merchandiser
+
+* Made the text box size larger to make it easier to enter multiple Boost Queries in the Rules Manager.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.
+
+* A bug was discovered in the Spark 3.2.x component that prevents signal aggregation for signals stored in the cloud in Parquet format. For more information about the issue, see the [Spark bug report](https://issues.apache.org/jira/browse/SPARK-38318).
+
+    <Note>
+    This issue is fixed in Fusion 5.7.1.
+    </Note>
+
+## Removals
+
+* Removed deprecated NLP Annotator stage from Query Workbench and OpenNLP NER stage from Index Workbench.

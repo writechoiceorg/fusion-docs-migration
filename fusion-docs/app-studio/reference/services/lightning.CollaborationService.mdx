@@ -1,0 +1,106 @@
+---
+title: "CollaborationService"
+permalink: "1215"
+---
+
+## Description
+
+Appkit service for accessing Appkit Collaboration API's
+
+## Methods
+
+### delete(annotation, platform, id)
+
+Deletes an annotation
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| annotation | string | The type of collaboration annotation to delete. Valid values are:-   **comment** - For deleting a comment.   **bookmark** - For deleting a bookmark.   **topic** - For deleting a topic.   **link** - For deleting a like.   **saved-query** - For deleting a saved-query. |
+| platform | string | The name of the platform. |
+| id | string | The ID of the annotation to be deleted. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+CollaborationService.delete('comment', 'platform', 123456);
+```
+### getCommentAddedEventName(target, topic, collection)
+
+Method for returning the event emitted when a comment is added
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | string | The comment target. |
+| topic *(optional)* | string | The topic associated to the comment. |
+| collection *(optional)* | string | The collection associated to the comment. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | The event name that will be emitted. |
+
+#### Example
+
+```js
+CollaborationService.getCommentAddedEventName(target, collection, topic);
+```
+### post(annotation, platform, data)
+
+Creates an annotation
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| annotation | string | The type of collaboration annotation to delete. Valid values are:-   **comment** - For creating a comment.   **bookmark** - For creating a bookmark.   **topic** - For creating a topic.   **link** - For creating a like.   **saved-query** - For creating a saved-query. |
+| platform | string | The name of the platform. |
+| data | object | The data object for creating the required annotation. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+CollaborationService.post('comment', 'platform', data);
+```
+### query(annotation, platform, target, collection, topic, results)
+
+Gets an array of Collaboration Annotations (comments, likes, topics or bookmarks) based on the options provided.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| annotation | string | The type of collaboration annotation you are searching for. Valid values are:-   **comments** - Returns a list of comments  **bookmarks** - Returns a list of bookmarks  **topics** - Returns a list of topics  **links** - Returns a list of likes.  **saved-queries** - Returns a list of saved-queries. |
+| platform | string | The name of the platform. |
+| target *(optional)* | string | When provided it will return only annotations associated with this target (not applicable to topics). |
+| collection *(optional)* | string | When provided it will return only annotations associated with this collection (not applicable to topics). |
+| topic *(optional)* | string | When provided it will return only annotations associated with this topic (not applicable to topics). |
+| results *(optional)* | number | The number of annotations to return. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+CollaborationService.query('comments', 'platform', 'foo-bar');
+```

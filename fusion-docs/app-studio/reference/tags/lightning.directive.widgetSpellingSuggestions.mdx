@@ -1,0 +1,118 @@
+---
+title: "widget:spelling-suggestions"
+permalink: "1138"
+---
+
+## Description
+
+## Usage
+
+as element:
+
+```xml
+<widget:spelling-suggestions
+       response="{string}"
+       query="{string}">
+</widget:spelling-suggestions>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response from which to retrieve the spelling suggestion messages. |
+| query | **string** | The name of the query originally submitted by the user. This can differ from the one on the Response which was sent to the search platform. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_not-auto-corrected">Not Auto-Corrected</h3>
+<h4 id="example_not-auto-corrected_default">Default</h4>
+<tk-example>
+    <widget:spelling-suggestions response="notAutoCorrected" query="query"></widget:spelling-suggestions>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs hljs-no-escape>&lt;widget:spelling-suggestions response="notAutoCorrected" query="query"&gt;&lt;/widget:spelling-suggestions&gt;</code>
+</tk-code-wrapper>
+<hr />
+<h4 id="example_not-auto-corrected_with-label-and-suffix">With Label and Suffix</h4>
+<tk-example>
+    <widget:spelling-suggestions response="notAutoCorrected" query="query" label="Were you looking for:" suffix="?"></widget:spelling-suggestions>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs hljs-no-escape>&lt;widget:spelling-suggestions response="notAutoCorrected" query="query" label="Were you looking for:" suffix="?"&gt;&lt;/widget:spelling-suggestions&gt;</code>
+</tk-code-wrapper>
+<hr />
+<h3 id="example_auto-corrected">Auto-Corrected</h3>
+<h4 id="example_auto-corrected_default">Default</h4>
+<tk-example>
+    <widget:spelling-suggestions response="autoCorrected" query="query"></widget:spelling-suggestions>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs hljs-no-escape>&lt;widget:spelling-suggestions response="autoCorrected" query="query"&gt;&lt;/widget:spelling-suggestions&gt;</code>
+</tk-code-wrapper>
+<hr />
+<h4 id="example_auto-corrected_with-label-and-suffix">With Label and Suffix</h4>
+<tk-example>
+    <widget:spelling-suggestions response="autoCorrected" query="query" original-label="Couldn't find anything for:" original-suffix=". :(" corrected-label="How about:" corrected-suffix="? :)"></widget:spelling-suggestions>
+</tk-example>
+<tk-code-wrapper>
+    <code hljs hljs-no-escape>&lt;widget:spelling-suggestions response="autoCorrected" query="query" original-label="Couldn't find anything for:" original-suffix=". :(" corrected-label="How about:" corrected-suffix="? :)"&gt;&lt;/widget:spelling-suggestions&gt;</code>
+</tk-code-wrapper>
+<hr />
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService','QueryService', function($scope,$timeout,ResponseService,QueryService) {
+            $scope.notAutoCorrected = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {},
+                results: [],
+                "messages": [
+                    {
+                        "type": "spelling",
+                        "count": 0,
+                        "label": "Twigkit",
+                        "query": "Twigkit",
+                        "auto-corrected": false
+                    }
+                    ]
+            };
+
+            $scope.autoCorrected = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {},
+                results: [],
+                "messages": [
+                    {
+                        "type": "spelling",
+                        "count": 0,
+                        "label": "Twigkit",
+                        "query": "Twigkit",
+                        "auto-corrected": true
+                    }
+                    ]
+            };
+
+            $scope.query = {
+                q:'tiwkit'
+            };
+
+            ResponseService.setResponse('notAutoCorrected', $scope.notAutoCorrected);
+            ResponseService.setResponse('autoCorrected', $scope.autoCorrected);
+            QueryService.setQuery('query',$scope.query);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetSpellingSuggestions.png)</Frame>

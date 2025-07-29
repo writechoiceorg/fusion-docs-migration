@@ -1,0 +1,78 @@
+---
+title: "Text Tagger Stage"
+permalink: "520"
+---
+
+This stage uses the [SolrTextTagger](/solr-reference-guide/10252/the-tagger-handler) handler to identify known entities in the query by searching the [`COLLECTION_NAME_query_rewrite` collection](/fusion/5.9/8831/collections#auxiliary-collections). See [Manage Collections in the Fusion UI](/how-to/812/manage-collections-in-the-fusion-ui) for more information.
+
+<Note>
+For Fusion 5.x.x organizations that do *not* have a Predictive Merchandiser license, the Solr Text Tagger handler also searches the `COLLECTION_NAME_query_rewrite_staging` collection in the case of the Fusion query rewriting [Simulator](/fusion-ai/4.2/484/simulator)).
+</Note>
+
+The purpose of the search is to perform [query rewriting](/fusion/5.9/489/query-rewriting) using matches from the following items:
+
+* [Spelling corrections](/fusion/5.9/488/misspelling-detection)
+* [Phrase boosts](/fusion/5.9/487/phrase-detection)
+* [Head/Tail Analysis (Underperforming query improvements)](/fusion/5.9/486/underperforming-queries)
+* [Synonym expansions](/fusion/5.9/8803/synonym-detection-jobs)
+
+When the query rewrite entails boosting, the boosting is applied later in the pipeline, during the [Solr Query stage](/fusion/5.9/265/solr-query-stage).
+
+The below diagram shows the process flow for the Text Tagger Stage:
+
+<Frame>![Text Tagger Stage Process](/assets/images/5.4/stage-text-tagger-flow.png)</Frame>
+
+<Danger>
+The underlying SolrTextTagger currently only supports *single-shard collections*. Fusion users should ensure their `COLLECTION_NAME_query_rewrite` collection, or whatever collection the Text Tagger stage is configured to use, is single-sharded before enabling this stage.
+</Danger>
+
+
+<Note>
+Although this stage is available without a Fusion license, it is only effective after running Fusion jobs or creating Fusion rules. See [Query Rewriting](/fusion/5.9/489/query-rewriting) for details.
+</Note>
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/text-tagger.mdx";
+
+<SchemaParamFields schema={schema}/>

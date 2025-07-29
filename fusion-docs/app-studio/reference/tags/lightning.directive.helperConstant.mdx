@@ -1,0 +1,50 @@
+---
+title: "helper:constant"
+permalink: "1089"
+---
+
+## Description
+
+The constant tagf adds a constant to the application.
+
+## Usage
+
+as element:
+
+```xml
+<helper:constant
+       name="{string}"
+       value="{string}">
+</helper:constant>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | **string** | The name of the constant |
+| value | **string** | The value of the constant |
+
+## Example
+
+#### Source
+
+```xml
+<helper:constant name="test" value="banana"></helper:constant>
+<span>My Constant: {{test}}</span>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$twigkit', function($scope,$twigkit) {
+            $scope.test = $twigkit.getConstant('test','noValue');
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/helperConstant.png)</Frame>

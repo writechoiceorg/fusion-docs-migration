@@ -1,0 +1,46 @@
+---
+title: "slide:toggle"
+permalink: "1183"
+---
+
+## Description
+
+The toggle panes directive
+
+## Usage
+
+as attribute
+
+```xml
+<ANY slide-toggle
+     target="{string}">
+   ...
+</ANY>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | CSS selector to get slideable element |
+
+## Example
+
+#### Source
+
+```xml
+<button class="tk-stl-button" widget-slide-toggle="#foo1">Expand 1</button>
+<div id="foo1" class="widget-slide-down">
+    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad adipisci deserunt, doloremque ducimus enim nemo officia pariatur quibusdam quos ratione suscipit, tempora temporibus voluptatem. Ea eveniet incidunt magni minus quaerat.</p>
+    <br>
+    <p padding-bottom="2">Ad adipisci deserunt, doloremque ducimus enim nemo officia pariatur quibusdam quos ratione suscipit, tempora temporibus voluptatem. Ea eveniet incidunt magni minus quaerat.</p>
+</div>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/slideToggle.png)</Frame>

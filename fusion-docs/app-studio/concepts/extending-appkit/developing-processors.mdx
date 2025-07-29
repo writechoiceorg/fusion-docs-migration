@@ -1,0 +1,66 @@
+---
+title: "Developing Processors"
+permalink: "3112"
+---
+
+The Appkit Workflow module can be used to apply custom business logic during the search/response/render lifecycle. Workflow Processors are designed to intercept any Appkit model object, and for example, modify a Query before it is submitted to a Platform or augment a Response before it is rendered.
+
+## Developing Processors
+
+All processors implement the Processor interface, parameterized with the object they are designed to work with:
+
+```java
+public class AcmeProcessor implements Processor<Query> {
+    public void init() {
+        ...
+    }
+    public void process(Query query) {
+        ...
+    }
+    public void done() {
+        ...
+    }
+}
+```
+
+Or:
+
+```java
+public class AcmeProcessor implements Processor<Response> {
+    public void process(Response response) {
+        ...
+    }
+}
+```
+
+Processors also support the change(T obj) method which will let you substitute model objects:
+`public Response change(Response response);`
+
+<Note>
+If you extend an AbstractProcessor class then change() is automatically named by the process() method making it sufficient to implement the former.
+</Note>
+
+A number of abstract helper classes make it easier to implement processors for a given purpose, such as:
+
+- `twigkit.processor.AbstractProcessor<T>`
+    Provides abstract implmentations of init() and done() and handles setting parameters.
+
+- `twigkit.search.processors.AbstractResultProcessor`
+    Makes it easy to implement processors for Results by taking care of the iterations  
+    `public void processResult(int index, Result result) {…​}`
+
+- `twigkit.search.processors.AbstractNamedFieldProcessor`
+    Makes it easy to implement processors that target specific fields. Requires the `fields` parameter (use * for all fields). Only the named fields will be passed on to the process method.  
+    `public void process(Field field) {…​}`
+
+- `twigkit.search.processors.AbstractNamedFieldValueProcessor<T>`
+    Use this abstract class to implement a Processor that will pass the named field values (where the value is an instance of T). Requires the fields parameter (use * for all fields). Validation of the field value being of the correct type is done by the abstract class.  
+    `public Value<String> processValue(Value<String> value) {…​}`
+
+- `twigkit.search.processors.AbstractNamedFacetProcessor`
+    Use this abstract class to implement Processor that will process specific named facets. Requires the facetNames parameter (use * for all facets).  
+    `public void processFacet(Facet facet) {…​}`
+
+- `twigkit.search.processors.AbstractNamedFacetFiltersProcessor`
+    Use this abstract class to process all the FacetFilters in the named facets. Requires the facetNames parameter (use * for all facets).  
+    `public void processFilter(FacetFilter filter) {…​}`

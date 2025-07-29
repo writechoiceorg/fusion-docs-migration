@@ -1,0 +1,124 @@
+---
+title: "JavaScript Index Stage"
+permalink: "243"
+---
+
+For a complete description of the JavaScript Index stage and additional examples, see [Custom JavaScript Stages For Index Pipelines](/fusion-server/4.2/156/custom-java-script-stages-for-index-pipelines).
+
+## Examples
+
+**Drop a document by ID**
+
+```javascript
+function(doc) {
+  var id = doc.getId();
+  if (id !== null) {
+    var pattern = "https://www.mydomain.com/links/contact/?";
+
+    // 0 means the pattern was found so drop the doc
+    return (id.indexOf(pattern) == 0) ? null : doc;
+  }
+
+  return doc;
+}
+```
+
+**Format Date to Solr Date**
+
+```javascript
+// For example:
+// From: 26/Mar/2015:14:38:48 -0700
+// To:   2015-03-26T14:38:48Z  (Solr format)
+function(doc) {
+  if (doc.getId() !== null) {
+    var inboundPattern = "dd/MMM/yyyy':'HH:mm:ss Z";  // modify this to match the format of the inbound date
+    var solrDatePattern = "yyyy-MM-dd'T'HH:mm:ss'Z'"; // leave this alone
+    var dateFieldName = "apachelogtime"; // change this to your date field name
+
+    var solrFormatter = new java.text.SimpleDateFormat(solrDatePattern);
+    var apacheParser = new java.text.SimpleDateFormat(inboundPattern);
+
+    var dateString = doc.getFirstFieldValue(dateFieldName);
+    logger.info("**** dateString: " + dateString);
+    var inboundDate = apacheParser.parse(dateString);
+    logger.info("**** inboundDate: " + inboundDate.toString());
+    var solrDate =  solrFormatter.format(inboundDate);
+    logger.info("**** solrDate: " + solrDate.toString());
+
+    doc.setField(dateFieldName, solrDate.toString());
+  }
+
+  return doc;
+}
+```
+
+**Replace whitespace and newlines**
+
+```javascript
+function(doc) {
+  if (doc.getId() !== null) {
+    var fields = ["col1", "col2", "col3"];
+
+    for (i = 0; i < fields.length; i++ ) {
+      var field = fields[i];
+      var value = doc.getFirstFieldValue(field);
+      logger.info("BEFORE: Field " + field + ": *" + value + "*");
+
+      if (value != null) {
+        value = value.replace(/^\s+/, "");  // remove leading whitespace
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+        value = value.replace(/\s+$/, "");  // remove trailing whitespace
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+        value = value.replace(/\s+/g, " ");  // multiple whitespace to one space
+        logger.info("AFTER: Field " + field + ": *" + value + "*");
+
+        doc.setField(field, value);
+      }
+    }
+  }
+
+  return doc;
+}
+```
+
+**Split the values in a field**
+
+```javascript
+//Split On a delimiter. In this case, a newline
+function(doc){
+  if (doc.getId() !== null) {
+    var fromField = "company2_ss";
+    var toField = "company2_ss";
+    var delimiter = "\n";
+
+    var oldList = doc.getFieldValues(fromField);
+
+    var values = [];
+
+    // parse the entries one at a time
+    doc.removeFields(toField); // clear out the target field
+    for (i = 0; i < oldList.size(); i++) {
+      values[i] = oldList.get(i);
+
+      // get the list of strings split by the delimiter
+      newList = values[i].split(delimiter);
+      for(j = 0; j < newList.length; j++ ){
+        doc.addField(toField, newList[j]);
+      }
+    }
+  }
+  return doc;
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

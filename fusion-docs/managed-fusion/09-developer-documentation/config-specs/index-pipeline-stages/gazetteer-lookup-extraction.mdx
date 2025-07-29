@@ -1,0 +1,75 @@
+---
+title: "Gazetteer Lookup Extraction"
+description: "Index pipeline stage configuration specifications"
+permalink: "8eiqpf"
+---
+
+The Gazetteer Lookup Extraction index stage (called the Gazetteer Lookup Extractor stage in versions earlier than 3.0) uses predefined lists of words and phrases to process specified text fields in a document.
+A gazetteer is a set of lookup lists over names of people, places, or things.
+These lookup lists are used to find occurrences of these names in text.
+The matched items are saved into separate fields on the document for downstream processing.
+
+## Gazetteers and OpenNLP Tools
+
+The following video shows how to configure a Gazetteer Lookup Extraction stage in combination with OpenNLP:
+
+<iframe width="640" height="480" src="https://www.youtube.com/embed/bbbLAMnfHjY" title="Fusion Learners - OpenNLP and Gazetteer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+
+## Uploading Lookup Lists to Managed Fusion Blob Store
+
+Managed Fusion includes a number of lookup lists in the directory at `https://EXAMPLE_COMPANY.lucidworks.cloud/data/nlp/gazetteer`.
+To use the supplied lists or a list of your own data, each must list be uploaded to Managed Fusion
+using the [Blob Store API](/managed-fusion/5.9/6q1cvp/blob-store-api)
+in order to make the list contents available to the Gazetteer Lookup Extraction stage.
+
+For example, to identify color names, you would first compile a list of color terms, one entry per line in a text file with suffix `.lst` and then
+upload that file using the Managed Fusion REST API endpoint `api/blobs/<listfilename>`, as per the following example which
+uses the `curl` command-line utility, where 'admin' is the name of a user with admin privileges, and 'pass' is that user’s password:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @data/nlp/gazetteer/colors.lst -H 'Content-type: text/plain' http://EXAMPLE_COMPANY.lucidworks.cloud/api/blobs/colors.lst
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+## Name Lookup Example
+
+*Define a lookup-extractor to identify mentions of certain celebrities in text field `description_t`:*
+
+```json
+{
+  "type" : "lookup-extractor",
+  "id" : "peopleLookup",
+  "rules" : [ {
+    "source" : [ "description_t" ],
+    "target" : "celebrities_ss",
+    "entityTypes" : [ {
+      "name" : "person_female",
+      "definitions" : [ "person_female.lst" ]
+    } ],
+    "additionalEntities" : [ {
+      "name" : "players",
+      "definitions" : [ "sharapova", "murray" ]
+    }, {
+      "name" : "actors",
+      "definitions" : [ "pitt", "jolie" ]
+    } ],
+    "caseSensitive" : false
+  } ],
+  "skip" : false
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/gazetteer-lookup-extraction.mdx";
+
+<SchemaParamFields schema={schema}/>

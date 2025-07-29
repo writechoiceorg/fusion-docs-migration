@@ -1,0 +1,57 @@
+---
+title: "Box.com V1 Connector"
+permalink: "32"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+<Note>
+This article describes features or functionality that are only compatible with Fusion 4.x through Fusion 5.2.2.
+</Note>
+
+
+
+The Box connector retrieves data from a Box.com cloud-based data repository. To fetch content from multiple Box users, you must [create a Box app that uses OAuth 2.0 with JWT server authentication](/how-to/900/configure-a-box-com-datasource#Box-Create-App). For limited testing using a single user account, you can [create a Box app that uses Standard OAuth 2.0 authentication](/how-to/739/configure-box-com-tokens#Box-Auth2).
+
+## How the Box Connector Works
+
+<Note>
+This section is only relevant to Fusion 5.1 and earlier.
+</Note>
+
+
+
+When you crawl a Fusion datasource that uses the Box connector, the Box connector performs a two-step process to crawl a Box data repository:
+
+1. **Build a pre-fetch index.** The Box connector crawls file metadata *user-by-user*. It creates a distributed *pre-fetch index* that describes the structure of files in the repository. The pre-fetch index contains basic file metadata—file IDs and the directory relationships. Fusion stores the pre-fetch index in Solr as a [system collection](/fusion-server/4.2/166/collections#Collections-SystemCollections) called `system_box_distributed_crawl`, which is shared by all Box.com datasources.
+
+    The pre-fetch index lets the Box connector crawl files randomly, file-by-file; instead of user-by-user. This gets around Box rate limits.
+2. **Build the file index.** The Box connector crawls files *file-by-file*. It uses the pre-fetch index to fetch the contents of files and metadata. It indexes the documents through Fusion’s index pipeline.
+
+<Tip>
+The initial crawl of a Box data repository can take a long time (hours or days). After the initial crawl, both the pre-fetch and main parts of the crawl are *incremental*, and they proceed much more quickly.
+</Tip>
+
+Fusion cannot delete the pre-fetch data, so if you want to perform a new crawl using a different start link, you must do *one* of the following in order to get new results:
+
+* Clear the `system_box_distributed_crawl` collection manually:
+
+  1. Navigate to **Collections** > **Collections Manager**.
+  2. Hover over `system_box_distributed_crawl`, and then click the **Configure** <InlineImage src="/assets/images/4.0/icons/configure.png"/> icon.
+  3. Click **Clear Collection**.
+* Create a new distributed crawl collection for the datasource by editing the **Distributed crawl collection name** field (`f.fs.distributedCrawlCollectionName`) in your datasource configuration.
+
+## Request batching deprecation
+
+The [Box.com V2 connector](/fusion-connectors/3244/box-com-v-2) SDK provides a distributed behavior, so prefetch logic is no longer required.
+
+Starting in Fusion 5.2, request batching is deprecated with the [Box 2.39.0 release](https://github.com/box/box-java-sdk/releases/tag/v2.39.0).
+
+### Start links
+
+While crawling with folders as start links on the Box connector, the crawling user (**JWT App User ID**) must either:
+
+* Be the owner of folders
+* Have access to the start links folders
+
+The `startLinks` defined for the datasource must include the numeric Box file and directory IDs. The root directory of any Box account has an ID of 0 (zero). If you want to crawl your entire Box repository, you should enter '0'.

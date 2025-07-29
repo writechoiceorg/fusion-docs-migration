@@ -1,0 +1,58 @@
+---
+title: "search:typeahead"
+permalink: "1104"
+---
+
+## Description
+
+Creates a typeahead style search box that can be customized to allow the
+user to add filters using the
+[search keyword tag](/app-studio/4.2/1082/search-keyword). You can
+also include the [instant
+result list tag](/app-studio/4.2/1126/instant-result-list) to allow the user to select a result based on the
+search query and filters.
+
+## Usage
+
+as element:
+
+```xml
+<search:typeahead
+       platform="{string}"
+       [auto-search="{string}"]
+       [action="{string}"]>
+</search:typeahead>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | **string** | The name of the platform to use to search for matching keyword values |
+| auto-search  *(optional)* | **string** | Milliseconds to wait after the search is automatically submitted |
+| action  *(optional)* | **string** | The page to send the search query to |
+
+## Example
+
+#### Source
+
+```xml
+<search:typeahead platform="platform" datepicker-min-view="year" action="laureates" class="searchbox">
+    <search:keyword keyword="country" facet="Country of affiliation" description="Country of affiliation"></search:keyword>
+    <search:keyword keyword="gender" facet="gender" description="laureate's gender"></search:keyword>
+    <search:keyword keyword="category" facet="Prize Category" description="Award category"></search:keyword>
+    <search:keyword keyword="before" facet="year" date="before" description="Awarded before this year" date-format="yyyy" date-display-format="yyyy"></search:keyword>
+    <search:keyword keyword="after" facet="year" date="after" description="Awarded after this year" date-format="yyyy" date-display-format="yyyy"></search:keyword>
+    <search:keyword keyword="year" facet="year" date="on" description="Awarded in this year" date-format="yyyy" date-display-format="yyyy"></search:keyword>
+    <instant:result-list platform="platform">
+        <search:result>
+            <search:field name="full_name" label="" styling="label-inline" url="/#/laureates/{{result.fields.id.val | actualValue}}"></search:field>
+            <search:field name="Prize Category" label="" styling="label-inline" class="pill"></search:field>
+        </search:result>
+    </instant:result-list>
+</search:typeahead>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchTypeahead.png)</Frame>

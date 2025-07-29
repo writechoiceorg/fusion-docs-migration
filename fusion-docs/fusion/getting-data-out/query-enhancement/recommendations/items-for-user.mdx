@@ -1,0 +1,10 @@
+---
+title: "Items-For-User Recommendations"
+permalink: "477"
+---
+
+Items-for-user recommendations use the [Recommend Items for User](/fusion/5.9/529/recommend-items-for-user-stage) query stage to present items that are similar to ones in which the user has previously shown interest, based on the user’s search history, browsing history, purchase history, and so on. This is one type of [collaborative recommendation](/fusion/5.9/475/methods-for-recommendations-and-boosting#content-based-vs-collaborative).
+
+If you have enabled signals and recommendations for a collection, then the default `COLLECTION_NAME_bpr_item_recs`, a [BPR Recommender](/fusion/5.9/8805/bpr-recommender-jobs) job is already created and configured to produce items-for-user recommendations.
+
+This is the recommended job type, and produces better results with a short runtime. [Download the `APPName_item_item_rec_pipelines_bpr.json`](/assets/attachments/pipelines/APPName_item_item_rec_pipelines_bpr.json) file and [import it](/how-to/0imnej/migrate-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output. See [Fetch Items-for-User Recommendations (Collaborative/BPR Method)](/how-to/3298/fetch-items-for-user-recommendations-collaborative-bpr-method) for details.

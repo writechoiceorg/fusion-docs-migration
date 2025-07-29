@@ -1,0 +1,22 @@
+---
+title: "Maps"
+permalink: "3174"
+---
+
+The Map tag displays results on a geographical map, abstracting the underlying map provider.
+
+## Usage
+
+If the results contain latitude and longitude values as fields you can render the results using the Google Map API with this configuration:
+
+```xml
+<geo:map provider="google" response="response" latitude-field="MT.lat" longitude-field="MT.lng"></geo:map>
+```
+
+If you do not have coordinates in the results, then the Map tag can do a geocoding of addresses and render these on a map:
+
+```xml
+<geo:map provider="bing" response="response" address-field="fulladdress"></geo:map>
+```
+
+To see all related attributes, see the [geo:map](/fusion/5.9/1077/geo-map) tag documentation.

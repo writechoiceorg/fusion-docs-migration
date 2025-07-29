@@ -1,0 +1,55 @@
+---
+title: "Exclusion Filter Index Stage"
+permalink: "226"
+---
+
+The Exclusion Filter index stage is used to remove fields or documents that match items in a pre-defined exclusion list.
+
+There are two ways to supply an exclusion list:
+
+* Upload a file containing a newline-separated list, using the [Blob Store](/fusion-server/4.2/305/blob-store-api). When configuring the index stage, reference the list by its blob name in the `location` property (**Exclusion List URI** in the Fusion UI).
+* When configuring the index stage, enter an array of values for exclusion in the `excludeValues` property (**Exclusion List** in the Fusion UI).
+
+The Exclusion Filter stage can be configured using one or both of these methods; Fusion combines them into one list. If `regexPattern` is configured, the pattern is applied to the field before the result is compared to the combined list.
+
+By default, any matching *field* is excluded from indexing. To exclude the whole document, set `skipDocument` to "true" (**Skip Document** in the Fusion UI).
+
+## Uploading an exclusion list
+
+Before you can configure the `location` property, you must upload one or more exclusion lists to Fusion using the [Blob Store API](/fusion-server/4.2/305/blob-store-api).
+
+Fusion comes with an example exclusion list at `https://FUSION_HOST:FUSION_PORT/data/nlp/excludes/excludes.txt`. Here is an example of how to upload this file using `curl`, where `USERNAME:PASSWORD` are the credentials for an admin-level user:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @data/nlp/excludes/excludes.txt -H 'Content-type: text/plain' http://localhost:8764/api/blobs/excludes.txt
+```
+
+## Example
+
+*Use an exclusion list for entities found in the author field:*
+
+```json
+{
+    "type": "exclusion-filter",
+    "id": "iw",
+    "filters": [ 
+      {
+        "sourceField": "author_s",
+        "location": "excludes.txt",
+        "caseSensitive": false
+      } 
+    ],
+    "skip": false
+} 
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/exclusion-filter.mdx";
+
+<SchemaParamFields schema={schema}/>

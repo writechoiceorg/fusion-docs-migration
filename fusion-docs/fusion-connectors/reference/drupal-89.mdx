@@ -1,0 +1,33 @@
+---
+title: "Drupal Fusion V2"
+description: "Connector Configuration Reference"
+permalink: "8848"
+---
+
+Compatible with Fusion version: 5.1.0 through 5.2.0
+
+The Drupal Fusion Connector integrates Drupal 8/9 with Lucidworks Fusion to index content for search.
+
+<Note>
+For the Drupal 7 connector, see [Drupal 7.x Connector Configuration Reference](/fusion-connectors/43/drupal-7-x).
+</Note>
+
+
+
+This connector requires Drupal’s Lucidworks Fusion module to be installed on the Drupal instance before use. Refer to this page to install the module: `<https://www.drupal.org/project/lucidworksfusion>`. After installing the module, all public content is automatically exposed. You can filter the exposed data with the module’s configuration to restrict search based on authorization or entity type. Visit the module configuration page where you can change resources, entities, and fields to exclude content from search.
+
+After the data has been indexed into Fusion, data science algorithms can be applied to optimize searches.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-drupal8.mdx";
+
+<SchemaParamFields schema={schema}/>
+

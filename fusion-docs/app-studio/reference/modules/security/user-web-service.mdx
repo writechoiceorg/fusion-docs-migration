@@ -1,0 +1,22 @@
+---
+title: "User Web Service"
+permalink: "3160"
+---
+
+Although it is disabled by default, there is a web service that returns all of the details for the currently logged in user.
+
+Every operation and capability of Appkit can be invoked via REST-ful web service endpoints supporting both XML and JSON responses for asynchronous client-side operations, and integrating with external systems. For example, users can perform secure searches to any platform supported by Appkit.
+
+Invoke the User web service by adding this parameter to `conf/security.conf`:
+
+```yaml
+webservice-enabled: true
+```
+
+Access the User web service via GET request at `/twigkit/api/user` for example:
+
+```
+http://my-twigkit-host/my-twigkit/twigkit/api/user
+```
+
+See also [How to Import Security Certificates.](/how-to/2983/importing-security-certificates)

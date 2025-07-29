@@ -1,0 +1,173 @@
+---
+title: "Slack V2"
+description: "Connector Configuration Reference"
+permalink: "jej1ee"
+---
+
+Latest version: v1.0.0
+
+Compatible with Fusion version: 5.4.0 and later
+
+The Slack V2 connector allows you to index Slack channels and messages.
+
+<Warning>
+
+Due to rate limit restrictions in the [Slack Web API](https://api.slack.com/docs/rate-limits), this connector has the following restrictions:
+
+* Only one connector-plugin instance should be started.
+* Only one fetching thread should be set when creating the datasource configuration.
+
+</Warning>
+
+
+
+## Authentication
+
+You must install a Slack application in the workspace that will be indexed before using the Slack V2 connector. See [Slack’s Basic app setup](https://api.slack.com/authentication/basics) for more information about installing a Slack application.
+
+Once the app is correctly installed in the workspace, Slack will provide an access token, which you will then use in the Slack V2 connecter configuration.
+
+## Required application scopes
+
+The Slack application must provide access to the following **User Token Scopes** in order to work with Slack V2 connector:
+
+<Frame>![Slack User Token Scopes](/assets/images/5.4/slack-user-token-scopes.png)</Frame>
+
+## Initial actions
+
+The Slack V2 connector will perform the following actions at the beginning of each job:
+
+* Load all users in the users cache. This information will be used later to resolve user names when processing mentions in messages.
+
+  It will also be useful for avoiding requests to retrieve user’s metadata.
+* Load the channels to be processed using the channel filtering properties from the configuration.
+
+  This will be useful to establish a source of truth when determining whether a channel should be indexed or deleted on each job.
+
+## Document filtering
+
+| Profiles indexing | |
+| --- | --- |
+| `Index profiles` | Determines whether users are indexed |
+| `Index guest profiles` | Determines whether profiles from guest users are indexed |
+| `Index inactive profiles` | Determines whether profiles of deactivated users are indexed |
+| **Channels indexing** | |
+| `Index channels` | Determines whether a document per channel is indexed |
+| `Index archived channels` | Determines whether archived channels are indexed to the content collection |
+| `Index public channels` | Determines whether public channels are indexed |
+| `Index private channels` | Determines whether private channels are indexed |
+| `Index direct messages` | Determines whether direct and multi-party direct message only are indexed |
+| `Channels to include` | A list of the channel names to be included in the crawling process |
+| **Messages indexing** | |
+| `Index messages` | Determines whether messages from the channels are indexed |
+| `Index bot messages` | Determines where messages from bots in channels are indexed |
+| `Index messages replies (threads)` | Determines whether the replies (if applicable) to messages are indexed |
+
+## Crawling process
+
+<Warning>
+Due to limitations in the [Slack Web API](https://api.slack.com/messaging/retrieving), edited and deleted messages **cannot** be retrieved. You must clear the datasource and start a new connectors job to index edited messages and/or remove deleted messages.
+</Warning>
+
+
+
+### Crawl process diagram
+
+<Frame>![Crawl process diagram](/assets/images/5.4/diagrams/crawl-process-diagram.png)</Frame>
+
+### Endpoints used in the crawling process
+
+| Endpoints | Description |
+| --- | --- |
+| `https://slack.com/api/users.list` | Lists all users in the workspace. This is not controlled by the properties in [Document Filtering](#Doc-Filtering). All users are retrieved at the beginning of each job. |
+| `https://slack.com/api/conversations.list` | Lists the channels that should be indexed. This fetching is guided by the properties listed in [Document Filtering](#Doc-Filtering). |
+| `https://slack.com/api/conversations.members` | Lists the members of specific channels being indexed. |
+| `https://slack.com/api/conversations.history` | Retrieves a page of messages from a specific channel |
+| `https://slack.com/api/users.info` | Retrieves the information of a single user, if it’s not present in the users cache (message document generation). |
+| `https://slack.com/api/conversations.info` | Retrieves the information of a single channel, if it’s not present in the channel’s cache (message document generation). |
+| `https://slack.com/api/team.info` | Retrieves the information of a team (message document generation). |
+| `https://slack.com/api/conversations.replies` | Retrieves a page of replies from a specific message from a channel. |
+
+### Message mentions processing
+
+The Slack V2 connector retrieves messages from the Slack API in the following format:
+
+```
+ "type": "message",
+ "text": "this is a mention in a message: <@U01U580HSDN>",
+
+```
+
+In this example, **@U01U580HSDN** is the user Id. The connector will resolve the user Id with the user’s display name, if it exists. Otherwise, it will use the full name in the user’s profile.
+
+## Incremental Crawling processors
+
+<Frame>![Incremental crawling process](/assets/images/5.4/diagrams/incremental-crawling-process.png)</Frame>
+
+Each incremental job will re-index the User ACL to update all users in the Access Control Collection, and the Channel ACL to update the members of each channel.
+
+| Processor | Description |
+| --- | --- |
+| `ProfilesCheckpointProcessor` | Performs the following actions:  * Triggers the indexing of all user profiles and the profile’s ACL * Verifies that profiles should still be indexed. If not, it deletes them * Verifies guest and deleted profiles |
+| `ChannelsCheckpointProcessor` | Detects new and deleted channels by comparison and the triggers the re-indexing of the channel ACL documents. |
+| `ChannelCheckpointProcessor` | Verifies that the current channel should still be indexed.  If the channel should still be indexed, then it triggers the indexing of new messages providing the timestamp (`ts`) of the last seen message from the previous job. |
+
+## Security filtering
+
+### Security filtering processors
+
+| Processor | Description |
+| --- | --- |
+| `ProfileAclProcessor` | Builds a document representing a Slack user, which is then sent to the Access Control Collection.  Regular users can access public channels, even if they are not members of the channel.  Guest users can access only the channels they are members of. |
+| `ChannelAclProcessor` | Retrieves the current members of the given channel, builds a document with those values, and sends the document to the Access Control Collection.  In public channels, an extra document is sent to the Access Control Collection to provide access to regular users who are not members of public groups. |
+
+### Access Control Document links
+
+<Frame>![Access Control Document links](/assets/images/5.4/diagrams/access-control-document-links.png)</Frame>
+
+### Security trimming rules
+
+Security trimming uses the following rules:
+
+* All users (regular and guest) can see the profile of any user in the Slack workspace.
+* All regular users can access public channels and messages, even if they are not members of the channel.
+* Guest users can only access the public or private channels they are members of.
+* Only the members of private channels can access the channel and messages.
+* Only the users involved can access direct messages and multi-party direct messages.
+
+## Remote connectors
+
+V2 connectors support [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.7.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+Below is an example configuration showing how to specify the file system to index under the `connector-plugins` entry in your `values.yaml` file:
+
+```yaml
+additionalVolumes:
+- name: fusion-data1-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data1-pvc
+- name: fusion-data2-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data2-pvc
+additionalVolumeMounts:
+- name: fusion-data1-pvc
+    mountPath: "/connector/data1"
+- name: fusion-data2-pvc
+    mountPath: "/connector/data2"
+
+```
+
+You may also need to specify the user that is authorized to access the file system, as in this example:
+
+```yaml
+securityContext:
+    fsGroup: 1002100000
+    runAsUser: 1002100000
+
+```
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-slack.mdx";
+
+<SchemaParamFields schema={schema}/>
+

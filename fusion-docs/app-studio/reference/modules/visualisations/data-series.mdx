@@ -1,0 +1,21 @@
+---
+title: "Search Result Data Series"
+permalink: "3149"
+---
+
+To render information from fields of a result list into a data series, use the Series Result List tag and use the label-field and value-field attributes.
+
+This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+```xml
+<chart:display response="response" title="Credit Score and Lifetime Value" subtitle="By Customer">
+    <series:result-list label-field="name" value-field="credit_score" type="column" title="Credit Score"
+                       color="red"></series:result-list>
+    <series:result-list label-field="name" value-field="lifetime_value" type="scatter"
+                       title="Lifetime Value" color="#006600"></series:result-list>
+</chart:display>
+```
+
+<Frame>![Multi Series Result List Chart](/assets/images/appkit/4.2/highchart-multi-result.png)</Frame>
+
+To see all related attributes, see the [series:result-list](/fusion/5.9/1083/series-result-list) tag documentation.

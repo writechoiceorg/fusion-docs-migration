@@ -1,0 +1,142 @@
+---
+title: "Apps Manager API"
+permalink: "5ixgx1"
+---
+
+The Apps Manager API gives information about your Fusion license, entitlements, and usage.
+
+This data is also used to generate usage statistics in the [Consumption Dashboard](/managed-fusion/5.9/10ux05/consumption-dashboard).
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+This feature is only available in Managed Fusion 5.9.10 and later versions of Managed Fusion 5.9.
+</Note>
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Apps Manager API** focuses on the purpose and functions of the Apps Manager API:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/apps-manager-api" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/apps-manager-api.png" alt="Apps Manager API" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Examples
+
+### List license capabilities
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/apps-manager/license
+```
+
+**Output**
+
+```json
+{
+    "isValid":true,
+    "expirationDate":1766530800000,
+    "licensedCapabilities":{
+        "entitlements":"{Hash}",
+        "fusion":"*",
+        "solr_host":"*",
+        "fusion.server":"*",
+        "environment":"*",
+        "fusion.connectors":"*",
+        "fusion.ai":"*",
+        "solr":"*",
+        "fusion_host":"*"
+    },
+    "validationErrors":[],
+    "isInstalled":true,
+    "expirationWarning":""
+}
+```
+
+### Get the license expiration date
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/apps-manager/license/expiration
+```
+
+**Output**
+
+```
+2025-12-23T23:00:00.00057424
+```
+
+### Get usage overview
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/apps-manager/entitlements/current
+```
+
+**Output**
+
+```json
+{
+    "contractDuration":{
+        "years":3,
+        "months":0,
+        "days":0
+    },
+    "info":{
+        "start":"2022-12-23",
+        "end":"2023-12-23",
+        "requests":10000000,
+        "records":5000000
+    },
+    "usage":{
+        "requests":2863,
+        "requestsPercentage":0,
+        "records":565672,
+        "recordsPercentage":11
+    }
+}
+```
+
+### Get an account of the number of daily requests
+
+You can use this information to create your own spreadsheets or dashboards. Alternatively, use `/apps-manager/entitlements/documents/detailed` for more information, such as type of request or which app made the request.
+
+**Input**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/apps-manager/entitlements/requests/summary
+```
+
+**Output**
+
+```json
+[
+    {"date":"2023-10-30","count":4},
+    {"date":"2023-10-31","count":70},
+    {"date":"2023-11-01","count":21},
+    {"date":"2023-11-02","count":6},
+    {"date":"2023-11-03","count":0},
+    {"date":"2023-11-04","count":0},
+    {"date":"2023-11-05","count":0},
+    {"date":"2023-11-06","count":0},
+    {"date":"2023-11-07","count":3},
+    {"date":"2023-11-08","count":63},
+    {"date":"2023-11-09","count":12}
+]
+```

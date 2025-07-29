@@ -1,0 +1,62 @@
+---
+title: "Solr API"
+permalink: "313"
+---
+
+
+The Solr API is used to manage collection-level configurations.
+
+The path for this request is:
+
+`/api/solr/<collectionName>/<solrRequest>`
+
+where *`<collectionName>`* is the name of an specific collection and `<solrRequest>` is the Solr command you wish to run.
+
+Since this API proxies requests to Solr, each available method corresponds to the method in Solr. So, a GET request to Solr would use the GET method of this endpoint; a POST would use the POST method, etc.
+
+Depending on the request, the response may consist of records that match a query
+or output from a Schema API request.
+
+## Examples
+
+*Query Solr for documents in the 'docs' collection containing the term 'solr', limiting the results to only 2 records, returning only the title, and in JSON format:*
+
+**REQUEST**
+
+```
+https://FUSION_HOST:8764/api/solr/docs/select?q=solr&rows=2&fl=title&wt=json
+```
+
+**RESPONSE**
+
+```json
+{
+    "responseHeader": {
+        "status": 0,
+        "QTime": 2,
+        "params": {
+            "fl": "title",
+            "q": "solr",
+            "wt": "json",
+            "rows": "2"
+        }
+    },
+    "response": {
+        "numFound": 52,
+        "start": 0,
+        "docs": [
+            {
+                "title": [
+                    "Solr and SolrAdmin APIs - Fusion Documentation - Lucidworks"
+                ]
+            },
+            {
+                "title": [
+                    "Search Clusters - Fusion Documentation - Lucidworks"
+                ]
+            }
+        ]
+    }
+}
+```
+

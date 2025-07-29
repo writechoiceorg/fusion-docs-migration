@@ -1,0 +1,24 @@
+---
+title: "Fusion 5 Frequently Asked Questions"
+permalink: "oa0map"
+---
+
+**Does Fusion use Custom Resource Definitions?**
+
+Yes, Fusion 5 does utilize custom resource definitions. These CRDs are part of the install and are critical to the application. All CRDs are namespaced, following Kubernetes best practices for utilizing CRDs in a multi-tenant environment.
+
+**Are any services installed at the cluster level?**
+
+Yes, two services, Argo and Seldon-core are installed at the cluster level. These services, which are part of the ML/AI service infrastructure for Fusion, use web hooks, which must be installed at the cluster level. These web hooks are namespaced, following best practices for utilizing web hooks in a multi-tenant environment.
+
+**Can I install Fusion 5 without using your Helm chart?**
+
+Yes, but we strongly recommend that you use the Helm chart to install if you want to leverage Lucidworks support.
+
+**Are there backup jobs used in disaster recovery situations for stateful services deployed to Kubernetes?**
+
+There is no out-of-the-box backup solution for stateful services provided with Fusion. Lucidworks recommends having a plan in place to reindex data from its primary source as part of an overall disaster recovery strategy.
+
+## Other questions?
+
+If you have a question about a resource not included here, please reach out to [Lucidworks support](https://support.lucidworks.com/)

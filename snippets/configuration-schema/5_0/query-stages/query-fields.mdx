@@ -1,0 +1,84 @@
+export const schema = {
+  "type": "object",
+  "title": "Query Fields",
+  "description": "Configure query parameters for Solr search",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "title": "Number of Results",
+      "default": 10
+    },
+    "start": {
+      "type": "integer",
+      "title": "Result Offset",
+      "default": 0
+    },
+    "sort": {
+      "type": "string",
+      "title": "Results Sort Order"
+    },
+    "queryFields": {
+      "type": "array",
+      "title": "Search Fields",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field Name"
+          },
+          "boost": {
+            "type": "number",
+            "title": "Field Boost"
+          }
+        }
+      }
+    },
+    "returnFields": {
+      "type": "array",
+      "title": "Return Fields",
+      "default": [
+        "*",
+        "score"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "minimumMatch": {
+      "type": "string",
+      "title": "Minimum Should Match"
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 7,
+  "unsafe": false
+}

@@ -1,0 +1,29 @@
+---
+title: "Cell tag"
+permalink: "3098"
+---
+
+The Cell tag displays the value of a given field from a search result as a table cell. The Cell tag supports a number of features in displaying the value, such as date formatting, adding a suffix or prefix, and default values.
+
+## Usage
+
+Place the Cell tag inside the body of a [Row tag](/fusion/5.9/3097/row-tag). The order of the cell tags within a row should match the order of the [Header Cell tags](/fusion/5.9/3100/header-cell-tag) within the table’s [Header tag](/fusion/5.9/3102/header-tag). In this example, a table contains three columns and displays the "full_name", "address", and "dob" fields for each document in the given search response.
+
+```xml
+<table:result-list response="response">
+    <table:header>
+        <table:header-cell name="full_name" label="Name" sort="true"></table:header-cell>
+        <table:header-cell name="address" label="Address" sort="true"></table:header-cell>
+        <table:header-cell name="dob" label="Date of birth" sort="true"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="full_name" query="query"></table:cell>
+            <table:cell name="address"></table:cell>
+            <table:cell name="dob" date-format="dd/MM/yyyy"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+```
+
+For a complete list of attributes, see the [`table:cell`](/fusion/5.9/1172/table-cell) tag doc.

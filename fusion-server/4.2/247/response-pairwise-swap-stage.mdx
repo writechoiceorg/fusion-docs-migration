@@ -1,0 +1,19 @@
+---
+title: "Response Pairwise Swap Stage"
+permalink: "247"
+---
+
+This is a [response rewriting](/fusion-ai/4.2/449/response-rewriting) stage that helps "de-bias" results by swapping the search results at any two positions, such as positions 1 and 2, positions 3 and 4, and so on. This stage must be used *after* the [Solr Query stage](/fusion-server/4.2/265/solr-query-stage) in your pipeline.
+
+This stage is especially useful when combined with [experiments](/fusion-ai/4.2/460/experiments), where a small percentage of traffic is given swapped results to minimize position bias when using click signals for ranking. The [Response Shuffle stage](/fusion-ai/4.2/524/response-shuffle-stage) provides an another method for minimizing this bias.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/response-pairwise-swap.mdx";
+
+<SchemaParamFields schema={schema}/>

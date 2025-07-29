@@ -1,0 +1,100 @@
+export const schema = {
+  "type": "object",
+  "title": "Machine Learning",
+  "description": "Generate predictions from a machine learning model",
+  "required": [
+    "serviceId",
+    "modelId",
+    "inputScript"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "serviceId": {
+      "type": "string",
+      "title": "Service ID of ML Model Service",
+      "description": "Service ID of ML Model Service",
+      "default": "ml-model-service",
+      "hints": [
+        "advanced",
+        "hidden"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Model ID"
+    },
+    "contextKey": {
+      "type": "string",
+      "title": "Name of context key to store prediction",
+      "description": "Name of context key to store prediction"
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating a prediction for a document.",
+      "default": false
+    },
+    "inputScript": {
+      "type": "string",
+      "title": "Model input transformation script",
+      "description": "Javascript code that returns a HashMap contains fields and values to send to ML model service.  Refer to examples.",
+      "default": "/*\n\nThis script must contruct a HashMap containing fields and values to be sent to the ML model service.\nThe field names and values will depend on the input schema of the model.\nGenerally, you'll be reading fields and values from the request/context/response and placing them into a HashMap.\n\nValue types supported are:\n- String\n- Double\n- String[]\n- double[]\n- List<String>\n- List<Number>\n\nThis script receives these objects and can be referenced in your script:\n- request\n- response\n- context\n- log (Logger useful for debugging)\n\nThe last line of the script must be a reference to the HashMap object you created.\n\nExample 1: Single string parameter from request to modelInput HashMap\nvar modelInput = new java.util.HashMap()\nmodelInput.put(\"input_1\", request.getFirstParam(\"q\"))\nmodelInput\n\nExample 2: List of strings from request to modelInput HashMap\nvar modelInput = new java.util.HashMap()\nmodelInput.put(\"input_1\", request.getParam(\"q\")) // request.getParam returns a Collection\nmodelInput\n\nExample 3: List of numeric values from request to modelInput HashMap\nvar modelInput = new java.util.HashMap()\nvar list = new java.util.ArrayList()\nlist.add(Double.parseDouble(request.getFirstParam(\"numeric_1\")))\nlist.add(Double.parseDouble(request.getFirstParam(\"numeric_2\")))\nmodelInput.put(\"input_1\", list)\nmodelInput\n\nExample 4: To use the spark ml based models, use the below code\nvar modelInput = new java.util.HashMap()\nmodelInput.put(\"concatField\", request.getFirstParam(\"q\"))\nmodelInput\n\n*/\n",
+      "hints": [
+        "lengthy",
+        "code",
+        "code/javascript"
+      ]
+    },
+    "outputScript": {
+      "type": "string",
+      "title": "Model output transformation script",
+      "description": "Javascript code that receives output from ML service as a HashMap called \"modelOutput\".  Most of the time this is used to place prediction results in the request or context.  Refer to examples.",
+      "default": "/*\n\nThis output script receives the output prediction from the ML model service as a HashMap called \"modelOutput\".\nMost of the time this is used to place prediction results in the request or context for downstream pipeline stages\nto consume.\n\nThis script receives these objects and can be referenced in your script:\n- modelOutput (a HashMap containing fields/values returned from ML model service)\n- request\n- response\n- context\n- log (Logger useful for debugging)\n\nExample: Place predictedLabel (string) on request\nrequest.putSingleParam(\"sentiment\", modelOutput.get(\"predictedLabel\"))\n\n*/\n",
+      "hints": [
+        "lengthy",
+        "code",
+        "code/javascript"
+      ]
+    }
+  },
+  "category": "AI",
+  "categoryPriority": 10,
+  "unsafe": false
+}

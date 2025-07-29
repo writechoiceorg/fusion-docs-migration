@@ -1,0 +1,145 @@
+---
+title: "search:facet-list"
+permalink: "1061"
+---
+
+## Description
+
+The facet list directive displays a list of facets.
+
+## Usage
+
+as element:
+
+```xml
+<search:facet-list
+       [response="{object}"]
+       [styling="{string}"]
+       [facet-names="{string}"]
+       [max-characters="{number}"]
+       [platform="{string}"]
+       [query="{Object}"]>
+</search:facet-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response  *(optional)* | **object** | A response object |
+| styling  *(optional)* | **string** | The style the facet list is to be rendered in. Accepted values 'shadow' and 'wrappedheader' |
+| facet-names  *(optional)* | **string** | The names of the facets to output. Can be specified as either a comma separated list or as a wildcard * for all available facets. In addition, you can use the - with a facet name to omit a specific facet (e.g. -cat will omit the cat facet). |
+| max-characters  *(optional)* | **number** | Limit display value to a certain number of characters, adding '…' if maxCharacters is exceeded. This will not break highlighting code. |
+| platform  *(optional)* | **string** | The name of the platform to use for search within the facet. |
+| query  *(optional)* | **Object** | Query to be used. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_styling">Styling</h3>
+<h4 id="example_styling_simple">Simple</h4>
+<search:facet-list response="response" facet-names="*"></search:facet-list>
+<h4 id="example_styling_wrapped-header">Wrapped Header</h4>
+<search:facet-list response="response" styling="wrappedheader" facet-names="*"></search:facet-list>
+<h4 id="example_styling_indented">Indented</h4>
+<search:facet-list response="response" styling="indented" facet-names="*"></search:facet-list>
+<h4 id="example_styling_shadow">Shadow</h4>
+<search:facet-list response="response" styling="shadow" facet-names="*"></search:facet-list>
+<h4 id="example_styling_hidemetadata">Hidemetadata</h4>
+<search:facet-list response="response" styling="hidemetadata" facet-names="*"></search:facet-list>
+<h4 id="example_styling_recessed">Recessed</h4>
+<search:facet-list response="response" styling="recessed" facet-names="*"></search:facet-list>
+<h4 id="example_styling_light">Light</h4>
+<div class="tk-stl-blocksidebar-light">
+    <aside class="tk-bl-sidebar">
+        <search:facet-list response="response" facet-names="*"></search:facet-list>
+    </aside>
+</div>
+<h4 id="example_styling_dark">Dark</h4>
+<div class="tk-stl-blocksidebar-dark">
+    <aside class="tk-bl-sidebar">
+        <search:facet-list response="response" facet-names="*"></search:facet-list>
+    </aside>
+</div>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    test1: {
+                        id:'test1',
+                        display:'test1',
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+
+                                },
+                                count: 100,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 200,
+                            }
+
+                        ]
+                    },
+                    test2: {
+                        id:'test2',
+                        display:'test2',
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 20,
+                            }
+
+                        ]
+                    },
+                    empty: {
+                        id:'empty',
+                        display:'Empty',
+                        filters: []
+                    },
+                },
+                results: []
+            }
+
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchFacetList.png)</Frame>

@@ -1,0 +1,51 @@
+---
+title: "Dropbox V1"
+description: "Connector Configuration Reference"
+permalink: "37"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Dropbox connector retrieves data from a Dropbox cloud-based data repository.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+<Note>
+This connector is not available in Fusion 4.1.x.
+</Note>
+
+
+
+To fetch content from Dropbox, you must have an OAuth token accessible to the crawler so it can properly authenticate.
+
+If you want to crawl all of the files owned by the account, you can simply use `/` as the `startLink`.
+
+The `startLink` for a folder is its share link:
+
+* In the Dropbox Web UI, navigate to the folder and then to **Share Folder** > **Share with Dropbox** > **Create Link** (or **Copy Link** if the link has already been created).
+* In the Dropbox integration for the Finder in OS X , select the folder, right-click, and select **Copy Dropbox Link**.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-dropbox.mdx";
+
+<SchemaParamFields schema={schema}/>

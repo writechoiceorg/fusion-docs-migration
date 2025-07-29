@@ -1,0 +1,260 @@
+---
+title: "Fusion 5.9.11"
+permalink: "z72wlm"
+---
+
+Released on March 20, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) provides KNN-based performance enhancements for Neural Hybrid Search, Java 17 support for connectors, a new asynchronous parsing service, the Apps Manager API, and critical security updates.
+
+Upgrading to the latest version of Fusion 5.9 offers several key benefits:
+
+* **Access to latest features:** Stay current with the latest features and functionality to ensure compatibility and optimal performance.
+* **Simplified process:** Fusion 5.9.5 and later use an in-place upgrade strategy, making upgrades easier than ever.
+* **Extended support:** Upgrading keeps you up-to-date with the latest supported Kubernetes versions, as outlined in the [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle) policy.
+
+<Tip>
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+</Tip>
+
+## Key highlights
+
+### KNN performance enhancements
+
+The [Neural Hybrid Query stage](/fusion/5.9/mb500k/neural-hybrid-query-stage) now uses K-Nearest Neighbors (KNN) instead of vector similarity (vecSim).
+KNN is a more efficient method for finding the most relevant results, leading to faster and more accurate searches that help users find the most relevant information faster.
+
+New configuration options give you finer control over the speed and accuracy of neural hybrid queries:
+
+* `vectorDepth` (Number of Vector Results) sets the number of vector results to return from the vector portion of the hybrid query.
+  Increasing `vectorDepth` retrieves more vector results but may increase query time.
+  Lowering it speeds up search but may reduce result diversity.
+* `vecPreFilterBoolean` (Block pre-filtering) indicates whether to prevent pre-filtering.
+  Pre-filtering can improve performance, while blocking it can yield more accurate facet counts and search results.
+
+### Java 17 for connectors
+
+Connectors have been updated to use Java 17. If you use remote connectors, you must upgrade to JVM 17. See [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors) for more information.
+
+### Asynchronous parsing service
+
+An asynchronous parsing service for connectors has been added.
+While traditional synchronous parsing can create delays in indexing when handling large documents or high data volumes, asynchronous parsing processes files in the background, allowing indexing to continue without waiting for each document to be fully parsed.
+This new service brings more efficient data processing, improved search freshness, scalability without added complexity, and better support for diverse data types, supporting HTML, JSON, and other formats.
+
+A new parsing stage, [Apache Tika Container](/fusion/5.9/0b2upm/apache-tika-container-parser-stage), has been added to route asynchronous parsing through the new service.
+This stage is now required when using asynchronous parsing for connectors.
+
+To use asynchronous parsing for connectors, be sure that **Async Parsing** is checked in the datasource and the Apache Tika Container parser stage is enabled in the index pipeline.
+See [Use Tika Asynchronous Parsing](/how-to/5bk663/use-tika-asynchronous-parsing) for detailed steps to set up asynchronous parsing.
+
+<Note>
+Other parsers, such as HTML and JSON, are now supported by the asynchronous parsing service. By enabling asynchronous parsing, the parser configuration linked to your datasource is used.
+</Note>
+
+To learn how to start using the new asynchronous parsing service, see the following demonstration:
+
+This update also includes a new [Async Parsing API](/fusion/5.9/mwbgkx/async-parsing-api).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Asynchronous Parsing Service** focuses on how to use the asynchronous parsing service for connectors to improve efficiency and responsiveness:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/asynchronous-parsing-service" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/async-parsing.jpg" alt="Asynchronous Parsing Service" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+### Job Config service
+
+The new Job Config service provides more accurate and reliable job status reporting.
+This service uses asynchronous communication through Kafka for improved efficiency over the previous synchronous calls, with these benefits:
+
+* More accurate job tracking. You get real-time, reliable job status updates, reducing uncertainty about whether a job is running, completed, or failed.
+* Faster troubleshooting. With detailed job histories and improved reporting, teams can quickly diagnose issues instead of chasing down incomplete or outdated job statuses.
+* Seamless transition. For most users, no action is required—API calls through `api-gateway` automatically reroute. Internal API users need only a simple update to continue tracking jobs accurately.
+
+The following API endpoints have been migrated from the `admin` service to the new `job-config` service:
+
+```
+/api/tasks/{id}
+/api/jobs/{resource}/schedule
+/api/tasks
+/api/jobs/{resource}/actions
+/api/tasks/_schema
+/api/jobs
+/api/jobs/{resource}
+/api/jobs/{resource}/history
+/api/jobs/_schema
+```
+
+For API calls made to the `api-gateway` service, you do not need to make any changes; the endpoints above are automatically rerouted to the new `job-config` service.
+See [Job Config API](/fusion/5.9/28cxtu/job-config-api) for reference information about these endpoints.
+
+<Note>
+If you are making internal API calls to the `admin` service using any of the endpoints above, you must update your API calls to point to the new `job-config` service.
+</Note>
+
+### Security updates
+
+Lucidworks remains committed to providing a secure and resilient platform. Fusion 5.9.11 includes critical security updates across a number of Fusion services, including the admin, connectors, distributed compute, indexing, job configuration, and query services, ensuring continued protection and reliability for your deployments.
+
+### API path changes
+
+Trailing slashes are no longer supported when making API calls.
+For example, this API call works:
+
+```
+http://HOSTNAME/api/apps/APP_NAME/query/QUERY_PROFILE?q=hello
+```
+
+But this API call does not work and results in an error:
+
+```
+http://HOSTNAME/api/apps/APP_NAME/query/QUERY_PROFILE/?q=hello
+```
+
+## Bug fixes
+
+* Critical fix for Azure Kubernetes Service (AKS) and Amazon Elastic Kubernetes Service (EKS) compatibility on Kubernetes 1.30+
+
+  By upgrading the Kubernetes Client library to version 6.2.0, this update prevents token refresh failures that previously caused service disruptions. Affected services—including connectors backend, indexing, job rest server, and job launcher services—now operate reliably in OIDC-enabled AKS and EKS environments, strengthening Fusion’s stability on modern Kubernetes deployments.
+
+## Known issues
+
+* Scheduled jobs that perform Solr operations may fail to run or save due to permission-related issues in the `job-config` service.
+
+  In some cases, users without full permissions can create or modify scheduled tasks that execute actions they aren’t authorized to run directly, specifically tasks that invoked Solr using `solr://` URIs.
+  These jobs may fail silently or prevent schedule changes from being saved. This issue can also affect the execution of jobs after upgrade. It is fixed in Fusion 5.9.13.
+* Deploying Fusion with TLS flags enabled fails in ArgoCD due to Helm chart rendering limitations.
+
+  When using ArgoCD to deploy Fusion 5.9.10 or 5.9.11 with TLS options enabled, Helm chart rendering fails due to the use of the `lookup` function, which is unsupported by ArgoCD. This prevents ArgoCD from generating manifests, blocking deployment workflows that rely on TLS configuration.
+
+  This issue is fixed in Fusion 5.9.12.
+  As a workaround, deploy Fusion without enabling TLS in ArgoCD-managed environments, or perform the deployment using Helm directly.
+
+* Incorrect Solr image repository in Helm charts.
+
+  Fusion 5.9.11’s Helm chart incorrectly references an internal Lucidworks Artifactory repository for the Solr image. This can prevent successful deployment in environments without access to internal infrastructure.
+
+  This issue is fixed in Fusion 5.9.12.
+  As a workaround, override the Solr image repository in your custom `values.yaml` file.
+* Jobs API returns incorrect timestamps for jobs scheduled after 12:00 UTC.
+
+  In Fusion 5.9.11, job timestamps returned by the API may be off by 12 hours if the time is after noon UTC. This affects scheduling accuracy and may cause the UI to misinterpret whether a change has been made.
+
+  This issue is fixed in Fusion 5.9.12.
+* Cannot update existing job triggers in the Schedulers view.
+
+  In Fusion 5.9.11, scheduled job triggers cannot be modified due to incorrect timestamp comparison logic in the Admin UI. You must delete and recreate the trigger instead.
+
+  This issue is fixed in Fusion 5.9.12.
+* Scheduler may stop working if ZooKeeper becomes briefly unavailable.
+
+  If all `job-config` pods lose connection to ZooKeeper in Fusion 5.9.11, they may fail to re-elect a leader, halting all scheduling until one of the pods is manually restarted.
+
+  This issue is fixed in Fusion 5.9.12.
+* Datasource jobs show incorrect "started by" user.
+
+  In Fusion 5.9.11, datasource jobs started in the UI incorrectly show `default-subject` as the initiating user in job history instead of the actual user.
+
+  This issue is fixed in Fusion 5.9.12.
+* Schema API incompatibility with nonstandard schema file names.
+
+  In Fusion 5.9.11, new apps save Solr schemas with the name `managed-schema.xml` instead of `managed-schema`, while older apps may include only a `managed-schema` file.
+  This mismatch can cause errors when editing or previewing schemas using the Schema API, particularly when the expected file extension is missing.
+  For existing config sets, it’s best to copy the contents from `managed-schema` to a new `managed-schema.xml`, then delete `managed-schema`.
+
+  Fusion 5.9.12 resolves this by supporting both file names, ensuring backward compatibility with older apps and consistent behavior for new ones.
+
+* Job scheduling may stop working if all `job-config` pods lose connection to ZooKeeper.
+
+  In rare cases, when a ZooKeeper connection is lost, the leader latch mechanism used by the `job-config` service might fail to recover.
+  If no node can re-establish leadership, the job scheduler stops until at least one `job-config` pod is restarted.
+
+  This issue is fixed in Fusion 5.9.13.
+
+* Scheduled job triggers can’t be updated in the Schedulers view.
+
+  While the Admin UI displays the current trigger time correctly, changes to the time are not saved.
+  This is due to a mismatch in how the API formats UTC timestamps, especially for times after 12:00 UTC, which prevents the UI from detecting that a change has been made.
+
+  To work around this, delete the existing scheduler entry and create a new one with the desired time.
+
+  This issue is resolved in Fusion 5.9.13.
+
+* Dependent job scheduling may fail
+
+  Jobs configured to run based on the success or failure of another job may not trigger as expected. This includes configurations using “on_success_or_failure” and “Start + Interval” options. This issue is resolved in Fusion 5.9.13.
+
+* Aborted jobs in Fusion are listed twice in the Job History.
+  This issue is fixed in Fusion 5.9.12.
+* When a new datasource is configured in **Indexing > Index Workbench**, the simulated results do not display, and the following error is generated: "Failed to simulate results from a working pipeline." As a result, the Index Workbench cannot simulate results for new datasources, preventing users from configuring the indexing process within the workbench.
+  This issue is fixed in Fusion 5.9.12.
+
+  To work around this issue, configure each part of the indexing process separately instead of using the Index Workbench:
+
+  + Configure datasources in **Indexing > Datasources**.
+  + Configure parsers in **Indexing > Parsers**.
+  + Configure index pipelines in **Indexing > Index Pipelines**.
+* In Fusion 5.9.10, the Apache Spark 3.4.1 upgrade impacted jobs that use Python 3.7 behavior or compatibility, which may have automatically updated to Python 3.10.x and no longer function correctly. If you have not yet updated the code for Python 3.10.x, update your code to ensure compatibility with Python 3.10.x and then test your Spark jobs in a staging environment before deploying to production.
+
+* An issue prevents segment-based rule filtering from working correctly in Commerce Studio. This issue is fixed in Fusion 5.9.12.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#deprecations).
+
+* The [Parsers Indexing CRUD API](/fusion/5.9/308/parsers-api), which provides CRUD operations for parsers, allowing users to create, read, update, and delete parsers, is deprecated in Fusion 5.9.11. This feature was originally deprecated in Fusion 5.12.0. It will be removed in a future release no later than September 4, 2025.
+
+    <Tip>
+    The [Async Parsing API](/fusion/5.9/mwbgkx/async-parsing-api) replaces the Parsers Indexing CRUD API and is available in Fusion 5.9.11. This API provides improved functionality and aligns with Fusion’s updated architecture, ensuring consistency across versions.
+    </Tip>
+
+
+* The [Word2Vec Model Training Job](/fusion/5.9/560/word-2-vec-model-training-jobs), which trains a shallow neural model to generate vector embeddings for text data, is deprecated in Fusion 5.9.11. It will be removed in a future release no later than September 4, 2025.
+
+    <Tip>
+    Lucidworks offers a wide array of AI solutions, including [Lucidworks AI](/lw-platform/ai/lukosg/lucidworks-ai). Lucidworks AI provides easy-to-use, AI-powered data discovery and search capabilities including:
+
+    + Pre-trained embedding models
+    + Custom embedding model training
+    + Seamless integration with Fusion
+    </Tip>
+
+## Platform support and component versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30, 1.31
+* **Microsoft Azure Kubernetes Service (AKS):** 1.28, 1.29, 1.30, 1.31
+* **Amazon Elastic Kubernetes Service (EKS):** 1.28, 1.29, 1.30, 1.31
+
+Support is also offered for Rancher Kubernetes Engine (RKE and RKE2) and OpenShift 4 versions that are based on Kubernetes 1.28, 1.29, 1.30, 1.31. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.11  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

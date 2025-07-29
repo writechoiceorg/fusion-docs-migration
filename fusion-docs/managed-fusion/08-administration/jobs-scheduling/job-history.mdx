@@ -1,0 +1,227 @@
+---
+title: "Job history"
+permalink: "hnuexi"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+## Checking a job status
+
+### With the API
+
+You can see the current job states of all datasources for the app `myApp` by calling the Jobs API:
+
+```sh
+curl -u USERNAME:PASSWORD http://proxy-url:6764/api/apps/myApp/jobs?type=datasource
+```
+
+If a job has never run, a Jobs API call returns the following:
+
+```json
+[
+  {
+    "resource": "datasource:myDatasource",
+    "enabled": true,
+    "startedBy": "09765f1d-2f1c-4c3b-ba22-887e3886d8aa",
+    "status": "ready",
+    "extra": {}
+  }
+]
+```
+
+<Note>
+The value **`datasource:myDatasource`** indicates a datasource, **`myDatasource`**, is present. The line **`"status": "ready"`** indicates the current state of the job, which has never run.
+</Note>
+
+After a job successfully completes, the following is returned:
+
+```json
+[
+  {
+    "resource": "datasource:myDatasource",
+    "enabled": true,
+    "startedBy": "09765f1d-2f1c-4c3b-ba22-887e3886d8aa",
+    "status": "success",
+    "extra": {
+      "counter.failed": 0,
+      "counter.other.pipeline.in": 58242,
+      "counter.stage.field-mapping::d3ebd921-6065-479e-9d45-0bfed819346b.processed": 58241,
+      "counter.deleted": 0,
+      "counter.stage.solr-dynamic-field-name-mapping::e6aa9c51-2867-40a0-97fd-34d909098a20.processed": 58241,
+      "counter.new": 2268,
+      "counter.output": 58241,
+      "counter.other.pipeline.complete": 58242,
+      "datasourceId": "myDatasource",
+      "counter.input": 60435,
+      "startTime": 1586298855843,
+      "endTime": 1586299313433,
+      "counter.skipped": 2194,
+      "counter.stage.solr-index::01e1c561-0440-44b2-afb4-d6ff471f646c.processed": 58241,
+      "counter.other.pipeline.out": 58242
+    },
+    "lastStartTime": "2020-04-07T22:34:15.852Z",
+    "lastEndTime": "2020-04-07T22:41:59.271Z"
+  }
+]
+```
+
+To see the complete job history, use the following Jobs API call:
+
+```
+curl -u USERNAME:PASSWORD http://proxy-url:6764/api/jobs/datasource:myDatasource/history
+```
+
+The following is returned:
+
+```json
+[
+  {
+    "resource": "datasource:myDatasource",
+    "runId": "fXfKTQNSKM",
+    "startTime": "2020-04-07T22:34:15.852Z",
+    "endTime": "2020-04-07T22:41:59.271Z",
+    "status": "success",
+    "extra": {
+      "counter.failed": 0,
+      "counter.other.pipeline.in": 58242,
+      "counter.stage.field-mapping::d3ebd921-6065-479e-9d45-0bfed819346b.processed": 58241,
+      "counter.deleted": 0,
+      "counter.stage.solr-dynamic-field-name-mapping::e6aa9c51-2867-40a0-97fd-34d909098a20.processed": 58241,
+      "counter.new": 2268,
+      "counter.output": 58241,
+      "counter.other.pipeline.complete": 58242,
+      "datasourceId": "myDatasource",
+      "counter.input": 60435,
+      "startTime": 1586298855843,
+      "endTime": 1586299313433,
+      "counter.skipped": 2194,
+      "counter.stage.solr-index::01e1c561-0440-44b2-afb4-d6ff471f646c.processed": 58241,
+      "counter.other.pipeline.out": 58242
+    },
+    "startedBy": "09765f1d-2f1c-4c3b-ba22-887e3886d8aa"
+  },
+  {
+    "resource": "datasource:myDatasource",
+    "runId": "XxrxochVOB",
+    "startTime": "2020-04-07T20:06:25.819Z",
+    "endTime": "2020-04-07T20:14:01.686Z",
+    "status": "success",
+    "extra": {
+      "counter.failed": 0,
+      "counter.other.pipeline.in": 59090,
+      "counter.stage.field-mapping::d3ebd921-6065-479e-9d45-0bfed819346b.processed": 59089,
+      "counter.deleted": 0,
+      "counter.stage.solr-dynamic-field-name-mapping::e6aa9c51-2867-40a0-97fd-34d909098a20.processed": 59089,
+      "counter.new": 2268,
+      "counter.output": 59089,
+      "counter.other.pipeline.complete": 59090,
+      "datasourceId": "myDatasource",
+      "counter.input": 61283,
+      "startTime": 1586289985809,
+      "endTime": 1586290440433,
+      "counter.skipped": 2194,
+      "counter.stage.solr-index::01e1c561-0440-44b2-afb4-d6ff471f646c.processed": 59089,
+      "counter.other.pipeline.out": 59090
+    },
+    "startedBy": "09765f1d-2f1c-4c3b-ba22-887e3886d8aa"
+  },
+  {
+    "resource": "datasource:myDatasource",
+    "runId": "2jy3UemLTp",
+    "startTime": "2020-04-07T19:23:39.576Z",
+    "endTime": "2020-04-07T19:31:26.694Z",
+    "status": "success",
+    "extra": {
+      "counter.failed": 0,
+      "counter.other.pipeline.in": 58906,
+      "counter.stage.field-mapping::d3ebd921-6065-479e-9d45-0bfed819346b.processed": 58905,
+      "counter.deleted": 0,
+      "counter.stage.solr-dynamic-field-name-mapping::e6aa9c51-2867-40a0-97fd-34d909098a20.processed": 58905,
+      "counter.new": 2268,
+      "counter.output": 58905,
+      "counter.other.pipeline.complete": 58906,
+      "datasourceId": "myDatasource",
+      "counter.input": 61099,
+      "startTime": 1586287419556,
+      "endTime": 1586287883825,
+      "counter.skipped": 2194,
+      "counter.stage.solr-index::01e1c561-0440-44b2-afb4-d6ff471f646c.processed": 58905,
+      "counter.other.pipeline.out": 58906
+    },
+    "startedBy": "09765f1d-2f1c-4c3b-ba22-887e3886d8aa"
+  }
+]
+```
+
+The section [How does the Jobs API work?](#how-it-works) below gives additional details on how the Jobs API retrieves information from Managed Fusion. See the [Jobs API reference](/managed-fusion/5.9/lggfzz/jobs-api) for more information.
+
+#### Job history results field definitions
+
+| Field | Definition |
+| --- | --- |
+| **counter.deleted** | Total number of documents deleted or removed from the Solr index. |
+| **counter.failed** | Total number of documents not indexed due to failure. The errors are written to the log. |
+| **counter.input** | Total number of fetched documents passed to the index pipeline. |
+| **counter.new** | Total number of documents fetched for the first time. |
+| **counter.output** | Total number of documents processed in the run (sum of failed + deleted + indexed documents). |
+| **counter.skipped** | Total number of documents skipped due to rules such as max, min, and file size. |
+| **endTime** | Time the job concluded, aborted, or was manually stopped. |
+| **resource: datasource** | Name of the datasource. |
+| **startTime** | Time the job started. |
+| **status** | Job status such as Success, Running, or Aborted. |
+
+### With the UI
+
+In the Managed Fusion UI, navigate to **Indexing** > **Datasources**. Click a datasource to open the datasource panel.
+
+<Frame>![Datasource panel](/assets/images/5.1/datasource-panel.png)</Frame>
+
+Note that the **Last run start** and **Last run stop** values are equivalent to the `lastStartTime` and `lastEndTime` values from the Jobs API call. (These values are only present if a job has been run at least once.)
+
+| Icon | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.1/job-run-button-c.png" alt="Run button"/> | The **Run** button opens a panel containing various run options and information. |
+| <InlineImage src="/assets/images/5.1/job-start-button-c.png" alt="Start button"/> | The **Start** button starts a job. |
+| <InlineImage src="/assets/images/5.1/job-schedule-button-c.png" alt="Schedule button"/> | The **New Schedule** button displays a dropdown with several scheduling options:  * **cron.** Schedule a job based on a Crontab expression. See [Cron Trigger documentation](http://www.quartz-scheduler.org) for more info. * **interval.** Schedule a job to run on an interval after a set starting point. For example, you can schedule a job to run every day at 1:00AM.  Job schedule interval * **job_completion.** Schedule a job to run after another job has completed. You can schedule the job to run if the job succeeds, fails, or regardless of the job’s success.  Job schedule job_completion |
+| <InlineImage src="/assets/images/5.1/job-stop-button-c.png" alt="Stop button"/> | The **Stop** button stops a running job. This results in a status of `"status" : "aborted"`. |
+| <InlineImage src="/assets/images/5.1/job-job-history-button-c.png" alt="Job History button"/> | The **Job History** button opens the [Job History panel](#job-history-panel). Click one of the job entries to see additional details. Expand the job details for more information. Click **Open Logs in Dashboard** for complete information. |
+| <InlineImage src="/assets/images/5.1/job-clear-datasource-button-c.png" alt="Clear Datasource button"/> | The **Clear Datasource** removes documents from your collection that are indexed from that datasource. The job history will *not* be deleted. |
+
+In the job history panel, there is an icon on each datasource indicating its latest run history. The possible statuses are:
+
+| Icon | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.1/job-history-never-run-icon-c.png" alt="Never Run icon"/> | The job has been created but has not been run. |
+| <InlineImage src="/assets/images/5.1/job-running-icon-c.png"alt="Running icon"/> | The job is currently running. Depending on the number of documents being processed, the job can take a long time to complete. Stop the job with the **Stop** button. |
+| <InlineImage src="/assets/images/5.1/job-success-icon-c.png"alt="Success icon"/> | The job was completed successfully. |
+| <InlineImage src="/assets/images/5.1/job-failed-icon-c.png"alt="Failed icon"/> | The job was not able to successfully run. Expand the job details for more information. Click **Open Logs in Dashboard** for complete information. |
+| <InlineImage src="/assets/images/5.1/job-abort-icon-c.png"alt="Aborted icon"/> | The job was manually stopped before it could finish. |
+
+<Frame>![Job history panel](/assets/images/5.1/job-history-all-possible-states.png)</Frame>
+
+<Note>
+The image above shows all possible job statuses.
+</Note>
+
+## How does the Jobs API work?
+
+In [Checking a job status with the API](#job-status-api) above, two Jobs API endpoints were used to call the datasource `myDatasource`:
+
+* `myApp/jobs?type=datasource` - Retrieves the current datasource job states for *all* datasources of a specified app. In this case, the app is specified as `myApp`.
+
+  You can also use `type=spark` to retrieve all Spark jobs and `type=task` for task jobs.
+* `/jobs/datasource:myDatasource/history` - Retrieves a specific object’s job history. In this case, the object type is a datasource, as selected with `datasource:`.
+
+  Datasources are not the only object type for jobs. There are also Spark jobs (`spark:`) and task jobs (`task:`).
+
+Both of the API calls above send a request to Managed Fusion’s API application, which serves the Jobs API. The API application contains two main components related to job history data, `JobController` and `SolrJobHistoryStore`.
+
+### The Job Controller
+
+The Job Controller is responsible for getting any active job’s run status, if an active job is running.
+
+In the case of V1 connectors classic datasource jobs, it will reach out to Managed Fusion’s connectors-classic application’s connectors API.
+
+When the API application calls the connectors-classic Jobs API, it will first use Zookeeper to identify the IP address of the connector-classic node that is assigned to this datasource, if one exists.
+
+When the connectors-classic node IP assigned to the job is identified, the API application will call out to the connectors-classic node via `http://<connectors-node-ip>:8984/connectors/v1/connectors/jobs/myDatasource`. The call reaches the component `ConnectorsManagerController` to query the job status of currently running jobs with the ID `myDatasource`.

@@ -1,0 +1,48 @@
+---
+title: "REST Call Jobs"
+permalink: "384"
+---
+
+A versatile job type that runs an arbitrary REST/HTTP/Solr command.
+
+REST jobs can call external systems using:
+
+* any HTTP or HTTPS request: `<http-protocol>://<path>`; requires JWT header.
+* a Solr request: `solr://COLLECTION_NAME/…​`; authentication is handled.
+* a Fusion service request: `extservice://SERVICE_NAME/<path>`; authentication is handled.
+
+For example, you can configure this type of job to delete your old signals data:
+
+1. Navigate to **Collections** > **Jobs**.
+2. Click **Add** and select **REST Call**.
+
+   The REST Call job configuration panel appears.
+3. Enter an arbitrary ID for this job, such as "Delete-old-signals".
+4. Enter the following endpoint URI, substituting the name of your signals collection for `signalsCollectionName`:
+
+   ```
+   solr://signalsCollectionName/update
+   ```
+   
+5. In the **Call Method** field, select "post".
+6. Under **Query Parameters**, enter the property name "wt" with the property value "json".
+7. In the **Request entity (as string)** field, enter the following:
+
+   ```xml
+   <root><delete><query>timestamp_tdt:[* TO NOW-2WEEKS]</query></delete><commit /></root>
+   ```
+
+   See [Working with Dates](https://solr.apache.org/guide/8_6/working-with-dates.html) for details about date formatting.
+
+   Your job configuration should look similar to this:
+
+   <Frame>![Signals delete job configuration](/assets/images/4.2/signals-delete-job.png)</Frame>
+
+<Tip>
+You can configure a schedule for this job at **System** > **Scheduler**.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/task-jobs/rest-call.mdx";
+
+<SchemaParamFields schema={schema}/>

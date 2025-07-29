@@ -1,0 +1,105 @@
+---
+title: "Taxonomy API"
+permalink: "304"
+---
+
+
+The Taxonomy API is used to manage taxonomies, such as a hierarchy of product categories used for an eCommerce site.
+
+The information in a taxonomy is meta-information about the categories used to classify a set of things.
+For an eCommerce site, the set of things are items in the product catalog.
+Fusion uses this meta-information to enhance search.
+In Fusion, these products are stored in a Fusion collection, (the primary collection),
+and the taxonomy is stored in an auxiliary collection.
+Naming conventions are used to relate the primary and auxiliary collections:
+given a primary collection named "COLL", the auxiliary taxonomy
+is stored in a collection named "COLL_stored_parameters".
+
+## Taxonomy structure
+
+In information-theoretic terms, the structure of a taxonomy is either a tree (or trees),
+or at least a directed acyclic graph (DAG) or set of DAGS.
+Each category object is a vertex in the tree or DAG, and the "children"
+property of each category object lists the set of outgoing edges.
+
+Each category object has a unique ID.
+In addition, category objects have an optional property called a "parameter",
+which is a list of named attributes associated with that category.
+These parameters values from the taxonomy
+are added to search queries over the primary collection.
+In addition, every category object has a property "version" which is managed by Fusion
+and used to ensure that concurrent updates to the same category do not conflict with each other.
+The value of this property corresponds to the system clock time in milliseconds.
+This value is set and updated by Fusion and need only be specified overtly when
+sending category update requests.
+
+Given the above specification, the set of property: values for a category object is:
+
+* id: a unique string identifier.
+* children: a list of category objects.
+* parameters: a list of named attributes associated with that category where each attribute is specified as a pair of strings key:value.
+* version: a string corresponding to the integer value of some system clock in milliseconds.
+
+## JSON example of a taxonomy
+
+The following example is part of a taxonomy for an online pet supply store.
+In this example, we have the following hierarchy of category id, label pairs:
+
+* 1 : "Pet Supplies"
+
+  + 11 "Cat Supplies"
+
+    - 111 "Cat Food"
+    - 112 "Cat Toys"
+  + 12 "Dog Supplies"
+
+    - 121 "Dog Food"
+    - 122 "Dog Toys"
+
+We annotate these category objects with a set of parameters,
+which will be used organize and enrich user searches over the product catalog:
+
+```json
+{ "id": "1",
+  "label": "Pet Supplies",
+  "children": [
+      { "id": "11",
+        "label": "Cat Supplies",
+        "children": [
+            { "id": "111",
+              "label": "Cat Food",
+              "parameters": [
+                  { "key": "facet.field", "value": "brand" },
+                  { "key": "facet.field", "value": "health_benefit" },
+                  { "key": "facet.field", "value": "size" }
+              ]},
+            { "id": "112",
+              "label": "Cat Toys",
+              "parameters": [
+                  { "key": "facet.field", "value": "price" }
+              ] }
+        ] },
+      { "id": "12",
+        "label": "Dog Supplies",
+        "children": [
+            { "id": "121",
+              "label": "Dog Food",
+              "parameters": [
+                  { "key": "facet.field", "value": "life_stage" },
+                  { "key": "facet.field", "value": "health_benefit" },
+                  { "key": "facet.field", "value": "flavor" }
+              ] },
+            { "id": "122",
+              "label": "Dog Toys",
+              "parameters": [
+                  { "key": "facet.field", "value": "price" },
+                  { "key": "facet.field", "value": "dog_size" },
+                  { "key": "facet.field", "value": "activity_type" }
+              ] } ]
+      } ]
+}
+```
+
+The version property on these category objects is not overtly specified here
+as it is managed by Fusion.
+

@@ -1,0 +1,67 @@
+---
+title: "Query Rewrite API"
+permalink: "359"
+---
+
+This API manages documents used for [query rewriting](/fusion-ai/4.2/489/query-rewriting).
+
+<Note>
+This API requires a [Fusion AI license](/fusion-ai/4.2/505/licensing).
+</Note>
+
+## Examples
+
+### Create a blocklist rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPOST -H "Content-type:application/json" https://FUSION_HOST:8764/api/apps/APP_NAME/query-rewrite/instances -d
+'{
+  "id": "block_list_rule_1",
+  "name": "block_list_rule_1",
+  "type": "block_list",
+  "field_name": "id",
+  "field_values": ["6","17"],
+  "enabled": true,
+  "priority":11,
+  "search_terms":["life"],
+  "matching": "keywords"
+}'
+```
+
+### Update specific fields in an existing rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://FUSION_HOST:8764/api/apps/APP_NAME/query-rewrite/instances -d
+'{
+  "id": "block_list_rule_1",
+  "name": "block_list_rule_1",
+  "type": "block_list",
+  "field_name": "id",
+  "field_values": ["6","17"],
+  "enabled": false,
+  "priority":9,
+  "search_terms":["life"],
+  "matching": "keywords"
+}'
+```
+
+### Publish rules in the staging area
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H 'Content-Type: application/json' https://FUSION_HOST:8764/api/apollo/apps/APP_NAME/query-rewrite/publish
+```
+
+### Delete a published rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://FUSION_HOST:8764/api/apollo/apps/APP_NAME/query-rewrite/instances -d
+'{
+  "delete": [ “block_list_rule_1" ]
+}'
+```
+
+### Publish an operation
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://FUSION_HOST:8764/api/apollo/apps/APP_NAME/query-rewrite/publish
+```

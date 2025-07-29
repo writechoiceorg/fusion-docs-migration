@@ -1,0 +1,60 @@
+---
+title: "Fusion 5.5.1"
+permalink: "drg5sz"
+---
+
+**Release date:** April 13, 2022
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | 8.11.1 |
+| **ZooKeeper** | 3.6.2 |
+| **Spark** | 2.4.5 |
+| **Kubernetes** | GKE, AKS, EKS 1.22  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.22  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## New features
+
+* Merchandisers can now curate the metadata content of their pages with the **Page Metadata** feature in Predictive Merchandiser. See [Page Metadata](/fusion/5.5/d9o8jb/page-metadata) for more information.
+
+## Improvements
+
+### Fusion
+
+* Added titles for Superset and Superset Proxy in the Fusion API **Microservices** dropdown menu.
+
+* Improved logging from client-side retries, to make debugging `retry` jobs easier.
+
+* Streamlined the **System** to remove redundant entries.
+
+### Predictive Merchandiser
+
+* A script has been created to address the [`solrconfig.xml` workaround](/fusion/5.5/301ya6/fusion-5-5-0#caffeineworkaround) listed in the Fusion 5.5.0 release notes, where users were directed to change their cache classes to `solr.search.CaffeineCache`. See the [Fusion 5 Migration Guide](https://github.com/lucidworks/fusion-cloud-native/tree/master/migrations#migration-from-fusion-5-4-x-to-5-5-x) for more information.
+
+## Bug Fixes
+
+### Fusion
+
+* Fixed an issue that caused the [Tika Parser](/fusion/5.5/371/apache-tika-parser) to generate "out of memory" errors.
+
+### Predictive Merchandiser
+
+* Fixed an issue that caused images to not display in Predictive Merchandiser results and product details.
+
+* Fixed an issue that caused the interface of the Create a facet console to display incorrectly after adding a new facet field.
+
+* Fixed several UI issues that caused the Publish Rules dropdown to display incorrectly.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

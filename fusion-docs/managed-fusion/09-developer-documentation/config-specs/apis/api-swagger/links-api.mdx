@@ -1,0 +1,205 @@
+---
+title: "Links API"
+description: "Managed Fusion Admin APIs"
+permalink: "v2flhi"
+---
+
+The Links API manages the links that represent the relationships between Managed Fusion objects. You can see these links in the [Object Explorer](/managed-fusion/5.9/v90jze/object-explorer) by pressing CMD-K or CTRL-K from any screen in the Managed Fusion UI. You can also export and import links using the [Objects API](/managed-fusion/5.9/7ocb2u/objects-api).
+
+Links are structured as a tuple of `(subject, object, linkType)`. An example would be `(foo, bar, dependsOn)`, which would read as "foo dependsOn bar".
+
+For more information, [view the API specification.](?open-api=true)
+
+## Link types and link reversibility
+
+The possible values of `linkType` are as follows:
+
+<table>
+  <thead>
+    <tr>
+      <th>Trigger type</th>
+      <th>Parameters</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>inContextOf</code></td>
+      <td>
+        <p>The subject exists in the context of the object, which is an app.</p>
+        <p>In this example, the "Movie_Search" app is the context for a parser with the same name:</p>
+        ```json
+        {
+          "subject" : "parser:Movie_Search",
+          "object" : "app:Movie_Search",
+          "linkType" : "inContextOf",
+          "originator" : "unspecified"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>hasContext</code></td>
+      <td>
+        <p>The subject is an app that contains the object.</p>
+        <p>In this example, an index profile exists in the context of the "Movie_Search" app:</p>
+        ```json
+        {
+          "subject" : "app:Movie_Search",
+          "object" : "index-profile:Movie_Search",
+          "linkType" : "hasContext",
+          "originator" : "unspecified"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>dependsOn</code></td>
+      <td>
+        <p>The subject depends on the object.</p>
+        <p>In this example, a datasource called "web_pokeapi_co-default" depends on a parser by the same name:</p>
+        ```json
+        {
+          "subject" : "datasource:web_pokeapi_co-default",
+          "object" : "parser:web_pokeapi_co-default",
+          "linkType" : "dependsOn"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>supports</code></td>
+      <td>
+        <p>The subject is depended on by the object (the reverse of <code>dependsOn</code>).</p>
+        <p>In this example, a parser called "web_pokeapi_co-default" supports a datasource by the same name:</p>
+        ```json
+        {
+          "subject" : "parser:web_pokeapi_co-default",
+          "object" : "datasource:web_pokeapi_co-default",
+          "linkType" : "supports"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>isPartOf</code></td>
+      <td>
+        <p>The subject is part of the object, where the object is a group.</p>
+        <p>In this example, an aggregation called "click-signals-default" is part of a group called "signals-object-group-default":</p>
+        ```json
+        {
+          "subject" : "aggregation:click-signals-default",
+          "object" : "group:signals-object-group-default",
+          "linkType" : "isPartOf"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>hasPart</code></td>
+      <td>
+        <p>The subject is a group, of which the object is a member (the reverse of <code>isPartOf</code>).</p>
+        <p>In this example, a group called "signals-object-group-default" has a member aggregation "click-signals-default":</p>
+        ```json
+        {
+          "subject" : "group:signals-object-group-default",
+          "object" : "aggregation:click-signals-default",
+          "linkType" : "hasPart"
+        }
+        ```
+      </td>
+    </tr>
+    <tr>
+      <td><code>relatesTo</code></td>
+      <td>
+        <p>The subject relates to the object. This is a uni-directional relationship that associates two objects that have none of the relationships described above.</p>
+        <p>For example, when recommendations are enabled for the default collection, Managed Fusion creates a group of objects which relates to the default collection:</p>
+        ```json
+        {
+          "subject" : "group:recommendations-default",
+          "object" : "collection:default",
+          "linkType" : "relatesTo"
+        }
+        ```
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+With the exception of the `relatesTo` link type, links are reversible:
+
+* `inContextOf` is the reverse of `hasContext` (and vice versa).
+* `dependsOn` is the reverse of `supports` (and vice versa).
+* `isPartOf` is the reverse of `hasPart` (and vice versa).
+
+For example, here is the group of links for the `signals-default` collection:
+
+```json
+[
+  {
+    "subject": "group:4e6ee9a6-d4ab-413a-ac70-a27c1445bb60",
+    "object": "collection:default_signals_aggr",
+    "linkType": "hasPart"
+  },
+  {
+    "subject": "group:4e6ee9a6-d4ab-413a-ac70-a27c1445bb60",
+    "object": "spark:default_click_signals_aggregation",
+    "linkType": "hasPart"
+  },
+  {
+    "subject": "group:4e6ee9a6-d4ab-413a-ac70-a27c1445bb60",
+    "object": "collection:default",
+    "linkType": "relatesTo"
+  },
+  {
+    "subject": "group:4e6ee9a6-d4ab-413a-ac70-a27c1445bb60",
+    "object": "collection:default_signals",
+    "linkType": "hasPart"
+  }
+]
+```
+
+When we request the links for one of the `hasPart` objects shown above, we get the reverse representation:
+
+```
+GET https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/links?subject=collection:default_signals_aggr
+
+[
+  {
+    "subject": "collection:default_signals_aggr",
+    "object": "group:4e6ee9a6-d4ab-413a-ac70-a27c1445bb60",
+    "linkType": "isPartOf"
+  }
+]
+```
+
+## Examples
+
+**Get links to the default collection**
+
+```sh
+curl https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/links?subject=collection:default
+```
+
+Output:
+
+```json
+[ { "subject": "collection:default", "object": "index-pipeline:default", "linkType": "supports" } ]
+```
+
+**Create a new link**
+
+```sh
+curl -X PUT https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/links -H 'content-type: application/json' -d '{"linkType": "supports", "object": "index-pipeline:default", "subject": "collection:default"}'
+```
+
+Output:
+
+```json
+{ "subject" : "collection:default", "object" : "index-pipeline:default", "linkType" : "supports" }
+```
+
+**Delete a link**
+
+```sh
+curl -X DELETE https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/links?subject=collection:default
+```

@@ -1,0 +1,506 @@
+export const schema = {
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Connector for using a Hadoop cluster to process documents and forward them to Solr for indexing. This uses a Hadoop job jar to pass arguments to Hadoop for processing with MapReduce.",
+  "properties": {
+    "category": {
+      "default": "Hadoop cluster",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "connector": {
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Connector Type",
+      "type": "string"
+    },
+    "description": {
+      "description": "Optional description for this datasource.",
+      "title": "Description",
+      "type": "string"
+    },
+    "id": {
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "title": "Datasource ID",
+      "type": "string"
+    },
+    "pipeline": {
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1,
+      "title": "Pipeline ID",
+      "type": "string"
+    },
+    "properties": {
+      "description": "Datasource configuration properties",
+      "properties": {
+        "collection": {
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$",
+          "title": "Collection",
+          "type": "string"
+        },
+        "db": {
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "hints": [
+            "hidden"
+          ],
+          "properties": {
+            "aliases": {
+              "default": false,
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "title": "Process Aliases?",
+              "type": "boolean"
+            },
+            "inlinks": {
+              "default": false,
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "title": "Process Inlinks?",
+              "type": "boolean"
+            },
+            "inv_aliases": {
+              "default": false,
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "title": "Process Inverted Aliases?",
+              "type": "boolean"
+            },
+            "type": {
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "minLength": 1,
+              "title": "Implementation Class Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "type"
+          ],
+          "title": "Connector DB",
+          "type": "object"
+        },
+        "fusion_batchsize": {
+          "default": 500,
+          "description": "Fusion Client Batch Size",
+          "exclusiveMinimum": true,
+          "hints": [
+            "advanced"
+          ],
+          "minimum": 1,
+          "title": "Batch Size",
+          "type": "integer"
+        },
+        "fusion_buffer_timeoutms": {
+          "default": 1000,
+          "description": "Fusion Client Timeout (ms).",
+          "exclusiveMinimum": true,
+          "hints": [
+            "advanced"
+          ],
+          "minimum": 1,
+          "title": "Timeout (ms)",
+          "type": "integer"
+        },
+        "fusion_endpoints": {
+          "default": [
+            "http://localhost:8764"
+          ],
+          "items": {
+            "default": "http://localhost:8764",
+            "format": "url",
+            "type": "string"
+          },
+          "minItems": 1,
+          "title": "List of Fusion Endpoints",
+          "type": "array"
+        },
+        "fusion_fail_on_error": {
+          "default": false,
+          "description": "Fusion Client Fail on Error",
+          "hints": [
+            "advanced"
+          ],
+          "title": "Fail on Error",
+          "type": "boolean"
+        },
+        "fusion_login_app_name": {
+          "default": "FusionClient",
+          "description": "Login Config App Name FusionClient by default.",
+          "title": "Config App Name",
+          "type": "string"
+        },
+        "fusion_login_config": {
+          "description": "The file path of Login Configuration for Fusion kerberized, it must be placed in every mapper/reduce node.",
+          "title": "Login Config",
+          "type": "string"
+        },
+        "fusion_password": {
+          "description": "Fusion client User's password, leave empty if kerberos is use.",
+          "hints": [
+            "secret"
+          ],
+          "title": "Password",
+          "type": "string"
+        },
+        "fusion_realm": {
+          "default": "NATIVE",
+          "description": "Fusion's Realm, If 'native' is selected the password is mandatory. If 'kerberos' is selected the Login Configuration is mandatory.",
+          "enum": [
+            "NATIVE",
+            "KERBEROS"
+          ],
+          "title": "Fusion client's Authentication",
+          "type": "string"
+        },
+        "fusion_user": {
+          "description": "Fusion client's User or Principal if Kerberos is chosen.",
+          "title": "User/Principal",
+          "type": "string"
+        },
+        "hadoop_home": {
+          "description": "Path to the Hadoop home directory where $HADOOP_HOME/bin/hadoop can be found. The connector requires access to either a full Hadoop installation, or a Hadoop client provided by your Hadoop distribution that has been configured to access the Hadoop installation.",
+          "minLength": 1,
+          "title": "Hadoop home",
+          "type": "string"
+        },
+        "hadoop_input": {
+          "description": "Hadoop input source file/directory",
+          "minLength": 1,
+          "title": "Input source",
+          "type": "string"
+        },
+        "hadoop_mapper": {
+          "default": "CSV",
+          "description": "Hadoop Ingest Mapper",
+          "enum": [
+            "CSV",
+            "DIRECTORY",
+            "GROK",
+            "REGEX",
+            "SEQUENCE_FILE",
+            "SOLR_XML",
+            "WARC",
+            "ZIP"
+          ],
+          "title": "Mapper",
+          "type": "string"
+        },
+        "initial_mapping": {
+          "category": "Field Transformation",
+          "categoryPriority": 6,
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "hints": [
+            "advanced"
+          ],
+          "properties": {
+            "condition": {
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ],
+              "title": "Condition",
+              "type": "string"
+            },
+            "label": {
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255,
+              "title": "Label",
+              "type": "string"
+            },
+            "mappings": {
+              "description": "List of mapping rules",
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "properties": {
+                  "operation": {
+                    "default": "copy",
+                    "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                    "enum": [
+                      "copy",
+                      "move",
+                      "delete",
+                      "set",
+                      "add",
+                      "keep"
+                    ],
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Operation",
+                    "type": "string"
+                  },
+                  "source": {
+                    "description": "The name of the field to be mapped.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Source Field",
+                    "type": "string"
+                  },
+                  "target": {
+                    "description": "The name of the field to be mapped to.",
+                    "hints": [
+                      "advanced"
+                    ],
+                    "title": "Target Field",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "source"
+                ],
+                "type": "object"
+              },
+              "title": "Field Mappings",
+              "type": "array"
+            },
+            "reservedFieldsMappingAllowed": {
+              "default": false,
+              "hints": [
+                "advanced"
+              ],
+              "title": "Allow System Fields Mapping?",
+              "type": "boolean"
+            },
+            "skip": {
+              "default": false,
+              "description": "Set to true to skip this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "title": "Skip This Stage",
+              "type": "boolean"
+            },
+            "unmapped": {
+              "description": "If fields do not match any of the field mapping rules, these rules will apply.",
+              "hints": [
+                "advanced"
+              ],
+              "properties": {
+                "operation": {
+                  "default": "copy",
+                  "description": "The type of mapping to perform: move, copy, delete, add, set, or keep.",
+                  "enum": [
+                    "copy",
+                    "move",
+                    "delete",
+                    "set",
+                    "add",
+                    "keep"
+                  ],
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Operation",
+                  "type": "string"
+                },
+                "source": {
+                  "description": "The name of the field to be mapped.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Source Field",
+                  "type": "string"
+                },
+                "target": {
+                  "description": "The name of the field to be mapped to.",
+                  "hints": [
+                    "advanced"
+                  ],
+                  "title": "Target Field",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "source"
+              ],
+              "title": "Unmapped Fields",
+              "type": "object"
+            }
+          },
+          "title": "Initial field mapping",
+          "type": "object",
+          "unsafe": false
+        },
+        "job_jar": {
+          "default": "lucidworks-hadoop-job-2.2.7.jar",
+          "description": "Path and name of the Hadoop job jar. Unless you are using a custom job jar, the default provided by Fusion is preferred.",
+          "minLength": 1,
+          "title": "Job Jar",
+          "type": "string"
+        },
+        "job_jar_path": {
+          "description": "The hadoop job path added by the connector.",
+          "hints": [
+            "hidden",
+            "readonly"
+          ],
+          "title": "job_jar_path",
+          "type": "string"
+        },
+        "kinit_cache": {
+          "description": "Full path of 'kerberos' cache. If this path does not exist, it will be created.",
+          "title": "'kerberos' cache",
+          "type": "string"
+        },
+        "kinit_cmd": {
+          "default": "kinit",
+          "description": "Full path to the 'kinit' binary.",
+          "title": "'kinit' command",
+          "type": "string"
+        },
+        "kinit_keytab": {
+          "description": "Full path to the Kerberos keytab file.",
+          "title": "'kerberos' keytab",
+          "type": "string"
+        },
+        "kinit_principal": {
+          "description": "Kerberos principal name, i.e., username@YOUR-REALM.COM",
+          "title": "'kerberos' principal",
+          "type": "string"
+        },
+        "mapper_args": {
+          "description": "Parameters for the Hadoop job.",
+          "items": {
+            "properties": {
+              "arg_name": {
+                "description": "Parameter Name",
+                "enum": [
+                  "csvFieldMapping",
+                  "csvDelimiter",
+                  "csvFirstLineComment",
+                  "csvStrategy",
+                  "idField",
+                  "add.subdirectories",
+                  "grok.uri",
+                  "grok.config.path",
+                  "grok.additional.patterns",
+                  "com.lucidworks.hadoop.ingest.RegexIngestMapper.regex",
+                  "com.lucidworks.hadoop.ingest.RegexIngestMapper.groups_to_fields",
+                  "com.lucidworks.hadoop.ingest.RegexIngestMapper.match"
+                ],
+                "title": "name",
+                "type": "string"
+              },
+              "arg_value": {
+                "description": "Parameter Value",
+                "hints": [
+                  "lengthy"
+                ],
+                "title": "value",
+                "type": "string"
+              }
+            },
+            "type": "object"
+          },
+          "title": "Job Jar arguments",
+          "type": "array"
+        },
+        "reducers": {
+          "default": 0,
+          "description": "(Expert) Depending on the OutputFormat and your system resources, you may wish to have Hadoop do a reduce step first so as to not open too many connections to the output resource",
+          "exclusiveMinimum": false,
+          "hints": [
+            "advanced"
+          ],
+          "minimum": 0,
+          "title": "Number of Reducers",
+          "type": "integer"
+        },
+        "run_kinit": {
+          "default": false,
+          "description": "If your Hadoop installation requires job requests to authenticate with Kerberos, this option will allow Fusion to run 'kinit' to get a valid ticket.",
+          "title": "Run 'kinit'",
+          "type": "boolean"
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Fusion Client",
+          "properties": [
+            "fusion_endpoints",
+            "fusion_realm",
+            "fusion_user",
+            "fusion_password",
+            "fusion_login_config",
+            "fusion_login_app_name",
+            "fusion_batchsize",
+            "fusion_buffer_timeoutms",
+            "fusion_fail_on_error"
+          ]
+        },
+        {
+          "label": "Kerberos Authentication",
+          "properties": [
+            "run_kinit",
+            "kinit_cmd",
+            "kinit_principal",
+            "kinit_keytab",
+            "kinit_cache"
+          ]
+        },
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        }
+      ],
+      "required": [
+        "hadoop_home",
+        "job_jar",
+        "hadoop_input",
+        "hadoop_mapper",
+        "fusion_endpoints",
+        "fusion_user"
+      ],
+      "title": "Properties",
+      "type": "object"
+    },
+    "type": {
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1,
+      "title": "Datasource Type",
+      "type": "string"
+    },
+    "type_description": {
+      "default": "Connector for using a Hadoop cluster to process documents and forward them to Solr for indexing. This uses a Hadoop job jar to pass arguments to Hadoop for processing with MapReduce.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ],
+      "title": "Type Description",
+      "type": "string"
+    }
+  },
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "title": "Cloudera",
+  "type": "object",
+  "unsafe": false
+}

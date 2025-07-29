@@ -1,0 +1,22 @@
+---
+title: "Deployment"
+permalink: "1205"
+---
+
+This article describes general app deployment with App Studio.
+
+## Fusion Webapps service
+
+[Fusion Web app deployment](/how-to/605/deploy-app-studio) gives you an embedded instance of App Studio in each of your Fusion instances.
+
+## Standalone deployments
+
+* [Java WAR file for deployment in a servlet container](/how-to/856/deploy-an-app-in-a-servlet-container)
+
+  Package your search app in a Java WAR file, which can be deployed in a servlet container such as Tomcat or Jetty. This is the most common way to deploy a search app.
+* [Java JAR file with embedded Tomcat web server](/how-to/714/deploy-a-standalone-app#embedded-tomcat-server)
+
+  Package your search app in a Java JAR file that also contains an embedded Tomcat web server. The app is ready to deploy in a production environment. It is not necessary to build a WAR file and deploy that in a servlet container or application server.
+* [Executable Java JAR file for execution in a Java runtime environment](/how-to/714/deploy-a-standalone-app#executable-java-jar-file)
+
+  Package your search app in a Java JAR file. You can run the app with the Java launcher.

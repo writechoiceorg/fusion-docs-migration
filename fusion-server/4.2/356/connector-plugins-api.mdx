@@ -1,0 +1,106 @@
+---
+title: "Connector Plugins API"
+permalink: "356"
+---
+
+The Connector Plugins API allows you to identify the installed connectors and plugins as well as list the datasource configuration properties for a specific connector plugin type.
+
+Each connector has one or more plugin types. After querying for the list of installed connectors, you can use the connector names to get the list of plugins for each one. Querying a specific plugin returns its configuration schema.
+
+This API is used to list plugins that are already installed on your Fusion cluster and list their configuration properties.
+
+## Examples
+
+Get all available connectors:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/connectors/plugins
+```
+
+**RESPONSE**
+
+```json
+[ "lucid.twitter.search", "lucid.push", "lucid.hadoop.mapr", "lucid.azure.table", "lucid.anda", "lucid.hadoop.cloudera", "lucid.azure.blob", "lucid.hortonworks", "lucid.mongodb", "lucid.hadoop", "lucid.hadoop.apache2", "lucid.fs", "lucid.hadoop.apache1", "lucid.jdbc", "lucid.hadoop.intel", "lucid.twitter.stream", "lucid.solrxml" ]
+```
+
+List the property specifications for the "file" type of the "lucid.fs" connector (the output has been truncated for space):
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/connectors/plugins/lucid.fs/types/file
+```
+
+**RESPONSE**
+
+```json
+{
+  "props" : [ {
+    "description" : "general",
+    "name" : "---"
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.collection",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "collection",
+    "type" : "string",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : false,
+    "description" : "datasource.debug",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "debug",
+    "type" : "boolean",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.initial_mapping",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "initial_mapping",
+    "type" : "map",
+    "required" : false
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.db",
+    "hints" : [ "advanced" ],
+    "allowed_values" : null,
+    "name" : "db",
+    "type" : "map",
+    "required" : false
+  }, {
+    "description" : "root path",
+    "name" : "---"
+  }, {
+    "read_only" : false,
+    "default_value" : null,
+    "description" : "datasource.path",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "path",
+    "type" : "string",
+    "required" : true
+  }, {
+    "description" : "Filesystem URL",
+    "name" : "---"
+  }, {
+    "read_only" : true,
+    "default_value" : null,
+    "description" : "datasource.url",
+    "hints" : [ "summary" ],
+    "allowed_values" : null,
+    "name" : "url",
+    "type" : "string",
+    "required" : false
+  },
+...
+] }
+```

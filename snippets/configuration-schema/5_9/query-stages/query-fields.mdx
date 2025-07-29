@@ -1,0 +1,286 @@
+export const schema = {
+  "type": "object",
+  "title": "Query Fields",
+  "description": "Configure query parameters for Solr search",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "title": "Number of Results",
+      "default": 10
+    },
+    "start": {
+      "type": "integer",
+      "title": "Result Offset",
+      "default": 0
+    },
+    "sort": {
+      "type": "string",
+      "title": "Sort Order (Deprecated)"
+    },
+    "sortOrder": {
+      "type": "array",
+      "title": "Results Sort Order",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Sort Type",
+            "enum": [
+              "field",
+              "expression",
+              "relevancy"
+            ],
+            "default": "field"
+          },
+          "value": {
+            "type": "string",
+            "title": "Field Name or Expression"
+          },
+          "order": {
+            "type": "string",
+            "title": "Sort Order",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        }
+      }
+    },
+    "queryFields": {
+      "type": "array",
+      "title": "Search Fields",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field Name"
+          },
+          "boost": {
+            "type": "number",
+            "title": "Field Boost"
+          }
+        }
+      }
+    },
+    "returnFields": {
+      "type": "array",
+      "title": "Return Fields",
+      "items": {
+        "type": "string"
+      }
+    },
+    "returnScore": {
+      "type": "boolean",
+      "title": "Return Score",
+      "default": true
+    },
+    "minimumMatch": {
+      "type": "string",
+      "title": "Minimum Should Match"
+    },
+    "group": {
+      "type": "object",
+      "title": "Collapse and Expand Results",
+      "properties": {
+        "field": {
+          "type": "string",
+          "title": "Grouping Field"
+        },
+        "leaderStrategy": {
+          "type": "object",
+          "title": "Group Leader Strategy",
+          "description": "Optional selection criteria for the representative document from each group. Only one method may be used at a time. Defaults to relevancy if not specified.",
+          "properties": {
+            "fieldLeader": {
+              "type": "object",
+              "title": "By Field Value",
+              "description": "Selects the document with the minimum or maximum value for the indicated field to be the representative document for each group.",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "title": "Field"
+                },
+                "selector": {
+                  "type": "string",
+                  "title": "Selector",
+                  "enum": [
+                    "min",
+                    "max"
+                  ]
+                }
+              }
+            },
+            "sortLeader": {
+              "type": "object",
+              "title": "By Sort",
+              "description": "Selects the representative document for each group based on the order they would be returned with the given sort criteria.",
+              "properties": {
+                "sort": {
+                  "type": "array",
+                  "title": "Sort",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "type"
+                    ],
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "title": "Sort Type",
+                        "enum": [
+                          "field",
+                          "expression",
+                          "relevancy"
+                        ],
+                        "default": "field"
+                      },
+                      "value": {
+                        "type": "string",
+                        "title": "Field Name or Expression"
+                      },
+                      "order": {
+                        "type": "string",
+                        "title": "Sort Order",
+                        "enum": [
+                          "asc",
+                          "desc"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "collapseHint": {
+          "type": "string",
+          "title": "Hint",
+          "description": "Hint for collapse optimization.",
+          "enum": [
+            "top_fc",
+            "block"
+          ]
+        },
+        "nullPolicy": {
+          "type": "string",
+          "title": "Null Policy",
+          "description": "Instruction for handling documents with a null values in the collapse field.",
+          "enum": [
+            "expand",
+            "collapse"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "title": "Group Size",
+          "description": "The number of results per group. Value greater than 0 will expand the results."
+        },
+        "sort": {
+          "type": "array",
+          "title": "Group Sort",
+          "description": "Determines the order of results within each group.",
+          "items": {
+            "type": "object",
+            "required": [
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "title": "Sort Type",
+                "enum": [
+                  "field",
+                  "expression",
+                  "relevancy"
+                ],
+                "default": "field"
+              },
+              "value": {
+                "type": "string",
+                "title": "Field Name or Expression"
+              },
+              "order": {
+                "type": "string",
+                "title": "Sort Order",
+                "enum": [
+                  "asc",
+                  "desc"
+                ]
+              }
+            }
+          }
+        },
+        "expandField": {
+          "type": "string",
+          "title": "Expand On Field",
+          "description": "Field used for expansion. The default is to use the main group field."
+        },
+        "expandQuery": {
+          "type": "string",
+          "title": "Expand Query",
+          "description": "Overrides the main query (q), determines which documents to include in the main group."
+        },
+        "expandFq": {
+          "type": "array",
+          "title": "Expand Filter Queries",
+          "description": "Overrides main filter queries (fq), determines which documents to include in the main group. The default is to use the main filter queries.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "expandNullGroup": {
+          "type": "boolean",
+          "title": "Expand Null Groups",
+          "description": "Whether to group null values into a separate expansion."
+        }
+      }
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 8,
+  "unsafe": false
+}

@@ -1,0 +1,58 @@
+---
+title: "content:textarea"
+permalink: "1204"
+---
+
+## Description
+
+Creates a textbox
+
+## Usage
+
+as element:
+
+```xml
+<content:textarea
+       label="{string}"
+       field="{string}"
+       [required]
+       [value="{string}"]
+       [placeholder="{string}"]>
+</content:textarea>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| label | **string** | The label for the textarea |
+| field | **string** | The name of the field. |
+| required  *(optional)* | **boolean** | Whether the field is required not, if it is a warning will be displayed until the field is value. Default:false. |
+| value  *(optional)* | **string** | Value to display in the textarea. |
+| placeholder  *(optional)* | **string** | The placeholder for the textarea, if no placeholder is defined the label will be used as the placeholder. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_stacked">Stacked</h3>
+<content:form styling="form-stacked">
+    <content:input label="Test" field="test"></content:input>
+    <content:input label="Foo" field="bar"></content:input>
+    <content:textarea label="Bar" field="foo"></content:textarea>
+    <content:textarea label="" field="foobar" placeholder="No Label"></content:textarea>
+</content:form>
+<hr/>
+<h3 id="example_aligned">Aligned</h3>
+<content:form styling="form-aligned">
+    <content:input label="Test" field="test"></content:input>
+    <content:input label="Foo" field="bar"></content:input>
+    <content:textarea label="Bar" field="foo"></content:textarea>
+    <content:textarea label="" field="foobar" placeholder="No Label"></content:textarea>
+</content:form>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/contentTextarea.png)</Frame>

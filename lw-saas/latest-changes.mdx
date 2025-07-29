@@ -1,0 +1,90 @@
+---
+title: 'Latest changes'
+description: 'Lucidworks products are constantly evolving to deliver new features, improvements, and fixes. This page highlights the latest changes to help you stay current with product updates and enhancements.'
+icon: 'parachute-box'
+---
+
+import { SupademoEmbed } from "/snippets/embed-iframe.mdx"
+
+<Update label="2025-05-28" description="Lucidworks AI">
+  **Lucidworks AI now supports chunking**
+
+  Lucidworks AI now supports document chunking, a major advancement for search and generative AI quality and performance. Chunking breaks large documents into smaller, meaningful segments—called chunks. Each chunk captures either lexical content for keyword-based search or semantic vectors for neural search.
+
+    <SupademoEmbed />
+
+  When paired with Fusion, you can retrieve the most relevant part of a document, rather than treating the document as a single block.
+
+  <Card title="Chunking in Fusion 5.9" icon="puzzle" href="#" horizontal>
+  Discover how to use Lucidworks AI to chunk documents for improved retrieval, relevance, and ranking in Fusion 5.9.
+  </Card>
+
+</Update>
+
+<Update label="2025-04-12" description="Commerce Studio">
+  **Commerce Studio adds analytics-driven search optimization with Analytics Studio**
+
+  Commerce Studio now leverages data from Analytics Studio to deliver deeper, data-driven insights for optimizing search relevance. This update introduces product-level analytics that directly inform search customization strategies, helping merchandisers fine-tune search experiences based on real user behavior.
+
+  The integrated data includes detailed metrics for each product, such as clicks, purchases, and revenue. 
+  
+  Merchandisers can view these insights directly within the visual editor to guide relevance tuning in context. 
+
+  <Frame caption="Integrated analytics in the visual editor">
+      <img src="/images/cs-as-integration2.png"/>
+    </Frame>
+  
+  A separate view allows users to drill into individual products for deeper analysis. 
+
+  <Frame caption="Detailed product metrics">
+      <img src="/images/cs-as-integration1.png"/>
+    </Frame>
+  
+  The change supports continuous optimization of the search experience using real-time, actionable data from the broader commerce ecosystem.
+</Update>
+
+
+<Update label="2025-04-02" description="Signals Beacon">
+  **Capture signals using the new Signals API**
+
+  The Signals API and the embed token feature can be used instead of the signals beacon to collect query, click, cart-add, and purchase signals. When the signals are collected, you can use the insights and analytics in Analytics Studio to help refine your site and improve customer interactions.
+
+  ```json
+  curl --request POST \
+    --url https://SIGNAL_STORE_ID.applications.lucidworks.com/retail/signals/query \
+    --header 'Content-Type: application/json' \
+    --data '[
+    {
+      "timestamp": 1744305461169,
+      "visitorId": "abcc8e25-d30f-2212-9f60-9b45a71453cf",
+      "sessionId": "41a50e2-8e32-4674-5429-e1450dfdbb14",
+      "queryId": "2a97fc33-3335-3369-c2dc-456b775eb90f",
+      "ipAddress": "111.222.333",
+      "searchTerms": "silver french door bottom freezer refrigerator",
+      "productDetails": [
+        {
+          "product": {
+            "productId": "1234567",
+            "currencyCode": "USD",
+            "price": 2592,
+            "title": "Silver french door bottom freezer 27.4 cu ft refrigerator",
+            "imageuri": "https://example.com/images/refrigerators/silver/bottomfreezer/1234567.jpg"
+          },
+          "quantity": 0
+        }
+      ],
+      "sourceId": "string",
+      "uri": "https://example.com/refrigerators/silver/bottomfreezer"
+    }
+  ]'
+  ```
+
+  {/* <Card title="How Signals API works" icon="wave-square" href="#" horizontal>
+    Learn how the Signals API captures user interactions to drive relevance, personalization, and analytics in Fusion.
+  </Card> */}
+
+  <Card title="Signals API specification" icon="file-code" href="#" horizontal>
+    Review the detailed specification for the Signals API, including available endpoints, request formats, and response structures.
+  </Card>
+
+</Update>

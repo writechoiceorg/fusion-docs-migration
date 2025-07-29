@@ -1,0 +1,171 @@
+---
+title: "Highlight Stage"
+permalink: "10888"
+---
+
+The Highlight stage allows you to highlight key parts of fields by generating snippets and appending match tags to the highlighted terms. The highlight match tags can then be styled in your web search application.
+
+<Frame>![Highlight stage highlights](/assets/images/5.2/highlight-stage-highlights.png)</Frame>
+
+<Note>
+To see highlighting in the Query Workbench, turn it on by setting **Format Results** > **Display highlighting?** to `true`:
+
+<Frame>![Display highlighting option](/assets/images/5.2/qwb-display-highlighting-option.png)</Frame>
+</Note>
+
+How does this differ from other highlight methods?
+
+* **Highlight Query Pipeline Stage.** Introduced in Fusion 5.2.0, the [Query Highlight pipeline stage](/fusion/5.9/10888/highlight-stage) allows you to configure standard options for highlighting using [Solr’s Unified highlighter](https://solr.apache.org/guide/8_6/highlighting.html#the-unified-highlighter) instead of adding Solr request parameters. For instructions, see [Configure the Highlight Query Pipeline Stage](/how-to/3296/configure-the-highlight-query-pipeline-stage).
+* **Additional Query Parameters stage.** For Fusion 5.2.0 and later, the same method used in Fusion 5.1.x can be used. Configure highlighting with the [Additional Query Parameters stage](/fusion/5.9/294/set-query-params-stage.asciidoc). For instructions, see [Configure Highlighting in the Query Workbench](/how-to/693/configure-highlighting-in-the-query-workbench).
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Parameters
+
+### Highlight Fields
+
+Specifies the fields to use for highlighting. Highlighting should be used *for text fields only*. These fields are typically identified by the `_t` suffix, for example: `longDescription_t`.
+
+### Snippet count
+
+Specifies the number of snippets to generate for each configured field. When **Snippet count** is assigned a value of `3`, for example, the following is returned:
+
+```json
+"highlighting": {
+    "link:/fusion/5.2/concepts/signals-and-aggregations/signals/": {
+        "body_t": [
+            "Click <em>signals</em> are the most common type of <em>signals</em> as this is the most common action a user takes with an item. ", // 1
+            "The <em>signals</em> collection is created automatically when <em>signals</em> are enabled for the primary collection. ", // 2
+            "App Insights mainly uses raw <em>signals</em>, but also uses some aggregated <em>signals</em>. " // 3
+        ]
+    }
+}
+```
+
+### Snippet length
+
+Controls the length of snippets. The **Snippet length** value is a character count. For example, setting **Snippet count** to `3` and **Snippet length** to `5` will attempt to generate 3 snippets that are at least 5 characters long:
+
+```json
+"highlighting": {
+    "link:/fusion/4.1/concepts/signals-and-aggregations/signals/": {
+        "body_t": ["Click <em>signals</em> are the most common type of <em>signals</em> as this is the most common action a user takes with an item. ", // 1
+        "The <em>signals</em> collection is created automatically when <em>signals</em> are enabled for the primary collection. ",  // 2
+        "App Insights mainly uses raw <em>signals</em>, but also uses some aggregated <em>signals</em>. " // 3
+        ]
+    }
+}
+```
+
+In the example above, 3 snippets were generated, each snippet was at least 5 characters long, and snippets returned as a complete sentence. Setting the **Snippet length** to a higher value, such as `500`, may result in a single long snippet despite a **Snippet count** value of `3`:
+
+```json
+  "highlighting": {
+      "link:/fusion/5.2/concepts/signals-and-aggregations/signals/": {
+          "body_t": ["<em>Signals</em> are indexed in a secondary collection which is linked to the primary collection by the naming convention <primarycollectionname>_signals. So, if your main collection is named products, the associated <em>signals</em> collection is named products_signals. The <em>signals</em> collection is created automatically when <em>signals</em> are enabled for the primary collection. <em>Signals</em> are enabled by default whenever a new collection is created. <em>Signals</em> are indexed just like ordinary documents. The <em>signals</em> collection can be searched like any other collection, for example by using the Query Workbench with the <em>signals</em> collection selected. App Insights provides visualizations and reports with which to analyze your <em>signals</em>. App Insights mainly uses raw <em>signals</em>, but also uses some aggregated <em>signals</em>. Currently only the signal types Request, Response and Click are supported within the App Insights dashboards. See the descriptions of <em>signals</em> types and structure for more information. "]
+      }
+  }
+```
+
+### Match tags
+
+Specifies the tags to use for identifying highlighted portions of the snippet. By default `<em>` and `</em>` are used. Match tags are appended to the highlight response field:
+
+JSON
+
+```json
+  "highlighting" : {
+    "8483697" : {
+      "longDescription_t" : [ "Use these <em>powerful</em> headphones to stay focused on the music and help tune out background noise." ]
+    },
+    "2132048" : {
+      "longDescription_t" : [ "Enjoy the beats and rhythms of your favorite music with these stylish over-the-ear headphones that feature 40mm drivers for clear and <em>powerful</em> sound. " ]
+    }
+  }
+```
+
+You can use other values for the match tags, such as `<span style="background-color:powderblue;">` and `</span>`, but the Fusion UI will not reflect your custom styles.
+
+### Default highlight
+
+If no highlighting match is found, the results are returned without highlighting. This is easiest to see in the JSON. In the examples below, `longDescription_t` is as the **Highlight Fields** value.
+
+UI
+
+<Frame>![Default highlight false](/assets/images/5.2/highlight-stage-default-false.png)</Frame>
+
+JSON
+
+```json
+"highlighting" : {
+    "8483697" : {
+      "longDescription_t" : [ ]
+    },
+    "2132048" : {
+      "longDescription_t" : [ ]
+    }
+  }
+```
+
+In the examples above, no highlight match is found for the documents. Turn on **Default highlight** to force the stage to return the leading part of the field instead. Use this option to avoid returning large fields if you need to display something even when there is no highlight match.
+
+UI
+
+<Frame>![Default highlight true](/assets/images/5.6/highlight-stage-default-true-56.png)</Frame>
+
+JSON
+
+```json
+  "highlighting" : {
+    "8483697" : {
+      "longDescription_t" : [ "Use these powerful headphones to stay focused on the music and help tune out background noise." ]
+    },
+    "2132048" : {
+      "longDescription_t" : [ "Enjoy the beats and rhythms of your favorite music with these stylish over-the-ear headphones that feature 40mm drivers for clear and powerful sound. " ]
+    }
+  }
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/highlight.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,54 @@
+---
+title: "Querying Fusion SQL"
+permalink: "3269"
+---
+
+In addition to the SQL functions provided by Spark, Fusion provides several additional functions to simplify common aggregation tasks. To recap, a UDAF aggregates multiple rows for the same group by key and a UDF performs some operation on a single row.
+
+`weighted_sum`
+
+The `weighted_sum` UDAF takes a weight, type, and type-weight mapping to produce an aggregated weight. For example, consider the following SQL snippet:
+
+```sql
+   SELECT query,
+          doc_id,
+          filters,
+          weighted_sum(typed_weight_d, type, 'click:1.0,cart:10.0') AS weight_d
+     FROM signal_type_groups
+ GROUP BY query, doc_id, filters
+```
+
+When applied to the rows in the table below, the `weighted_sum` function produces a final `weight_d` of 12.0 (2*1.0 + 1*10.0). The UDAF is passed rows grouped by `query`, `doc_id`, and `filters`.
+
+| `query` | `type` | `doc_id` | `filters` | `typed_weight_d` |
+| --- | --- | --- | --- | --- |
+| `iPad` | `click` | `1` | `gear` | `2` |
+| `iPad` | `cart` | `1` | `gear` | `1` |
+
+`significantTerms`
+The `significantTerms` UDF allows the user to query data for significant terms within the results. This identifies terms that appear an unusually frequently in a specific result set relative to the index. It can be used to identify anomalies in data.
+
+This UDF can be used on tokenized text and multi-value and single-value string fields.
+
+Example:
+
+```sql
+select significantTerms(fieldX), score from collectionName where fieldy = 'my-query' limit 10
+```
+
+`timediff`
+
+The `timediff` UDF computes the difference, in milliseconds, between to timestamps in the same row. From the `session_rollup` job, the `timediff` function computes the difference between the current time and the last activity in a session.
+
+`click_pos`
+
+The `click_pos` UDF computes either a reciprocal rank or a raw click position (using a 0-based index) of a document in a page of results. This UDF is used to compute the mean reciprocal rank (MRR) for experiments. For example, given the following list of documents and a doc ID, the `click_pos` UDF will return 2:
+
+```
+docs: a,b,c,d
+doc ID: c
+```
+
+`concat_text`
+
+The `concat_text` UDF combines multivalued text fields coming from Solr into a field with a single value delimited by spaces. This UDF is useful when a field returned from Solr uses the `_txt` suffix, which indicates a multivalued text field.

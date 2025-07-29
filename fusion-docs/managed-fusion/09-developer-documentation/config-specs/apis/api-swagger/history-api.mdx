@@ -1,0 +1,83 @@
+---
+title: "History API"
+description: "Managed Fusion Admin APIs"
+permalink: "q154ig"
+---
+
+Managed Fusion stores history for each running service within the system. Usually this is used to log start and stop events for a service. However, the scheduler uses the history to store the results of scheduled tasks. For more information on schedule history, see the section on [Jobs and Schedules](/managed-fusion/5.9/mz6jhc/jobs-and-scheduling).
+
+The History API provides information about the services that are running. The list of these services is provided by Introspect API, which is described in the [REST API Reference](/managed-fusion/5.9/t51gkk/ap-is).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+*View the history of the index-pipelines service:*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/history/index-pipelines::v1
+```
+
+**RESPONSE**
+
+```json
+{
+  "events" : [ {
+    "start" : "2014-05-16T14:11:48.849Z",
+    "end" : "2014-05-16T14:11:48.849Z",
+    "source" : "index-pipelines::v1",
+    "type" : "start",
+    "status" : "ok",
+    "details" : null,
+    "error" : null
+  }, {
+    "start" : "2014-05-16T14:12:48.845Z",
+    "end" : "2014-05-16T14:12:48.845Z",
+    "source" : "index-pipelines::v1",
+    "type" : "start",
+    "status" : "ok",
+    "details" : null,
+    "error" : null
+  }
+}
+```
+
+*View items in the scheduler history:*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/history/scheduler/items/1
+```
+
+**RESPONSE**
+
+```json
+{
+  "events" : [ {
+    "start" : "2014-05-16T15:34:49.008Z",
+    "end" : "2014-05-16T15:34:49.435Z",
+    "source" : "scheduler",
+    "type" : "execute",
+    "status" : "ok",
+    "details" : {
+      "status" : 200,
+      "entity" : "{\n  \"id\" : \"TwitterSearch\",\n  \"dataSourceId\" : \"TwitterSearch\",\n  \"state\" : \"RUNNING\",\n  \"message\" : null,\n  \"startTime\" : 1400254489000,\n  \"endTime\" : -1,\n  \"finished\" : false,\n  \"counters\" : { },\n  \"exception\" : null,\n  \"running\" : true\n}"
+    },
+    "error" : null
+  }, {
+    "start" : "2014-05-16T15:38:32.536Z",
+    "end" : "2014-05-16T15:38:32.559Z",
+    "source" : "scheduler",
+    "type" : "execute",
+    "status" : "ok",
+    "details" : {
+      "status" : 200,
+      "entity" : "{\n  \"id\" : \"TwitterSearch\",\n  \"dataSourceId\" : \"TwitterSearch\",\n  \"state\" : \"RUNNING\",\n  \"message\" : null,\n  \"startTime\" : 1400254712000,\n  \"endTime\" : -1,\n  \"finished\" : false,\n  \"counters\" : { },\n  \"exception\" : null,\n  \"running\" : true\n}"
+    },
+    "error" : null
+  }
+}
+```

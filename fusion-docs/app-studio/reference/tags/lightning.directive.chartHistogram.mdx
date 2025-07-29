@@ -1,0 +1,178 @@
+---
+title: "chart:histogram"
+permalink: "1179"
+---
+
+## Description
+
+The Chart Histogram Directive
+
+## Usage
+
+as element:
+
+```xml
+<chart:histogram
+       [response="{object}"]
+       [facet-name="{string}"]
+       [query="{string}"]
+       [title="{string}"]
+       [show="{number}"]
+       [height="{string}"]
+       [show-count="{boolean}"]
+       [max-characters="{number}"]
+       [action="{string}"]
+       [date-format="{string}"]>
+</chart:histogram>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response  *(optional)* | **object** | A response object |
+| facet-name  *(optional)* | **string** | Facet name to use from the response object |
+| query  *(optional)* | **string** | The name of the query to build links from. |
+| title  *(optional)* | **string** | The title that should be displayed above the histogram. |
+| show  *(optional)* | **number** | The maximum number of bars to show in the histogram. Defaults to 20. |
+| height  *(optional)* | **string** | Height of the chart specified by a valid CSS height style value (e.g. '100px' or '7em'). Defaults to '100px' |
+| show-count  *(optional)* | **boolean** | Whether to display the count in the label for each bar |
+| max-characters  *(optional)* | **number** | The number of characters to show before truncating the label. Default: 20. |
+| action  *(optional)* | **string** | The target resource to which the histogram query should submit. |
+| date-format  *(optional)* | **string** | How to format the date. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+
+## Example
+
+#### Source
+
+```xml
+<div ng-controller="ExampleController">
+    <h3 id="example_histogram">Histogram</h3>
+    <chart:histogram response="response" facet-name="test1"></chart:histogram>
+    <hr />
+    <h3 id="example_histogram-with-date-formatting">Histogram with Date Formatting</h3>
+    <chart:histogram response="response" facet-name="test3" date-format="fullDate"></chart:histogram>
+    <hr />
+    <h3 id="example_large-dateset">Large Dateset</h3>
+    <chart:histogram response="response" facet-name="date" date-format="fullDate" show="99" show-count="true"></chart:histogram>
+    <widget:slider response="response" facet-name="date" date-format="fullDate" sort="false"></widget:slider>
+</div>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50,
+                    filters:[]
+                },
+                facets: {
+                    test1: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+
+                                },
+                                count: 100,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 200,
+                            }
+
+                        ],
+                        'max-count':'200'
+                    },
+                    test2: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 'Day 1',
+                                    act: 'Day 1',
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 'Day 2',
+                                    act: 'Day 2',
+                                },
+                                count: 20,
+                            }
+
+                        ],
+                        'max-count':20
+                    },
+                    test3: {
+                        filters: [
+                            {
+
+                                val: {
+                                    dsp: 1288323623006,
+                                    act: 1288323623006,
+                                },
+                                count: 10,
+
+                            },
+                            {
+
+                                val: {
+                                    dsp: 1288323723006,
+                                    act: 1288323723006,
+                                },
+                                count: 20,
+                            }
+
+                        ],
+                        'max-count':20
+                    },
+                    date:{
+                        filters:[],
+                        'max-count':100
+                    }
+                },
+                results: []
+            }
+
+            var i = 0;
+
+            while(i < 99){
+                var CurrentDate = new Date();
+                CurrentDate.setMonth(CurrentDate.getMonth() + i);
+                $scope.response.facets.date.filters.push(
+                    {
+                        val : {
+                            dsp:CurrentDate,
+                            act:CurrentDate
+                        },
+                        count:Math.floor(Math.random()*(100-1+1)+1),
+                    }
+                )
+                i++
+            }
+
+            console.log($scope.response.facets.date);
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/chartHistogram.png)</Frame>

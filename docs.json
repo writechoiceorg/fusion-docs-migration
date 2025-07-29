@@ -1,0 +1,2819 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Lucidworks documentation",
+  "colors": {
+    "primary": "#2b3c79",
+    "light": "#a4c6f7",
+    "dark": "#44578D"
+  },
+  "favicon": "/favicon.png",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "SaaS Platform",
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
+              "fusion-docs/lw-platform/index"
+            ]
+          },
+          {
+            "group": "Platform Features",
+            "pages": [
+              "/fusion-docs/lw-platform/lw-platform/index",
+              {
+                "group": "Products",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-platform/lw-products/index",
+                  {
+                    "group": "Lucidworks AI integrations",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-platform/lw-products/lw-integrations/index",
+                      "/fusion-docs/lw-platform/lw-platform/lw-products/lw-integrations/apis/index",
+                      "/fusion-docs/lw-platform/lw-platform/lw-products/lw-integrations/self-hosted-fusion/index"
+                    ]
+                  }
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-platform/lw-fusion/index",
+              {
+                "group": "Settings",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-platform/lw-settings/index",
+                  {
+                    "group": "Users and Provisioning",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/lw-users/index",
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/lw-users/sso",
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/lw-users/lw-roles"
+                    ]
+                  },
+                  {
+                    "group": "Fusion Integrations",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/fusion-integrations/index",
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/fusion-integrations/commerce-studio-integration",
+                      "/fusion-docs/lw-platform/lw-platform/lw-settings/fusion-integrations/configuration-promotion-integration"
+                    ]
+                  }
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-platform/lw-rate-limiting/index"
+            ]
+          },
+          {
+            "group": "Lucidworks AI",
+            "pages": [
+              "/fusion-docs/lw-platform/lw-ai/index",
+              "/fusion-docs/lw-platform/lw-ai/lw-ai-gateway",
+              {
+                "group": "Fusion stages for AI",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/index",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/lucidworks-ai-chunker-index-stage",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/lucidworks-ai-prediction-index-stage",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/lucidworks-ai-prediction-query-stage",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/vectorize-field-via-lucidworks-ai-index-stage",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-stages/vectorize-query-via-lucidworks-ai-query-stage"
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-ai/lw-ai-pre-trained-embedding-models",
+              {
+                "group": "Custom embedding model training",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/index",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/custom-embedding-model-training-data",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/custom-embedding-rnn-models",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/custom-embedding-transformer-rnn-models",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/custom-embedding-model-configuration",
+                  {
+                    "group": "Custom model training user interface",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/custom-model-training-user-interface",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-custom-embedding-model-training/create-and-deploy-custom-models"
+                    ]
+                  }
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-ai/integrations",
+              "/fusion-docs/lw-platform/lw-ai/lw-ai-ai-model-usage",
+              {
+                "group": "Lucidworks AI APIs",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/index",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-authentication-api",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-use-case-api",
+                  {
+                    "group": "Prediction API",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/index",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/embedding-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/classification-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/passthrough-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/rag-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/standalone-query-rewriter-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/summarization-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/keyword-extraction-prediction",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prediction-api/ner-prediction"
+                    ]
+                  },
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-prompting-preview-api",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-tokenization-api",
+                  {
+                    "group": "Async Prediction API",
+                    "pages": [
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/index",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/passthrough-async",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/rag-async",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/standalone-query-rewriter-async",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/summarization-async",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/keyword-extraction-async",
+                      "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-prediction-api/ner-async"
+                    ]
+                  },
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-models-api",
+                  "/fusion-docs/lw-platform/lw-ai/lw-ai-apis/lw-ai-async-chunking-api"
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-ai/lw-ai-generative-ai",
+              "/fusion-docs/lw-platform/lw-ai/lw-ai-security-faq"
+            ]
+          },
+          {
+            "group": "Core Settings",
+            "pages": [
+              "/fusion-docs/lw-platform/lw-core/index",
+              "/fusion-docs/lw-platform/lw-core/sites-relevance",
+              "/fusion-docs/lw-platform/lw-core/sites-boost",
+              "/fusion-docs/lw-platform/lw-core/sites-typeahead"
+            ]
+          },
+          {
+            "group": "Commerce Studio",
+            "pages": [
+              "/fusion-docs/lw-platform/lw-cs/index",
+              {
+                "group": "Visual Editor",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-cs/cstudio-visual-editor/index",
+                  "/fusion-docs/lw-platform/lw-cs/cstudio-visual-editor/cstudio-simulator"
+                ]
+              },
+              "/fusion-docs/lw-platform/lw-cs/cstudio-ranking-rules/index",
+              "/fusion-docs/lw-platform/lw-cs/cstudio-query-rewrite/index",
+              "/fusion-docs/lw-platform/lw-cs/cstudio-pages/index",
+              "/fusion-docs/lw-platform/lw-cs/cstudio-versus-pm",
+              "/fusion-docs/lw-platform/lw-cs/cs-migrate/index"
+            ]
+          },
+          {
+            "group": "Analytics Studio",
+            "pages": [
+              "/fusion-docs/lw-platform/lw-analytics/index",
+              "/fusion-docs/lw-platform/lw-analytics/analytics-screen",
+              "/fusion-docs/lw-platform/lw-analytics/analytics-and-commerce-studio",
+              {
+                "group": "Signals",
+                "pages": [
+                  "/fusion-docs/lw-platform/lw-analytics/signals/index",
+                  "/fusion-docs/lw-platform/lw-analytics/signals/signals-store",
+                  "/fusion-docs/lw-platform/lw-analytics/signals/signals-beacon",
+                  "/fusion-docs/lw-platform/lw-analytics/signals/beacon-configuration-interface",
+                  "/fusion-docs/lw-platform/lw-analytics/signals/signals-api",
+                  "/fusion-docs/lw-platform/lw-analytics/signals/faq"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Platform APIs",
+        "groups": [
+          {
+            "group": "Models",
+            "openapi": {
+              "source": "api-reference/api-specs/lucidworks-ai/machine-learning-models.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Authentication",
+            "openapi": {
+              "source": "api-reference/api-specs/lucidworks-ai/authentication.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Use Case",
+            "openapi": {
+              "source": "api-reference/api-specs/lucidworks-ai/machine-learning-platform-use-case.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Predict",
+            "openapi": {
+              "source": "api-reference/api-specs/lucidworks-ai/machine-learning-platform-predict.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Async Predict",
+            "openapi": {
+              "source": "api-reference/api-specs/lucidworks-ai/machine-learning-platform-async-prediction.json",
+              "directory": "api-reference"
+            }
+          }
+        ]
+      },
+      {
+        "tab": "Fusion",
+        "versions": [
+          {
+            "version": "v5.9",
+            "pages": [
+              {
+                "group": " ",
+                "pages": [
+                  "/fusion-docs/fusion/index"
+                ]
+              },
+              {
+                "group": "Introduction to Fusion",
+                "pages": [
+                  "/fusion-docs/fusion/intro/index",
+                  {
+                    "group": "Fusion UI Tour",
+                    "pages": [
+                      "/fusion-docs/fusion/intro/ui-tour/index",
+                      "/fusion-docs/fusion/intro/ui-tour/fusion-apps",
+                      "/fusion-docs/fusion/intro/ui-tour/index-workbench",
+                      "/fusion-docs/fusion/intro/ui-tour/query-workbench",
+                      "/fusion-docs/fusion/intro/ui-tour/object-explorer"
+                    ]
+                  },
+                  {
+                    "group": "The Fusion Stack",
+                    "pages": [
+                      "/fusion-docs/fusion/intro/fusion-stack/index",
+                      "/fusion-docs/fusion/intro/fusion-stack/solr/index",
+                      "/fusion-docs/fusion/intro/fusion-stack/milvus",
+                      {
+                        "group": "Spark Operations",
+                        "pages": [
+                          "/fusion-docs/fusion/intro/fusion-stack/spark/index",
+                          "/fusion-docs/fusion/intro/fusion-stack/spark/spark-job-drivers"
+                        ]
+                      },
+                      "/fusion-docs/fusion/intro/fusion-stack/zookeeper"
+                    ]
+                  },
+                  "/fusion-docs/fusion/intro/kubernetes",
+                  "/fusion-docs/fusion/intro/indexing-dataflow",
+                  "/fusion-docs/fusion/intro/query-dataflow",
+                  {
+                    "group": "Machine Learning",
+                    "pages": [
+                      "/fusion-docs/fusion/intro/machine-learning/index",
+                      "/fusion-docs/fusion/intro/machine-learning/ml-jobs",
+                      "/fusion-docs/fusion/intro/machine-learning/machine-learning-models",
+                      "/fusion-docs/fusion/intro/machine-learning/vector-search"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Getting Data In",
+                "pages": [
+                  "/fusion-docs/fusion/getting-data-in/index",
+                  {
+                    "group": "Indexing Your Data",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-in/indexing/index",
+                      "/fusion-docs/fusion/getting-data-in/indexing/indexing-data-flow",
+                      {
+                        "group": "Collections",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-in/indexing/collections/index",
+                          "/fusion-docs/fusion/getting-data-in/indexing/collections/fields-editor-ui"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-in/indexing/index-workbench",
+                      {
+                        "group": "Index Pipelines",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-in/indexing/index-pipelines/index",
+                          "/fusion-docs/fusion/getting-data-in/indexing/index-pipelines/index-pipeline-stages",
+                          "/fusion-docs/fusion/getting-data-in/indexing/index-pipelines/index-profiles",
+                          "/fusion-docs/fusion/getting-data-in/indexing/index-pipelines/custom-javascript-index-stages"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-in/indexing/indexing-signals/index",
+                      "/fusion-docs/fusion/getting-data-in/indexing/data-models/index",
+                      "/fusion-docs/fusion/getting-data-in/indexing/asynchronous-tika-parsing",
+                      "/fusion-docs/fusion/getting-data-in/indexing/connectors"
+                    ]
+                  },
+                  "/fusion-docs/fusion/getting-data-in/blob-storage",
+                  "/fusion-docs/fusion/getting-data-in/parallel-bulk-loader"
+                ]
+              },
+              {
+                "group": "Getting Data Out",
+                "pages": [
+                  "/fusion-docs/fusion/getting-data-out/index",
+                  {
+                    "group": "Query Basics",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-out/query-basics/index",
+                      "/fusion-docs/fusion/getting-data-out/query-basics/query-dataflow",
+                      {
+                        "group": "Query Pipelines",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/query-basics/query-pipelines/index",
+                          "/fusion-docs/fusion/getting-data-out/query-basics/query-pipelines/query-pipeline-stages",
+                          "/fusion-docs/fusion/getting-data-out/query-basics/query-pipelines/query-profiles",
+                          "/fusion-docs/fusion/getting-data-out/query-basics/query-pipelines/custom-javascript-query-stages"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-out/query-basics/query-workbench",
+                      "/fusion-docs/fusion/getting-data-out/query-basics/query-language-cheat-sheet",
+                      "/fusion-docs/fusion/getting-data-out/query-basics/domain-specific-language",
+                      "/fusion-docs/fusion/getting-data-out/query-basics/faceting",
+                      "/fusion-docs/fusion/getting-data-out/query-basics/stored-parameters-collection"
+                    ]
+                  },
+                  {
+                    "group": "Query Enhancement",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/index",
+                      {
+                        "group": "Signals",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/index",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/data-flow",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/aggregations",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/types-and-structures",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/deleting-old-signals",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/signals-reqs-for-insights",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/signals/signals-reqs-for-jobs"
+                        ]
+                      },
+                      {
+                        "group": "Boosting",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/boosting/index",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/boosting/boost-with-signals"
+                        ]
+                      },
+                      {
+                        "group": "Recommendations",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/index",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/getting-started",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/recommendation-methods",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/items-for-item",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/items-for-query",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/items-for-user",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/queries-for-query",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/trending-items",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/recommendations/users-for-item"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/synonyms/index",
+                      {
+                        "group": "Business Rules",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/business-rules/index",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/business-rules/general-config",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/business-rules/conditions",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/business-rules/actions",
+                          "/fusion-docs/fusion/getting-data-out/query-enhancement/business-rules/custom-rules-actions"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/collapse",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/underperforming-queries",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/misspelling-detection",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/phrase-detection",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/query-rewriting",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/remove-words",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/response-rewriting",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/rules-editor",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/stopwords-files",
+                      "/fusion-docs/fusion/getting-data-out/query-enhancement/template-expressions/index"
+                    ]
+                  },
+                  {
+                    "group": "Curating Your Search Experience",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/index",
+                      {
+                        "group": "Predictive Merchandiser",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/index",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/hierarchical-faceting",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/merchandising-zero-results",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/page-metadata",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/product-grouping",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/rule-conflict-resolution",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/search-rewrites",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/pm-browser-support",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/templates",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/predictive-merchandiser/templates-config"
+                        ]
+                      },
+                      {
+                        "group": "Experience Optimizer",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/index",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/eo-document-grouping",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/optimizing-zero-results",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/rule-conflict-resolution",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/eo-search-rewrites",
+                          "/fusion-docs/fusion/getting-data-out/curating-your-search-experience/experience-optimizer/eo-browser-support"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Advanced Query Enhancement",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/index",
+                      {
+                        "group": "Smart Answers",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/smart-answers/index",
+                          "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/smart-answers/best-practices",
+                          "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/smart-answers/cold-start",
+                          "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/smart-answers/faq-solution",
+                          "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/smart-answers/smart-answers-advanced-model-config"
+                        ]
+                      },
+                      "/fusion-docs/fusion/getting-data-out/advanced-query-enhancement/sentiment-analysis"
+                    ]
+                  },
+                  {
+                    "group": "Data Analytics",
+                    "pages": [
+                      "/fusion-docs/fusion/getting-data-out/data-analytics/index",
+                      {
+                        "group": "App Insights",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/index",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/dashboards",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/events",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/sessions",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/analytics",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/experiment-results",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/app-insights/report-requirements"
+                        ]
+                      },
+                      {
+                        "group": "Experiments",
+                        "pages": [
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/experiments/index",
+                          "/fusion-docs/fusion/getting-data-out/data-analytics/experiments/experiment-metrics"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Operations",
+                "pages": [
+                  "/fusion-docs/fusion/operations/index",
+                  "/fusion-docs/fusion/operations/deployment",
+                  "/fusion-docs/fusion/operations/faq",
+                  {
+                    "group": "Fusion 5 Survival Guide",
+                    "pages": [
+                      "/fusion-docs/fusion/operations/survival-guide/index",
+                      "/fusion-docs/fusion/operations/survival-guide/platforms",
+                      "/fusion-docs/fusion/operations/survival-guide/high-availability",
+                      "/fusion-docs/fusion/operations/survival-guide/ingress",
+                      "/fusion-docs/fusion/operations/survival-guide/jwt",
+                      "/fusion-docs/fusion/operations/survival-guide/auto-scaling",
+                      "/fusion-docs/fusion/operations/survival-guide/workload-isolation",
+                      "/fusion-docs/fusion/operations/survival-guide/gpu-support-deep-learning",
+                      "/fusion-docs/fusion/operations/survival-guide/k8s-on-prem",
+                      "/fusion-docs/fusion/operations/survival-guide/spark-kubernetes-overview"
+                    ]
+                  },
+                  {
+                    "group": "Jobs and Scheduling",
+                    "pages": [
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/index",
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/schedules",
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/datasource-jobs",
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/job-history",
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/spark-jobs",
+                      "/fusion-docs/fusion/operations/jobs-and-scheduling/tasks"
+                    ]
+                  },
+                  {
+                    "group": "Security",
+                    "pages": [
+                      "/fusion-docs/fusion/operations/security/index",
+                      {
+                        "group": "Security",
+                        "pages": [
+                          "/fusion-docs/fusion/operations/security/access-control/index",
+                          "/fusion-docs/fusion/operations/security/access-control/api-keys",
+                          "/fusion-docs/fusion/operations/security/access-control/permissions",
+                          "/fusion-docs/fusion/operations/security/access-control/roles",
+                          "/fusion-docs/fusion/operations/security/access-control/security-realms",
+                          "/fusion-docs/fusion/operations/security/access-control/users"
+                        ]
+                      },
+                      "/fusion-docs/fusion/operations/security/ha-dr",
+                      "/fusion-docs/fusion/operations/security/ingress"
+                    ]
+                  },
+                  {
+                    "group": "Monitoring",
+                    "pages": [
+                      "/fusion-docs/fusion/operations/monitoring-and-reporting/index",
+                      "/fusion-docs/fusion/operations/monitoring-and-reporting/prometheus-grafana-loki",
+                      "/fusion-docs/fusion/operations/monitoring-and-reporting/grafana-loki",
+                      "/fusion-docs/fusion/operations/monitoring-and-reporting/grafana-dashboards",
+                      {
+                        "group": "Banana Dashboards",
+                        "pages": [
+                          "/fusion-docs/fusion/operations/monitoring-and-reporting/banana-dashboards/index",
+                          "/fusion-docs/fusion/operations/monitoring-and-reporting/banana-dashboards/built-in-dashboards",
+                          "/fusion-docs/fusion/operations/monitoring-and-reporting/banana-dashboards/display-panels",
+                          "/fusion-docs/fusion/operations/monitoring-and-reporting/banana-dashboards/input-panels"
+                        ]
+                      },
+                      "/fusion-docs/fusion/operations/monitoring-and-reporting/consumption"
+                    ]
+                  },
+                  {
+                    "group": "ConfigSync",
+                    "pages": [
+                      "/fusion-docs/fusion/operations/config-sync/index",
+                      "/fusion-docs/fusion/operations/config-sync/deployment",
+                      {
+                        "group": "Supported objects",
+                        "pages": [
+                          "/fusion-docs/fusion/operations/config-sync/objects/index",
+                          "/fusion-docs/fusion/operations/config-sync/objects/blobs",
+                          "/fusion-docs/fusion/operations/config-sync/objects/connector-plugins",
+                          "/fusion-docs/fusion/operations/config-sync/objects/index-stage-plugins",
+                          "/fusion-docs/fusion/operations/config-sync/objects/jdbc-drivers",
+                          "/fusion-docs/fusion/operations/config-sync/objects/js-pipeline-stages",
+                          "/fusion-docs/fusion/operations/config-sync/objects/query-stage-plugins",
+                          "/fusion-docs/fusion/operations/config-sync/objects/rules",
+                          "/fusion-docs/fusion/operations/config-sync/objects/solr-collections",
+                          "/fusion-docs/fusion/operations/config-sync/objects/solr-configs",
+                          "/fusion-docs/fusion/operations/config-sync/objects/scripts",
+                          "/fusion-docs/fusion/operations/config-sync/objects/users"
+                        ]
+                      },
+                      {
+                        "group": "Synchronization modes",
+                        "pages": [
+                          "/fusion-docs/fusion/operations/config-sync/modes/index",
+                          "/fusion-docs/fusion/operations/config-sync/modes/publisher-mode",
+                          "/fusion-docs/fusion/operations/config-sync/modes/subscriber-mode",
+                          "/fusion-docs/fusion/operations/config-sync/modes/pubsub-mode"
+                        ]
+                      },
+                      {
+                        "group": "Filters",
+                        "pages": [
+                          "/fusion-docs/fusion/operations/config-sync/filters/index",
+                          "/fusion-docs/fusion/operations/config-sync/filters/apps-filter",
+                          "/fusion-docs/fusion/operations/config-sync/filters/object-filter"
+                        ]
+                      },
+                      "/fusion-docs/fusion/operations/config-sync/repo-org",
+                      "/fusion-docs/fusion/operations/config-sync/commits-management",
+                      "/fusion-docs/fusion/operations/config-sync/locks",
+                      "/fusion-docs/fusion/operations/config-sync/secrets-management",
+                      "/fusion-docs/fusion/operations/config-sync/metrics",
+                      "/fusion-docs/fusion/operations/config-sync/disaster-recovery",
+                      "/fusion-docs/fusion/operations/config-sync/settings"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Reference",
+                "pages": [
+                  "/fusion-docs/fusion/reference/index",
+                  {
+                    "group": "Configuration Reference",
+                    "pages": [
+                      "/fusion-docs/fusion/reference/config-ref/index",
+                      {
+                        "group": "Jobs",
+                        "pages": [
+                          "/fusion-docs/fusion/reference/config-ref/jobs/index",
+                          {
+                            "group": "ALS Recommender Jobs",
+                            "pages": [
+                              "/fusion-docs/fusion/reference/config-ref/jobs/als-recommender/index",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/als-recommender/items-for-item-config",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/als-recommender/items-for-user-config"
+                            ]
+                          },
+                          {
+                            "group": "Aggregation Jobs",
+                            "pages": [
+                              "/fusion-docs/fusion/reference/config-ref/jobs/aggregations/index",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/aggregations/aggregator-function-examples",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/aggregations/built-in-sql-aggregation-jobs",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/aggregations/sql-aggregation-examples",
+                              "/fusion-docs/fusion/reference/config-ref/jobs/aggregations/sql-aggregation"
+                            ]
+                          },
+                          "/fusion-docs/fusion/reference/config-ref/jobs/bpr-recommender",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/build-training-data",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/classification",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/cluster-labeling",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/content-based-recommender",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/create-collections-in-milvus",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/create-indexes-in-milvus",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/create-ray-model-deployment",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/create-seldon-core-model-deployment",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/custom-python",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/custom-spark-job",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/data-augmentation",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/delete-collections-in-milvus",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/delete-indexes-in-milvus",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/delete-ray-model-deployment",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/delete-seldon-core-model-deployment",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/document-clustering",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/download-blob",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/ground-truth",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/head-tail-analysis",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/log-cleanup-jobs",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/logistic-regression-classifier-training",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/outlier-detection",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/parallel-bulk-loader",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/phrase-extraction",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/query-to-query-collaborative-similarity",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/query-to-query-session-based-similarity",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/rest-call",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/random-forest-classifier-training",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/ranking-metrics",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/recreate-milvus-collection",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/sql-based-experiment-metric",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/script",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/smart-answers-coldstart-training",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/smart-answers-evaluate-pipeline",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/smart-answers-supervised-training",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/synonym-detection",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/token-and-phrase-spell-correction",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/transfer-collection-to-cloud",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/trending-recommender",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/upload-model-parameters",
+                          "/fusion-docs/fusion/reference/config-ref/jobs/word2vec-model-training"
+                        ]
+                      },
+                      {
+                        "group": "Pipeline Stages",
+                        "pages": [
+                          "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index",
+                          {
+                            "group": "Query Pipeline Stages Reference",
+                            "pages": [
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/index",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/active-directory-security-trimming-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/set-query-params-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/analytics-catalog-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/query-rules-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/block-documents-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/boost-documents-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/recommendation-boosting-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/call-pipeline-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/chunking-neural-hybrid-query",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/dsl-to-legacy-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/experiment-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/facet-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/security-trimming-graph-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/highlight-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/hybrid-search-query",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/jdbc-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/javascript-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/lucidworks-ai-prediction-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/lwai-vectorize-query",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/landing-pages-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/logging-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/machine-learning-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/managed-javascript-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/merge-async-results-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/milvus-ensemble-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/milvus-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/milvus-response-update-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/rules-augment-response-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/neural-hybrid-query",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/advanced-boosting-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/search-fields-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/query-rpc-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/vectorize-query-via-seldon-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/recommend-items-for-item-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/recommend-items-for-user-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/recommend-similar-queries-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/response-document-exclusion-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/response-pairwise-swap-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/response-shuffle-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/return-queryparams-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/rollup-aggregator-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/security-trimming-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/solr-more-like-this-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/solr-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/subquery-query-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/query-stages/text-tagger-query-stage"
+                            ]
+                          },
+                          {
+                            "group": "Index Pipeline Stages Reference",
+                            "pages": [
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/index",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/call-datamodel-pipeline-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/call-pipeline-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/datamodel-mapping-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/date-parsing-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/language-detection-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/encode-into-milvus-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/exclude-documents-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/exclusion-filter-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/field-mapper-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/field-parser-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/short-field-filter-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/find-replace-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/signal-formatter-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/gazetteer-lookup-extractor-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/geoip-lookup-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/include-documents-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/jdbc-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/javascript-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/lucidworks-ai-chunker-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/lucidworks-ai-prediction-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/lwai-vectorize-field",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/logging-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/machine-learning-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/managed-javascript-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/indexing-rpc-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/vectorize-field-via-seldon-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/regular-expression-extractor-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/regular-expression-filter-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/regular-expression-replacement-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/multi-value-resolver-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/set-property-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/solr-dynamic-field-name-mapping-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/solr-indexer-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/solr-partial-update-indexer-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/text-processing-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/update-experiment-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/update-related-document-index-stage",
+                              "/fusion-docs/fusion/reference/config-ref/pipeline-stages/index-stages/xml-transform-index-stage"
+                            ]
+                          },
+                          "/fusion-docs/fusion/reference/config-ref/pipeline-stages/custom-javascript-stages-global-variables"
+                        ]
+                      },
+                      {
+                        "group": "Parsers",
+                        "pages": [
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/index",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/apache-tika-container",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/apache-tika-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/apache-tika-server",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/archive-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/csv-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/fallback-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/forked-apache-tika-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/grok-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/grok-patterns",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/html-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/json-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/solr-update-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/text-parser",
+                          "/fusion-docs/fusion/reference/config-ref/parser-stages/xml-parser",
+                          "/fusion-docs/fusion/reference/config-ref/configure-fusion-for-jwt-5x"
+                        ]
+                      },
+                      "/fusion-docs/fusion/reference/config-ref/configure-fusion-for-jwt-5x"
+                    ]
+                  },
+                  "/fusion-docs/fusion/reference/microservices",
+                  "/fusion-docs/fusion/reference/example-custom-javascript-stages",
+                  "/fusion-docs/fusion/reference/docker-images-versions",
+                  "/fusion-docs/fusion/reference/gateway-config-parameters",
+                  "/fusion-docs/fusion/reference/language-support",
+                  "/fusion-docs/fusion/reference/solr-reference-guide",
+                  "/fusion-docs/fusion/reference/spark-guide"
+                ]
+              },
+              {
+                "group": "Developer Docs",
+                "pages": [
+                  "/fusion-docs/fusion/dev-portal/index",
+                  {
+                    "group": "Fusion REST APIs",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/api/index",
+                      {
+                        "group": "Admin APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/index",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/apps-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/blob-store-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/collection-features-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/collections-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/configurations-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/data-models-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/history-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/jobs-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/links-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/nodes-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/objects-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/scheduler-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/solr-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/solr-configuration-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/solradmin-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/system-api",
+                          "/fusion-docs/fusion/dev-portal/api/api-swagger/zookeeper-import-export"
+                        ]
+                      },
+                      "/fusion-docs/fusion/dev-portal/api/apps-manager/index",
+                      "/fusion-docs/fusion/dev-portal/api/async-parsing/index",
+                      {
+                        "group": "Query APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/query/index",
+                          {
+                            "group": "Query Rewrite APIs",
+                            "pages": [
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/index",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/query-rewrite-api",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/banner-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/block-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/boost-attributes-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/boost-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/bury-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/filter-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/ingroup-boost-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/ingroup-bury-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/ingroup-pinned-list-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/json-blob-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/pinned-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/redirect-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/response-value-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/set-facets-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/set-params-rule-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/ground-truth-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/phrase-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/remove-words-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/simq-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/spell-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/synonym-query-rewrite-api-configurations",
+                              "/fusion-docs/fusion/dev-portal/api/query/query-rewrite-api/tail-query-rewrite-api-configurations"
+                            ]
+                          },
+                          "/fusion-docs/fusion/dev-portal/api/query/custom-rules-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/experiments-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/query-pipelines-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/query-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/query-profiles-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/query-stage-plugins-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/query-stages-api",
+                          "/fusion-docs/fusion/dev-portal/api/query/signals-api"
+                        ]
+                      },
+                      {
+                        "group": "Connector APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/connectors/index",
+                          "/fusion-docs/fusion/dev-portal/api/connectors/connector-datasources-api",
+                          "/fusion-docs/fusion/dev-portal/api/connectors/connector-plugins-api",
+                          "/fusion-docs/fusion/dev-portal/api/connectors/connector-plugins-repository-api"
+                        ]
+                      },
+                      {
+                        "group": "Fusion Proxy APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/proxy/index",
+                          "/fusion-docs/fusion/dev-portal/api/proxy/realms-api",
+                          "/fusion-docs/fusion/dev-portal/api/proxy/roles-api",
+                          "/fusion-docs/fusion/dev-portal/api/proxy/sessions-api",
+                          "/fusion-docs/fusion/dev-portal/api/proxy/user-api"
+                        ]
+                      },
+                      {
+                        "group": "Indexing APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/indexing/index",
+                          "/fusion-docs/fusion/dev-portal/api/indexing/index-pipelines-api",
+                          "/fusion-docs/fusion/dev-portal/api/indexing/index-profiles-api",
+                          "/fusion-docs/fusion/dev-portal/api/indexing/index-stages-api",
+                          "/fusion-docs/fusion/dev-portal/api/indexing/parsers-api"
+                        ]
+                      },
+                      "/fusion-docs/fusion/dev-portal/api/job-config/index",
+                      "/fusion-docs/fusion/dev-portal/api/job-launcher/index",
+                      {
+                        "group": "Job REST Server APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/job-rest-server/index",
+                          "/fusion-docs/fusion/dev-portal/api/job-rest-server/recommendations-api",
+                          "/fusion-docs/fusion/dev-portal/api/job-rest-server/spark-jobs-api"
+                        ]
+                      },
+                      {
+                        "group": "Machine Learning Model APIs",
+                        "pages": [
+                          "/fusion-docs/fusion/dev-portal/api/ml-model-service/index",
+                          "/fusion-docs/fusion/dev-portal/api/ml-model-service/ml-model-api",
+                          "/fusion-docs/fusion/dev-portal/api/ml-model-service/serialized-model-api"
+                        ]
+                      },
+                      "/fusion-docs/fusion/dev-portal/api/templating/index"
+                    ]
+                  },
+                  {
+                    "group": "Front-end Development",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/front-end-dev/index",
+                      "/fusion-docs/fusion/dev-portal/front-end-dev/autocomplete",
+                      "/fusion-docs/fusion/dev-portal/front-end-dev/rest-api-examples"
+                    ]
+                  },
+                  {
+                    "group": "Connectors SDK",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/connectors-sdk/index",
+                      "/fusion-docs/fusion/dev-portal/connectors-sdk/java-sdk",
+                      "/fusion-docs/fusion/dev-portal/connectors-sdk/simple-demo-connector",
+                      "/fusion-docs/fusion/dev-portal/connectors-sdk/javadocs"
+                    ]
+                  },
+                  {
+                    "group": "Index Stage SDK",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/index-stage-sdk/index",
+                      "/fusion-docs/fusion/dev-portal/index-stage-sdk/javadocs"
+                    ]
+                  },
+                  "/fusion-docs/fusion/dev-portal/pipeline-javadocs/index",
+                  {
+                    "group": "Fusion App Studio",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/appkit/index",
+                      {
+                        "group": "App Studio Reference Guides",
+                        "pages": [
+                          {
+                            "group": "Services",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/services/index",
+                              "/fusion-docs/app-studio/reference/services/lightning.$filterService",
+                              "/fusion-docs/app-studio/reference/services/lightning.$lightningLog",
+                              "/fusion-docs/app-studio/reference/services/lightning-locations.$lightningUrl",
+                              "/fusion-docs/app-studio/reference/services/lightning-services.$twigkit",
+                              "/fusion-docs/app-studio/reference/services/lightning-services.$util",
+                              "/fusion-docs/app-studio/reference/services/lightning.BookmarkService",
+                              "/fusion-docs/app-studio/reference/services/lightning.CollaborationService",
+                              "/fusion-docs/app-studio/reference/services/lightning.DateUtils",
+                              "/fusion-docs/app-studio/reference/services/lightning.FieldService",
+                              "/fusion-docs/app-studio/reference/services/lightning.ModalService",
+                              "/fusion-docs/app-studio/reference/services/lightning.PlatformService",
+                              "/fusion-docs/app-studio/reference/services/lightning.QueryIdService",
+                              "/fusion-docs/app-studio/reference/services/lightning.QueryService",
+                              "/fusion-docs/app-studio/reference/services/lightning.ResponseService",
+                              "/fusion-docs/app-studio/reference/services/lightning.ScrollToService",
+                              "/fusion-docs/app-studio/reference/services/lightning.TogglePanesService",
+                              "/fusion-docs/app-studio/reference/services/lightning.TranslationService",
+                              "/fusion-docs/app-studio/reference/services/lightning.UserService",
+                              "/fusion-docs/app-studio/reference/services/lightning.httpInterceptor",
+                              "/fusion-docs/app-studio/reference/services/lightning.scrollAndResizeListener"
+                            ]
+                          },
+                          {
+                            "group": "Accessing Data",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/accessing-data/index",
+                              "/fusion-docs/app-studio/reference/accessing-data/configuring-the-search-platform",
+                              "/fusion-docs/app-studio/reference/accessing-data/filter-syntax",
+                              "/fusion-docs/app-studio/reference/accessing-data/formulating-a-query",
+                              "/fusion-docs/app-studio/reference/accessing-data/search-response"
+                            ]
+                          },
+                          {
+                            "group": "Modules",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/modules/index",
+                              "/fusion-docs/app-studio/reference/modules/activity-tracking/index",
+                              {
+                                "group": "Visualizations",
+                                "pages": [
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/index",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/adding-credits",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/legend",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/chart-tooltips",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/chart-display",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/chart-export",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/facet-data-series",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/histogram",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/data-series",
+                                  "/fusion-docs/app-studio/reference/modules/visualisations/tag-cloud"
+                                ]
+                              },
+                              {
+                                "group": "Security",
+                                "pages": [
+                                  "/fusion-docs/fusion/dev-portal/appkit/reference/modules/security/index",
+                                  {
+                                    "group": "Authentication",
+                                    "pages": [
+                                      "/fusion-docs/app-studio/reference/modules/security/authentication/index",
+                                      "/fusion-docs/app-studio/reference/modules/security/authentication/oauth/index",
+                                      {
+                                        "group": "SAML Configuration",
+                                        "pages": [
+                                          "/fusion-docs/app-studio/reference/modules/security/authentication/saml/index",
+                                          "/fusion-docs/app-studio/reference/modules/security/authentication/saml/troubleshooting"
+                                        ]
+                                      }
+                                    ]
+                                  },
+                                  "/fusion-docs/app-studio/reference/modules/security/role-based-access",
+                                  "/fusion-docs/app-studio/reference/modules/security/user-web-service"
+                                ]
+                              },
+                              {
+                                "group": "Geospatial Module",
+                                "pages": [
+                                  "/fusion-docs/app-studio/reference/modules/geospatial/index",
+                                  "/fusion-docs/app-studio/reference/modules/geospatial/esri-web-map",
+                                  "/fusion-docs/app-studio/reference/modules/geospatial/maps"
+                                ]
+                              },
+                              {
+                                "group": "Media Module",
+                                "pages": [
+                                  "/fusion-docs/app-studio/reference/modules/media/index",
+                                  "/fusion-docs/app-studio/reference/modules/media/export-services",
+                                  "/fusion-docs/app-studio/reference/modules/media/image-formatting-and-transcoding"
+                                ]
+                              },
+                              {
+                                "group": "Workflow and Data Processing Module",
+                                "pages": [
+                                  "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/index",
+                                  {
+                                    "group": "Response Processors",
+                                    "pages": [
+                                      "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/response-processors/index",
+                                      "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/response-processors/facet-processors",
+                                      "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/response-processors/field-processors",
+                                      "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/response-processors/filter-processors",
+                                      "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/response-processors/general-response-processors"
+                                    ]
+                                  },
+                                  "/fusion-docs/app-studio/reference/modules/workflow-and-data-processing/query-processors"
+                                ]
+                              },
+                              "/fusion-docs/app-studio/reference/modules/collaboration/index"
+                            ]
+                          },
+                          {
+                            "group": "App Studio Gallery",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/gallery/index",
+                              "/fusion-docs/app-studio/reference/gallery/button",
+                              "/fusion-docs/app-studio/reference/gallery/checkbox",
+                              "/fusion-docs/app-studio/reference/gallery/color",
+                              "/fusion-docs/app-studio/reference/gallery/comment",
+                              "/fusion-docs/app-studio/reference/gallery/field",
+                              "/fusion-docs/app-studio/reference/gallery/form",
+                              "/fusion-docs/app-studio/reference/gallery/grid",
+                              "/fusion-docs/app-studio/reference/gallery/icon",
+                              "/fusion-docs/app-studio/reference/gallery/input",
+                              "/fusion-docs/app-studio/reference/gallery/loader",
+                              "/fusion-docs/app-studio/reference/gallery/message",
+                              "/fusion-docs/app-studio/reference/gallery/pagination",
+                              "/fusion-docs/app-studio/reference/gallery/panel",
+                              "/fusion-docs/app-studio/reference/gallery/progress-bar",
+                              "/fusion-docs/app-studio/reference/gallery/result-lists",
+                              "/fusion-docs/app-studio/reference/gallery/table",
+                              "/fusion-docs/app-studio/reference/gallery/tab",
+                              "/fusion-docs/app-studio/reference/gallery/tag",
+                              "/fusion-docs/app-studio/reference/gallery/timeline",
+                              "/fusion-docs/app-studio/reference/gallery/tooltip",
+                              "/fusion-docs/app-studio/reference/gallery/typography"
+                            ]
+                          },
+                          {
+                            "group": "FAQ",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/faq/index",
+                              "/fusion-docs/app-studio/reference/faq/versions",
+                              "/fusion-docs/app-studio/reference/faq/devices-and-browsers",
+                              "/fusion-docs/app-studio/reference/faq/solr-empty-facets",
+                              "/fusion-docs/app-studio/reference/faq/performance",
+                              "/fusion-docs/app-studio/reference/faq/responsive-design",
+                              "/fusion-docs/app-studio/reference/faq/space-for-log-files"
+                            ]
+                          },
+                          {
+                            "group": "Deployment",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/app-deployment/index",
+                              "/fusion-docs/app-studio/reference/app-deployment/building-from-source"
+                            ]
+                          },
+                          {
+                            "group": "Search Platforms",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/search-platforms/index",
+                              {
+                                "group": "Solr",
+                                "pages": [
+                                  "/fusion-docs/app-studio/reference/search-platforms/solr/index",
+                                  "/fusion-docs/app-studio/reference/search-platforms/solr/hierarchical-facet-service",
+                                  "/fusion-docs/app-studio/reference/search-platforms/solr/indexing-hierarchical-taxonomies",
+                                  "/fusion-docs/app-studio/reference/search-platforms/solr/query-suggestions",
+                                  "/fusion-docs/app-studio/reference/search-platforms/solr/solrcloud"
+                                ]
+                              },
+                              "/fusion-docs/app-studio/reference/search-platforms/elasticsearch",
+                              "/fusion-docs/app-studio/reference/search-platforms/google-custom-search",
+                              "/fusion-docs/app-studio/reference/search-platforms/fusion/index",
+                              "/fusion-docs/app-studio/reference/search-platforms/offline",
+                              "/fusion-docs/app-studio/reference/search-platforms/pipl",
+                              "/fusion-docs/app-studio/reference/search-platforms/shared-platform-attributes",
+                              "/fusion-docs/app-studio/reference/search-platforms/twitter",
+                              "/fusion-docs/app-studio/reference/search-platforms/wikipedia",
+                              "/fusion-docs/app-studio/reference/search-platforms/wolfram-alpha/index",
+                              "/fusion-docs/app-studio/reference/search-platforms/youtube"
+                            ]
+                          },
+                          {
+                            "group": "Filters",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/filters/index",
+                              "/fusion-docs/app-studio/reference/filters/filter-syntax",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.actual",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.actualValue",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.dateFormat",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.deepFilter",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.display",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.displayValue",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.encodeURIComponent",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.facet",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.fact",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.field",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.filterCount",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.filterValue",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.formatAsCssName",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.getUrlForQuery",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.hasFilter",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.htmlToPlainText",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.maxCharacters",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.numberFormat",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.orderByValue",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.placeholder",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.property",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.pyramidSort",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.rangeDateFormat",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.result",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.roundedNumber",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.translate",
+                              "/fusion-docs/app-studio/reference/filters/lightning.filter.trusted"
+                            ]
+                          },
+                          {
+                            "group": "Installation",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/installation/index",
+                              "/fusion-docs/app-studio/reference/installation/open-source-libraries",
+                              "/fusion-docs/app-studio/reference/installation/requirements",
+                              "/fusion-docs/app-studio/reference/installation/devices-and-browsers"
+                            ]
+                          },
+                          "/fusion-docs/app-studio/reference/licensing/index",
+                          "/fusion-docs/app-studio/reference/styling",
+                          {
+                            "group": "Tags",
+                            "pages": [
+                              "/fusion-docs/app-studio/reference/tags/index",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.advancedButton",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.advancedDateRange",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.advancedText",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.blockInterruptor",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartCredit",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartDisplay",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartExport",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartGauge",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartHistogram",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartLegend",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartTagcloud",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartTimeline",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.chartTooltip",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.classToggle",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.clickOutside",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateBookmark",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateBookmarkList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateCommentForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateCommentList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateLike",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateSavedQueryList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateTopicForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.collaborateTopicList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentBoolean",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentInput",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentRadio",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentSubmit",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.contentTextarea",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.controller",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.defaultSrc",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.devTrackDigests",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.drawer",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.dynamicStyling",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.esriHeatmap",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.esriWebmap",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.facetDropdown",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.facetHierarchical",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.geoHeatmap",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.geoHighmaps",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.geoLayer",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.geoMap",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.graphFlow",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.helperConstant",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.helperSet",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.helperTitle",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.hideWhen",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.instantResultList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutAnimate",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutBlock",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutBox",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutCenterContent",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutContent",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutControls",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutGrid",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutInclude",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutLogo",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.layoutSidebar",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.lifecycleDelay",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.lifecycleDisplay",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.lifecycleEvent",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.lifecycleOn",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.lifecycleRequired",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.mediaCsv",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.mediaExcel",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.mediaImage",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.ngCompile",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.ngInject",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.paddingBottom",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.paddingLeft",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.paddingRight",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.paddingTop",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.pivotTable",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.progressBar",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.progressRadial",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.queryCustom",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.queryFilter",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.querySuggestions",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchAdvanced",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchAlert",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchBox",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchBreadcrumbs",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchConditional",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchFacet",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchFacetList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchField",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchFields",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchFilter",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchFilterList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchKeyword",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchLoad",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchMessageList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchNoResults",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchOffcanvasToggle",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchPagination",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchPlatform",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchQuery",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchResponse",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchResponseStatistics",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchResult",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchResultList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchResultsPerPage",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchSort",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchTabs",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.searchTypeahead",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.securityUserActions",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.seriesFacet",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.seriesPivot",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.seriesResultList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.seriesTime",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.showWhen",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.slideToggle",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.socialCommentForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.socialCommentList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.styling",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableBody",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableCell",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableHeader",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableHeaderCell",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableResultList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tableRow",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.taskForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.taskList",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.toggleControls",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.togglePane",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.togglePanes",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.tooltip",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.trackClicks",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.trackQuery",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.triggerEvent",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.urlTabs",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetCarousel",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetDateRange",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetDatetimepicker",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetFileHierarchy",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetIcon",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetInView",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetLicense",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetLoginForm",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetLoginPage",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetLogout",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetModal",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetOpenModal",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetPopover",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetScrollTo",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetSlideDown",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetSlider",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetSpellingSuggestions",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetSpinner",
+                              "/fusion-docs/app-studio/reference/tags/lightning.directive.widgetTutorial"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "App Studio Concepts",
+                        "pages": [
+                          "/fusion-docs/app-studio/concepts/index",
+                          "/fusion-docs/app-studio/concepts/app-development/index",
+                          {
+                            "group": "App Studio Enterprise",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/app-studio-enterprise/index",
+                              "/fusion-docs/app-studio/concepts/app-studio-enterprise/download",
+                              "/fusion-docs/app-studio/concepts/app-studio-enterprise/getting-started"
+                            ]
+                          },
+                          {
+                            "group": "Appkit",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/overview/index",
+                              "/fusion-docs/app-studio/concepts/overview/appkit-concepts",
+                              "/fusion-docs/app-studio/concepts/overview/appkit-tags",
+                              "/fusion-docs/app-studio/concepts/overview/architecture",
+                              "/fusion-docs/app-studio/concepts/overview/data-sources",
+                              "/fusion-docs/app-studio/concepts/overview/routing-and-url-rules",
+                              "/fusion-docs/app-studio/concepts/overview/signals",
+                              "/fusion-docs/app-studio/concepts/overview/social-and-collaboration-tools",
+                              "/fusion-docs/app-studio/concepts/overview/ui-components"
+                            ]
+                          },
+                          {
+                            "group": "Configuration",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/configuration/index",
+                              "/fusion-docs/app-studio/concepts/configuration/basic-configuration",
+                              "/fusion-docs/app-studio/concepts/configuration/configuration-files",
+                              "/fusion-docs/app-studio/concepts/configuration/externalising-configuration-files",
+                              "/fusion-docs/app-studio/concepts/configuration/localization-keys",
+                              "/fusion-docs/app-studio/concepts/configuration/overlaying-configuration",
+                              "/fusion-docs/app-studio/concepts/configuration/web-app-structure"
+                            ]
+                          },
+                          {
+                            "group": "Navigation",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/navigation/index",
+                              "/fusion-docs/app-studio/concepts/navigation/breadcrumbs-tag",
+                              "/fusion-docs/app-studio/concepts/navigation/faceted-navigation",
+                              "/fusion-docs/app-studio/concepts/navigation/tabs-tag"
+                            ]
+                          },
+                          {
+                            "group": "Rendering Search Results",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/rendering-search-results/index",
+                              {
+                                "group": "Results Table",
+                                "pages": [
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/index",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/cell-tag",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/header-cell-tag",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/header-tag",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/row-tag",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/body-tag",
+                                  "/fusion-docs/app-studio/concepts/rendering-search-results/results-table/table-result-list-tag"
+                                ]
+                              },
+                              "/fusion-docs/app-studio/concepts/rendering-search-results/result-list-tag",
+                              "/fusion-docs/app-studio/concepts/rendering-search-results/result-tag"
+                            ]
+                          },
+                          {
+                            "group": "Extending Appkit",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/extending-appkit/index",
+                              "/fusion-docs/app-studio/concepts/extending-appkit/collaboration-events",
+                              "/fusion-docs/app-studio/concepts/extending-appkit/developing-platforms",
+                              "/fusion-docs/app-studio/concepts/extending-appkit/developing-processors",
+                              "/fusion-docs/app-studio/concepts/extending-appkit/developing-services-and-servlets"
+                            ]
+                          },
+                          {
+                            "group": "Layout and Styling",
+                            "pages": [
+                              "/fusion-docs/app-studio/concepts/layout-and-styling/index",
+                              "/fusion-docs/app-studio/concepts/layout-and-styling/default-view",
+                              "/fusion-docs/app-studio/concepts/layout-and-styling/themes-and-styling",
+                              "/fusion-docs/app-studio/concepts/layout-and-styling/topic-pages"
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Query Stage SDK",
+                    "pages": [
+                      "/fusion-docs/fusion/dev-portal/query-stage-sdk/index",
+                      "/fusion-docs/fusion/dev-portal/query-stage-sdk/java-sdk",
+                      "/fusion-docs/fusion/dev-portal/query-stage-sdk/javadocs",
+                      "/fusion-docs/fusion/dev-portal/query-stage-sdk/example-plugin-stage"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Neural Hybrid Search",
+                "pages": [
+                  "/fusion-docs/fusion/hybrid-search/index",
+                  "/fusion-docs/fusion/hybrid-search/chunking",
+                  "/fusion-docs/fusion/hybrid-search/testing-svs",
+                  "/fusion-docs/fusion/hybrid-search/hybrid-stage-differences"
+                ]
+              },
+              {
+                "group": "Release Notes",
+                "pages": [
+                  "/fusion-docs/fusion/release-notes/index",
+                  "/fusion-docs/fusion/release-notes/5.9.13-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.12-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.11-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.10-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.9-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.8-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.7-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.6-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.5-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.4-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.3-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.2-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.9.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.12.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.11.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.10.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.8.1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.8.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.7.1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.7.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.6.1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.6.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.2-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.1-3-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.1-2-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.1-1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.1-release-notes",
+                  "/fusion-docs/fusion/release-notes/5.5.0-release-notes",
+                  "/fusion-docs/fusion/release-notes/deprecations-and-removals"
+                ]
+              }
+            ]
+          },
+          {
+            "version": "v4.2",
+            "pages": [
+              {
+                "group": "Fusion Server",
+                "pages": [
+                  "/fusion-server/4.2/8764/fusion-server",
+                  {
+                    "group": "Fusion Concepts and Components",
+                    "pages": [
+                      "/fusion-server/4.2/120/fusion-concepts-and-components",
+                      {
+                        "group": "Fusion Server Deployment",
+                        "pages": [
+                          "/fusion-server/4.2/142/fusion-server-deployment",
+                          "/fusion-server/4.2/141/deployment-types",
+                          "/fusion-server/4.2/143/on-prem-deployment"
+                        ]
+                      },
+                      "/fusion-server/4.2/116/fusion-ui",
+                      {
+                        "group": "Querying",
+                        "pages": [
+                          "/fusion-server/4.2/168/querying",
+                          {
+                            "group": "Building Applications",
+                            "pages": [
+                              "/fusion-server/4.2/180/building-applications",
+                              "/fusion-server/4.2/178/autocomplete",
+                              "/fusion-server/4.2/175/faceting",
+                              "/fusion-server/4.2/177/search-applications",
+                              "/fusion-server/4.2/181/stopwords-files",
+                              "/fusion-server/4.2/176/synonyms-files"
+                            ]
+                          },
+                          {
+                            "group": "Query Pipelines and Profiles",
+                            "pages": [
+                              "/fusion-server/4.2/171/query-pipelines-and-profiles",
+                              "/fusion-server/4.2/170/custom-java-script-stages-for-query-pipelines",
+                              "/fusion-server/4.2/169/query-pipeline-stages",
+                              "/fusion-server/4.2/173/query-pipelines",
+                              "/fusion-server/4.2/174/query-profiles",
+                              "/fusion-server/4.2/172/stored-parameters-collection"
+                            ]
+                          },
+                          "/fusion-server/4.2/167/query-workbench"
+                        ]
+                      },
+                      {
+                        "group": "Security",
+                        "pages": [
+                          "/fusion-server/4.2/122/security",
+                          {
+                            "group": "Access Control",
+                            "pages": [
+                              "/fusion-server/4.2/124/access-control",
+                              "/fusion-server/4.2/123/permissions",
+                              "/fusion-server/4.2/126/roles",
+                              "/fusion-server/4.2/127/security-realms",
+                              "/fusion-server/4.2/125/users"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Ingest and Indexing",
+                        "pages": [
+                          "/fusion-server/4.2/155/ingest-and-indexing",
+                          "/fusion-server/4.2/153/blob-storage",
+                          {
+                            "group": "Collections",
+                            "pages": [
+                              "/fusion-server/4.2/166/collections",
+                              "/fusion-server/4.2/165/time-based-partitioning"
+                            ]
+                          },
+                          "/fusion-server/4.2/164/connectors",
+                          {
+                            "group": "Datasources",
+                            "pages": [
+                              "/fusion-server/4.2/163/datasources",
+                              "/fusion-server/4.2/158/index-workbench",
+                              "/fusion-server/4.2/162/index-pipelines",
+                              "/fusion-server/4.2/161/index-pipeline-stages",
+                              "/fusion-server/4.2/160/index-profiles",
+                              "/fusion-server/4.2/156/custom-java-script-stages-for-index-pipelines"
+                            ]
+                          },
+                          "/fusion-server/4.2/154/the-parallel-bulk-loader"
+                        ]
+                      },
+                      {
+                        "group": "Dashboards",
+                        "pages": [
+                          "/fusion-server/4.2/139/dashboards",
+                          "/fusion-server/4.2/140/built-in-dashboards",
+                          "/fusion-server/4.2/137/display-panels",
+                          "/fusion-server/4.2/138/input-panels"
+                        ]
+                      },
+                      {
+                        "group": "System Administration",
+                        "pages": [
+                          "/fusion-server/4.2/129/system-administration",
+                          {
+                            "group": "Monitoring",
+                            "pages": [
+                              "/fusion-server/4.2/132/monitoring",
+                              "/fusion-server/4.2/133/cluster-monitoring-and-troubleshooting",
+                              "/fusion-server/4.2/135/messaging-and-alerting",
+                              "/fusion-server/4.2/134/troubleshooting-performance-issues"
+                            ]
+                          },
+                          "/fusion-server/4.2/128/system-usage-monitor",
+                          "/fusion-server/4.2/130/the-dev-ops-center"
+                        ]
+                      },
+                      {
+                        "group": "Jobs",
+                        "pages": [
+                          "/fusion-server/4.2/184/jobs",
+                          "/fusion-server/4.2/186/datasource-jobs",
+                          "/fusion-server/4.2/185/fusion-schedules",
+                          "/fusion-server/4.2/182/job-history",
+                          "/fusion-server/4.2/187/spark-jobs",
+                          "/fusion-server/4.2/183/tasks"
+                        ]
+                      },
+                      {
+                        "group": "Fusion SQL Query and Analytics",
+                        "pages": [
+                          "/fusion-server/4.2/192/fusion-sql-query-and-analytics",
+                          "/fusion-server/4.2/3248/fusion-sql-administration"
+                        ]
+                      },
+                      "/fusion-server/4.2/114/licensing",
+                      "/fusion-server/4.2/121/object-explorer",
+                      {
+                        "group": "Spark Operations",
+                        "pages": [
+                          "/fusion-server/4.2/189/spark-operations",
+                          "/fusion-server/4.2/191/spark-components",
+                          "/fusion-server/4.2/188/spark-job-drivers"
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "group": "Reference Guides",
+                    "pages": [
+                      "/fusion-server/4.2/196/reference-guides",
+                      "/fusion-server/4.2/194/system-requirements",
+                      "/fusion-server/4.2/kvgqn7/fusion-server-4-x-file-download-links",
+                      "/fusion-server/4.2/200/additional-resources",
+                      {
+                        "group": "Pipeline Stages",
+                        "pages": [
+                          "fusion-server/4.2/203/pipeline-stages",
+                          {
+                            "group": "Query Pipeline Stages",
+                            "pages": [
+                              "/fusion-server/4.2/278/query-pipeline-stages",
+                              "/fusion-server/4.2/296/active-directory-security-trimming-stage",
+                              "/fusion-server/4.2/294/additional-query-parameters-stage",
+                              "/fusion-server/4.2/288/analytics-catalog-stage",
+                              "/fusion-server/4.2/292/apply-rules-stage",
+                              "/fusion-server/4.2/259/block-documents-stage",
+                              "/fusion-server/4.2/293/boost-documents-stage",
+                              "/fusion-server/4.2/248/boost-with-signals-stage",
+                              "/fusion-server/4.2/286/compute-mathematical-expression",
+                              "/fusion-server/4.2/ndokku/custom-java-script-query-stage-examples",
+                              "/fusion-server/4.2/262/escape-query",
+                              "/fusion-server/4.2/280/experiment-stage",
+                              "/fusion-server/4.2/252/field-facet-stage",
+                              "/fusion-server/4.2/277/filter-stop-words-query-stage",
+                              "/fusion-server/4.2/260/jdbc-lookup-stage",
+                              "/fusion-server/4.2/89cjix/java-script-query-stage",
+                              "/fusion-server/4.2/285/landing-pages-stage",
+                              "/fusion-server/4.2/287/logging-stage",
+                              "/fusion-server/4.2/267/machine-learning-responses-stage",
+                              "/fusion-server/4.2/258/managed-java-script-query-stage",
+                              "/fusion-server/4.2/266/merge-async-results-stage",
+                              "/fusion-server/4.2/295/modify-response-with-rules-stage",
+                              "/fusion-server/4.2/274/nlp-annotator-query-stage",
+                              "/fusion-server/4.2/279/parameterized-boosting-stage",
+                              "/fusion-server/4.2/255/parameterized-faceting-stage",
+                              "/fusion-server/4.2/289/query-fields-stage",
+                              "/fusion-server/4.2/257/query-document-vectors-distance-query-stage",
+                              "/fusion-server/4.2/276/rest-query-stage",
+                              "/fusion-server/4.2/251/recommend-items-for-item-stage",
+                              "/fusion-server/4.2/281/recommend-items-for-user-stage",
+                              "/fusion-server/4.2/269/response-document-exclusion-stage",
+                              "/fusion-server/4.2/284/response-document-field-redaction-stage",
+                              "/fusion-server/4.2/247/response-pairwise-swap-stage",
+                              "/fusion-server/4.2/275/response-shuffle-stage",
+                              "/fusion-server/4.2/249/result-document-field-sorting-query-stage",
+                              "/fusion-server/4.2/270/retrieve-stored-parameters-stage",
+                              "/fusion-server/4.2/268/return-query-parameters-stage",
+                              "/fusion-server/4.2/254/rewrite-pagination-parameters-for-reranking",
+                              "/fusion-server/4.2/282/rollup-aggregation-stage",
+                              "/fusion-server/4.2/261/run-query-pipeline-stage",
+                              "/fusion-server/4.2/272/security-trimming-stage",
+                              "/fusion-server/4.2/273/send-pager-duty-message-stage",
+                              "/fusion-server/4.2/253/send-smtp-email-stage",
+                              "/fusion-server/4.2/290/send-slack-message-stage",
+                              "/fusion-server/4.2/256/solr-more-like-this-stage",
+                              "/fusion-server/4.2/265/solr-query-stage",
+                              "/fusion-server/4.2/297/solr-subquery-stage",
+                              "/fusion-server/4.2/291/tensorflow-deep-encoding-query-stage",
+                              "/fusion-server/4.2/264/text-tagger-stage",
+                              "/fusion-server/4.2/271/write-log-message-stage"
+                            ]
+                          },
+                          {
+                            "group": "Index Pipeline Stages",
+                            "pages": [
+                              "/fusion-server/4.2/229/index-pipeline-stages",
+                              "/fusion-server/4.2/207/apache-tika-parser-index-stage",
+                              "/fusion-server/4.2/214/call-pipeline-index-stage",
+                              "/fusion-server/4.2/241/date-parsing-index-stage",
+                              "/fusion-server/4.2/210/detect-language-index-stage",
+                              "/fusion-server/4.2/230/detect-sentences-index-stage",
+                              "/fusion-server/4.2/216/exclude-documents-index-stage",
+                              "/fusion-server/4.2/226/exclusion-filter-index-stage",
+                              "/fusion-server/4.2/224/field-mapping-index-stage",
+                              "/fusion-server/4.2/234/field-parser-index-stage",
+                              "/fusion-server/4.2/232/filter-short-fields-index-stage",
+                              "/fusion-server/4.2/213/find-and-replace-index-stage",
+                              "/fusion-server/4.2/225/format-signals-index-stage",
+                              "/fusion-server/4.2/220/gazetteer-lookup-extraction-index-stage",
+                              "/fusion-server/4.2/211/geo-ip-lookup-stage",
+                              "/fusion-server/4.2/244/include-documents-index-stage",
+                              "/fusion-server/4.2/215/jdbc-index-stage",
+                              "/fusion-server/4.2/243/java-script-index-stage",
+                              "/fusion-server/4.2/242/logging-index-stage",
+                              "/fusion-server/4.2/222/machine-learning-index-stage",
+                              "/fusion-server/4.2/217/managed-java-script-index-stage",
+                              "/fusion-server/4.2/204/nlp-annotator-index-stage",
+                              "/fusion-server/4.2/221/open-nlp-ner-extraction-index-stage",
+                              "/fusion-server/4.2/240/rest-query-index-stage",
+                              "/fusion-server/4.2/238/regex-field-extraction-index-stage",
+                              "/fusion-server/4.2/209/regex-field-filter-index-stage",
+                              "/fusion-server/4.2/219/regex-field-replacement-index-stage",
+                              "/fusion-server/4.2/236/resolve-multivalued-fields-index-stage",
+                              "/fusion-server/4.2/206/send-pager-duty-message-index-stage",
+                              "/fusion-server/4.2/218/send-smtp-email-index-stage",
+                              "/fusion-server/4.2/237/send-slack-message-index-stage",
+                              "/fusion-server/4.2/239/set-property-index-stage",
+                              "/fusion-server/4.2/223/solr-dynamic-field-name-mapping",
+                              "/fusion-server/4.2/227/solr-indexer-stage",
+                              "/fusion-server/4.2/233/solr-partial-update-indexer-stage",
+                              "/fusion-server/4.2/228/tag-part-of-speech-index-stage",
+                              "/fusion-server/4.2/235/tensorflow-deep-encoding-index-stage",
+                              "/fusion-server/4.2/231/update-related-document-stage",
+                              "/fusion-server/4.2/208/write-log-message-index-stage",
+                              "/fusion-server/4.2/245/xml-transformation-index-stage"
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "group": "Jobs Configuration",
+                        "pages": [
+                          "/fusion-server/4.2/385/jobs-configuration",
+                          "/fusion-server/4.2/388/aggregation-jobs",
+                          "/fusion-server/4.2/383/custom-spark-jobs",
+                          "/fusion-server/4.2/390/download-blob",
+                          "/fusion-server/4.2/387/log-cleanup-jobs",
+                          "/fusion-server/4.2/384/rest-call-jobs",
+                          "/fusion-server/4.2/386/script-jobs"
+                        ]
+                      },
+                      {
+                        "group": "Parsers",
+                        "pages": [
+                          "/fusion-server/4.2/370/parsers",
+                          "/fusion-server/4.2/371/apache-tika-parser-stage",
+                          "/fusion-server/4.2/366/archive-parser-stage",
+                          "/fusion-server/4.2/375/csv-parser-stage",
+                          "/fusion-server/4.2/1wdwkx/enable-tika-asynchronous-parsing",
+                          "/fusion-server/4.2/378/fallback-parser-stage",
+                          "/fusion-server/4.2/367/forked-apache-tika-parser-stage",
+                          "/fusion-server/4.2/373/grok-parser-stage",
+                          "/fusion-server/4.2/379/grok-patterns",
+                          "/fusion-server/4.2/374/html-parser-stage",
+                          "/fusion-server/4.2/369/json-parser-stage",
+                          "/fusion-server/4.2/368/solr-update-parser-stage",
+                          "/fusion-server/4.2/377/text-parser-stage",
+                          "/fusion-server/4.2/372/xml-parser-stage"
+                        ]
+                      },
+                      {
+                        "group": "REST APIs",
+                        "pages": [
+                          "/fusion-server/4.2/324/rest-ap-is",
+                          "/fusion-server/4.2/325/apps-api",
+                          {
+                            "group": "Authentication and Authorization APIs",
+                            "pages": [
+                              "/fusion-server/4.2/341/authentication-and-authorization-ap-is",
+                              "/fusion-server/4.2/337/realms-api",
+                              "/fusion-server/4.2/338/roles-api",
+                              "/fusion-server/4.2/339/sessions-api",
+                              "/fusion-server/4.2/340/user-api"
+                            ]
+                          },
+                          "/fusion-server/4.2/305/blob-store-api",
+                          "/fusion-server/4.2/329/catalog-api",
+                          "/fusion-server/4.2/333/collection-features-api",
+                          "/fusion-server/4.2/307/collections-api",
+                          {
+                            "group": "System Admin APIs",
+                            "pages": [
+                              "/fusion-server/4.2/347/system-admin-ap-is",
+                              "/fusion-server/4.2/342/configurations-api",
+                              "/fusion-server/4.2/343/history-api",
+                              "/fusion-server/4.2/345/nodes-api",
+                              "/fusion-server/4.2/344/system-api",
+                              "/fusion-server/4.2/346/usage-api"
+                            ]
+                          },
+                          {
+                            "group": "Connector APIs",
+                            "pages": [
+                              "/fusion-server/4.2/357/connector-ap-is",
+                              "/fusion-server/4.2/353/connector-datasources-api",
+                              "/fusion-server/4.2/355/connector-history-api",
+                              "/fusion-server/4.2/352/connector-jobs-api",
+                              "/fusion-server/4.2/356/connector-plugins-api",
+                              "/fusion-server/4.2/358/connector-status-api"
+                            ]
+                          },
+                          "/fusion-server/4.2/331/custom-rules-api",
+                          "/fusion-server/4.2/328/experiments-api",
+                          "/fusion-server/4.2/318/groups-api",
+                          {
+                            "group": "Index APIs",
+                            "pages": [
+                              "/fusion-server/4.2/10908/index-ap-is",
+                              "/fusion-server/4.2/350/index-api",
+                              "/fusion-server/4.2/351/index-pipelines-api",
+                              "/fusion-server/4.2/348/index-profiles-api",
+                              "/fusion-server/4.2/349/index-stages-api"
+                            ]
+                          },
+                          "/fusion-server/4.2/327/jobs-api",
+                          "/fusion-server/4.2/310/license-api",
+                          "/fusion-server/4.2/319/links-api",
+                          "/fusion-server/4.2/306/messaging-api",
+                          "/fusion-server/4.2/326/objects-api",
+                          "/fusion-server/4.2/308/parsers-api",
+                          {
+                            "group": "Query APIs",
+                            "pages": [
+                              "/fusion-server/4.2/10909/query-ap-is",
+                              "/fusion-server/4.2/361/query-api",
+                              "/fusion-server/4.2/360/query-pipelines-api",
+                              "/fusion-server/4.2/363/query-profiles-api",
+                              "/fusion-server/4.2/359/query-rewrite-api",
+                              "/fusion-server/4.2/362/query-stages-api"
+                            ]
+                          },
+                          "/fusion-server/4.2/311/recommendations-api",
+                          "/fusion-server/4.2/330/scheduler-api",
+                          "/fusion-server/4.2/334/search-cluster-api",
+                          "/fusion-server/4.2/314/signals-api",
+                          "/fusion-server/4.2/313/solr-api",
+                          "/fusion-server/4.2/323/solr-configuration-api",
+                          "/fusion-server/4.2/309/solr-admin-api",
+                          "/fusion-server/4.2/312/spark-jobs-api",
+                          "/fusion-server/4.2/335/synonyms-editor-api",
+                          "/fusion-server/4.2/317/tasks-api",
+                          "/fusion-server/4.2/304/taxonomy-api",
+                          "/fusion-server/4.2/322/webapps-api",
+                          "/fusion-server/4.2/336/webapps-admin-api",
+                          "/fusion-server/4.2/332/webapps-appkit-api",
+                          "/fusion-server/4.2/320/zoo-keeper-export-api"
+                        ]
+                      },
+                      "/fusion-server/4.2/671/configure-fusion-logging-in-fusion-4-0",
+                      {
+                        "group": "Query Operations",
+                        "pages": [
+                          "/fusion-server/4.2/10910/query-operations",
+                          "/fusion-server/4.2/pke5ma/configure-fusion-for-jwt",
+                          "/fusion-server/4.2/3wzuy5/custom-java-script-stages-variables-and-parameters",
+                          "/fusion-server/4.2/394/solr-query-language-cheat-sheet"
+                        ]
+                      },
+                      {
+                        "group": "Querying Fusion SQL",
+                        "pages": [
+                          "/fusion-server/4.2/3269/querying-fusion-sql",
+                          "/fusion-server/4.2/3271/cumulative-probability-cumulative-probability",
+                          "/fusion-server/4.2/3277/fusion-sql-aggregation",
+                          "/fusion-server/4.2/3272/fusion-sql-miscellaneous-functions",
+                          "/fusion-server/4.2/3256/fusion-sql-search",
+                          "/fusion-server/4.2/3280/fusion-sql-statistics",
+                          "/fusion-server/4.2/3275/mann-whitney-mann-whitney",
+                          "/fusion-server/4.2/3266/probability-probability",
+                          "/fusion-server/4.2/3268/qq-plot",
+                          "/fusion-server/4.2/3274/time-series-date-format",
+                          "/fusion-server/4.2/3251/click-pos",
+                          "/fusion-server/4.2/3255/concat-text",
+                          "/fusion-server/4.2/3252/significant-terms",
+                          "/fusion-server/4.2/3279/timediff",
+                          "/fusion-server/4.2/3259/ttest",
+                          "/fusion-server/4.2/3263/weighted-sum"
+                        ]
+                      },
+                      "/fusion-server/4.2/197/fusion-server-directories-files-and-ports",
+                      {
+                        "group": "Template Expressions",
+                        "pages": [
+                          "/fusion-server/4.2/10911/template-expressions",
+                          "/fusion-server/4.2/396/index-pipeline-stage-template-expression-variables",
+                          "/fusion-server/4.2/397/messaging-services-template-expression-variables",
+                          "/fusion-server/4.2/398/query-pipeline-stage-template-expression-variables"
+                        ]
+                      },
+                      {
+                        "group": "Resources and Support",
+                        "pages": [
+                          "/fusion-server/4.2/365/resources-and-support",
+                          "/fusion-server/4.2/364/language-support-in-fusion"
+                        ]
+                      },
+                      "/fusion-server/4.2/892/monitor-fusion-4-x-x",
+                      "/fusion-server/4.2/199/solr-query-language-cheat-sheet",
+                      "/fusion-server/4.2/301/solr-reference-guide",
+                      "/fusion-server/4.2/10921/spark-reference-guide",
+                      "/fusion-server/4.2/198/system-metrics",
+                      "/fusion-server/4.2/392/time-based-partitioning"
+                    ]
+                  },
+                  {
+                    "group": "Release Notes",
+                    "pages": [
+                      "/fusion-server/4.2/97/release-notes",
+                      "/fusion-server/4.2/jkd2eg/fusion-4-2-6-sp-3-release-notes",
+                      "/fusion-server/4.2/i552i1/fusion-4-2-6-sp-2-release-notes",
+                      "/fusion-server/4.2/i0ukdp/fusion-4-2-6-sp-1-release-notes",
+                      "/fusion-server/4.2/93/fusion-server-4-2-6-release-notes",
+                      "/fusion-server/4.2/90/fusion-server-4-2-5-release-notes",
+                      "/fusion-server/4.2/89/fusion-server-4-2-4-release-notes",
+                      "/fusion-server/4.2/88/fusion-server-4-2-3-release-notes",
+                      "/fusion-server/4.2/91/fusion-server-4-2-2-release-notes",
+                      "/fusion-server/4.2/92/fusion-server-4-2-1-release-notes",
+                      "/fusion-server/4.2/87/fusion-server-4-2-0-release-notes",
+                      "/fusion-server/4.2/8855/deprecations-and-removals"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Fusion AI",
+                "pages": []
+              },
+              {
+                "group": "App Studio",
+                "pages": []
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Managed Fusion",
+        "groups": [
+          {
+            "group": " ",
+            "pages": [
+              "/fusion-docs/managed-fusion/index",
+              "/fusion-docs/managed-fusion/02-managed-fusion-vs-fusion/index"
+            ]
+          },
+          {
+            "group": "UI tour",
+            "pages": [
+              "/fusion-docs/managed-fusion/03-ui-tour/index",
+              "/fusion-docs/managed-fusion/03-ui-tour/fusion-apps",
+              "/fusion-docs/managed-fusion/03-ui-tour/index-workbench",
+              "/fusion-docs/managed-fusion/03-ui-tour/query-workbench",
+              "/fusion-docs/managed-fusion/03-ui-tour/object-explorer"
+            ]
+          },
+          {
+            "group": "Index data",
+            "pages": [
+              "/fusion-docs/managed-fusion/04-move-data-in/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/datasource/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/index-profile/index",
+              {
+                "group": "Parsers",
+                "pages": [
+                  "/fusion-docs/managed-fusion/04-move-data-in/parsers/index",
+                  "/fusion-docs/managed-fusion/04-move-data-in/parsers/asynchronous-tika-parsing"
+                ]
+              },
+              {
+                "group": "Index pipelines",
+                "pages": [
+                  "/fusion-docs/managed-fusion/04-move-data-in/index-pipeline/index",
+                  "/fusion-docs/managed-fusion/04-move-data-in/index-pipeline/index-pipeline-stages",
+                  "/fusion-docs/managed-fusion/04-move-data-in/index-pipeline/custom-js-index-stages",
+                  "/fusion-docs/managed-fusion/04-move-data-in/index-pipeline/reverse-search"
+                ]
+              },
+              "/fusion-docs/managed-fusion/04-move-data-in/collection/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/index-workbench/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/indexing-signals/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/blob-storage/index",
+              "/fusion-docs/managed-fusion/04-move-data-in/data-models/index"
+            ]
+          },
+          {
+            "group": "Query data",
+            "pages": [
+              "/fusion-docs/managed-fusion/05-move-data-out/index",
+              "/fusion-docs/managed-fusion/05-move-data-out/query-profile/index",
+              {
+                "group": "Query pipelines",
+                "pages": [
+                  "/fusion-docs/managed-fusion/05-move-data-out/query-pipeline/index",
+                  "/fusion-docs/managed-fusion/05-move-data-out/query-pipeline/query-pipeline-stages",
+                  "/fusion-docs/managed-fusion/05-move-data-out/query-pipeline/custom-js-query-stages"
+                ]
+              },
+              "/fusion-docs/managed-fusion/05-move-data-out/query-workbench/index",
+              "/fusion-docs/managed-fusion/05-move-data-out/domain-specific-language",
+              "/fusion-docs/managed-fusion/05-move-data-out/faceting",
+              "/fusion-docs/managed-fusion/05-move-data-out/solr-query-language"
+            ]
+          },
+          {
+            "group": "Metrics and analytics",
+            "pages": [
+              "/fusion-docs/managed-fusion/06-metrics-and-analytics/index",
+              {
+                "group": "App insights",
+                "pages": [
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/index",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/dashboards",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/events",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/sessions",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/analytics",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/experiment-results",
+                  "/fusion-docs/managed-fusion/06-metrics-and-analytics/app-insights/report-requirements"
+                ]
+              },
+              "/fusion-docs/managed-fusion/06-metrics-and-analytics/experiments",
+              "/fusion-docs/managed-fusion/06-metrics-and-analytics/experiment-metrics"
+            ]
+          },
+          {
+            "group": "Improve your queries",
+            "pages": [
+              "/fusion-docs/managed-fusion/07-improve-your-queries/index",
+              {
+                "group": "Signals",
+                "pages": [
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/index",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/signals-data-flow",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/aggregations",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/signal-types",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/cloud-signal-storage-59",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/signals-reqs-for-insights",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/signals/signals-reqs-for-jobs"
+                ]
+              },
+              "/fusion-docs/managed-fusion/07-improve-your-queries/rules-editor/index",
+              {
+                "group": "Recommendations",
+                "pages": [
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/index",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/getting-started",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/methods-recs",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/items-for-item",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/items-for-query",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/items-for-user",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/queries-for-query",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/trending-items-queries",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/recommendations/users-for-item"
+                ]
+              },
+              {
+                "group": "Business rules",
+                "pages": [
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/business-rules/index",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/business-rules/general-configurations",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/business-rules/conditions",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/business-rules/actions",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/business-rules/custom-rule-actions"
+                ]
+              },
+              {
+                "group": "Boosting",
+                "pages": [
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/boosting/index",
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/boosting/boost-with-signals"
+                ]
+              },
+              {
+                "group": "Curate your search experience",
+                "pages": [
+                  "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/index",
+                  {
+                    "group": "Predictive Merchandiser",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/predictive-merchandiser/index",
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/predictive-merchandiser/results-and-page-concepts",
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/predictive-merchandiser/templates-pm",
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/predictive-merchandiser/templates-ui-configuration-options"
+                    ]
+                  },
+                  {
+                    "group": "Experience Optimizer",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/experience-optimizer/index",
+                      "/fusion-docs/managed-fusion/07-improve-your-queries/curate-search-experience/experience-optimizer/results-and-page-concepts"
+                    ]
+                  }
+                ]
+              },
+              "/fusion-docs/managed-fusion/07-improve-your-queries/synonyms/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/collapse",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/head-tail-analysis/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/misspelling-detection/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/phrase-detection/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/query-rewriting/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/remove-words/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/response-rewriting/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/stopwords-file/index",
+              "/fusion-docs/managed-fusion/07-improve-your-queries/template-expressions/index"
+            ]
+          },
+          {
+            "group": "Administration",
+            "pages": [
+              "/fusion-docs/managed-fusion/08-administration/index",
+              "/fusion-docs/managed-fusion/08-administration/promotions",
+              {
+                "group": "Access control",
+                "pages": [
+                  "/fusion-docs/managed-fusion/08-administration/access-control/index",
+                  "/fusion-docs/managed-fusion/08-administration/access-control/api-keys",
+                  "/fusion-docs/managed-fusion/08-administration/access-control/permissions",
+                  "/fusion-docs/managed-fusion/08-administration/access-control/roles",
+                  "/fusion-docs/managed-fusion/08-administration/access-control/security-realms",
+                  "/fusion-docs/managed-fusion/08-administration/access-control/users"
+                ]
+              },
+              "/fusion-docs/managed-fusion/08-administration/environments/index",
+              {
+                "group": "Jobs and scheduling",
+                "pages": [
+                  "/fusion-docs/managed-fusion/08-administration/jobs-scheduling/index",
+                  "/fusion-docs/managed-fusion/08-administration/jobs-scheduling/fusion-schedules",
+                  "/fusion-docs/managed-fusion/08-administration/jobs-scheduling/datasource-jobs",
+                  "/fusion-docs/managed-fusion/08-administration/jobs-scheduling/job-history",
+                  "/fusion-docs/managed-fusion/08-administration/jobs-scheduling/spark-jobs"
+                ]
+              },
+              {
+                "group": "Monitoring",
+                "pages": [
+                  "/fusion-docs/managed-fusion/08-administration/monitoring/index",
+                  "/fusion-docs/managed-fusion/08-administration/monitoring/consumption",
+                  "/fusion-docs/managed-fusion/08-administration/monitoring/grafana-loki-exploration",
+                  {
+                    "group": "Managed Fusion dashboards",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/08-administration/monitoring/managed-fusion/index",
+                      "/fusion-docs/managed-fusion/08-administration/monitoring/managed-fusion/grafana-customer-dashboard-managed",
+                      "/fusion-docs/managed-fusion/08-administration/monitoring/managed-fusion/fusion-log-viewer",
+                      "/fusion-docs/managed-fusion/08-administration/monitoring/managed-fusion/request-log-viewer"
+                    ]
+                  }
+                ]
+              },
+              "/fusion-docs/managed-fusion/08-administration/security",
+              "/fusion-docs/managed-fusion/08-administration/backup-disaster",
+              "/fusion-docs/managed-fusion/08-administration/vpn/index"
+            ]
+          },
+          {
+            "group": "Developer documentation",
+            "pages": [
+              "/fusion-docs/managed-fusion/09-developer-documentation/index",
+              {
+                "group": "Configuration specifications",
+                "pages": [
+                  "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index",
+                  {
+                    "group": "APIs",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/index",
+                      {
+                        "group": "Admin APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/apps-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/blob-store-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/collection-features-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/collections-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/configurations-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/data-models-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/history-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/jobs-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/links-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/nodes-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/objects-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/scheduler-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/solr-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/solr-configuration-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/solradmin-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/system-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/api-swagger/zookeeper-import-export"
+                        ]
+                      },
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/apps-manager/index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/async-parsing/index",
+                      {
+                        "group": "Query APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/index",
+                          {
+                            "group": "Query Rewrite API Configurations",
+                            "pages": [
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/index",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/query-rewrite-api",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/banner-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/block-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/boost-attributes-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/boost-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/bury-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/filter-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/ingroup-boost-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/ingroup-bury-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/ingroup-pinned-list-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/json-blob-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/pinned-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/redirect-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/response-value-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/set-facets-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/set-params-rule-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/ground-truth-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/phrase-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/remove-words-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/similar-queries-simq-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/spell-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/synonym-query-rewrite-api-configurations",
+                              "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-rewrite-api/tail-query-rewrite-api-configurations"
+                            ]
+                          },
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/custom-rules-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/experiments-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-pipelines-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-profiles-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-stage-plugins-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/query-stages-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/query/signals-api"
+                        ]
+                      },
+                      {
+                        "group": "Connectors APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/connectors/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/connectors/connector-datasources-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/connectors/connector-plugins-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/connectors/connector-plugins-repository-api"
+                        ]
+                      },
+                      {
+                        "group": "Indexing APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/indexing/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/indexing/index-pipelines-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/indexing/index-profiles-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/indexing/index-stages-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/indexing/parsers-api"
+                        ]
+                      },
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/job-config/index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/job-launcher/index",
+                      {
+                        "group": "Job REST Server APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/job-rest-server/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/job-rest-server/recommendations-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/job-rest-server/spark-jobs-api"
+                        ]
+                      },
+                      {
+                        "group": "Machine Learning Model APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/ml-model-service/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/ml-model-service/ml-model-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/ml-model-service/serialized-model-api"
+                        ]
+                      },
+                      {
+                        "group": "Managed Fusion Proxy APIs",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/proxy/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/proxy/realms-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/proxy/roles-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/proxy/sessions-api",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/proxy/user-api"
+                        ]
+                      },
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/apis/templating/index"
+                    ]
+                  },
+                  "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/fusion-connectors/index",
+                  {
+                    "group": "Parsers",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/apache-tika-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/apache-tika-container",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/apache-tika-server",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/archive-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/csv-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/fallback-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/forked-apache-tika-parser",
+                      {
+                        "group": "Grok",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/grok-parser/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/grok-parser/grok-patterns"
+                        ]
+                      },
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/html-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/json-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/solr-update-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/text-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/parsers/xml-parser"
+                    ]
+                  },
+                  {
+                    "group": "Index Pipeline Stages",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/call-data-model-pipeline",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/call-pipeline",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/data-model-mapping",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/date-parsing",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/detect-language",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/encode-milvus",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/exclude-documents",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/exclusion-filter",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/field-mapping",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/field-parser",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/filter-short-fields",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/find-replace",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/format-signals",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/gazetteer-lookup-extraction",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/geoip-lookup",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/include-documents",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/jdbc-index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/javascript",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/lwai-chunker-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/lucidworks-ai-prediction-index-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/vectorize-field-via-lucidworks-ai-index-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/logging",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/machine-learning",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/managed-javascript",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/rest-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/ray-seldon-vectorize-field-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/regex-field-extraction",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/regex-field-filter",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/regex-field-replacement",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/resolve-multivalued-fields",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/reverse-search-index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/reverse-search-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/set-property",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/solr-dynamic-field-name-mapping",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/solr-indexer",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/solr-partial-update-indexer",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/text-processing",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/update-related-document",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/index-pipeline-stages/xml-transformation"
+                    ]
+                  },
+                  {
+                    "group": "Query Pipeline Stages",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/index",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/active-directory-security-trimming",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/additional-query-parameters",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/analytics-catalog",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/apply-rules",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/block-documents",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/boost-documents",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/boost-with-signals",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/call-query-pipeline",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/chunking-neural-hybrid-query-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/dsl-legacy-parameters",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/experiment",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/field-facet",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/graph-security-trimming",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/highlight",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/hybrid-search-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/jdbc-lookup",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/javascript-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/lucidworks-ai-prediction-query-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/vectorize-query-via-lucidworks-ai-query-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/landing-pages",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/logging",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/machine-learning",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/managed-javascript-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/merge-async-results",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/milvus-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/milvus-ensemble-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/milvus-response-update",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/modify-response-rules",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/neural-hybrid-query-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/parameterized-boosting",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/query-fields",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/rest-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/ray-seldon-vectorize-query-stage",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/recommend-items-for-item",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/recommend-similar-queries",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/recommend-items-for-user",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/response-document-exclusion",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/response-pairwise-swap",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/response-shuffle",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/return-query-parameters",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/rollup-aggregation",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/security-trimming",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/solr-morelikethis",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/solr-query",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/solr-subquery",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/query-pipeline-stages/text-tagger"
+                    ]
+                  },
+                  {
+                    "group": "Jobs",
+                    "pages": [
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/index",
+                      {
+                        "group": "SQL Aggregation",
+                        "pages": [
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/sql-aggregation/index",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/sql-aggregation/aggregator-examples",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/sql-aggregation/built-in-sql-aggregation-jobs",
+                          "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/sql-aggregation/sql-aggregation-examples"
+                        ]
+                      },
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/bpr-recommender",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/build-training-data",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/classification",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/cluster-labeling",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/content-recommend",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/create-collections-milvus",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/create-indexes-milvus",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/create-ray-model-deploy",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/create-seldon-core-model-deploy",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/custom-python",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/custom-spark",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/data-augmentation",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/delete-collection-milvus",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/delete-indexes-milvus",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/delete-ray-model-deployment",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/delete-seldon-core-model-deployment",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/document-clustering",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/download-blob",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/ground-truth",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/head-tail-analysis",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/log-cleanup",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/logistic-regression-classifier-training",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/outlier-detection",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/parallel-bulk-loader",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/phrase-extraction",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/query-to-query-collab-similarity",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/query-to-query-session-similarity",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/rest-call",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/random-forest-classifier-training",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/ranking-metrics",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/sql-based-experiment-metrics",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/script-jobs",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/smart-answers-coldstart-training",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/smart-answers-evaluate-pipeline",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/smart-answers-supervised-training",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/synonym-detection",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/token-phrase-spell-correction",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/transfer-collection-to-cloud",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/trending-recommender",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/upload-model-parameter-cloud",
+                      "/fusion-docs/managed-fusion/09-developer-documentation/config-specs/jobs/word2vec-model-training"
+                    ]
+                  }
+                ]
+              },
+              {
+                "group": "Frontend development",
+                "pages": [
+                  "/fusion-docs/managed-fusion/09-developer-documentation/frontend-development/index",
+                  "/fusion-docs/managed-fusion/09-developer-documentation/frontend-development/autocomplete",
+                  "/fusion-docs/managed-fusion/09-developer-documentation/frontend-development/api-examples-frontend"
+                ]
+              },
+              "/fusion-docs/managed-fusion/09-developer-documentation/javadocs/index"
+            ]
+          },
+          {
+            "group": "Machine learning",
+            "pages": [
+              "/fusion-docs/managed-fusion/10-machine-learning/index",
+              "/fusion-docs/managed-fusion/10-machine-learning/vector-search/index",
+              {
+                "group": "Smart Answers",
+                "pages": [
+                  "/fusion-docs/managed-fusion/10-machine-learning/smart-answers/index",
+                  "/fusion-docs/managed-fusion/10-machine-learning/smart-answers/best-practices",
+                  "/fusion-docs/managed-fusion/10-machine-learning/smart-answers/cold-start-solution",
+                  "/fusion-docs/managed-fusion/10-machine-learning/smart-answers/faq-solution",
+                  "/fusion-docs/managed-fusion/10-machine-learning/smart-answers/advanced-model-config"
+                ]
+              },
+              "/fusion-docs/managed-fusion/10-machine-learning/sentiment-analysis"
+            ]
+          },
+          {
+            "group": "Neural Hybrid Search",
+            "pages": [
+              "/fusion-docs/managed-fusion/11-vector-search/index",
+              "/fusion-docs/managed-fusion/11-vector-search/chunking",
+              "/fusion-docs/managed-fusion/11-vector-search/testing-svs",
+              "/fusion-docs/managed-fusion/11-vector-search/hybrid-stage-differences"
+            ]
+          },
+          {
+            "group": "Release notes",
+            "pages": [
+              "/fusion-docs/managed-fusion/13-release-notes/index",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.13-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.12-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.11-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.10-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.9-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.8-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.7-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.6-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/5.9.5-release-notes",
+              "/fusion-docs/managed-fusion/13-release-notes/deprecations-and-removals"
+            ]
+          },
+          {
+            "group": "FAQs",
+            "pages": [
+              "/fusion-docs/managed-fusion/14-FAQs/index"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Fusion APIs",
+        "groups": [
+          {
+            "group": "Query",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-query.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Apps Manager",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-apps-manager.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Async Parsing",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-async-parsing.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Connectors",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-connectors.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Indexing",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-indexing.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Job Launcher",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-job-launcher.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Job Rest Server",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-job-rest-server.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "ML Model Service",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-ml-model-service.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Admin",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-swagger.json",
+              "directory": "api-reference"
+            }
+          },
+          {
+            "group": "Templating",
+            "openapi": {
+              "source": "api-reference/api-specs/fusion-5/fusion-api-templating.json",
+              "directory": "api-reference"
+            }
+          }
+        ]
+      },
+      {
+        "tab": "Fusion Connectors",
+        "groups": [
+          {
+            "group": "Fusion Connectors",
+            "pages": [
+              "/fusion-docs/fusion-connectors/index",
+              {
+                "group": "Concepts",
+                "pages": [
+                  "/fusion-docs/fusion-connectors/concepts/index",
+                  {
+                    "group": "REST V2 connector",
+                    "pages": [
+                      "/fusion-docs/fusion-connectors/concepts/rest-v2/index",
+                      {
+                        "group": "Recipes",
+                        "pages": [
+                          "/fusion-docs/fusion-connectors/concepts/rest-v2/recipes/index",
+                          "/fusion-docs/fusion-connectors/concepts/rest-v2/recipes/rest-alfresco",
+                          "/fusion-docs/fusion-connectors/concepts/rest-v2/recipes/rest-confluence",
+                          "/fusion-docs/fusion-connectors/concepts/rest-v2/recipes/rest-jira"
+                        ]
+                      },
+                      "/fusion-docs/fusion-connectors/concepts/rest-v2/rest-v2-oauth",
+                      "/fusion-docs/fusion-connectors/concepts/rest-v2/rest-v2-faq",
+                      "/fusion-docs/fusion-connectors/concepts/rest-v2/rest-v2-troubleshooting"
+                    ]
+                  },
+                  "/fusion-docs/fusion-connectors/concepts/datasources",
+                  "/fusion-docs/fusion-connectors/concepts/v1-v2-connectors",
+                  "/fusion-docs/fusion-connectors/concepts/s3",
+                  "/fusion-docs/fusion-connectors/concepts/ad-acl",
+                  "/fusion-docs/fusion-connectors/concepts/box.com",
+                  "/fusion-docs/fusion-connectors/concepts/hadoop",
+                  "/fusion-docs/fusion-connectors/concepts/jdbc",
+                  "/fusion-docs/fusion-connectors/concepts/jdbc-v2",
+                  "/fusion-docs/fusion-connectors/concepts/java-sdk",
+                  "/fusion-docs/fusion-connectors/concepts/javascript",
+                  "/fusion-docs/fusion-connectors/concepts/local-filesystem",
+                  "/fusion-docs/fusion-connectors/concepts/remote-connectors",
+                  "/fusion-docs/fusion-connectors/concepts/on-prem",
+                  "/fusion-docs/fusion-connectors/concepts/servicenow",
+                  "/fusion-docs/fusion-connectors/concepts/sharepoint",
+                  "/fusion-docs/fusion-connectors/concepts/solrxml",
+                  "/fusion-docs/fusion-connectors/concepts/windows-share",
+                  "/fusion-docs/fusion-connectors/concepts/windows-share-smb-2-3"
+                ]
+              },
+              {
+                "group": "Configuration Reference",
+                "pages": [
+                  "/fusion-docs/fusion-connectors/reference/index",
+                  "/fusion-docs/fusion-connectors/reference/aem",
+                  "/fusion-docs/fusion-connectors/reference/s3",
+                  "/fusion-docs/fusion-connectors/reference/amazon-aws-s3-v2",
+                  "/fusion-docs/fusion-connectors/reference/ad-acl",
+                  "/fusion-docs/fusion-connectors/reference/ad-acl-v2",
+                  "/fusion-docs/fusion-connectors/reference/alfresco",
+                  "/fusion-docs/fusion-connectors/reference/hadoop-apache2",
+                  "/fusion-docs/fusion-connectors/reference/azure",
+                  "/fusion-docs/fusion-connectors/reference/box.com",
+                  "/fusion-docs/fusion-connectors/reference/box.com-v2",
+                  "/fusion-docs/fusion-connectors/reference/hadoop-cloudera",
+                  "/fusion-docs/fusion-connectors/reference/confluence",
+                  "/fusion-docs/fusion-connectors/reference/couchbase",
+                  "/fusion-docs/fusion-connectors/reference/couchbase-v2",
+                  "/fusion-docs/fusion-connectors/reference/dropbox",
+                  "/fusion-docs/fusion-connectors/reference/drupal-7.x",
+                  "/fusion-docs/fusion-connectors/reference/drupal-89",
+                  "/fusion-docs/fusion-connectors/reference/ftp",
+                  "/fusion-docs/fusion-connectors/reference/fileupload",
+                  "/fusion-docs/fusion-connectors/reference/fileupload-v2",
+                  "/fusion-docs/fusion-connectors/reference/github",
+                  "/fusion-docs/fusion-connectors/reference/google-cloud-storage",
+                  "/fusion-docs/fusion-connectors/reference/googledrive",
+                  "/fusion-docs/fusion-connectors/reference/hdfs",
+                  "/fusion-docs/fusion-connectors/reference/hadoop-hortonworks",
+                  "/fusion-docs/fusion-connectors/reference/jdbc",
+                  "/fusion-docs/fusion-connectors/reference/jdbc-v2",
+                  "/fusion-docs/fusion-connectors/reference/jira",
+                  "/fusion-docs/fusion-connectors/reference/javascript",
+                  "/fusion-docs/fusion-connectors/reference/jive",
+                  "/fusion-docs/fusion-connectors/reference/kaltura",
+                  "/fusion-docs/fusion-connectors/reference/ad-acl-ldap",
+                  "/fusion-docs/fusion-connectors/reference/local-filesystem-v1",
+                  "/fusion-docs/fusion-connectors/reference/local-filesystem-v2",
+                  "/fusion-docs/fusion-connectors/reference/lucid.anda-connector-framework",
+                  "/fusion-docs/fusion-connectors/reference/lucid.fs-connector-framework",
+                  "/fusion-docs/fusion-connectors/reference/hadoop-mapr",
+                  "/fusion-docs/fusion-connectors/reference/mongodb",
+                  "/fusion-docs/fusion-connectors/reference/onedrive",
+                  "/fusion-docs/fusion-connectors/reference/rest-v2",
+                  "/fusion-docs/fusion-connectors/reference/salesforce",
+                  "/fusion-docs/fusion-connectors/reference/servicenow",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint-online",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint-online-v1-optimized",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint-v2-optimized",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint-v1-optimized",
+                  "/fusion-docs/fusion-connectors/reference/sharepoint-v2",
+                  "/fusion-docs/fusion-connectors/reference/sitecore",
+                  "/fusion-docs/fusion-connectors/reference/slack-v2",
+                  "/fusion-docs/fusion-connectors/reference/solr-push",
+                  "/fusion-docs/fusion-connectors/reference/solr",
+                  "/fusion-docs/fusion-connectors/reference/solrxml",
+                  "/fusion-docs/fusion-connectors/reference/subversion",
+                  "/fusion-docs/fusion-connectors/reference/twitter-search",
+                  "/fusion-docs/fusion-connectors/reference/twitter-stream",
+                  "/fusion-docs/fusion-connectors/reference/web",
+                  "/fusion-docs/fusion-connectors/reference/web-v2",
+                  "/fusion-docs/fusion-connectors/reference/windows-share-smb-2-3",
+                  "/fusion-docs/fusion-connectors/reference/windows-share-smb-2-3-v2",
+                  "/fusion-docs/fusion-connectors/reference/windows-share",
+                  "/fusion-docs/fusion-connectors/reference/zendesk"
+                ]
+              },
+              "/fusion-docs/fusion-connectors/connectors-sdk-4x",
+              {
+                "group": "Release Notes",
+                "pages": [
+                  "/fusion-docs/fusion-connectors/release-notes/index",
+                  "/fusion-docs/fusion-connectors/release-notes/deprecations-and-removals"
+                ]
+              },
+              "/fusion-docs/fusion-connectors/connectors-downloads",
+              "/fusion-docs/fusion-connectors/fusion-4-x-connector-downloads"
+            ]
+          }
+        ]
+      }
+    ],
+    "global": {}
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg"
+  },
+  "styling": {
+    "codeblocks": "dark",
+    "eyebrows": "breadcrumbs"
+  },
+  "fonts": {
+    "body": {
+      "family": "Public Sans",
+      "format": "woff",
+      "source": "https://fonts.gstatic.com/s/publicsans/v20/ijwGs572Xtc6ZYQws9YVwllKVG8qX1oyOymuFpmJxAcufVotfzbj.woff"
+    },
+    "heading": {
+      "family": "Funnel Display",
+      "format": "woff",
+      "source": "https://fonts.gstatic.com/s/funneldisplay/v2/B50bF7FGv37QNVWgE0ga--4PbZSRJXrOHcLHLoAYmmPnX893A5XaFWru.woff"
+    }
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "LucidAcademy",
+        "href": "https://academy.lucidworks.com/"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Lucidworks",
+      "href": "https://lucidworks.com/"
+    }
+  },
+  "footer": {
+    "socials": {
+      "x": "https://x.com/mintlify",
+      "github": "https://github.com/mintlify",
+      "linkedin": "https://linkedin.com/company/mintlify"
+    }
+  }
+}

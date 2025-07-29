@@ -1,0 +1,20 @@
+---
+title: "Externalising Configuration"
+permalink: "3088"
+---
+
+A commonly asked question is whether you can obtain configuration files from a location external to the application, that is, somewhere else on the file system. The answer is yes.
+
+The inset section under **Configuration locations** [on this page](/fusion/5.9/3092/configuration-files) describes how to do this, but more detail is provided in this FAQ page.
+
+You must set the `twigkit.conf` variable when running the application server (for example, Tomcat or Jetty). This is done via an extra JVM argument on startup.
+
+For Tomcat (which is the choice for QA & PROD deployments most of our clients use), the simplest way to do this is modify the `catalina.sh` script, adding this to the end of the line starting `JAVA_OPTS=`:
+
+```
+-Dtwigkit.conf=file://{path-to-qa-or-prod-conf-directory}
+```
+
+The path in curly braces must point to the location of a valid `conf` directory structure, as found in most Appkit applications in `src/main/resources/conf`. If you have separate QA and PROD servers, the path can remain the same and the contents of the files can differ depending on the environment.
+
+Alternatively, without setting `twigkit.conf`, the configuration files from the WAR are used instead (from `WEB-INF/classes/conf`). You can use a feature like Maven build profiles to customize the WAR files that are built, however this requires more work and is only recommended if you are used to working in this manner or if you require a high degree of customization for each environment.

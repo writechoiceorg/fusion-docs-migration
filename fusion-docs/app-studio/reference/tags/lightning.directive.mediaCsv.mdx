@@ -1,0 +1,38 @@
+---
+title: "media:csv"
+permalink: "1160"
+---
+
+## Description
+
+The media:csv tag allows you to export results into csv format.
+
+## Usage
+
+as element:
+
+```xml
+<media:csv
+       conf="{string}"
+       query="{object}"
+       [fetch="{number|expression}"]
+       [batch-size="{number}"]
+       [delimiter="{string}"]
+       [fields="{string}"]>
+</media:csv>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| conf | **string** | The platform configuration to use e.g. platforms.gsa.foo |
+| query | **object** | The query to submit to the CSV service |
+| fetch  *(optional)* | **number]link:[expression** | The number of results or rows to fetch. |
+| batch-size  *(optional)* | **number** | The number of results or rows to fetch in each batch. |
+| delimiter  *(optional)* | **string** | Delimiter to use in the CSV |
+| fields  *(optional)* | **string** | Fields to output, comma-separated or * for all. |

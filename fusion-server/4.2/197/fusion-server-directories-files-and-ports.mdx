@@ -1,0 +1,160 @@
+---
+title: "Fusion Server Directories, Files, and Ports"
+permalink: "197"
+---
+
+## Configuration files
+
+Fusion configuration files are stored in `https://FUSION_HOST:FUSION_PORT/conf/` (on Unix or macOS) or `fusion\4.2.x\conf\` (on Windows). The contents of this directory are as follows:
+
+|  |  |
+| --- | --- |
+| ``` fusion.properties ``` | Fusion’s main configuration file, which defines the common environment variables used by the Fusion run scripts.<br/><br/>Many of the values in this file can be set using environment variables, enabling you to set them using `systemd`, Docker, and so on. Default values are also provided. For example, in `api.port = ${API_PORT:-8765}`, the value is 8765 unless `API_PORT` is defined.<br/><br/> NOTE: `ZOOKEEPER_PORT` cannot not be used, and value of `zookeeper.port` in `fusion.properties` must be the same as the value of `clientPort` in `conf/zookeeper/zoo.cfg`.<br/><br/>Many of the values in this file can be set using environment variables, enabling you to set them using `systemd`, Docker, and so on. Default values are also provided. For example, in `api.port = ${API_PORT:-8765}`, the value is 8765 unless `API_PORT` is defined.<br/><br/>NOTE: `ZOOKEEPER_PORT` cannot not be used, and value of `zookeeper.port` in `fusion.cors` must be the same as the value of `clientPort` in `conf/zookeeper/zoo.cfg`. |
+| ``` hive-site.xml ``` | Configuration for Fusion’s [Serializer/Deserializer (SerDe) for Hive](/how-to/735/import-data-with-hive). |
+| ``` zookeeper/commons-logging.properties zookeeper/zoo.cfg ``` | ZooKeeper configuration files. |
+| ``` agent-log4j2.xml api-log4j2.xml connectors-log4j2.xml solr-log4j2.xml spark-driver-log4j2.xml spark-master-agent-log4j2.xml spark-master-log4j2.xml spark-worker-agent-log4j2.xml spark-worker-log4j2.xml sql-agent-log4j2.xml sql-log4j2.xml ui-log4j2.xml zk-log4j2.xml zookeeper/log4j2.xml zookeeper/log4j.properties ``` | Logging configuration files.<br/><br/>Fusion uses the [Apache Log4j 2](http://logging.apache.org/log4j/2.x/manual/index.html) logging framework with Jetty. Log levels, frequencies, and log rotation policy can be configured by changing these configuration files. See the [Log4j2 Configuration](http://logging.apache.org/log4j/2.x/manual/configuration.html) guide. |
+
+## Port configuration
+
+Fusion services run in their own JVM and listen for requests on a number of ports.
+Environment variables, set in a common configuration file, are used to specify
+the port a service uses.
+To change the port(s) a service uses, you must change the settings in the configuration file.
+
+### Default ports
+
+This table lists the default port numbers used by Fusion processes. Port settings are defined in the
+`:fusion.properties` file in `https://FUSION_HOST:FUSION_PORT/conf/` (on Unix or macOS) or `fusion\4.2.x\conf\` (on Windows).
+
+| Port | Service |
+| --- | --- |
+| 8091 | Fusion agent |
+| 8763 | Fusion UI service (use port 8764 to access the Fusion UI) |
+| 8764 | Fusion proxy  This service includes the Fusion Authorization Proxy. |
+| 8765 | Fusion API Services |
+| 8766 | Spark Master |
+| 8769 | Spark Worker |
+| 8771 | Connectors RPC Service  This service can distribute connector jobs to as many Fusion nodes as you want. It uses HTTP/2 and has an SDK that you can use to [build your own connectors](/fusion-connectors/i977jn/java-connector-development). |
+| 8780 | Web Apps  This service delivers the UIs of Fusion apps. |
+| 8781 | Log shipper  Monitoring port that agent uses to check the health of the log shipper process. This port does not need to be accessible from other nodes. |
+| 8983 | Solr  This is the embedded Solr instance included in the Fusion distribution. |
+| 8984 | Connectors Classic Service  This service runs nondistributed connector jobs. It uses HTTP/1.1 and has no SDK. |
+| 9983 | ZooKeeper  The embedded ZooKeeper used by Fusion services.<br/><br/><Tip> **Important**<br/><br/> The ZooKeeper port is also defined in the configuration file for the embedded ZooKeeper, `https://FUSION_HOST:FUSION_PORT/conf/zookeeper/zoo.cfg` (on Unix or macOS) or `fusion\4.2.x\conf\zookeeper\zoo.cfg` (on Windows). Look for `clientPort`. If you run Fusion with the embedded ZooKeeper, remember to change the port number in both places. </Tip> |
+| 47100-48099 | Apache Ignite TCP communication port range (used by the API, Connectors Classic, Connectors RPC, and Proxy services) |
+| 48100-48199 | Apache Ignite shared memory port range (used by the API, Connectors Classic, Connectors RPC, and Proxy services) |
+| 49200-49299 | Apache Ignite discovery port range (used by API, Connectors Classic, Connectors RPC, and Proxy services) |
+
+### Jetty ports
+
+Jetty is used to run the Admin UI, API, Connectors Classic, Proxy, Solr, and Web Apps services. For each of these services, Jetty runs the service on the assigned port and listens on a second port for shutdown requests. Therefore, `fusion.properties` defines pairs of ports for components running on Jetty, such as:
+
+```js
+api.port = ${API_PORT:-8765}
+api.stopPort = 7765
+```
+
+### Spark ports
+
+This table lists the default port numbers used by Spark processes in Fusion.
+
+| Port number | Process |
+| --- | --- |
+| 4040 | SparkContext web UI |
+| 7337 | Shuffle port for Apache Spark worker |
+| 8767 | Spark master web UI |
+| 8770 | Spark worker web UI |
+| 8766 | Spark master listening port |
+| 8769 | Spark worker listening port |
+| 8772 (`spark.driver.port`) | Spark driver listening port |
+| 8788 (`spark.blockManager.port`) | Spark BlockManager port |
+
+If a port is not available, Spark uses the next available port by adding `1` to the assigned port number.
+For example, if 4040 is not available, Spark uses 4041 (if available, or 4042, and so forth).
+
+Ensure that the ports in the above table are accessible, as well as a range of up to 16 subsequent ports.
+For example, open ports 8772 through 8787, and 8788 through 8804, because a single node can have more than one Spark driver and Spark BlockManager.
+
+## Directories
+
+The directory where the Fusion files go for a specific version of Fusion is the *Fusion home directory*.
+The Fusion home directory is a version-numbered directory (for example,
+`4.2.2`)
+below the directory `fusion`.
+This installation strategy lets you install multiple versions of Fusion and switch between them.
+
+The directories found in the Fusion home directory in `https://FUSION_HOST:FUSION_PORT/` (on Unix or macOS) or `fusion\4.2\` (on Windows) are:
+
+| Name | Description |
+| --- | --- |
+| `apps` | Fusion components 3rd-party distributions used by Fusion, including jar files and plugins |
+| `bin` | Master script to run Fusion, and per-component run scripts |
+| `conf` | Configuration files for Fusion and ZooKeeper that contain parameters settings tuned for common use cases |
+| `data` | Default location of data stores used by Fusion apps |
+| `docs` | License information |
+| `examples` | Fusion signals example |
+| `init` | `systemd` and `upstart` scripts and configurations for Linux |
+| `scripts` | Developer utilities, including diagnostic scripts, for Linux and Windows. See `scripts/diag/linux/README` and `scripts/diag/win64/README.txt` for details. |
+| `var` | Log files and system files created by Fusion components, as well as `.pid` files for each running process |
+
+### Symbolic links on UNIX
+
+To simplify access to the latest version of Fusion and to files in the `bin`, `conf`, and `var` directories, Fusion creates a symbolic link `latest` to the latest version and symbolic links `bin`, `conf`, and `var` to `latest/bin`, `latest/conf`, and `latest/var` respectively.
+
+For example, if `latest` is `4.2.1`, then instead of entering this command to change to the `bin` directory:
+
+```sh
+cd /path/to/fusion/4.2.1/bin
+```
+
+You could just type:
+
+```sh
+cd /path/to/fusion/latest/bin
+```
+
+To avoid possible confusion in the documentation, we spell out the path below the `fusion` directory.
+
+From the `fusion` directory, you can view the symbolic links by typing:
+
+```sh
+find . -maxdepth 1 -type l -ls
+```
+
+To change the version of Fusion to which the symbolic links refer, unlink and relink `latest`. For example:
+
+```sh
+cd /path/to/fusion
+unlink latest
+link -s 4.2.2 latest
+```
+
+## Log files
+
+Log files are found in directories under `https://FUSION_HOST:FUSION_PORT/var/log/` (on Unix or macOS) or `fusion\4.2.x\var\log\` (on Windows).
+
+Because the Fusion components run in separate JVMs, each component has its own set of log files
+and files that monitor all garbage-collection events for that process.
+
+| Name | Description |
+| --- | --- |
+| `admin-ui`, `webapps` | Fusion UI messages. Messages are logged to `jetty-<date>.stderrout.log`. |
+| `agent` | Fusion agent logging and error messages |
+| `api` | Fusion REST API services logging and error messages. This log shows the result of service requests submitted to the REST API directly via HTTP and indirectly via the Fusion UI. |
+| `connectors` | Fusion connector services logging and error messages. Fusion index pipeline logging stages write to this file. |
+| `log-shipper` | See [Configure Fusion logging](#configure-fusion-logging) |
+| `proxy` | Messages from the Fusion proxy, responsible for authentication and HTTP load balancing. |
+| `solr` | Messages from Solr |
+| `spark-master` | Spark-master logs |
+| `spark-worker` | Spark-worker logs |
+| `sql` | SQL logs |
+| `zookeeper` | ZooKeeper messages |
+
+Every component logs all messages to a log file named `<component>.log`. For example, the full path to the log file for the connectors services is `https://FUSION_HOST:FUSION_PORT/var/log/connectors/connectors.log` (on Unix or macOS) or `fusion\4.2.x\var\log\connectors\connectors.log` (on Windows).
+
+In addition to component log files, every component maintains a set of garbage-collection log files that are used for resource tuning.
+The garbage-collection log files are named `gc_<YYYYMMDD>_<PID>.log.<CT>`. In addition, the current garbage-collection log file has suffix `.current`.
+
+The Fusion API, Fusion UI, Connectors Classic, Proxy, Web Apps, and Solr services all run inside a Jetty server. The Jetty server logs are also written to each component’s log file directory. The Jetty server logs are named:
+
+* `jetty-YYYY_MM_DD.request.log`
+* `jetty-YYYY_MM_DD.stderrout.log`

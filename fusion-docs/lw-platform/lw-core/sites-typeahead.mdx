@@ -1,0 +1,55 @@
+---
+title: "Typeahead"
+description: "Core Settings"
+permalink: "1gkhuh"
+---
+
+Typeahead in Core Settings, also known as autocomplete or autosuggest, is a feature that provides real-time query and phrase suggestions as a user types into a search bar.
+It helps users find relevant results faster by predicting what they are trying to search.
+
+As the user enters text into the search box, the system predicts possible queries and displays instant suggestions in a dropdown menu.
+As the user types more characters, the suggestions refine dynamically.
+For an ecommerce website, product suggestions are shown.
+For an enterprise company search, it helps the user find documents and data easier and faster.
+The user can click on a suggestion to select it and complete the query.
+
+Typeahead benefits include increased speed at getting users to results and improved accuracy that helps prevent and correct spelling mistakes.
+
+<Frame>![Core Settings Typeahead screen](/assets/images/lw-platform/sites/sites-typeahead.png)</Frame>
+
+## Core Settings Typeahead configuration
+
+Typeahead in Core Settings includes a management screen, where you can review and revise the typeahead configuration.
+It includes tabs for Suggested Typeahead, Custom Typeahead, and Excluded Typeahead.
+Within each tab, there is a button to create a new entry and a trashcan icon for each row to delete an existing entry.
+For finding a specific typeahead term, you can use the search bar to quickly locate it.
+After making changes, you can choose to discard the changes or publish them by clicking on the respective button at the bottom of the screen.
+
+### Suggested Typeahead
+
+Suggested Typeahead is generated hourly from the top 1,000 search terms captured by the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon) or the [Signals API](/lw-platform/analytics/uist05/signals-api).
+If there are any suggestions that are not wanted or needed, you can remove them.
+When you remove a typeahead suggestion, it’s added to the Excluded Typeahead list.
+
+<Frame>![Suggested Typeahead rows with search box and delete icon](/assets/images/lw-platform/sites/sites-typeahead-suggested.png)</Frame>
+
+### Custom Typeahead
+
+Custom Typeahead is a way to add search suggestions that help guide users toward important content.
+You can suggest important terms that may not be generated automatically from the top 1000 search terms.
+For example, an ecommerce company running a sales event might use custom suggestions to highlight terms like "spring deals" or "clearance."
+A company hosting an event could suggest searches related to key pages like the event schedule or speaker bios.
+
+<Frame>![Custom Typeahead rows with search box and delete icon](/assets/images/lw-platform/sites/sites-typeahead-custom.png)</Frame>
+
+### Excluded Typeahead
+
+Excluded Typeahead removes keywords from typeahead suggestions.
+
+<Frame>![Excluded Typeahead rows with search box and delete icon](/assets/images/lw-platform/sites/sites-typeahead-excluded.png)</Frame>
+
+You might want to exclude certain keywords from typeahead for several reasons:
+
+* Frequently searched terms, such as "sale," might dominate typeahead if not excluded, reducing variety in suggestions.
+* Filter out generic terms such as "info" or "product" that provide little user intent and might not help guide the user to meaningful content.
+* Exclude typeahead suggestions that do not support business goals, such as low-value queries or terms that distract from high-intent, conversion-focused results.

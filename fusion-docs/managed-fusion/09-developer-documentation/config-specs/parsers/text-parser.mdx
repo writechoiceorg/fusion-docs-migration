@@ -1,0 +1,25 @@
+---
+title: "Text"
+description: "Parser stage configuration specifications"
+permalink: "70dpnu"
+---
+
+The Plain Text parser can split a text file by lines or consume it into a single document.
+
+Options for treatment of this filetype include:
+
+* Plain Text Parser Fields
+* Number of header rows to skip
+* Split on line end or not
+* Comment character
+* Skip empty lines
+* Charset
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/text.mdx";
+
+<SchemaParamFields schema={schema}/>

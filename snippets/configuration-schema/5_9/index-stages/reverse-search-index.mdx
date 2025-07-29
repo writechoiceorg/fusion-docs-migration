@@ -1,0 +1,121 @@
+export const schema = {
+  "type": "object",
+  "title": "Reverse Search Index",
+  "description": "This stage sends 'Saved Query Documents' to the reverse-search collection for indexing",
+  "required": [
+    "collection",
+    "queryField"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "collection": {
+      "type": "string",
+      "title": "Reverse Search Collection",
+      "description": "Name of the collection on reverse search node to index the query document"
+    },
+    "queryField": {
+      "type": "string",
+      "title": "Query Field",
+      "description": "Name of field which contains reverse search query",
+      "default": "q"
+    },
+    "commitWithin": {
+      "type": "integer",
+      "title": "Commit Within",
+      "description": "Time when reverse search query will be available [ms]",
+      "default": 3000
+    },
+    "partitionFields": {
+      "type": "array",
+      "title": "Partition fields",
+      "description": "Static values for partition fields",
+      "items": {
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The name of the field to operate on.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "Value of the field",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    "partitionFieldMapping": {
+      "type": "array",
+      "title": "Field Mapping",
+      "description": "Map the fields from incoming documents to reverse search",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source Field",
+            "description": "The name of the field from source document",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "title": "Partition field",
+            "description": "The name of the partition field.",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

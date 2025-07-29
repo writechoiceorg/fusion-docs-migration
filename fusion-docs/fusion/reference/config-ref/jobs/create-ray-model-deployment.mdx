@@ -1,0 +1,27 @@
+---
+title: "Create Ray Model Deployment"
+permalink: "2v5s11"
+---
+
+Fusion 5.9.12 uses Ray to deploy machine learning (ML) models into production.
+
+This job deploys a Ray deployment into the Fusion cluster.
+
+To create the job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Model Deployment Jobs section, select **Create Ray Model Deployment**.
+
+You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job. To enter advanced parameters in the UI, click **Advanced**.
+
+For detailed information to deploy available Fusion Seldon models, see the:
+
+* [sentiment-general model](/how-to/770/deploy-the-sentiment-general-model). This model is a general purpose sentiment prediction model that is trained on short sentences and text for intent prediction. For more information, see [Sentiment analysis and prediction](/fusion/5.9/453/sentiment-analysis-and-prediction).
+* [sentiment-reviews model](/how-to/943/deploy-the-sentiment-reviews-model). This model is trained on customer reviews and longer text. The model also supports attention weights output that can be used for highlighting the tokens that provide stronger sentiment. For more information, see [Sentiment analysis and prediction](/fusion/5.9/453/sentiment-analysis-and-prediction).
+* [Pretrained scispaCy model](/how-to/782/deploy-a-pre-trained-scispa-cy-model). This model is trained on biomedical text.
+* [qna-coldstart-large model](/how-to/734/set-up-a-pre-trained-cold-start-model-for-smart-answers). This model is trained on a variety of corpuses and tasks. For more information, see [Smart answers](/fusion/5.9/461/smart-answers).
+* [qna-coldstart-mulitlingual model](/how-to/734/set-up-a-pre-trained-cold-start-model-for-smart-answers). This model is trained on a variety of corpuses and tasks that supports 16 languages. For more information, see [Smart answers](/fusion/5.9/461/smart-answers).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/create-ray-model-deployment.mdx";
+
+<SchemaParamFields schema={schema}/>

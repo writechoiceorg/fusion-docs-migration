@@ -1,0 +1,32 @@
+---
+title: "Social and Collaboration Tools"
+permalink: "997"
+---
+
+The social and collaboration tools provided by the Social Module extend the search application with the ability to store user-generated information on individual documents and document collections, and to share this information among groups of authenticated users. For example, documents can be tagged or bookmarked, and users may save search queries and add comments to individual documents.
+
+User-generated content can be stored in a relational database or any other kind of data store, using our pluggable architecture.
+
+Authentication and authorization of users is managed via the Security module.
+
+## Terminology
+
+While much of the language used to describe collaborative tools is carefully chosen to be self explanatory, there are several general concepts which are used throughout and are introduced in this section.
+
+### Annotations
+
+Key to the collaboration enabled by inclusion of this module, there are several types of *annotation* which can be applied to documents. These include bookmarks, comments, and likes, which are commonly found in many applications and provide a versatile way for users to contribute and save information during their search.
+
+### Topics
+
+A *topic* is a general term for a subject that user(s) are intending to collect information about. This module provides facilities for users to create a named group with which they can associate any number of annotated documents. Topics themselves can be created and selected using the [topic form tag](/fusion/5.9/1118/collaborate-topic-form). Many of the collaborative tags included in this module have a *topic* attribute which is used to link the saved information to a specific topic (which can be picked up from the URL - more on this in the Topic pages module.
+
+Topics can be defined by the developer as being 'namespaced' so they can be global (available for all users to collaborate on) or local (only viewable by the individual user that created them).
+
+### Collections
+
+Some annotations can be categorized by *collection*. This is a mechanism for separating annotations of different types of document. There is a subtle difference between topics and collections, in that collections are usually determined by the categories of information in the data and generally pre-defined by the application developer offering a small number of collections with which to associate annotations. Collections are intended for a finite number of categorical groups whereas any number of topics can be created.
+
+## Combining social and collaboration tools
+
+Topics and collections can even be combined such that a user can create a named 'bucket' to group information together, but have the saved information partitioned. One example is enabling the user to construct a wishlist of items that are automatically separated by category.

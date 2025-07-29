@@ -1,0 +1,353 @@
+export const schema = {
+  "type": "object",
+  "title": "ALS Recommender",
+  "description": "Use this job when you want to compute user recommendations or item similarities using a collaborative filtering recommender (using results from the user_item_preferences_aggregation job). You can also implement a user-to-item recommender in the advanced section of this job’s configuration UI. This is an intensive job with a potentially long run-time.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Recommender Training Collection",
+      "description": "User/Item preference collection (often a signals collection or signals aggregation collection)"
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Items-for-users Recommendation Collection",
+      "description": "Collection to store batch-predicted user/item recommendations (if absent, none computed)"
+    },
+    "outputItemSimCollection": {
+      "type": "string",
+      "title": "Item-to-item Similarity Collection",
+      "description": "Collection to store batch-computed item/item similarities (if absent, none computed)"
+    },
+    "numRecs": {
+      "type": "integer",
+      "title": "Number of User Recommendations to Compute",
+      "description": "Batch compute and store this many item recommendations per user",
+      "default": 10
+    },
+    "numSims": {
+      "type": "integer",
+      "title": "Number of Item Similarities to Compute",
+      "description": "Batch compute and store this many item similarities per item",
+      "default": 10
+    },
+    "implicitRatings": {
+      "type": "boolean",
+      "title": "Implicit Preferences",
+      "description": "Treat training preferences as implicit signals of interest (i.e. clicks or other actions) as opposed to explicit item ratings",
+      "default": true
+    },
+    "deleteOldRecs": {
+      "type": "boolean",
+      "title": "Delete Old Recommendations",
+      "description": "Delete old recommendations after generating new recommendations.",
+      "default": true
+    },
+    "excludeFromDeleteFilter": {
+      "type": "string",
+      "title": "Exclude from Delete Filter",
+      "description": "If the 'Delete Old Recommendations' flag is enabled, then use this query filter to identify existing recommendation docs to exclude from delete. The filter should identify recommendation docs you want to keep.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputUserRecsCollection": {
+      "type": "string",
+      "title": "Users-for-items Recommendation Collection",
+      "description": "Collection to store batch-predicted item/user recommendations (if absent, none computed)",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numUserRecsPerItem": {
+      "type": "integer",
+      "title": "Number of Users to Recommend to each Item",
+      "description": "Batch compute and store this many user recommendations per item",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Recommender Model ID",
+      "description": "Identifier for the recommender model. Will be used as the unique key when storing the model in Solr. If absent, it will default to the job ID.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "saveModel": {
+      "type": "boolean",
+      "title": "Save Model in Solr",
+      "description": "Whether we should save the computed ALS model in Solr",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelCollection": {
+      "type": "string",
+      "title": "Model Collection",
+      "description": "Collection to load and store the computed model, if \"Save Model\" is true. Defaults to \"[app name]_recommender_models\"",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "alwaysTrain": {
+      "type": "boolean",
+      "title": "Force model re-training",
+      "description": "Even if a model with this modelId exists, re-train if set true",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "maxTrainingIterations": {
+      "type": "integer",
+      "title": "Maximum Training Iterations",
+      "description": "Maximum number of iterations to use when learning the matrix decomposition",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr query to filter training data (e.g. downsampling or selecting based on min. pref values)",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "popularItemMin": {
+      "type": "integer",
+      "title": "Training Data Filter By Popular Items",
+      "description": "Items must have at least this # of unique users interacting with it to go into the sample. Raising this number reduces job execution time and reduces noise in the data.Too high a number (> 10) may not provide enough training data for the algorithm depending on the amount of aggregated signals.",
+      "default": 2,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "trainingSampleFraction": {
+      "type": "number",
+      "title": "Training Data Sampling Fraction",
+      "description": "Downsample preferences for items (bounded to at least 2) by this fraction",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "userIdField": {
+      "type": "string",
+      "title": "Training Collection User Id Field",
+      "description": "Solr field name containing stored user ids",
+      "default": "user_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Training Collection Item Id Field",
+      "description": "Solr field name containing stored item ids",
+      "default": "item_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "weightField": {
+      "type": "string",
+      "title": "Training Collection Weight Field",
+      "description": "Solr field name containing stored weights or preferences the user has for that item",
+      "default": "weight_d",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialBlocks": {
+      "type": "integer",
+      "title": "Training Block Size",
+      "description": "Number of sub-matrix blocks to break the training data into (default: -1, for auto-sizing)",
+      "default": -1,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Training DataFrame Config Options",
+      "description": "Additional Spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialRank": {
+      "type": "integer",
+      "title": "Recommender Rank",
+      "description": "Number of user/item factors in the recommender decomposition (or starting guess for it, if doing parameter grid search)",
+      "default": 100,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialAlpha": {
+      "type": "number",
+      "title": "Implicit Preference Confidence",
+      "description": "Confidence weight to give the implicit preferences (or starting guess, if doing parameter grid search)",
+      "default": 50,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "initialLambda": {
+      "type": "number",
+      "title": "Initial Lambda",
+      "description": "Smoothing parameter to avoid overfitting (or starting guess, if doing parameter grid search). Slightly larger value needed for small data sets",
+      "default": 0.01,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "gridSearchWidth": {
+      "type": "integer",
+      "title": "Grid Search Width",
+      "description": "Parameter grid search to be done centered around initial parameter guesses, exponential step size, this number of steps (if <= 0, no grid search). 1 is a reasonable number to start with.",
+      "default": 0,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random Seed",
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "default": 13,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemMetadataFields": {
+      "type": "array",
+      "title": "Item Metadata Fields",
+      "description": "List of item metadata fields to include in the recommendation output documents.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "itemMetadataCollection": {
+      "type": "string",
+      "title": "Item Metadata Collection",
+      "description": "Fusion collection or catalog asset ID containing item metadata fields you want to add to the recommendation output documents.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemMetadataJoinField": {
+      "type": "string",
+      "title": "Item Metadata Join Field",
+      "description": "Name of field in the item metadata collection to join on; defaults to the item id field configured for this job.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "als_recommender"
+      ],
+      "default": "als_recommender",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "outputUserRecsCollection",
+        "outputItemSimCollection"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "numSims",
+        "implicitRatings",
+        "deleteOldRecs"
+      ]
+    },
+    {
+      "label": "Training Data Settings",
+      "properties": [
+        "trainingDataFilterQuery",
+        "popularItemMin",
+        "trainingSampleFraction",
+        "userIdField",
+        "itemIdField",
+        "weightField",
+        "maxIters",
+        "trainingDataFrameConfigOptions",
+        "initialBlocks"
+      ]
+    },
+    {
+      "label": "Model Settings",
+      "properties": [
+        "modelId",
+        "saveModel",
+        "modelCollection",
+        "alwaysTrain"
+      ]
+    },
+    {
+      "label": "Grid Search Settings",
+      "properties": [
+        "initialRank",
+        "gridSearchWidth",
+        "initialAlpha",
+        "initialLambda",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Item Metadata Settings",
+      "properties": [
+        "itemMetadataCollection",
+        "itemMetadataJoinField",
+        "itemMetadataFields"
+      ]
+    }
+  ]
+}

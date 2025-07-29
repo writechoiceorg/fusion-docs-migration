@@ -1,0 +1,93 @@
+{
+  "type": "object",
+  "title": "Date Parsing",
+  "description": "This stage converts dates from any arbitrary input format into Solr's date format",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "requireTimezone": {
+      "type": "boolean",
+      "title": "Require Timezone",
+      "description": "Accept only formats that explicitly specify the timezone",
+      "default": false
+    },
+    "ignoreInvalid": {
+      "type": "boolean",
+      "title": "Ignore Invalid",
+      "description": "When false invalid date strings will cause the whole document to be rejected. When true invalid values are silently discarded",
+      "default": false
+    },
+    "splitLocal": {
+      "type": "boolean",
+      "title": "Split Local Date Into Parts",
+      "description": "Split local date (in the local timezone) into parts and store in <part>.local.<sourceField> fields",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "splitUTC": {
+      "type": "boolean",
+      "title": "Split UTC Date Into Parts",
+      "description": "Split UTC date (in the UTC timezone) into parts and store in <part>.utc.<sourceField> fields",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "array",
+      "title": "Source Fields",
+      "items": {
+        "type": "string"
+      }
+    },
+    "dateFormats": {
+      "type": "array",
+      "title": "Date Formats",
+      "description": "Custom date formats, or empty for default formats",
+      "items": {
+        "type": "string"
+      }
+    },
+    "defaultTimezone": {
+      "type": "string",
+      "title": "Default Timezone",
+      "description": "Timezone to assume if one is not present in the incoming date"
+    },
+    "defaultLocale": {
+      "type": "string",
+      "title": "Default Locale",
+      "description": "Locale to assume if different from Locale.ENGLISH. This uses IETF BCP 47 codes."
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 6,
+  "unsafe": false
+}

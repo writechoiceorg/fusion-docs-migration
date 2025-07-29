@@ -1,0 +1,176 @@
+---
+title: "Recommendations"
+permalink: "3241"
+---
+
+[Signals](/fusion/5.9/469/signals) contain data about how users interact with search results. Once your Fusion app has accumulated a sufficient number of [aggregated signals](/fusion/5.9/590/aggregation-jobs), they become useful for automatically producing recommendations and boosts for better relevance and higher conversion rates.
+
+The same data used to produce recommendations can also be used for automatic boosting. So although recommendations and boosts are different (as explained below), these topics use "recommender data" to refer to the data that can be used for boosting as well as for recommendations.
+
+## Recommendations vs boosts
+
+Recommendations and boosts are two ways of presenting AI-powered estimations about which items are most likely to interest a user:
+
+<table class="tableblock frame-all grid-all stretch">
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Recommendations</th>
+      <th class="tableblock halign-left valign-top">Boosts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              Personalized search results from a special, automatic query,
+              <em>whether or not the user has performed a query</em>.
+            </p>
+          </div>
+          <div class="paragraph">
+            <p>
+              Recommendations can be based on a variety of criteria, as in the examples below:
+            </p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li>
+                <p>
+                  "Based on your purchase history, you might be interested in these items."
+                </p>
+              </li>
+              <li>
+                <p>
+                  "People who viewed this item also viewed these items."
+                </p>
+              </li>
+              <li>
+                <p>
+                  "People who searched for 'ipad' also searched for these items."
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              Modifications to the <em>scores</em> of the items in a query’s search results.
+            </p>
+          </div>
+          <div class="paragraph">
+            <p>
+              The set of search results does not change, but their ranking does. For example:
+            </p>
+          </div>
+          <div class="ulist">
+            <ul>
+              <li><p>Boost the most popular items</p></li>
+              <li><p>Boost items this user has clicked before</p></li>
+              <li><p>Boost seasonal items</p></li>
+            </ul>
+          </div>
+          <div class="paragraph">
+            <p>
+              Boosts can also be configured manually, using the
+              <a href="/fusion/5.9/167/query-workbench#boosting-and-blocking">
+                Query Workbench
+              </a>
+              or the
+              <a href="/fusion/5.9/8835/business-rules">
+                Query Rewriting UI
+              </a>
+              .
+              You can also perform boosts within a set of recommendations.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+These topics explain how to configure and use recommendations and boosts:
+
+* [Getting Started](/fusion/5.9/480/getting-started-with-recommendations-and-boosting) shows you how to quickly enable the basic feature set and see some results.
+* [Recommendation Methods](/fusion/5.9/475/methods-for-recommendations-and-boosting) explains the available approaches to recommendations and boosting, including methods that do not rely on signals.
+
+## Recommendations data flow
+
+The diagram below shows the flow of data between the [default objects](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#default-objects-for-recommendations) created when you [enable recommendations](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#enable-recommendations). You can create additional object for different [recommendation methods](/fusion/5.9/475/methods-for-recommendations-and-boosting).
+
+<Frame>![Recommendations data flow](/assets/images/4.2/aggregations-recommendations-jobs.png)</Frame>
+
+1. *Signals data* is aggregated into a format that can be consumed by recommender jobs.
+
+   Your search application should be sending [well-formed signals data](/fusion/5.9/469/signals#signals-types-and-structure) to Fusion whenever there is user activity on your site.
+
+   By default, the `COLLECTION_NAME_click_signals_aggregation` job runs every 15 minutes while the `_user_item_preferences_aggregation` and `_user_query_history_aggregation` jobs run once per day.
+
+   You can use signals data for boosting, without enabling recommendations, using the [Boost with Signals](/fusion/5.9/511/boost-with-signals-stage) query pipeline stage. The [default query pipeline](/fusion/5.9/173/query-pipelines#default-query-pipelines) includes this stage.
+2. *Recommender data* is produced when recommender jobs analyze aggregated signals.
+
+   The default `COLLECTION_NAME_item_recommendations` job must be manually [scheduled](/fusion/5.9/184/jobs-and-scheduling#the-scheduler) or run on demand. Make sure that the `COLLECTION_NAME_user_item_preferences_aggregation` job runs first.
+3. Query pipelines retrieve recommender data to produce recommendations and boosts.
+
+   When recommendations are enabled, Fusion creates two query pipelines for recommendations:
+    **`COLLECTION_NAME_items_for_user_recommendations`** `COLLECTION_NAME_items_for_item_recommendations`
+
+## Recommendations storage requirements
+
+Collaborative recommendations are derived from data generated by Fusion [jobs](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#jobs-and-schedules) and stored in special collections. You can estimate the required storage for this data if you know the following:
+
+* the number of unique users in the signals collection (`num_users`)
+
+  To find the number of unique values of the `user_id` field, navigate to **Analytics** > **App Insights** > **Analytics** > **Users**. The **Number of Distinct Data Values** panel displays the number of unique users:
+
+  <Frame>![The <code>user_id</code> field](/assets/images/4.2/recommendations-user_id-field.png)</Frame>
+
+  If no value is displayed here or the value is not accurate, see [Important fields for signals](/fusion/5.9/469/signals#important-fields-for-signals) to verify that your signals data is well-formed.
+* the number of unique items in the main collection (`num_items`)
+
+  Navigate to **Collections** > **Collections Manager** to see the total number of documents in your main collection.
+* the number of recommendations to be computed per user (`num_recs_per_user`)
+
+  This is a configuration parameter in the recommender job, with a default value of 10.
+* the number of item similarities to be computed per item (`num_item_sims`)
+
+  This is a configuration parameter in the [recommender job](/fusion/5.9/480/getting-started-with-recommendations-and-boosting#jobs-and-schedules), with a default value of 10.
+
+Every time the recommender job runs, this many new recommender documents are created:
+
+```
+num_users * num_recs_per_user + num_items * num_item_sims
+```
+
+Each of these documents is about 300 bytes. This is the minimum size; they can be larger if you configure the recommender job to pull item metadata fields from the main collection for inclusion in recommender documents. These fields are useful when displaying recommendations in your front-end search application.
+
+<Tip>
+In your recommender jobs, verify that **Delete Old Recommendations** is selected so that only the latest recommender data is stored.
+</Tip>
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Recommendations** focuses on how Fusion uses signals to automatically produce custom recommendations to offer users the items most relevant to their experience:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/recommendations-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/recommendations-course.png" alt="Recommendations" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+

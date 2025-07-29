@@ -1,0 +1,71 @@
+---
+title: "Query data"
+permalink: "s3j1mi"
+---
+
+[Indexing Data Flow](/managed-fusion/5.9/uwmzgu/index-data) shows you how your content, signals, and recommendations are indexed in Managed Fusion. Getting data out of Managed Fusion can mean querying your content or your signals, or accessing other data for analytics.
+
+Querying Managed Fusion means sending a request to Managed Fusion’s [Query API endpoints](/managed-fusion/5.9/eqky5t/query-api), specifying the query profile and any Solr query parameters. The request is processed by the query pipeline associated with the specified profile, and the response includes any enhancements configured in the query pipeline. You can also enter queries in the [Query Workbench](/managed-fusion/5.9/ukxc4p/query-workbench) to test your query pipeline.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Anatomy of Querying** focuses on the basics of query related objects and workflows in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/anatomy-of-querying" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/anatomy-of-querying.png" alt="Anatomy of Querying" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Query your content
+
+When you query your content using the default query pipeline *and* you have [signals enabled](/managed-fusion/5.9/uwmzgu/index-data#signals-enabled), you also get [query rewrites](/managed-fusion/5.9/tw7rlx/query-rewriting) and [automatic boosting](/managed-fusion/5.9/y9max1/boost-with-signals) to enhance the relevancy of your search results. In addition to matches from your primary collection, you’ll get results produced by Managed Fusion’s machine learning jobs, based on [signals](/managed-fusion/5.9/ws4w2h/signals) from your users.
+
+[Query profiles](/managed-fusion/5.9/qsrh89/query-profiles) give you a stable endpoint that can be associated with any [query pipeline](/managed-fusion/5.9/8qf1w6/query-pipelines). Just specify the query profile when sending queries to the [Query API](/managed-fusion/5.9/eqky5t/query-api) endpoint. You can always reconfigure the query profile to point to a different pipeline, or to an [experiment](/managed-fusion/5.9/mykfo7/experiments).
+
+Querying your content
+
+<Frame>![Query your content](/assets/images/5.4/diagrams/primary-query.png)</Frame>
+
+* Several stages perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) and [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) by reading from the `_query_rewrite` collection:
+
+  + The [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) finds [misspellings](/managed-fusion/5.9/231w02/misspelling-detection), [phrases](/managed-fusion/5.9/olq4c4/phrase-detection), [underperforming query strings](/managed-fusion/5.9/a024os/underperforming-queries), and [synonyms](/managed-fusion/5.9/a2jy7t/synonym-detection-jobs) in the incoming query.
+  + The [Apply Rules stage](/managed-fusion/5.9/yx85m4/apply-rules-stage) applies your [business rules](/managed-fusion/5.9/03vd0y/business-rules) to the incoming query.
+  + The [Modify Response with Rules stage](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage)
+* The [Boost with Signals stage](/managed-fusion/5.9/ihes2t/boost-with-signals-stage) reads aggregated signals to boost search results that have been popular with users.
+* The [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage) fetches the final set of relevant search results from the primary collection.
+
+## Query for recommendations
+
+To get even more relevant results based on AI-powered analysis of your signals data, your query pipeline can perform any number of secondary queries to the collections where the output from machine learning jobs is indexed. Your secondary queries can provide additional search results based on Managed Fusion’s analysis of your signals.
+
+Querying for recommendations
+
+<Frame>![Query your recommendations](/assets/images/5.4/diagrams/secondary-query.png)</Frame>
+
+* Use the [Recommend Items for Item stage](/managed-fusion/5.9/hq339y/recommend-items-for-item-stage) to query for [collaborative items-for-item recommendations](/managed-fusion/5.9/ft2bqg/items-for-item-recommendations#collaborative-items-for-item-recommendations).
+* The [Recommend Items for User stage](/managed-fusion/5.9/e8ayom/recommend-items-for-user-stage) queries for [items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations).
+* The [Recommend Similar Queries stage](/managed-fusion/5.9/wnf8a4/recommend-similar-queries) provides [queries-for-query recommendations](/managed-fusion/5.9/1wcxk7/queries-for-query-recommendations).
+
+## Search applications
+
+Search applications are the front-end interfaces that you build on top of Managed Fusion. Your application makes calls to Managed Fusion’s REST API in order to retrieve search results or perform other actions. Certain features, like autocomplete and synonyms, require some configuration on the Managed Fusion back end. See [Application Development](/managed-fusion/5.9/74n750/front-end-development-overview).
+
+## Query language
+
+Whenever you are getting data out of Managed Fusion, you may find it handy to consult the [Query language cheat sheet](/managed-fusion/5.9/b4lyep/solr-query-language-cheat-sheet).
+
+If you are using Managed Fusion, you can generate and retrieve additional data for analysis or to enhance the end-user experience. For example, Managed Fusion can produce sophisticated recommendations to guide end users to the best available results, including results that do not exactly match the original user-submitted query.
+
+It can also perform machine learning functions that automatically improve search results based on the past activities of users. For more information, see [Machine learning](/managed-fusion/5.9/d0ujzr/machine-learning).

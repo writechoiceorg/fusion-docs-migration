@@ -1,0 +1,72 @@
+---
+title: "Lucid.fs Connector Framework"
+permalink: "75"
+---
+
+This connector is used to crawl filesystems and filesystem-based data repositories.
+
+## Options for splitting very large files
+
+The connector framework provides several splitter implementations. All splitters can handle compressed formats, i.e., files compressed with GZip, Bzip2, Unix compress(1) and XZip. Compressed data is uncompressed on the fly from the input stream, without creating temporary files
+
+Usually smaller content can be processed by the index pipeline without splitting it first, so most splitters use "min_size" property to determine whether or not to split the data before sending it to the pipeline. The splitter will split the archive if the data size is undetermined (size == -1) or exceeds the "min_size" property threshold.
+
+Splitter implementations are registered using Guice multi-binder, and are identified by symbolic names. By default all implementations found on the classpath are registered and available for use. The order in which splitting is attempted by different splitters is undetermined by default, with an exception - the "binary" splitter is always registered as the last one to try. This ordering can be customized using the "splitters" property, which is a comma- or space-separated list of symbolic names. If this property is present and not empty then only the splitters listed there will be tried, and only in that specific order (see example). Each available splitter type is tried in turn until one of them succeeds. Binary splitter always succeeds if it is present in the configuration and if data size exceeds the "min_size" threshold.
+
+Portions of the split content (records) will be either passed as raw binary content field, to be processed by other stages in the pipeline, or turned directly into PipelineDocument(s).
+
+### Available splitters and their options
+
+* "archive" - this splitter handles common archive formats (zip, tar, 7z, jar / war / ear, ar, arj, cpio, dump), and observes the "min_size" property. This splitter produces raw binary data that corresponds to individual entries in an archive.
+* "csv" - this splitter handles CSV and TSV files, and it supports the same options as CSV/TSV options in TikaParsingStage. The "min_size" property is observed by this splitter. This splitter produces PipelineDocument-s with the content of single CSV/TSV records.
+* "tika" - this splitter handles Unix mailbox (.mbox) files and MS Outlook PST files, regardless of their size. This splitter produces PipelineDocument-s with the content of single emails.
+* "text" - this splitter handles record-oriented text files - either large plain text files or e.g. logs, or any other content identified as "text/plain" by Tika content type detector. This splitter observes the "min_size" property. Records are defined by a delimiter, which is an arbitrary string of characters (NOT a regular expression!). This splitter produces raw binary data that corresponds to the collected portion of the input data. It supports the following options:
+
+  + "text_delimiter" - a string of characters that delimit records. Default value is new-line ("\n"). If delimiter is set to an empty string ("") splitter will apply only the "text_max_length" limit - which effectively means that the input text will be divided into equally-sized chunks of "text_max_length" size.
+  + "text_count" - number of delimited records to collect into one output value. Default value is 1. When this is greater than 1 the collected records will be available both as a single raw binary field (joined with delimiters) and as multiple "txt_records" fields with textual content of each record.
+  + "text_charset" - character set to use when converting bytes to characters. Default is "UTF-8".
+  + "text_max_length" - maximum length (in characters) of any individual record. If record size exceeds this threshold then data will be discarded until the next delimiter is encountered. Default value is 32768.
+  + "text_skip_empty" - discard empty records. Default value is true.
+* "binary" - this splitter handles any type data, so it should be used as a last resort (and the default configuration puts it at the end of the list), and simply splits the input on delimiters. It supports the following options:
+
+  + "bin_delimiter" - this is the binary delimiter to split on, expressed as a string. If the value starts with "0x" then it is treated as a hexadecimal representation of bytes, otherwise it is treated as a string of characters to be converted to bytes using UTF-8 encoding. Default value is "" (empty string), which means splitting only by "bin_max_size" (see below).
+  + "bin_count" - see "text_count" above.
+  + "bin_max_length" - see "text_max_length" above. This limit is expressed in the number of bytes.
+
+### Example configuration
+
+Splitting configuration is provided in a datasource configuration, under the/properties/splitter JSON path.
+
+```json
+{
+ "id": "ds1",
+ "connector": "lucid.fs",
+...
+ "properties": {
+    "splitter" : {
+      "splitters": "archive tika csv text binary",
+      "min_size" : 10485760,
+      "csv_format" : "default",
+      "header_line" : false,
+      "csv_delimiter" : "|",
+      "text_delimiter": "\n",
+      "text_charset": "UTF-8",
+      "text_max_length": 32768,
+      "text_skip_empty": true,
+      "bin_max_length": 32768
+    },
+  ...
+ }
+}
+
+```
+
+## Plugins for the lucid.fs Connector
+
+The following plugins are available:
+
+* [ftp](/fusion-connectors/67/ftp) - traverses FTP sites.
+* s3. traverses an Amazon S3 native bucket.
+* s3h. traverses an Amazon S3 bucket stored as blocks (as in HDFS).
+* smb. traverses a Windows Samba share.
+* [hdfs](/fusion-connectors/55/hdfs) - traverses Hadoop filesystems (not MapReduce-enabled).

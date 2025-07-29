@@ -1,0 +1,67 @@
+export const schema = {
+  "type": "object",
+  "title": "Experiment Stage",
+  "description": "Route or modify the request based on variants defined in the experiment",
+  "required": [
+    "experimentReference"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "experimentReference": {
+      "type": "object",
+      "title": "Experiment Reference",
+      "description": "Use the selected experiment to route or modify the request",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "Experiment ID",
+          "maxLength": 128,
+          "pattern": "^[A-Za-z0-9_\\-]+$"
+        },
+        "percentOfTraffic": {
+          "type": "number",
+          "title": "Percent of Traffic to Include In Experiment",
+          "description": "The percent of traffic to include in the experiment (if present)",
+          "default": 100,
+          "maximum": 100,
+          "exclusiveMaximum": false,
+          "minimum": 0.001,
+          "exclusiveMinimum": false
+        }
+      }
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

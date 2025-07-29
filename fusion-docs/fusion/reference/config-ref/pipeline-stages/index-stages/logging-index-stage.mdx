@@ -1,0 +1,26 @@
+---
+title: "Logging Index Stage"
+permalink: "242"
+---
+
+The Logging Index stage prints messages to the Connectors log file. The default location is: `https://FUSION_HOST:FUSION_PORT/var/log/api/fusion-indexing.log`.
+
+The verbosity of this message is controlled by the property `detailed`.
+When detailed logging is true the current PipelineDocument object is pretty-printed to the Connectors log file.
+
+In a production environment logging stages should be configured with
+property `skip` set to `true`, if possible. Use of detailed logging
+may impact performance.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/logging.mdx";
+
+<SchemaParamFields schema={schema}/>

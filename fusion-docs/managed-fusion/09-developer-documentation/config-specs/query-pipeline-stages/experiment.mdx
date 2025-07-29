@@ -1,0 +1,41 @@
+---
+title: "Experiment Stage"
+description: "Query pipeline stage configuration specifications"
+permalink: "8gpnnw"
+---
+
+The Experiment query pipeline stage is part of Managed Fusion’s [Machine Learning](/managed-fusion/5.9/d0ujzr/machine-learning) framework.
+
+The Machine Learning framework provides tools to evaluate alternative methods of computing and displaying search results. For example, an [experiment](/managed-fusion/5.9/mykfo7/experiments) may consist of a system which has two or more different query pipelines running, and users are randomly served search results using some variant of the system via instrumented pages that capture user response. In such a system, the Experiment query stage selects a variant from a running experiment and inject its properties into the current [Context](/fusion-pipeline-javadocs/5.9/?com/lucidworks/apollo/common/pipeline/Context.html).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Experiments** focuses on understanding and running experiments in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/experiments-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/experiments.jpeg" alt="Experiments" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/experiment-stage.mdx";
+
+<SchemaParamFields schema={schema}/>

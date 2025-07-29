@@ -1,0 +1,28 @@
+---
+title: "Permissions"
+permalink: "ro1m7q"
+---
+
+Permissions determine what a user can do in Managed Fusion. There are two kinds of permissions:
+
+* **UI permissions** – Control which parts of the Managed Fusion UI a user can access. These parts show up in menus and the user can view them. But the ability to *use* the functionality depends on API permissions.
+* **API permissions** – Control which requests a user can submit to which REST API endpoints.
+
+Permissions can be defined by either a role or a user, or both. Managed Fusion combines permissions for authorization as follows:
+
+* UI permissions are positive (permission needs to be given) and additive (the user has the sum of all specified permissions). This is true of roles specified in a user definition, roles specified in a security realm, and roles determined dynamically based on groups in an LDAP authentication provider.
+* API permissions specified in roles are positive (permission needs to be given) and additive (the user has the sum of all specified permissions; that is, for a specific endpoint, the most permissive permissions are used). This is true of roles specified in a user definition, roles specified in a security realm, and roles determined dynamically based on groups in an LDAP authentication provider.
+* API permissions specified in the role(s) but not in the user definition are used.
+* If an API permission for a specific endpoint is specified in both a role *and* in the user definition, then the permissions in the user definition are used, *overriding* the permissions in the role(s). Use permissions in user definitions to give specific users permissions that are less permissive than the permissions for their role(s).
+
+  For example, say role A allows GET and POST access to a specific endpoint. User X is a member of role A and also has a user definition that allows only GET access to that endpoint. In this case, user X has only GET access to that specific endpoint.
+
+  Alternatively, you could define less permissive roles.
+
+## Permissions and environments
+
+The permissions that Managed Fusion clients have depend on their role and type of [environment](/managed-fusion/5.9/zm43ol/environments).
+
+## Manage permissions
+
+Only users with admin privileges can manage UI and API permissions. In Managed Fusion environments, Lucidworks is responsible for managing [roles](/managed-fusion/5.9/ydvorx/roles) and [users](/managed-fusion/5.9/1abcqy/users).

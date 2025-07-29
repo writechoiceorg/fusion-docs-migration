@@ -1,0 +1,63 @@
+---
+title: "Fusion Server"
+permalink: "8764"
+---
+
+Fusion Server combines the Apache Solr open source search engine with the distributed power of Apache Spark for artificial intelligence. Highly scalable, Fusion Server indexes and stores data for real-time discovery.
+
+* Index billions of records of any type, from any data source
+* Process thousands of queries per second from thousands of concurrent users
+* Conduct full-text search using standard SQL capabilities and powerful analytics
+
+To learn about the latest Fusion features and changes, see the [Fusion release notes](/fusion-server/4.2/97/release-notes).
+
+## Key Concepts
+
+Fusion’s ecosystem allows you to manage and access your data in an intuitive fashion.
+
+See [Concepts](/fusion-server/4.2/120/fusion-concepts-and-components) for more information.
+
+### Apache Solr
+
+Solr is the fast open source search platform built on Apache Lucene™ that provides scalable indexing and search, as well as faceting, hit highlighting, and advanced analysis/tokenization capabilities. Solr and Lucene are managed by the [Apache Software Foundation](http://www.apache.org/).
+
+For more information, see the [Solr Reference Guide](/fusion-server/4.2/301/solr-reference-guide) for your Fusion release.
+
+### Apache Spark
+
+[Apache Spark](http://spark.apache.org/) is an open source cluster-computing framework that serves as a fast and general execution engine for large-scale data processing jobs that can be decomposed into stepwise tasks, which are distributed across a cluster of networked computers.
+
+Spark improves on previous MapReduce implementations by using resilient distributed datasets (RDDs), a distributed memory abstraction that lets programmers perform in-memory computations on large clusters in a fault-tolerant manner.
+
+See [Apache Spark](/fusion-server/4.2/189/spark-operations) for more information.
+
+### Connectors
+
+Connectors are the out-of-the-box components for pulling your data into Fusion. Lucidworks provides a wide variety of connectors, each specialized for a particular data type. When you add a [datasource](/fusion-server/4.2/163/datasources) to a
+[collection](/fusion-server/4.2/166/collections), you specify the connector to use for ingesting data.
+
+Connectors are distributed separately from Fusion Server. For complete information, see [Fusion Connectors](/fusion-connectors/2/fusion-connectors).
+
+Fusion offers dozens of connectors so you can access your data from a large variety of sources.
+
+To learn more about Fusion connectors, see [connectors concepts](/fusion-server/4.2/164/connectors-overview) or the [connectors section](/fusion-connectors/2/fusion-connectors).
+
+### Pipelines
+
+Pipelines dictate how data flows through Fusion and becomes accessible by a search application. Fusion has two types of pipelines: index pipelines and query pipelines.
+
+[Index pipelines](/fusion-server/4.2/155/data-ingestion-and-indexing-overview) ingest data, indexes it, and stores it in a format that is optimized for searching.
+
+[Query pipelines](/fusion-server/4.2/173/query-pipelines) filter, transform, and augment Solr queries and responses in order to return all and only the most relevant search results.
+
+## How-to Information
+
+Want to start right away? See [get started](/how-to/880/get-started-with-fusion-server) for detailed instructions.
+
+Looking to upgrade your Fusion instance? See [how to upgrade](/how-to/616/upgrade-to-fusion-4-x).
+
+## Important Reference Information
+
+Our reference section includes information on [Fusion’s API](/fusion-server/4.2/324/rest-ap-is), [index pipelines stages](/fusion-server/4.2/229/index-pipeline-stages), [query pipelines stages](/fusion-server/4.2/278/query-pipeline-stages), [connections](/fusion-connectors/63/configuration-reference), and more.
+
+See [Reference](/fusion-server/4.2/196/reference-guides) for complete reference information.

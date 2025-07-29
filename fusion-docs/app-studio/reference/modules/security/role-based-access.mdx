@@ -1,0 +1,63 @@
+---
+title: "Role-based Access"
+permalink: "3161"
+---
+
+**Since 4.2.0**
+
+In many cases, you might want to restrict access to your application, or parts of your application, to specific groups of users. To enable this option, you must add the file `conf/security/access.conf` to your application’s configuration tree.
+
+Use the following configuration parameters:
+
+```yaml
+allow: role-with-access-1,role-with-access-2
+deny: role-without-access-1,role-without-access-2
+pattern: regex-of-uris-to-intercept
+```
+
+These configuration parameters are:
+
+* `allow`: A comma-separated list of roles that should be granted access. When not specified or set to a wildcard ('*'), Appkit defaults to allowing access to all roles.
+* `deny`: A comma-separated list of roles that should be denied access.
+* `pattern`: A regular expression defining the pattern of URIs that should be intercepted for checking access. This defaults to .* (all paths are checked).
+
+## Example
+
+Let us assume you have a user directory containing two user, `user` and `admin`, where only the latter has an `ADMIN` role. For example, you can define this using a simple `spring-security.xml` configuration with a static list of users like so:
+
+```xml
+<authentication-manager>
+    <authentication-provider>
+        <user-service>
+            <user name="user" password="user" authorities="USER"/>
+            <user name="admin" password="admin" authorities="USER,ADMIN"/>
+        </user-service>
+    </authentication-provider>
+</authentication-manager>
+```
+
+To configure role-based access, you add `conf/security/access.conf` to the application with this configuration:
+
+```yaml
+allow: ADMIN
+pattern: (/)|(/twigkit/api/.*)
+```
+
+This says that for all requests to `/` (root page) and the API service we apply role-based authorization rules. The former is strictly not necessary, just leads to better UX for users denied access.
+
+To validate this setup, first log in as `user` and get denied access, as shown in the application logs:
+
+```
+TRACE t.s.SecurityFilterExecutionModule - Filtering with [twigkit.security.filter.RoleBasedAuthorizationFilter]
+TRACE t.s.f.InterceptAuthorizationFilter - Filtering request to / - comparing against access pattern (/)|(/twigkit/api/.*)
+TRACE t.s.f.RoleBasedAuthorizationFilter - User 'user' is DENIED access to protected resource
+ERROR t.s.SecurityFilterExecutionModule - Authorization chain failed - returning 403
+```
+
+Subsequently, log in as `admin` and get access to the app, as shown in the logs:
+
+```
+TRACE t.s.SecurityFilterExecutionModule - Filtering with [twigkit.security.filter.RoleBasedAuthorizationFilter]
+TRACE t.s.f.InterceptAuthorizationFilter - Filtering request to / - comparing against access pattern (/)|(/twigkit/api/.*)
+TRACE t.s.f.RoleBasedAuthorizationFilter - User 'admin' is GRANTED access to protected resource
+```

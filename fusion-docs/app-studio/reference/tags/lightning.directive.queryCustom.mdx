@@ -1,0 +1,37 @@
+---
+title: "query:custom"
+permalink: "1113"
+---
+
+## Description
+
+The custom parameter directive is to be used within the
+[Query tag](/app-studio/4.2/1115/search-query) to add custom query
+parameters.
+
+### Adding custom parameters
+
+```xml
+<search:query parameters="*" var="query">
+    <query:custom name="facet.range" value="year"></query:custom>
+    <query:custom name="facet.mincount" value="1"></query:custom>
+</search:query>
+```
+
+## Usage
+
+as element:
+
+```xml
+<query:custom
+       name="{string}"
+       [value="{string}"]>
+</query:custom>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | **string** | Name of the custom parameter. |
+| value  *(optional)* | **string** | Value of the custom parameter. |

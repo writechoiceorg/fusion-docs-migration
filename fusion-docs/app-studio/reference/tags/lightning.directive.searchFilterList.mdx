@@ -1,0 +1,60 @@
+---
+title: "search:filter-list"
+permalink: "1079"
+---
+
+## Description
+
+Filter List Directive
+
+## Usage
+
+as element:
+
+```xml
+<search:filter-list
+       [facet="{expression}"]
+       [facet-name="{string}"]
+       [title="{string}"]
+       [show="{string}"]
+       [show-more="{string}"]
+       [max-characters="{string}"]
+       [select="{string}"]
+       [show-empty="{boolean}"]
+       [show-more-label="{string}"]
+       [show-less-label="{string}"]
+       [show-count="{boolean}"]
+       [action="{string}"]
+       [order="{string}"]
+       [count-number="{string}"]
+       [date-format="{string}"]
+       [measure="{string}"]
+       [exclude="{boolean}"]>
+</search:filter-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| facet  *(optional)* | **expression** | A facet object to display |
+| facet-name  *(optional)* | **string** | Facet name to use from the response object |
+| title  *(optional)* | **string** | The title of the facet to display, defaults to the name of the facet |
+| show  *(optional)* | **string** | The number of filters to show by default |
+| show-more  *(optional)* | **string** | The number of extra filters to display when the show more link is clicked |
+| max-characters  *(optional)* | **string** | Limit display value to a certain number of characters, adding '…​' if maxCharacters is exceeded. |
+| select  *(optional)* | **string** | How to render each FacetFilter. 'click': User selects a filter by clicking the value; 'multiselect': Supports selecting multiple filters that get combined with an 'OR'. 'toggle': Only allows one filter to be selected at a time but shows unselected filters and counts. 'multiselect-instant': Supports selecting multiple filters that get combined with an 'OR', filters will be applied automatically. Default: 'click' |
+| show-empty  *(optional)* | **boolean** | If true then the filter list will also output empty filters where count is zero. Default: false |
+| show-more-label  *(optional)* | **string** | Text to show on the link that shows more filters (expandable mode). Default: 'Show more'. |
+| show-less-label  *(optional)* | **string** | Text to show on the link that shows fewer filters (expandable mode). Default: 'Show less'. |
+| show-count  *(optional)* | **boolean** | Whether to add metadata with frequency counts etc. Default: true |
+| action  *(optional)* | **string** | Alternative Action to submit the query parameters to - defaults to current page. |
+| order  *(optional)* | **string** | Specify a sort order for this filter list. Allowed values are: 'alphabetical', '-alphabetical', '-count' and 'count'. Default is whatever the search engine provides. |
+| count-number  *(optional)* | **string** | Specify how the number representing the count should be formatted. Optional values are 'plain', 'formatted' and 'rounded'. Rounded means the number is represented in a short format (2k for ~2000). Formatted means that the number is comma formatted (2,000,000 for 2000000).Default: 'formatted' |
+| date-format  *(optional)* | **string** | How to format the date. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+| measure  *(optional)* | **string** | What fact to use as an alternative to count as quantitative value for a filter. |
+| exclude  *(optional)* | **boolean** | On filter hover, displays an icon to allow the user to add an exclusion filter for the value. Default: false |

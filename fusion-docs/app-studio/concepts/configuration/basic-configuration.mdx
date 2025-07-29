@@ -1,0 +1,119 @@
+---
+title: "Basic Configuration"
+permalink: "3089"
+---
+
+Appkit gives you full flexibility to customize your search application, whilst providing sensible default settings out of the box. A typical search page consists of two parts: *preparation of the data model* (preparing a query, configuring one or more search platforms, and submitting the search query), and *presentation of the search results*. Both the data model and all UI components are configured through JSP tags, which allows for rapid prototyping and agile development.
+
+## Preparing the model
+
+### Platform tags
+
+Platform tags are used to configure a search platform, which is the service endpoint that you query to get back search results (a document result set). To configure each search platform requires a set of parameters, such as the host name of the search engine, which facets to retrieve, etc. These can either be defined inline in the JSP page (through attributes of the platform tags) or via central [configuration files](/fusion/5.9/3092/configuration-files).
+
+Since all platforms present the same interface to the end-user, you can either configure a platform using the [generic platform tag](/fusion/5.9/3129/configuring-the-search-platform), or the engine specific variants which will guide you in providing all the parameters they must function.
+
+### Query tags
+
+An Appkit query is made up of a number of query parameters. You can either create a query providing all the necessary parameters inline via the [Query tag](/fusion/5.9/3125/formulating-a-query) or by using query parameters submitted using HTTP request attribute. This, and the available parameters, are covered in detail on the [Query tag configuration tags page](/fusion/5.9/3125/formulating-a-query).
+
+### Processing results on the fly
+
+If the Workflow Module is installed, then you can use [Workflow Processors](/fusion/5.9/3181/workflow-and-data-processing-module) to [modify queries](/fusion/5.9/3180/query-processors) before they are submitted to the search engine, or alter the response before it is rendered.
+
+## Rendering search results
+
+This figure shows a typical search page, with a mixture of faceted navigation, collaborative tools, and search controls. The composition of the page through atomic Appkit building blocks is outlined in detail below.
+
+<Frame>![search-page-annotated](/assets/images/appkit/4.2/search-page-example-annotated-2.gif)</Frame>
+
+### 1. Search header
+
+Most search pages will contain a header with the main search box which creates a starting point for a user to form their initial query.
+
+Appkit search headers typically consist of:
+
+* Logo and Branding
+* Search box (with optional advanced search, bookmarks and saved search icons)
+* Details of the current user including an avatar, username and user actions such as 'log out'
+
+**Associated tags**:
+
+* [`<search:box>`](/fusion/5.9/1058/search-box)
+* [`<security:user-actions>`](/fusion/5.9/1074/security-user-actions)
+
+### 2. Faceted navigation
+
+A staple of the search experience, faceted navigation allows a user to quickly refine their search, as well as giving an overview of the type of results matching their query.
+
+Appkit provides great defaults for displaying facets, but can also be configured to allow for combining (OR’ing) filters within a category or removing all results with a particular value (adding NOT filters).
+
+**Associated tags**:
+
+* [`<search:facetList />`](/fusion/5.9/1061/search-facet-list)
+* [`<search:facet />`](/fusion/5.9/1068/search-facet)
+* [`<layout:sidebar>`](/fusion/5.9/1182/layout-sidebar)
+* [`<search:facet-list>`](/fusion/5.9/1061/search-facet-list)
+* [`<search:facet>`](/fusion/5.9/1068/search-facet)
+
+### 3. Tabs
+
+Tabs allow the user to navigate between divisions of the data which are typically based on separate types of data in the results.
+
+Appkit’s tab component provides an 'All' tab which is selected by default and provides a cross-search of everything. This feature can be disabled or renamed as required. Appkit also provides a count of the results matching the query next to each tab.
+
+**Associated tags**:
+
+* [`<search:tabs>`](/fusion/5.9/1194/search-tabs)
+
+### 4. Breadcrumbs and controls
+
+This horizontal bar presents information relating to the query, allowing the user to broaden their search and modify the display of results.
+
+In an Appkit application, you will find 'breadcrumbs' allowing the user to see the search terms and filters applied and remove them to broaden the search. The number of search results shown on the page is displayed as well as the total number of matching hits. On the right side, a number of options might be provided, depending on the context of the application. These include the ability to sort the result list, change the formatting of the results, and display visualizations and charts associated with the results of the search.
+
+**Associated tags**:
+
+* [`<search:breadcrumbs response="response" …​>`](/fusion/5.9/1131/search-breadcrumbs)
+* [`<toggle:controls labels="List`](/fusion/5.9/1167/toggle-controls)
+* [`<search:sort fields="date=Date" query="query" …​>`](/fusion/5.9/1122/search-sort)
+* [`<search:response-statistics response="response" …​>`](/fusion/5.9/1066/search-response-statistics)
+
+### 5. Results
+
+This is where a representation of the search results will appear. Appkit allows a high level of customization for the presentation of results while providing plenty of options for easily displaying common data types with a small amount of code.
+
+Any number of the fields within the data can be presented with pre-configured styling for:
+
+* Titles
+* URLs
+* Descriptions
+* Inline field display
+* Labelled fields
+* Categories
+* File formats and data types
+* Dates
+* Document previews
+
+This is where links for actions such as bookmarking, likes and commenting can also be displayed.
+
+There are a large number of tags for formatting results so we suggest referring to the documentation about [rendering search results](/fusion/5.9/3096/rendering-search-results).
+
+#### Secondary results
+
+Often a search page will provide sections above or along-side the main results containing results from a different source. These help to give the user the option to navigate to a different type of data that might be more appropriate for the query they are trying to fulfill.
+
+This can be implemented in a variety of ways within Appkit, see an example below of results pulled from the [GSA](http://www.google.com/enterprise/search/products/gsa.html) platform OneBox feature:
+
+<Frame>![secondary-results](/assets/images/appkit/4.2/gsa-onebox.gif)</Frame>
+
+### 6.Search footer
+
+The search footer usually contains [pagination](/fusion/5.9/1055/search-pagination) to allow the user to move between pages of results, and occasionally a control to choose how many results to display on each page.
+
+The tags provided allow for configuration of parameters such as the maximum number of pages to display and the options provided for the results per page.
+
+**Associated tags**:
+
+* [`<search:pagination response="response" …​>`](/fusion/5.9/1055/search-pagination)
+* [`<search:results-per-page query="query" …​>`](/fusion/5.9/1091/search-results-per-page)

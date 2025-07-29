@@ -1,0 +1,82 @@
+---
+title: "Active Directory Security Trimming Stage"
+permalink: "296"
+---
+
+An Active Directory Security Trimming query pipeline stage retrieves an Active Directory user’s security identifiers to build a security filter. This restricts the documents in the query result to only those documents for which a user has access permissions. Security trimming is commonly used in business to authenticate between administrative users and normal users, or to limit the site access of website users according to a login/password.
+
+This stage supports [asynchronous processing](/fusion/5.9/169/query-pipeline-stages#async).
+
+## Example stage setup
+
+*Active Directory Security Trimming query stage setup:*
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"ADSecurity", "type": "active-directory-security-trimming", "server":"ldap://hostname:port","bindName":"ADuser@example.com","bindPassword":"login1"}' http://FUSION_HOST:FUSION_PORT/api/query-stages/instances
+```
+
+**Output**
+
+```json
+{
+  "type" : "active-directory-security-trimming",
+  "id" : "ADSecurity",
+  "server" : "ldap://hostname:port",
+  "bindName" : "ADuser@example.com",
+  "bindPassword" : "login1",
+  "enableCache" : true,
+  "cacheSize" : 1000,
+  "expirationTime" : 3600,
+  "skip" : false,
+  "label" : "active-directory-security-trimming",
+  "type" : "active-directory-security-trimming"
+}
+```
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/active-directory-security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

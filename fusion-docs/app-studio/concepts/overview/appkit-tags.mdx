@@ -1,0 +1,47 @@
+---
+title: "Appkit tags"
+permalink: "3121"
+---
+
+Appkit provides a range of client-side tags for building and executing search queries as well as displaying, formatting and visualization of search results.
+
+These tags are packaged as AngularJS libraries divided into a number of namespaces. See the [Tag Reference](/fusion/5.9/1134/tags) for full documentation on each of the tags.
+
+Most Appkit tags can be used in various combinations and are designed to work together within the framework to deliver a high quality search experience for the user.
+
+## Common usage
+
+This example demonstrates how the result-list tag works in line with our principles of *configuration over code* and *sensible defaults*.
+
+To render a simple results list displaying every field in each document, this code is all that is required in the JSP:
+
+```xml
+<search:result-list response="response"></search:result-list>
+
+```
+
+If you want to go ahead and customize the output of a result list, you can easily do so along these lines:
+
+```xml
+<search:result-list response="response">
+     <search:result>
+          <search:field name="title" style="title"></search:field>
+          <search:field name="url" style="url" label="Link:"></search:field>
+          <search:field name="description" style="description" label="Abstract:"></search:field>
+     </search:result>
+</search:result-list>
+```
+
+This demonstrates a common pattern in Appkit of basic tags having default rendering to get you started, with the ability to customize the rendering of elements within them to a suitable level of granularity.
+
+## Configuration
+
+Many tags have reasonable default configurations, but they can also pick up attributes from configuration files, avoiding the must change any JSP code:
+
+Here is a platform tag which looks for properties in the configuration file at `src/main/resources/conf/platforms/myplatform/dev.conf`
+
+```xml
+<search:platform var="platform" conf="platform.myplatform.dev"></search:platform>
+```
+
+See section on [configuration files](/fusion/5.9/3092/configuration-files) for more information.

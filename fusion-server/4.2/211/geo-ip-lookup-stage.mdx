@@ -1,0 +1,37 @@
+---
+title: "GeoIP Lookup Stage"
+permalink: "211"
+---
+
+This index pipeline stage looks up the geographical location of an IP address.
+
+If the **IP Address Field** (`ipAddrField`) is specified, it will be used first to perform the geolocation lookup. If the lookup is successful, then the **Hostname Field** (`hostnameField`) will be skipped. However, if the lookup failed or the **IP Address Field** is blank, and the **Hostname Field** is specified, then the stage will try to perform the lookup using the hostname.
+
+The default geo database is [GeoLite2-City](https://dev.maxmind.com/geoip/geoip2/geolite2/) from MaxMind. To use a different database (for which you have a commercial license), you can [upload it to the blob store](/fusion-server/4.2/153/blob-storage#the-blob-manager) (in binary format), then specify its blob ID in the **Geoip Lookup Database Blob ID** (`blobId`) parameter.
+
+## Fields added in this stage
+
+When this stage is run, specific fields are added to the document. If the value is not present, the value added is `undefined`.
+
+| Field | Definition |
+| --- | --- |
+| `geo_loc_coord` | The latitude and longitude coordinates of the location. For example, 37.751,-97.822. |
+| `geo_postal_code` | The postal code of the location. |
+| `geo_country_name` | The country of the geographic location. For example, United States. |
+| `geo_subdivision_iso` | The subdivision of the country in an ISO code format. For example, the ISO code for the state or province of the geographic location. |
+| `geo_lon` | The longitude of the location. For example, -97.822. |
+| `geo_country_iso` | The two-letter ISO code for the country of the location. For example, US. |
+| `geo_subdivision_name` | The subdivision name of the location in the country. For example, the name of the state or province of the geographic location. |
+| `geo_lat` | The latitude of the location. For example, 37.751. |
+| `geo_city_name` | The city name of the location. For example, Chicago. |
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/geoip-lookup.mdx";
+
+<SchemaParamFields schema={schema}/>

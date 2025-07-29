@@ -1,0 +1,53 @@
+---
+title: "Format Signals Index Stage"
+permalink: "225"
+---
+
+The Format Signals stage normalizes both the fields and field contents of a PipelineDocument to ensure that certain pre-defined fields for signals are populated.
+
+## Date/time parsing and formatting
+
+Timestamp data can be obtained from the following fields, in this order of precedence:
+
+* timestamp
+* timestamp_tdt
+* timestamp_dt
+* epoch. value in this field is treated as a number of milliseconds since epoch, and UTC zone is assumed.
+
+It is now possible to specify the locale to be used for parsing timestamps by setting the "timestampLocale" property in the stage configuration. If this property is null then the default platform locale will be used.
+
+Output document will carry the following two fields:
+
+* "timestamp" - containing the ISO8601 timestamp
+* "tz_timestamp_txt" - containing the "zoned format" of the timestamp with normalized components.
+
+<Note>
+This stage does not define a list of allowed types.
+</Note>
+
+## Example Stage Specification
+
+The Format Signals stage defined as part of the default 'signals_ingest' pipeline included with Fusion:
+
+```json
+{
+    "type" : "format-signals",
+    "id" : "ingest-signals",
+    "flatten" : true,
+    "undefinedType" : "general",
+    "skip" : false,
+    "label" : "format-signals",
+    "type" : "format-signals"
+  }
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/format-signals.mdx";
+
+<SchemaParamFields schema={schema}/>

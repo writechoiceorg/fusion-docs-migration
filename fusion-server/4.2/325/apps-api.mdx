@@ -1,0 +1,74 @@
+---
+title: "Apps API"
+permalink: "325"
+---
+
+
+The Apps API manages your Fusion apps. To export or import an app, see the [Objects API](/fusion-server/4.2/326/objects-api). You can also [import an app using the Fusion UI](/how-to/746/import-a-fusion-app#import).
+
+## Examples
+
+### List all configured apps
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/apps
+```
+
+**Output**
+
+```json
+[ {
+  "id" : "1032724d-848a-4588-9503-c20702aa3a7b",
+  "name" : "Test App",
+  "properties" : {
+    "headerImageName" : "headerImage2",
+    "tileColor" : "apps-red"
+  }
+}, {
+  "id" : "7fc4d4e5-d3bd-4b21-b85e-9aa29c47b281",
+  "name" : "Movie Search",
+  "properties" : {
+    "headerImageName" : "headerImage3",
+    "tileColor" : "apps-dark"
+  }
+} ]
+```
+
+### Get the configuration for a specific app
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/apps/8fc4d4e5-d3bd-4b21-b85e-9aa29c47b281
+```
+
+**Output**
+
+```json
+{
+  "id" : "7fc4d4e5-d3bd-4b21-b85e-9aa29c47b281",
+  "name" : "Movie Search",
+  "properties" : {
+    "headerImageName" : "headerImage3",
+    "tileColor" : "apps-dark"
+  }
+}
+```
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id": "MyNewApp", "name":"My new app", "description":"A really great new app"}' https://FUSION_HOST:8764/api/apps
+```
+
+**Output**
+
+```json
+{
+  "id" : "MyNewApp",
+  "name" : "My new app",
+  "description" : "A really great new app"
+}
+```

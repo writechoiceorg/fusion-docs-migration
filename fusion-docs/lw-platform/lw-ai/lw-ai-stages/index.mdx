@@ -1,0 +1,61 @@
+---
+title: "Fusion stages for AI"
+description: "Lucidworks AI"
+permalink: "b5uv9z"
+---
+
+Lucidworks AI provides [pre-trained embedding models](/lw-platform/ai/3vqfxe/pre-trained-embedding-models) and supports [custom embedding models](/lw-platform/ai/k1zkfn/custom-embedding-model-training).
+
+<Note>
+Make sure you have [configured your Lucidworks AI Gateway integration](/how-to/y6euxl/configure-a-lucidworks-ai-gateway-integration) before you begin.
+Lucidworks AI Gateway provides a secure, authenticated connection between Fusion and your hosted models.
+</Note>
+
+
+
+These Fusion pipeline stages provide interfaces for configuring your Lucidworks AI models in Fusion pipelines. There are differences for Managed Fusion versus self-hosted Fusion clients.
+
+## Managed Fusion
+
+These Managed Fusion pipeline stages provide interfaces for configuring your Lucidworks AI models in Managed Fusion pipelines.
+
+* **Vector search stages**. These are the foundational stages that enable vector search features.
+
+  + [LWAI Chunker Index stage](/managed-fusion/5.9/uiycyd/lwai-chunker-stage)
+  + [LWAI Vectorize Field Index stage](/managed-fusion/5.9/4h364i/lwai-vectorize-field)
+  + [LWAI Vectorize Query stage](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query)
+* **Chunker stage**. This stage asynchronously breaks down large text documents and vectorizes the chunks.
+
+  + [LWAI Chunker Index stage](/managed-fusion/5.9/uiycyd/lwai-chunker-stage)
+* **Generative AI stages**. See [Generative AI](/lw-platform/ai/r7ai90/generative-ai) for conceptual information about GenAI features.
+
+  + [LWAI Prediction Index stage](/managed-fusion/5.9/bzik28/lwai-prediction)
+
+    See [Configure the LWAI Prediction Index stage](/how-to/ua7khh/configure-the-lucidworks-ai-prediction-index-stage) for detailed instructions.
+  + [LWAI Prediction Query stage](/managed-fusion/5.9/hnuyky/lwai-prediction)
+
+    See [Configure the LWAI Prediction query stage](/how-to/6w8lxy/configure-the-lucidworks-ai-prediction-query-stage) for detailed instructions.
+
+Solr Vector Search supports semantic search with lexical filtering. Lucidworks recommends that if you plan to use Solr SVS, you first set up Lucidworks AI to vectorize text. For more information about configuration, see [Configure the LWAI Vectorize pipeline](/how-to/3kjevu/configure-the-lwai-vectorize-pipeline).
+
+## Self-hosted Fusion
+
+These Fusion pipeline stages provide interfaces for configuring your Lucidworks AI models in Fusion pipelines.
+
+* **Vector search stages**.
+
+  + [LWAI Vectorize Field Index stage](/fusion/5.9/t16i6m/lwai-vectorize-field)
+  + [LWAI Vectorize Query stage](/fusion/5.9/owi8af/lwai-vectorize-query)
+* **Chunker stage**. This stage asynchronously breaks down large text documents and vectorizes the chunks.
+
+  + [LWAI Chunker Index stage](/fusion/5.9/dm5m4e/lwai-chunker-index-stage)
+* **Generative AI stages**. See [Generative AI](/lw-platform/ai/r7ai90/generative-ai) for conceptual information about GenAI features.
+
+  + [LWAI Prediction Index stage](/fusion/5.9/bzik28/lwai-prediction)
+
+    See [Configure the LWAI Prediction Index stage](/how-to/ua7khh/configure-the-lucidworks-ai-prediction-index-stage) for detailed instructions.
+  + [LWAI Prediction Query stage](/fusion/5.9/hnuyky/lwai-prediction)
+
+    See [Configure the LWAI Prediction query stage](/how-to/6w8lxy/configure-the-lucidworks-ai-prediction-query-stage) for detailed instructions.
+
+Solr Vector Search supports semantic search with lexical filtering. Lucidworks recommends that if you plan to use Solr SVS, you first set up Lucidworks AI to vectorize text. For more information about configuration, see [Configure the LWAI Vectorize pipeline](/how-to/he3kp5/configure-the-lwai-vectorize-pipeline).

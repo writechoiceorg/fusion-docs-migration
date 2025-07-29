@@ -1,0 +1,27 @@
+---
+title: "click:outside"
+permalink: "1175"
+---
+
+## Description
+
+Calls function when a click event occurs outside of the element. Good
+for closing side panels, menus, etc.
+
+## Usage
+
+as attribute
+
+```xml
+<ANY click-outside="{expression}"
+     [outside-if-not="{string}"]>
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| click-outside | **expression** | Function to call when element is clicked outside of. |
+| outside-if-not  *(optional)* | **string** | Selector to match any elements that should not trigger the click-outside function |

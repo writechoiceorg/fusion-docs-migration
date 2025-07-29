@@ -1,0 +1,28 @@
+---
+title: "translate"
+permalink: "1001"
+---
+
+## Description
+
+Translate a term using the Translation Service
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ translate_expression | translate[:bundle] }}
+```
+
+### In JavaScript
+
+```js
+$filter('translate')(term[, bundle])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| term | string | The term to translate |
+| bundle *(optional)* | string | The translation bundle to use |

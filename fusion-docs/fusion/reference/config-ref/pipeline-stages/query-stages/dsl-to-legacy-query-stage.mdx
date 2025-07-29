@@ -1,0 +1,69 @@
+---
+title: "DSL to Legacy Parameters Stage"
+permalink: "97q1rt"
+---
+
+[Fusion Domain Specific Language (DSL)](/fusion/5.9/8833/domain-specific-language-dsl) provides expected search results as a JSON response in a way that reduces search query complexity for the user. Not all query pipeline stages support DSL. Additionally, DSL is deprecated as of Fusion 5.9.4. The **DSL to Legacy Parameters** query pipeline stage allows you to convert your DSL requests to the legacy (Solr) format.
+
+If you add an incompatible stage while in DSL mode, Fusion flags the stage:
+
+<Frame>![Incompatible DSL stage](/assets/images/5.3/dsl-incompatible-stage.png)</Frame>
+
+The **DSL to Legacy Parameters** stage extends DSL support to incompatible stages. Click **Add a Stage** and select the **DSL to Legacy Parameters** stage. This stage converts the DSL request to legacy parameters for *subsequent* stages, so it can be processed by the incompatible stage.
+
+<Tip>
+**Important**
+
+
+The **DSL to Legacy Parameters** stage must come before incompatible stages for the conversion to succeed.
+</Tip>
+
+<Frame>![DSL to Legacy Parameters stage](/assets/images/5.3/dsl-incompatible-stage-convert.png)</Frame>
+
+See the [DSL documentation](/fusion/5.9/8833/domain-specific-language-dsl) for more details on what you can do with DSL.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/dsl-to-legacy-parameters.mdx";
+
+<SchemaParamFields schema={schema}/>

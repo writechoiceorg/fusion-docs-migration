@@ -1,0 +1,166 @@
+---
+title: "Roles"
+permalink: "126"
+---
+
+Roles are named sets of [permissions](/fusion-server/4.2/123/permissions) that encapsulate the permissions needed for different kinds of users. Permissions grant users access to subsets of Fusion functionality. A role can specify UI permissions, API permissions, or both:
+
+* UI permissions grant users access to parts of the Fusion UI
+* API permissions grant users access to specific API commands for specific REST API endpoints.
+
+See [Permissions](/fusion-server/4.2/123/permissions) for information about how permissions supplied by multiple roles and by user definitions combine.
+
+## Where You Specify Roles
+
+You can specify which roles to apply for a user in one or more of these places:
+
+* **Security realm (directly)** – Under the heading **Roles**, specify the roles to always apply to all users in the security realm.
+* **Security realm (from a group/role mapping)** – Security realms of types `ldap` and `trusted-http` can provide a list of groups to which the user belongs. The security realm can map the group names to role names.
+* **User definition** – A user definition can specify roles for the user. These roles do not override the other roles. They are added to the other roles.
+
+## Default Roles
+
+At initial startup, Fusion creates a set of default roles for common types of users.
+
+### admin
+
+The admin role is the equivalent to the Unix `root` or superuser.
+It allows full access to all Fusion services:
+
+```
+GET,POST,PUT,DELETE,PATCH,HEAD:/**
+```
+
+### developer
+
+The developer role has all the read/write permissions required for building and running applications.
+
+```
+GET,POST,PUT:/system/**
+GET,POST,PUT,DELETE,HEAD:/stopwords/**
+GET,POST,PUT:/usage/**
+GET:/features/**
+GET,POST,PUT,DELETE,HEAD:/blobs/**
+GET,POST,PUT,DELETE,HEAD:/scheduler/**
+GET,POST,PUT,DELETE,HEAD:/experiments
+GET:/introspect/**
+PUT:/usage/**
+GET,POST,PUT,DELETE,HEAD:/index-stages/**
+GET,POST,PUT,DELETE,HEAD:/messaging/**
+GET,POST,PUT,DELETE,HEAD:/catalog
+GET,POST,PUT,DELETE,HEAD:/parsers/**
+GET,POST,PUT:/appkit/**
+GET,POST,PUT,DELETE,HEAD:/index-profiles/**
+GET,POST,PUT:/recommend/**
+GET,POST,PUT,DELETE,HEAD:/history/**
+GET,POST,PUT,DELETE,HEAD:/apps/**
+GET,POST,PUT,DELETE,HEAD:/solr/**
+GET,POST:/query/**
+GET,POST,PUT:/signals/**
+GET,POST,PUT:/searchLogs/**
+GET,POST,PUT,DELETE,HEAD:/query-pipelines/**
+GET,POST,PUT:/configurations/**
+GET:/suggestions/**
+GET,POST,PUT,DELETE,HEAD:/searchCluster/**
+GET,POST,PUT,DELETE,HEAD:/index-pipelines/**
+GET:/license
+GET,POST,PUT,DELETE,HEAD:/spark/**
+GET,POST,PUT,DELETE,HEAD:/query-stages/**
+GET,POST,PUT,DELETE,HEAD:/prefs/apps/search/*
+GET:/nodes/**
+GET,POST,PUT,DELETE,HEAD:/solrAdmin/**
+GET,POST,PUT:/synonyms/**
+GET,POST,PUT,DELETE,HEAD:/jobs/**
+GET,POST,PUT,DELETE,HEAD,OPTIONS:/collections/**
+GET,POST,PUT,DELETE,HEAD:/connectors/**
+GET,POST,PUT,DELETE,HEAD:/groups/**
+GET,POST,PUT,DELETE,HEAD:/query-profiles/**
+GET,POST,PUT:/templates/**
+GET,POST,PUT,DELETE,HEAD:/tasks/**
+GET,POST,PUT,DELETE,HEAD:/links/**
+PATCH:/users/{id}:id=#ID
+GET,POST,PUT:/registration/**
+POST:/index/**
+GET,POST,PUT:/objects/**
+```
+
+<Note>
+The permission `PATCH:/users/{id}:id=#ID` uses the variable value `#ID` as a placeholder for the currently logged-in user ID. It is included so the Fusion UI "change password" feature is available to native realm users.
+</Note>
+
+### rules
+
+The rules role provides [query rewriting](/fusion-ai/4.2/489/query-rewriting) API access to all Fusion apps.
+
+```
+GET:/apps/*/query-profiles/**
+GET,POST,PUT,PATCH,DELETE,HEAD:/apps/*/query-rewrite/**
+GET:/solr/**
+GET:/query/**
+GET:/collections/**
+GET:/apps/**
+```
+
+### search
+
+The search role has read-only query and write-only signal API access to the Fusion "default" collection. These permissions are required for search applications, for example, for App Studio.
+
+```
+POST:/apps/*/signals/**
+GET,POST:/query/**
+POST:/signals/**
+PATCH:/users/{id}:id=#ID
+GET,POST:/apps/*/query/**
+```
+
+<Note>
+The permission `PATCH:/users/{id}:id=#ID` uses the variable value `#ID` as a placeholder for the currently logged-in user ID. It is included so the Fusion UI "change password" feature is available to native realm users.
+</Note>
+
+### webapps-role
+
+The webapps role can list and download Fusion apps.
+
+```
+GET,HEAD:/webapps/**
+GET,HEAD:/license
+```
+
+## Role Information
+
+Fusion stores role information in [Apache ZooKeeper](http://zookeeper.apache.org/).
+Each role in a ZooKeeper entry contains the following:
+
+* `id`– ID string, created by Fusion
+* `name`– Role name string
+* `desc`– Text description; optional
+* `permissions`– A list of Fusion permission specifications
+* `ui-permisions`– A list of names of Fusion UI components
+* `created-at`– Timestamp; created by Fusion
+* `updated-at`– Timestamp for last edit; created by Fusion
+
+## Manage Roles
+
+Only Fusion users with admin privileges can manage roles.
+
+Restricting access to a subset of Fusion’s functionality requires several narrowly defined permissions.
+Path variables can be used to designate specific collections.
+As an example, it is possible to define a role which allows read-only access to Fusion dashboards for a specific collection:
+
+* `GET:/solr/{id}/*:id=test` – Read-only access to the collection "test"
+* `GET:/solr/{id}/admin/luke:id=test` – Also read-only access
+* `GET:/solr/system_banana/*` – Read-only access to dashboards
+* `GET:/collections/system_banana` – Read-only access to the collection where dashboard definitions are stored
+
+### Manage Roles in the Fusion UI
+
+Manage roles in the Fusion UI. Click **System > Access Control > Roles**.
+
+To create a new role from the Fusion UI, first choose a unique role name, then edit the set of permissions.
+Specify API permissions one per line in the **Permissions** input box.
+There is a separate list of checkboxes that allow access to the Fusion UI components.
+If users who are assigned this role require access to the Fusion UI, then you must specify UI permissions in addition to REST API permissions.
+
+### Manage Roles via HTTP Requests to the Roles API
+
+See page [Roles API](/fusion-server/4.2/338/roles-api).

@@ -1,0 +1,10 @@
+---
+title: "Stateless Sessions with JWT"
+permalink: "144"
+---
+
+The Fusion API gateway requires incoming requests to be authenticated. The gateway supports a variety of authentication mechanisms, including Security Assertion Markup Language (SAML), OpenID Connect (OIDC), Kerberos, and Basic authentication. Once authenticated, the gateway issues a JWT and returns it in the `id` cookie.
+
+Client applications get the best performance by using the `id` cookie (or JWT Authorization header) instead of using Basic authentication for every query request. Verifying a JWT is fast and safe to cache. Hashing a password is CPU intensive and slow. (Fusion uses [bcrypt](https://en.wikipedia.org/wiki/Bcrypt).)
+
+All Fusion services require requests to include a JWT to identify the caller.

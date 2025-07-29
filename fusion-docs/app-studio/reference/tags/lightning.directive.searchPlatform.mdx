@@ -1,0 +1,33 @@
+---
+title: "search:platform"
+permalink: "1156"
+---
+
+## Description
+
+The platform directive creates an instance of platform for a given host
+and configuration.
+
+## Usage
+
+as element:
+
+```xml
+<search:platform
+       [var="{string}"]
+       [host="{string}"]
+       conf="{string}">
+</search:platform>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var  *(optional)* | **string** | The variable to assign the platform instance to. |
+| host  *(optional)* | **string** | The host and port name to use (default is to not define it). |
+| conf | **string** | Platform configuration to use. |

@@ -1,0 +1,64 @@
+---
+title: "Pipeline Stages"
+permalink: "203"
+---
+
+Index Pipeline stages are used to create and modify PipelineDocument objects.
+
+Query Pipeline stages are used to modify Request objects
+and Response objects.
+
+## Pipeline stage properties
+
+Fusion associates a pipeline stage definition with a unique ID and stores the definition so that stages can be reused across pipelines and applications.
+In addition to an ID, all stages have the following properties:
+
+* **type** (required): an enumeration, one of the defined Fusion pipeline stage types, e.g., "index-logging". If the Fusion UI is used to define the stage, this property is filled in automatically.
+* **label** (optional) : a string field with a maximum length of 255 characters. The label is displayed on the Fusion UI.
+* **skip** (optional): a boolean value, If true, pipeline processing bypasses this stage altogether. The default is **false**.
+* **condition** (optional): a JavaScript expression that evaluates to true (1) or false (0).
+  If this condition evaluates to false, this stage is skipped. The default is **true**.
+
+## Pipeline condition expression
+
+The JavaScript expression specified in the condition property of a pipeline stage has access the pipeline objects.
+
+### Index pipeline stage condition example
+
+An index PipelineDocument has two available variables: "doc" and "ctx".
+
+Check whether pipeline document contains a named field:
+
+```js
+doc.hasField("acl_ss")
+```
+
+### Query pipeline stage condition examples
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.

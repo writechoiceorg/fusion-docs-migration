@@ -1,0 +1,37 @@
+---
+title: "Custom Spark"
+description: "Job configuration specifications"
+permalink: "wbun66"
+---
+
+Custom Spark jobs run Java ARchive (JAR) files uploaded to the [blob store](/managed-fusion/5.9/03ti2e/blob-storage).
+
+To configure a custom Spark job, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** and in the Custom and Other Jobs section, select **Custom Spark Job**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Class name.** The fully-qualified name of the Java/Scala class to invoke for this job. This is the `klassName` field in the configuration file. Required field.
+* **Script ARGs.** The arguments (ARGs), which are additional options to pass to the application when running this job. This is the `submitArgs` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to configure Spark settings. This is the `sparkConfig` field in the configuration file.
+* **Scala Script.** The value in this text field overrides running `className.main(args)` default behavior. This is the `script` field in the configuration file.
+
+<Note>
+Alternatives to custom Spark jobs are [Custom Python job configuration specifications](/managed-fusion/5.9/fonqz2/custom-python) and Scala [Script job configuration specifications](/managed-fusion/5.9/vmzx60/script).
+</Note>
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/custom-spark-job.mdx";
+
+<SchemaParamFields schema={schema}/>

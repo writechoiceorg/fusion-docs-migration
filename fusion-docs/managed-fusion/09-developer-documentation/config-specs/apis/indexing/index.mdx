@@ -1,0 +1,38 @@
+---
+title: "Indexing APIs"
+permalink: "25joat"
+---
+
+The Indexing APIs are a group of APIs that can help you manage the way your Managed Fusion instance ingests and processes documents and signals.
+You can use them to manage your [index pipelines](/managed-fusion/5.9/m6at2r/index-pipelines-api), [index profiles](/managed-fusion/5.9/5kec6y/index-profiles-api), and [index stages](/managed-fusion/5.12/jcabbn/index-stages-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+This group also contains APIs for [parsers](/managed-fusion/5.9/hqxqm1/parsers-api), but these endpoints are [deprecated in Managed Fusion 5.9.11](/managed-fusion/5.9/0bs8ji/managed-fusion-5-9-11#deprecations) and will be removed at a later date.
+Use the [Async Parsing API](/managed-fusion/5.9/3uszuk/async-parsing-api) instead.
+</Note>
+
+Managed Fusion indexes data into collections in Solr.
+Indexing optimizes the data for search, after which it can be [queried](/managed-fusion/5.9/s3j1mi/query-data).
+[Index stages](/managed-fusion/5.9/50yh1o/index-pipeline-stages) process data according to their function.
+To see all available index pipeline stages, refer to [Index pipeline stages reference](/managed-fusion/5.9/0m6vl6/index-pipeline-stages).
+[Index pipelines](/managed-fusion/5.9/4mm52v/index-pipeliness) are groupings of one or more index stages, and the order of stages affects how the data is indexed.
+[Index profiles](/managed-fusion/5.9/y7byej/index-profiles) are mappings of index pipelines, parsers, and collections. They’re useful for sharing index pipelines across multiple collections.
+
+Use these endpoints to perform the following indexing operations:
+
+* Create, modify, and delete index profiles.
+* Send documents directly to an index profile for indexing.
+* View the available index pipeline stages and their configuration parameters.
+* View, install, and manage custom index stages developed with the Index Stage SDK.
+
+<Tip>
+**LeadingPractice**
+
+Lucidworks recommends using the [Index Profiles API](/managed-fusion/5.9/5kec6y/index-profiles-api) to push one or more JSON records to an index pipeline.
+Include a transaction code on each record.
+In the index pipeline, add fields to support troubleshooting such as Solr indexed timestamp, batch ID or hash of content record.
+This lets you query Fusion to compare against expected values to determine if there are missing documents.
+
+</Tip>

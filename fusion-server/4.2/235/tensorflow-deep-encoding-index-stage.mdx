@@ -1,0 +1,21 @@
+---
+title: "Tensorflow Deep Encoding Index Stage"
+permalink: "235"
+---
+
+Use a [TensorFlow](https://www.tensorflow.org/) deep learning model to encode and clusterize queries into a fixed dense vector space.
+
+This stage is used in the [default query pipeline](/fusion-ai/4.2/461/smart-answers) that enables [Smart Answers](/how-to/684/faq-solution-part-2#default-pipelines). See [Detailed Pipeline Setup](/fusion-ai/4.2/509/smart-answers-detailed-pipeline-setup) for configuration guidelines.
+
+<Note>
+If you are using a dynamic schema, make sure this stage is added *after* the [Solr Dynamic Field Name Mapping stage](/fusion-server/4.2/223/solr-dynamic-field-name-mapping).
+</Note>
+
+This stage requires a [Fusion AI](/fusion-ai/4.2/428/fusion-ai) license.
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/tensorflow-deep-encoding.mdx";
+
+<SchemaParamFields schema={schema}/>

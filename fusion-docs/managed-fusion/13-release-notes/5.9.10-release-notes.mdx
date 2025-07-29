@@ -1,0 +1,139 @@
+---
+title: "Managed Fusion 5.9.10"
+permalink: "wtsq3q"
+---
+
+Released on February 20, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) introduces a new Neural Hybrid Search query pipeline stage for Lucidworks AI, support for Kubernetes 1.31, Spark 3.4.1, security updates, and bug fixes.
+
+<Tip>
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+</Tip>
+
+
+## Key highlights
+
+### Introducing the Neural Hybrid Query stage for improved relevance
+
+Managed Fusion 5.9.10 introduces the Neural Hybrid Query stage, enhancing Neural Hybrid Search (NHS) by refining how semantic and lexical scores are combined in search ranking.
+This new stage works with Lucidworks AI to ensure that result collapsing and final ranking use a unified scoring approach, leading to more precise and consistent search results—especially in ecommerce, where selecting the most relevant SKU for a product is critical.
+
+Key benefits include:
+
+* Smarter relevance ranking: Combines semantic and lexical signals earlier for more accurate ordering.
+* Optimized result collapsing: Ensures the best representative item is selected before final ranking.
+* Broad applicability: Enhances search performance in ecommerce and other scenarios that use result collapsing.
+
+The [Neural Hybrid Query stage](/managed-fusion/5.9/4xm0li/neural-hybrid-query-stage) differs from the [Hybrid Query stage](/managed-fusion/5.9/23oiz7/hybrid-query-stage) in a few ways. The new stage contains the following new fields:
+
+* **Lexical Query Squash Factor** lets you input a value that squashes the lexical query scores from `0..inf` to `0..1`. This setting helps prevent the lexical query from dominating the final score.
+* **Compute Vector Similarity for Lexical-Only Matches** computes vector similarity scores for documents found in lexical search results, but not in the initial vector search results. This setting can rescue orphaned nodes by finding docs which match lexically but are not in the vector results, and compute the vector similarity score for those.
+
+<Frame>![Neural Hybrid Query stage](/assets/images/5.9/5.9.10/neural-hybrid-query-stage.png)</Frame>
+
+This update provides a more intelligent hybrid search experience, improving relevance across a range of search applications.
+
+### Support for Kubernetes 1.31
+
+Managed Fusion 5.9.10 introduces support for Kubernetes 1.31, bringing enhanced security, improved resource management, and better networking reliability.
+This update strengthens container security, improves how custom resources are managed and filtered, and enhances the reliability of `kubectl` operations like `exec` and `port-forward`, especially in complex network environments.
+By upgrading to Managed Fusion 5.9.10, you can take full advantage of Kubernetes 1.31’s advancements for stronger security, streamlined resource handling, and improved system stability.
+
+### Expanded support for read-only file system
+
+Managed Fusion 5.9.11 completes support for the read-only root file system feature across all Managed Fusion services, strengthening protection against unauthorized changes.
+
+Read-only mode is enabled by default for some Managed Fusion services.
+See [Read-only root file system](/managed-fusion/5.9/yu6e93/security#read-only-root-file-system) for a list of services that support it or have it enabled by default.
+
+### Faster, more efficient data processing with Spark 3.4.1
+
+Managed Fusion 5.9.10 upgrades Apache Spark to 3.4.1, bringing faster query execution, improved data transformation efficiency, and greater stability for distributed workloads.
+This enhancement optimizes indexing, refines SQL query handling, and ensures smoother analytics workflows, enabling you to process large-scale data with greater speed and precision.
+
+For more details, see the Spark 3.4.1 release notes.
+
+The Apache Spark 3.4.1 upgrade impacts jobs that use Python 3.7 behavior or compatibility, which may have automatically updated to Python 3.10.x and no longer function correctly. Update your code to ensure compatibility with Python 3.10.x and then test your Spark jobs in a staging environment before deploying to production.
+
+### Enhanced security and stability
+
+Managed Fusion 5.9.10 introduces a new wave of security enhancements, ensuring a more resilient and up-to-date platform. This release includes critical updates across core services, including admin, frameworks, apps manager, classic connectors, and query indexing, reinforcing protection across the stack. Additionally, we’ve updated the `bitnami-shell` base image and upgraded `key-tools` to v3.0.2, further strengthening security and compliance.
+
+These enhancements help maintain a robust and secure Managed Fusion environment, keeping your data and infrastructure protected while optimizing performance for mission-critical workloads.
+
+### Apps Manager API
+
+The new [Apps Manager API](/fusion/5.9/xjhjxq/apps-manager-api) gives information about your Fusion license, entitlements, and usage.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Apps Manager API** focuses on the purpose and functions of the Apps Manager API:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/apps-manager-api" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/apps-manager-api.png" alt="Apps Manager API" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+
+
+## Bug fixes
+
+* `Solr-exporter` pods no longer get stuck in an `ImagePullBackOff` state, ensuring they pull the correct image and start reliably.
+
+* The `job-launcher` and `job-rest-server` services now start correctly in SSL mode, resolving an issue where missing dependencies caused failures during initialization.
+
+* Managed Fusion now returns all matching search rules and rewrites in Commerce Studio instead of just the first ten, ensuring complete rule retrieval and better compatibility between the two systems.
+
+* Prometheus stage execution histograms and counters now include stage labels, making it easier to interpret stage metrics.
+
+* Resolved an issue in Managed Fusion 5.9.4 where v2 connectors failed to start in certain self-hosted EKS environments, preventing timeouts and ensuring successful job execution.
+
+* Increased the request buffer size in `lwai-gateway` from 250 KB to 5 MB, allowing large messages to be processed without failures.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/managed-fusion/5.9/dv9ib2/deprecations-and-removals#deprecations).
+
+* Managed Fusion has deprecated the Webapps service.
+  In previous versions of Managed Fusion, you could use this service to deploy an App Studio WAR file into Managed Fusion.
+
+* MLeap support has been deprecated. MLeap was used for machine learning tasks in Fusion, including SpaCy and SparkNLP deployments and certain ML models. Instead, refer to the [Develop and Deploy a Machine Learning Model](/how-to/5yl6sw/develop-and-deploy-a-machine-learning-model) guide.
+
+## Removals
+
+For full details on removals, see [Deprecations and Removals](/managed-fusion/5.9/dv9ib2/deprecations-and-removals#removals).
+
+* The Forked Apache Tika parser stage has been removed. Use [asynchronous Tika parsing](/managed-fusion/5.9/ve1qvp/asynchronous-tika-parsing) instead.
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platform and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30, 1.31
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.10  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

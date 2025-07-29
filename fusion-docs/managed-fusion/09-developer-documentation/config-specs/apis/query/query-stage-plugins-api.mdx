@@ -1,0 +1,38 @@
+---
+title: "Query Stage Plugins API"
+description: "Managed Fusion Query APIs"
+permalink: "roajwi"
+---
+
+The [Query Stage Plugins API](?open-api=true#/operations/getPlugins) manages custom query stages developed using the [Query Stage SDK](/fusion/5.9/hbu2ug/query-stage-sdk).
+
+<Note>
+The Query Stage SDK is not typically used by Managed Fusion. If you require a custom stage, it is recommended that you contact your Lucidworks representive for assistance.
+</Note>
+
+Custom-made query stages are developed using the Query Stage SDK, which saves them as plugins. A plugin is a ZIP file that contains one or more query stage implementations. The ZIP file contains JAR files for stage definitions and additional dependencies. It also contains a manifest file that holds the metadata Managed Fusion uses to run the plugin. To learn more, see [Example Query Stage Plugin](/fusion/5.9/oul9n8/example-query-stage-plugin).
+
+**Example: upload a custom plugin stage**
+
+Managed Fusion uses a cURL command with a PUT method for both [installing and updating](/managed-fusion/5.92/roajwi/query-stage-plugins-api?open-api=true#/operations/installOrUpdatePlugin) a plugin stage. Once all necessary information is entered or modified and saved as a ZIP file, use the following command to send the plugin stage to Managed Fusion. Change the value of `sample-plugin-stage-0.0.1.zip` to match the name of your ZIP file.
+
+```sh
+curl -u USERNAME:PASSWORD -X PUT -H "Content-Type:application/zip" --data-binary @sample-plugin-stage-0.0.1.zip https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-stage-plugins
+```
+
+You can use a GET request to the `query-stage-plugins` endpoint to [obtain the names of installed query stage plugins](?open-api=true#/operations/getPlugins). Here the `USERNAME:PASSWORD` is base64 encoded. The response returns a list of query stage plugin IDs, which are needed if you want to use the API to delete a plugin.
+
+```sh
+curl --request GET \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-stage-plugins \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic USERNAME:PASSWORD
+```
+
+To [delete a query stage plugin](?open-api=true#/operations/uninstallPlugin), you will need to know the plugin ID that you want to delete.
+
+```sh
+curl --request DELETE \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/query-stage-plugins/PLUGIN_ID \
+  --header 'Authorization: Basic USERNAME:PASSWORD
+```

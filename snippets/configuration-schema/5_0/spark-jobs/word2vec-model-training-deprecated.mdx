@@ -1,0 +1,389 @@
+export const schema = {
+  "type": "object",
+  "title": "Word2Vec Model Training",
+  "description": "Trains a shallow neural model, and projects each document onto this vector embedding space",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "outputCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing labeled training data",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Field to Vectorize",
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store model-labeled data to"
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "advanced",
+        "code/json",
+        "lengthy"
+      ]
+    },
+    "withIdf": {
+      "type": "boolean",
+      "title": "IDF Weighting",
+      "description": "Weight vector components based on inverse document frequency",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vDimension": {
+      "type": "integer",
+      "title": "Embedding Dimension",
+      "description": "Word-vector dimensionality to represent text",
+      "default": 50,
+      "hints": [
+        "dummy"
+      ],
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "w2vWindowSize": {
+      "type": "integer",
+      "title": "Window Size",
+      "description": "The window size (context words from [-window, window]) for word2vec",
+      "default": 5,
+      "hints": [
+        "dummy"
+      ],
+      "minimum": 3,
+      "exclusiveMinimum": false
+    },
+    "w2vMaxSentenceLength": {
+      "type": "integer",
+      "title": "Max Sentence Length",
+      "description": "Sets the maximum length (in words) of each sentence in the input data. Any sentence longer than this threshold will be divided into chunks of up to `maxSentenceLength` size.",
+      "default": 1000,
+      "hints": [
+        "dummy"
+      ],
+      "minimum": 3,
+      "exclusiveMinimum": false
+    },
+    "w2vMaxIter": {
+      "type": "integer",
+      "title": "Max Iterations",
+      "description": "Maximum number of iterations of the word2vec training",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vStepSize": {
+      "type": "number",
+      "title": "Step Size",
+      "description": "Training parameter for word2vec convergence (change at your own peril)",
+      "default": 0.025,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0.005,
+      "exclusiveMinimum": false
+    },
+    "minDF": {
+      "type": "number",
+      "title": "Minimum Term Document Frequency",
+      "description": "To be kept, terms must occur in at least this number of documents (if > 1.0), or at least this fraction of documents (if <= 1.0)",
+      "default": 0,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "maxDF": {
+      "type": "number",
+      "title": "Max Term Document Frequency",
+      "description": "To be kept, terms must occur in no more than this number of documents (if > 1.0), or no more than this fraction of documents (if <= 1.0)",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "norm": {
+      "type": "integer",
+      "title": "Vector normalization",
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "predictedLabelField": {
+      "type": "string",
+      "title": "Word2Vec Feature Field",
+      "description": "Solr field which will contain vector features when the word2vec model is applied to documents",
+      "default": "w2vFeatures",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "serializeAsMleap": {
+      "type": "boolean",
+      "title": "Serialize as Mleap Bundle",
+      "description": "Serialize the output model as Mleap Bundle",
+      "default": true,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "minSparkPartitions": {
+      "type": "integer",
+      "title": "Minimum Number of Spark Partitions",
+      "description": "Minimum number of Spark partitions for training job.",
+      "default": 200,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "overwriteExistingModel": {
+      "type": "boolean",
+      "title": "Overwrite existing model",
+      "description": "If a model exists in the model store, overwrite when this job runs",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputField": {
+      "type": "string",
+      "title": "Output Field",
+      "description": "Solr field which will contain terms which the word2vec model considers are related to the input",
+      "default": "related_terms_txt"
+    },
+    "uidField": {
+      "type": "string",
+      "title": "ID Field Name",
+      "description": "Field containing the unique ID for each document",
+      "minLength": 1
+    },
+    "numRelatedTerms": {
+      "type": "integer",
+      "title": "Number of Related Words",
+      "description": "For each collection of input words, find this many word2vec-related words",
+      "default": 10,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "word2vec"
+      ],
+      "default": "word2vec",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "predictedLabelField",
+        "uidField",
+        "outputField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "w2vDimension",
+        "w2vWindowSize",
+        "w2vMaxIter",
+        "w2vMaxSentenceLength",
+        "w2vStepSize",
+        "withIdf",
+        "maxDF",
+        "minDF",
+        "norm",
+        "numRelatedTerms"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ]
+}

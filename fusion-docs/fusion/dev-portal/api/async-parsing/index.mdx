@@ -1,0 +1,81 @@
+---
+title: "Async Parsing API"
+permalink: "mwbgkx"
+---
+
+The Async Parsing API lets you view, modify, and delete parsers in Fusion.
+You can create a new parser using JSON, as well as view or delete parsers by unique ID.
+The Async Parsing API replaces the [Parsers API](/fusion/5.9/308/parsers-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+This feature is only available in Fusion 5.9.11 and later versions of Fusion 5.9.
+</Note>
+
+
+
+Configure parsers to handle and transform inbound data streams, prior to sending the data to the index pipeline.
+Parsers are comprised of [parser stages](/fusion/5.9/370/parsers) and handle whole documents only.
+To parse fields within documents, use the [Field Parser Index Stage](/fusion/5.9/234/field-parser-index-stage).
+
+To configure an index profile to use a specific parser, see the [Index Profiles API](/fusion/5.9/348/index-profiles-api).
+
+## Examples
+
+### List parser configuration by Parser ID
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST/async-parsing/parsers/solr-update-parser
+```
+
+**Output**
+
+```json
+{
+    "id": "solr-update-parser",
+    "enableMediaTypeDetection": true,
+    "detectMediaTypeBasedOnExtension": true,
+    "maxParserDepth": 16,
+    "maxFieldLength": -1,
+    "parserStages": [
+        {
+            "type": "solr-update",
+            "enabled": true,
+            "mediaTypes": [],
+            "pathPatterns": [],
+            "errorHandling": "mark",
+            "id": "52c57d2b-b504-4023-8a4f-c5db8b471cb7",
+            "enableXml": true,
+            "enableJson": true,
+            "enableCsv": true,
+            "inheritMediaTypes": true,
+            "ignoredMediaTypes": [],
+            "outputFieldPrefix": ""
+        }
+    ]
+}
+```
+
+### Update parser configuration by Parser ID
+
+**Input**
+
+```bash
+curl -X PUT -u USERNAME:PASSWORD https://FUSION_HOST/async-parsing/parsers/solr-update-parser -H 'content-type: application/json' -d '{"id": "solr-update-parser","maxParserDepth": 8}'
+```
+
+**Output**
+
+```json
+{
+    "id": "solr-update-parser",
+    "enableMediaTypeDetection": true,
+    "detectMediaTypeBasedOnExtension": true,
+    "maxParserDepth": 8,
+    "maxFieldLength": 1048576,
+    "parserStages": []
+}
+```

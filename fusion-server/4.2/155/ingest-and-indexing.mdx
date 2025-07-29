@@ -1,0 +1,42 @@
+---
+title: "Ingest and Indexing"
+permalink: "155"
+---
+
+## Data Ingestion
+
+Data ingestion gets your data into Fusion Server, and data indexing stores it in a format that is optimized for searching. These topics explain how to get your data into Fusion Server in a search-optimized format.
+
+### Collections
+
+*Collections* are a way of grouping data sets so that related data sets can be managed together. Every data set that you ingest belongs to a collection. Any app can contain one or more collections. See [Collection Management](/fusion-server/4.2/166/collections).
+
+### Datasources
+
+*Datasources* are configurations that determine how your data is handled during ingest by Fusion Server’s connectors, parsers, and index pipelines. When you run a fully-configured datasource, the result is an indexed data set that is optimized for search, depending on the shape of your data and how you want to search it. See [Datasource Configuration](/fusion-server/4.2/163/datasources).
+
+### Connectors
+
+*Connectors* are Fusion components that ingest and parse specific kinds of data. There is a Fusion [connector](/fusion-server/4.2/163/datasources) for just about any data type.
+
+### Blob storage
+
+[Blob storage](/fusion-server/4.2/153/blob-storage) is a way to upload binary data to Fusion Server. This can be your own data, such as images or executables, or it can be plugins for Fusion Server, such as connectors, JDBC drivers, and so on.
+
+### Other methods
+
+In some cases, you might find that it is best to use other ingestion methods, such as
+the [Parallel Bulk Loader](/how-to/624/import-with-the-bulk-loader),
+[Hive](/how-to/735/import-data-with-hive), [Pig](/how-to/761/import-data-with-pig), or pushing data to a [REST API](/how-to/865/import-data-with-the-rest-api) endpoint.
+
+[Batch ingestion of signals](/how-to/717/import-signals) is also available with a [Fusion AI license](/fusion-ai/4.2/505/licensing).
+
+## Indexing
+
+*Indexing* converts your data into an indexed collection in Fusion’s Solr core. It is critical for ensuring that your data is stored in a format that is ideal for your search application.
+
+* [Index pipelines](/fusion-server/4.2/162/index-pipelines) determine the details of the conversion.
+* [Index pipeline stages](/fusion-server/4.2/161/index-pipeline-stages) are the building blocks of index pipelines.
+* The [Index Workbench](/fusion-server/4.2/158/index-workbench) is Fusion’s index pipeline development tool.
+
+<Frame>![ingest](/assets/images/common/ingest.png)</Frame>

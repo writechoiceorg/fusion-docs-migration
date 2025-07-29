@@ -1,0 +1,83 @@
+---
+title: "Collaboration Events"
+permalink: "3110"
+---
+
+All social and collaboration events relating to annotations (likes, comments etc.) are published to a local event bus. This means that these events can be subscribed to and custom behavior can be implemented when the event is fired. For example, the custom behavior might be invoking some code that submits information to additional systems or that triggers a message such as an email notification.
+
+To do this, create a listener for these events. Here is an example to do this for 'likes'. Add this code to `src/main/java/twigkit/events/AnnotationInterceptorModule.java`:
+
+```java
+package twigkit.events;
+
+import com.google.common.eventbus.Subscribe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import twigkit.AbstractTwigKitModule;
+import twigkit.event.InjectorReady;
+
+public class AnnotationInterceptorModule extends AbstractTwigKitModule {
+
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationInterceptorModule.class);
+
+    public AnnotationInterceptorModule() {
+        super(Priority.LOWEST);
+    }
+
+    @Override
+    protected void configure() {
+        eventBus.register(new Object() {
+            @Subscribe
+            public void injectorReady(InjectorReady event) {
+                try {
+                    eventBus.register(new AnnotationInterceptor());
+                }
+                catch (Exception e) {
+                }
+            }
+        });
+        logger.info("Annotation Interceptor application module loaded.");
+    }
+}
+```
+
+And also create this file in `src/main/java/twigkit/events/AnnotationInterceptor.java`:
+
+```java
+package twigkit.events;
+
+import com.google.common.eventbus.Subscribe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import twigkit.TwigKitApplication;
+import twigkit.social.event.AnnotationCreated;
+import twigkit.social.model.Annotation;
+import twigkit.social.model.Link;
+
+public class AnnotationInterceptor {
+
+    private static final Logger logger = LoggerFactory.getLogger(AnnotationInterceptor.class);
+
+    public AnnotationInterceptor(){
+
+    }
+
+    /**
+     *
+     * @param event social event picked from the event bus
+     */
+    @Subscribe
+    public void annotate(AnnotationCreated event) {
+        Annotation annotation = event.getAnnotation();
+        if (annotation instanceof Link) {
+            logger.debug("This is a like annotation);
+			//DO SOMETHING
+        }
+    }
+
+}
+```
+
+You must then register your new module by adding `twigkit.events.AnnotationInterceptorModule` to the file `src/main/resources/META-INF/services/twigkit.TwigKitModule`. If this file does not already exist simply create it and add the text `twigkit.events.AnnotationInterceptorModule`.
+
+This is all that is required to implement custom behavior. Add the code you must the annotate method using the information provided in the `AnnotationCreated` event object. As with other custom modules registered in Appkit you can also inject references to platforms and other core Appkit components and interact with them here.

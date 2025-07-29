@@ -1,0 +1,68 @@
+---
+title: "LDAP ACLs V2"
+description: "Connector Configuration Reference"
+permalink: "4selgx"
+---
+
+Latest version: v2.1.1
+
+Compatible with Fusion version: 5.9.1 and later
+
+The Active Directory Connector for ACLs indexes Access Control List (ACL) information so that it can be used by other connectors.
+
+<Note>
+
+Verify your connector version
+
+This connector depends on specific Fusion versions. See the following table for the required versions:
+
+| Fusion version | Connector version |
+| --- | --- |
+| Fusion 5.6.1 and later | v1.0.0 and later |
+| Fusion 5.9.0 and later | v1.5.0 and later |
+| Fusion 5.9.1 and later | v2.0.0 and later |
+
+For connector downloads, see [Download Connectors](/fusion-connectors/n0s114/download-connectors). For instructions on installing a connector, see [Install a Connector](/how-to/8810/install-a-connector-5-2-and-later).
+
+</Note>
+
+
+<Warning>
+
+Pod limit
+
+The LDAP ACLs V2 connector does not support running multiple instances. Don’t run the connector on more than one pod.
+
+</Warning>
+
+
+
+## Full recrawls
+
+Starting in Fusion 5.7, subsequent crawls work differently with the LDAP ACLs V2 connector than other connectors. Crawls follow this process:
+
+1. Every time the connector crawl runs, all documents are indexed.
+2. Each document is assigned a new field, `_lw_job_id_s`.
+3. The connector job assigns the `jobID` value to this field.
+4. When the crawl finishes, the job deletes documents that do not have the latest `jobID` value.
+
+## Remote connectors
+
+You can configure the LDAP ACLs V2 connector (v2.0.0 and later) to [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.9.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+## Security trimming
+
+Starting in Fusion 5.9, you can configure the LDAP ACLs V2 connector with the [SharePoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) to support security trimming. Refer to [Configure Security Trimming for SharePoint Optimized V2](/how-to/hjbv7z/configure-security-trimming-for-share-point-optimized-v-2).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-ldap-acls.mdx";
+
+<SchemaParamFields schema={schema}/>

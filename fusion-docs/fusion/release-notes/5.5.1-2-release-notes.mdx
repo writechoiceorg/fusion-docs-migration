@@ -1,0 +1,51 @@
+---
+title: "Fusion 5.5.1-2"
+permalink: "50cbsq"
+---
+
+**Release date:** June 8, 2023
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | 8.11.1 |
+| **ZooKeeper** | 3.6.2 |
+| **Spark** | 2.4.5 |
+| **Kubernetes** | GKE, AKS, EKS 1.25 and 1.26  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.25 and 1.26  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Warning>
+A bug in the Netty Recycler component of fusion-spark can cause jobs to terminate early. To work around this issue, add the following parameters to the "Spark Settings" section:
+
+```
+spark.driver.extraJavaOptions=-Dorg.apache.pulsar.shade.io.netty.recycler.maxCapacityPerThread=0
+spark.executor.extraJavaOptions=-Dorg.apache.pulsar.shade.io.netty.recycler.maxCapacityPerThread=0
+```
+
+For example:
+
+<Frame>![Configuration to resolve Netty Recycler bug](/assets/images/fusion-spark-bug.png)</Frame>
+
+This bug is fixed in [5.5.1-3](/fusion/5.9/zgxf2l/fusion-5-5-1-3)
+</Warning>
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## New features
+
+* Fusion 5.5.1-2 adds support for Kubernetes 1.25 and 1.26 to [Fusion 5.5.1](/fusion/5.9/drg5sz/fusion-5-5-1). Support for GKE is limited to Kubernetes 1.25, due to a GKE bug described in the [preceding note](#footnote1).
+
+## Bug fixes
+
+* Fixed a bug with the Tika parser that prevented Fusion from parsing Word documents added to the Blob Store.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

@@ -1,0 +1,83 @@
+---
+title: "Reverse search"
+permalink: "tba5x3"
+---
+
+Reverse search is a feature that promotes document awareness and helps circulate knowledge throughout an organization by matching documents to saved queries upon ingestion. Reverse search tests saved queries against all documents passing through an indexing pipeline to distinguish what document is a match.
+
+For more information, see [Reverse search index stage](/managed-fusion/5.9/qwfh7n/reverse-search-index) and [Reverse search query index stage](/managed-fusion/5.9/c2chw8/reverse-search-query).
+
+<Note>
+This feature can be enabled by your Lucidworks representative.
+</Note>
+
+Reverse search works by saving queries and running newly indexed documents against them. For example, when you perform a query like this:
+
+```sh
+curl -u USERNAME:PASSWORD -X POST "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines/rev-query-index/collections/fusion-rev-queries/index?echo=true"
+```
+
+The response looks like this:
+
+```json
+[
+    {
+        "id": "qadsymwsiu-99",
+        "company_s": "Zzz",
+        "analyst_s": "",
+        "q": "topics_ss:Analyst_Pulse topics_ss:Buy topics_ss:Equity_Research topics_ss:Rating_Change topics_ss:Rating_Reward_Change topics_ss:Sell"
+    },
+    {
+        "id": "mktdnkpgyh-100086",
+        "company_s": "Abz",
+        "analyst_s": "",
+        "q": "topics_ss:\"Price_Target_Change Rating_Change\""
+    },
+    {
+        "id": "upwsspqrcm-1200022",
+        "company_s": "",
+        "analyst_s": "John_Doe",
+        "q": "topics_ss:Buy topics_ss:Credit_Change topics_ss:Price_Target"
+    }
+]
+```
+
+And then when you index new documents in your configured index pipelines:
+
+```sh
+curl -u USERNAME:PASSWORD -X POST "https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-pipelines/app/collections/app/index?echo=true"
+```
+
+The response looks like this:
+
+```json
+[
+    {
+        "id": "sample",
+        "analyst_s": "John_Doe",
+        "language_s": "en",
+        "company_s": "",
+        "topics_ss": [
+            "Buy",
+            "Equity_Research",
+            "Rating_Reward_Change"
+        ]
+    }
+]
+```
+
+When reverse search is enabled and configured, the `echo=true parameter` contains the following:
+
+```json
+{
+    "name": "reverse-search-result",
+    "value": [
+        "java.util.ArrayList",
+        [
+            "upwsspqrcm-1200022"
+        ]
+    ],
+    "metadata": {},
+    "annotations": []
+},
+```

@@ -1,0 +1,121 @@
+---
+title: "Collections"
+permalink: "n8oj99"
+---
+
+Your data is organized into collections. When you create an app, Managed Fusion automatically creates a collection with the same name. You can create additional collections in any app.
+
+A primary collection contains the data that your users will search. Every primary collection is associated with a set of auxiliary collections that contain related data, such as signals, aggregations, and more.
+
+Under the hood, a Managed Fusion collection is a distributed index in Solr, defined by a named configuration stored in ZooKeeper, with these properties:
+
+* **Number of shards.** Documents are distributed across this number of partitions.
+* **Document routing strategy.** How documents are assigned to shards.
+* **Replication factor.** How many copies of each document in the collection.
+* **Replica placement strategy.** Where to place replicas in the cluster.
+
+If your data is already stored in a Solr instance or cluster, you can manage this collection
+in Managed Fusion by creating a Managed Fusion collection that imports the existing Solr collection.
+
+<Note>
+Collection names are case-insensitive, but Managed Fusion preserves case when displaying collection names.
+</Note>
+
+## Auxiliary collections
+
+Every primary collection is associated with a set of auxiliary collections that contain related data, such as signals, aggregations, and more.
+
+Some auxiliary collections are created for every primary collection. Others are created only for the app’s default collection, one per app.
+
+Auxiliary collections are described below:
+
+|  |  |  |
+| --- | --- | --- |
+| `APP_NAME_job_reports` | Output from Managed Fusion [experiments](/managed-fusion/5.9/mykfo7/experiments), [Ranking Metrics jobs](/managed-fusion/5.9/ufm17z/ranking-metrics-jobs), and [Head/Tail Analysis jobs](/managed-fusion/5.9/14bjqz/head-tail-analysis-jobs). | 1 per app |
+| `APP_NAME_query_rewrite` | A collection of documents to use for [rewriting queries](/managed-fusion/5.9/tw7rlx/query-rewriting), optimized for high-volume traffic. These documents originate from the `COLLECTION_NAME_query_rewrite_staging` collection. Certain Managed Fusion query pipeline stages read from this collection:  * [Text Tagger](/managed-fusion/5.9/74ygo4/text-tagger-stage) * [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage) * [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage) | 1 per app |
+| `APP_NAME_query_rewrite_staging` | A collection of documents created by the Rules Editor or by certain [Managed Fusion jobs](/managed-fusion/5.9/pcjim8/jobs), not optimized for production traffic.  Documents move from this collection to the `COLLECTION_NAME_query_rewrite` collection as follows:  * Job output documents with high confidence contain a `review=auto` field and are moved to the `COLLECTION_NAME_query_rewrite` collection automatically. * Job output documents with low confidence contain a `review=pending` field. When these are approved by a Managed Fusion user, Managed Fusion copies them to the `COLLECTION_NAME_query_rewrite` collection. | 1 per app |
+| `COLLECTION_NAME_signals` | A search query logs and signals collection. | 1 per collection |
+| `COLLECTION_NAME_signals_aggr` | A collection for aggregated signals. | 1 per collection |
+| `APP_NAME_user_prefs` | A collection of data to support App Studio’s social features, such as user-generated tags, bookmarks, comments, ratings, and so on. | 1 per app |
+
+<Note>
+Don’t create primary collections with names that end in the suffixes above; these are reserved for Managed Fusion auxiliary collections, which are created and managed by Managed Fusion directly.
+</Note>
+
+Managed Fusion maintains a set of Solr collections that store Managed Fusion’s own
+log files and other internal information.
+These are called [System Collections](#Collections-SystemCollections), described below.
+
+<Note>
+Don’t create primary collections named "logs" or beginning with "system_".
+These names are reserved for Managed Fusion system collections.
+</Note>
+
+Managed Fusion uses ZooKeeper to register information about all collections,
+and the Managed Fusion components and services related to a collection.
+The Managed Fusion components associated with a collection include:
+
+* Datasources
+* Pipelines
+* Profiles
+* Signals and aggregations
+* Analytics dashboards
+
+## System collections
+
+Managed Fusion automatically creates some collections that are used for internal purposes and shared across all apps:
+
+* **system_autocomplete** stores the content that the Managed Fusion UI displays when you use the search bar.
+* **system_blobs** stores [blobs](/managed-fusion/5.9/03ti2e/blob-storage) in Solr. This is used to store model files for the NLP components and other binary files used by Managed Fusion components.
+* **system_history** keeps a record of configuration changes, start and stop times for services and experiments, and more.
+* **system_jobs_history** keeps a record of Managed Fusion [jobs](/managed-fusion/5.9/pcjim8/jobs), including start/stop times and status.
+
+## Collection configuration properties
+
+Collections have three properties that you can configure only when you are creating a collection using the
+[Collections API](/managed-fusion/5.9/buqh5a/collections-api).
+
+| Property | Description | Default behavior |
+| --- | --- | --- |
+| signals* | The `signals` property determines whether to create auxiliary collections with suffixes `_signals` and `_signals_aggr`. | When you create a collection in the Managed Fusion UI, `signals` defaults to **true**.  When you create a collection using the Managed Fusion API, this property defaults to **false**. |
+| searchLogs | The `searchLogs` property determines whether to create an auxiliary search query logs collection with suffix `_logs`. | When you create a collection in the Managed Fusion UI, this property defaults to **true**.  When you create a collection using the Managed Fusion API, this property defaults to **false**. |
+
+*Signals are events with timestamps that can be used to improve search results.
+For more information about signals in Managed Fusion, see [Signals](/managed-fusion/5.9/ws4w2h/signals) in the Managed Fusion documentation.
+
+In schemaless mode, if a document contains a field not currently in the Solr schema, Solr processes the field value to determine what the field type should be defined as, and then adds a new field to the schema with the field name and field type.
+This behavior can be convenient during preliminary application development, but it’s rarely appropriate in a production environment.
+
+## Using profiles to associate collections with pipelines
+
+Index pipelines and query pipelines aren’t connected to a specific collection by default. Index profiles and query profiles are configurations that create consistent endpoints for indexing and querying, each with a specific pipeline and collection.
+
+* [Index Profiles](/managed-fusion/5.9/y7byej/index-profiles) work with index pipelines for getting content into the system.
+* [Query Profiles](/managed-fusion/5.9/qsrh89/query-profiles) work with query pipelines for user queries.
+
+## Fields Editor UI
+
+The Fields Editor UI allows you to create and configure the schema file directly from Managed Fusion. For instructions, see [Fields Editor UI](/fusion/5.9/nmi4j0/fields-editor-ui).
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Fusion Applications and Collections** focuses on how Fusion transforms your siloed data into personalized insights unique to each user with apps and collections:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/fusion-applications-and-collections" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/applications-and-collections.jpeg" alt="Fusion Applications and Collections" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>

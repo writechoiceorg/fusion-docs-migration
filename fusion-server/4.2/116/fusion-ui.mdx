@@ -1,0 +1,102 @@
+---
+title: "Fusion UI"
+permalink: "116"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+The Fusion UI gives you easy access to all of Fusion Server’s features.
+
+The UI service utilizes the API service, so each UI feature has an API equivalent. For programmatic access to the features you see in the UI, see the [API Reference Guide](/fusion-server/4.2/324/rest-ap-is).
+
+## Logging in
+
+The Proxy service runs on port 8764 by default. Access the Fusion UI through the Proxy service. To log in, point your browser to this port on the Fusion host, for example, `http://localhost:8764/`.
+
+When you are the *first user* to log in:
+
+Fusion Server prompts you to set the password for the "admin" account and agree to the license terms. All other accounts must be created by an admin.
+
+<Frame>![Set the admin password](/assets/images/5.0/first-login.png)</Frame>
+
+Fusion Server also prompts you to register to send metrics to Lucidworks. You can click **Skip** to send no metrics; you can also register later.
+
+The first time you log in:
+
+Fusion Server opens the [Quickstart](/how-to/660/quickstart), to give you a quick demonstration of Fusion’s most basic features. You can click **Exit the Quickstart** to close it and go to the Fusion launcher.
+
+You can open the Quickstart at any time by navigating to the Fusion launcher and clicking **New here? Get started…​**.
+
+<Frame>![Quickstart](/assets/images/5.0/quickstart-0.png)</Frame>
+
+The brief tour below shows you how to find your way around the interface. For a more detailed tour, try the [Get Started](/how-to/880/get-started-with-fusion-server).
+
+## A brief tour
+
+* The *launcher* is where you can view all of the apps in your Fusion environment and create new ones.
+* The *Fusion workspace* is where you configure how an app ingests, indexes, queries, and analyzes data.
+
+### The Fusion launcher
+
+When you log in to Fusion Server, the first page is the Fusion launcher. This is where you create and launch apps:
+
+<Frame>![Launcher](/assets/images/5.0/launcher-1.png)</Frame>
+
+To return to the Fusion workspace, hover over <Frame>![Apps](/assets/images/4.0/icons/workspace-menu-apps.png)</Frame>, and then click **Return to launcher**.
+
+See details about [creating](/how-to/847/create-an-app).
+
+### The Fusion workspace
+
+You can reach the Fusion workspace by clicking on any app in the launcher. When you enter the Fusion workspace, you find all the tools you need to configure the currently-selected app:
+
+<Frame>![Workspace](/assets/images/5.0/diagrams/workspace-callouts.png)</Frame>
+
+* On the left side are the [app tool menus](#app-tool-menus), where you can find tools for working with your app.
+* At the top, you can [use Object Explorer](#searching-the-object-explorer) to search for and browse objects that are in the current app, in any app, in no apps, and in any app or no apps.
+* [System-wide tools](#system-wide-tools) are in the upper right corner.
+
+#### App tool menus
+
+On the left side of the screen are five menus where you can find tools for working with your app:
+
+* <InlineImage src="/assets/images/4.0/icons/workspace-menu-indexing.png"/> Indexing (getting data in)
+
+  The [Index Workbench](/fusion-server/4.2/158/index-workbench) is the primary tool for getting data into your app through the Fusion UI. It provides an all-in-one view of the components of a datasource. You can also access those components individually through this menu.
+* <InlineImage src="/assets/images/4.0/icons/workspace-menu-querying.png"/> Querying (getting data out)
+
+  For getting data out, the [Query Workbench](/fusion-server/4.2/167/query-workbench) is the main tool. It shows you a live preview of search results while you configure and fine tune your query pipelines.
+
+  See also [Getting Data Out](/fusion-server/4.2/168/querying-overview).
+* <InlineImage src="/assets/images/4.0/icons/workspace-menu-collections.png"/> Collection management
+
+  Manage your data collections and configure their features.
+
+  See also [Collection Management](/fusion-server/4.2/166/collections).
+* <InlineImage src="/assets/images/4.0/icons/workspace-menu-system.png"/> System administration
+
+  System administration for your apps.
+
+  See the [*System Administration with the Fusion UI*](/fusion-server/4.2/129/system-administration).
+
+#### Finding objects in Object Explorer
+
+At the top of the Fusion workspace is a Find Objects search field. When you click **Find Objects**, [Object Explorer](/fusion-server/4.2/121/object-explorer) opens.
+
+<Frame>![Object search](/assets/images/4.0/workspace-object-search.png)</Frame>
+
+In the **Filter** search box, you can search by name or type for all [types of Fusion objects](/fusion-server/4.2/121/object-explorer#object-types), such as collections, apps, pipelines, and more. Browse objects by clicking them. You can use Object Explorer to view and configure the links between objects. For example, you can use it to [share an object between multiple apps](/how-to/888/share-objects-between-fusion-apps).
+
+#### System-wide tools
+
+On the right are menus for system-wide actions:
+
+* <InlineImage src="/assets/images/4.0/icons/workspace-help.png"/> Help
+
+  Click here to access the documentation from the Fusion UI.
+* <InlineImage src="/assets/images/4.0/icons/workspace-alerts.png"/> Alerts
+
+  New alerts are briefly displayed in the foreground. Open this menu to see past alerts, or to clear the alert history.
+* <InlineImage src="/assets/images/4.0/icons/workspace-account.png"/> Account
+
+  Here you can edit your profile, log out, or manage your Fusion license.

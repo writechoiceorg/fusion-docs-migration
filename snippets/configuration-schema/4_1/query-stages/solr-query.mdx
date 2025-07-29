@@ -1,0 +1,92 @@
+export const schema = {
+  "type": "object",
+  "title": "Solr Query",
+  "description": "Sends the search request to Solr",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "allowedRequestHandlers": {
+      "type": "array",
+      "title": "Configure Request Handlers Allowed for Queries",
+      "minItems": 0,
+      "items": {
+        "type": "string"
+      }
+    },
+    "httpMethod": {
+      "type": "string",
+      "title": "HTTP Method",
+      "description": "HTTP method for querying Solr.",
+      "enum": [
+        "POST",
+        "GET"
+      ],
+      "default": "POST"
+    },
+    "allowFederatedSearch": {
+      "type": "boolean",
+      "title": "Allow Federated Search",
+      "description": "Allow Solr 'collection' and 'shards' parameters.",
+      "default": false
+    },
+    "responseSignalsEnabled": {
+      "type": "boolean",
+      "title": "Generate Response Signal",
+      "description": "If checked, this stage generates a 'response' signal containing metadata about the response from Solr. Response signals are used by App Insights and experiments. This setting only applies if the searchLogs and signals features are enabled for the collection. You may want to disable this option for auto-complete pipelines to avoid generating response signals as users type.",
+      "default": true
+    },
+    "excludeResponseSignalMatchRules": {
+      "type": "array",
+      "title": "Exclude Response Signal Criteria",
+      "description": "If the 'Generate Response Signal' option is checked, then you can prevent generating a response signal based on specific parameters in the query, such as to enable response signals in general but to disable for auto-complete queries.",
+      "items": {
+        "type": "object",
+        "required": [
+          "param",
+          "pattern"
+        ],
+        "properties": {
+          "param": {
+            "type": "string",
+            "title": "Query Param",
+            "description": "The name of the param to match"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "Regex Pattern",
+            "description": "Pattern to match the param value against. The value may be a regex pattern.",
+            "format": "regex"
+          }
+        }
+      }
+    }
+  },
+  "category": "Fetch Data",
+  "categoryPriority": 4
+}

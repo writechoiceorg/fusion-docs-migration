@@ -1,0 +1,209 @@
+---
+title: "Rules Editor"
+permalink: "491"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+The Rules Editor allows you to view, edit, create, approve, enable, and publish rules powered by Fusion. Access the Rules Editor from the Fusion UI by navigating to **Relevance** > **Rules**:
+
+<Frame>![Access the Rules Editor](/assets/images/5.6/access-rules-ui-56.png)</Frame>
+
+A rule’s various states determine whether the rule is in effect for everyone using your search application:
+
+| State | Options | Description |
+| --- | --- | --- |
+| **Status** | *Enabled* or *Disabled* | If a rule’s status is *Enabled*, the rule is in effect. If a rule’s status is *Disabled*, the rule is not in effect.  This is only true if the rule is published, as described below. |
+| **Review** | *Approved* or *Denied* | If a rule’s review state is *Approved*, and you publish the changes, the latest changes to that rule are in effect. If the state is *Denied*, and you publish the changes, the Rules Manager deletes the rule. <Warning> **Caution**<br/><br/> Unlike deleting the rule with the UI, if you delete the rule by publishing it while in a *Denied* review state, you cannot undo the action. </Warning>
+
+ |
+| **Published** | *Yes* or *No* | If a rule’s published state is *Yes*, the latest changes to the rule are in effect. If the state is *No*, the latest changes are not in effect.  This also applies to changes to the rule’s status, such as disabling to rule. |
+
+For more information:
+
+* [How to use the Rules Editor Dashboard](/how-to/8859/use-the-analytics-screen-in-the-rules-editor)
+* [How to use the Rules Editor Business Rules](/how-to/768/use-business-rules-in-the-rules-editor)
+* [How to use the Rules Editor Query Rewrites](/how-to/838/use-query-rewrites-in-the-rules-editor)
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Experience Optimizer: Rules Manager** focuses on how to create and utilize business rules to create more relevant search results for your users:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/experience-optimizer-rules-manager" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/eo-rules-manager.jpeg" alt="Experience Optimizer: Rules Manager" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## Signals data
+
+<Frame>![Signals Data](/assets/images/5.1/ai-rules/ui/rules-ui-dashboard-signals.png)</Frame>
+
+* **Top Null Searches.** The top search terms that yielded 0 results. A null search is considered a poor user experience. Use [query rewrites](/how-to/838/use-query-rewrites-in-the-rules-editor) to reduce the likelihood of a visitor receiving 0 results.
+* **Top Search Terms.** The most commonly searched terms.
+* **Top Clicked Products.** The most commonly clicked products or documents. This may include searches, recommendations, static links, or outside referrals.
+* **Top Clicked Searches.** The most common searches that resulted in a click.
+* **Top Purchased Products.** The most commonly purchased products. This may include searches, recommendations, static links, or referrals.
+* **Top Purchased Searches.** The most commonly purchased products that were identified from a search.
+
+<Tip>
+Use [query rewrites](/how-to/838/use-query-rewrites-in-the-rules-editor) to adapt your search results and guide visitors to top clicked and top purchased products.
+</Tip>
+
+
+
+## Predictive Merchandiser and Experience Optimizer
+
+Predictive Merchandiser and Experience Optimizer are both AI-powered tools that provide insights, customer recommendations, and search optimization in a single comprehensive product.
+
+<Frame>![Predictive Merchandiser Board](/assets/images/predictive-merchandiser/pm-board.png)</Frame>
+
+Predictive Merchandiser and Experience Optimizer are separate offerings from Fusion. See the [Predictive Merchandiser documentation](/fusion/5.9/591/predictive-merchandiser) for more information.
+
+## Rules
+
+<Frame>![Rules Editor Business Rules](/assets/images/5.6/rules-ui-business-rules-56.png)</Frame>
+
+The Rules screen is used to create [Business Rules](/fusion/5.9/8835/business-rules) within the Rules Editor.
+
+Business rules are manually-created formulas for rewriting queries. This is the most versatile strategy for creating custom query rewrites. It supports a variety of conditions and actions to address a wide range of use cases. When you need a very specific query rewrite, this is the best strategy.
+
+Business rules are applied in the [Apply Rules stage](/fusion/5.9/535/apply-rules-stage) of the query pipeline.
+
+Learn how to use the [Rules Editor Business Rules](/how-to/768/use-business-rules-in-the-rules-editor).
+
+### UI elements
+
+#### Facets
+
+* **Action.** The [built-in rule action](/fusion/5.9/8835/business-rules#built-in-rule-actions) for the rule.
+* **Status.** Whether a rule is enabled or disabled.
+* **Published.** Whether or not a rule has been published.
+* **Created Date.** The date the rule was created.
+* **Expiration Date.** The date the rule will expire.
+
+#### Rules list
+
+The rules list can be faceted, searched, or sorted according to the various values the rules hold.
+
+## Rewrite
+
+<Frame>![Rules Editor Query Rewrites](/assets/images/5.6/rules-ui-rewrite-56.png)</Frame>
+
+Learn how to use the [Rules Editor Query Rewrites](/how-to/838/use-query-rewrites-in-the-rules-editor).
+
+### UI elements
+
+#### Facets
+
+* **Status.** Whether a rule is enabled or disabled.
+* **Published.** Whether or not a rule has been published.
+* **Confidence.** The confidence score for the rule. A confidence score is automatically set by Fusion. It can be manually set for user-created rules. The confidence score is used, in part, to decided whether a rule is automatically published or not. See [Query Rewriting concepts](/fusion/5.9/489/query-rewriting) for more information.
+
+  <Note>
+  **Confidence** is not used for Head/Tail query rewrites.
+  </Note>
+
+
+
+#### Rules list
+
+You can facet, search, or sort the rules list according to the values the rules hold.
+
+##### Rule type selectors
+
+There are buttons at the top of the rules list that allow you to choose what query rewrite rule types you would like to work with:
+
+<Frame>![Query rewrite rule types](/assets/images/5.1/ai-rules/ui/rules-ui-rewrite-rule-types.png)</Frame>
+
+* **Head/Tail.** Replace underperforming queries with queries that produce higher click-through rates. Query improvements always require review before they are published. Schedule the Head/Tail Analysis job to get AI-generated query improvements based on your signals collection. See [Underperforming Query Rewriting](/fusion/5.9/486/underperforming-queries).
+* **Misspelling.** Fusion replaces misspelled query terms with their spelling corrections for better search results. Schedule the Token and Phrase Spell Correction job to get AI-generated spelling corrections based on your signals collection. See [Misspelling Detection](/fusion/5.9/488/misspelling-detection).
+* **Phrase.** Known phrases are boosted when they appear in new queries. Schedule the Phrase Extraction job to get AI-generated phrases based on your signals collection. See [Phrase Detection](/fusion/5.9/487/phrase-detection).
+* **Synonym.** Synonyms expand queries so that they include all known synonyms of the query terms. Schedule the Synonym Detection job to get AI-generated synonyms based on your signals collection. See [Synonym Detection](/fusion/5.9/8803/synonym-detection-jobs).
+* **Remove Words.** Remove particular phrases from queries. Unlike other rewrites, these should be entered manually and are not generated by a job. See [Remove Words](/fusion/5.4/z6tv3f/remove-words).
+
+## Templates
+
+The Templates screen in the Rules Editor allows you to design, test, and implement a wide variety of search experiences. Results are conditionally delivered from multiple different query pipelines, enabling you to use Fusion’s search, browse, and AI-driven functionality throughout your site.
+
+<Frame>![Template Manager](/assets/images/predictive-merchandiser/templates/template-manager02.png)</Frame>
+
+Templates are only available with a valid license for [Predictive Merchandiser](/fusion/5.9/591/predictive-merchandiser). If available, you will see the templates icon in the left navigation panel: <InlineImage src="/assets/images/predictive-merchandiser/templates/icon-templates.png"/>
+
+## Simulator
+
+The Simulator provides an interactive preview of how your staged rules affect relevancy, using your search data and a simple search interface. When you enter a query, the Simulator shows you the triggered rules, in the order in which they were triggered, along with any triggered facets.
+
+<Frame>![Simulator 5.x](/assets/images/5.1/ai-rules/simulator-screen.png)</Frame>
+
+You can edit any of the triggered rules, then re-run the query to see new results.
+
+The Simulator sends requests to the `COLLECTION_NAME_rules_simulator` query profile, which you can configure to point to any pipeline and collection in your app.
+
+The Simulator is only visible in the Rules Editor if you *do not* have a valid license for [Predictive Merchandiser](/fusion/5.9/591/predictive-merchandiser). If available, you will see the simulator icon in the left navigation panel.
+
+### Search
+
+<Frame>![Simulator search bar](/assets/images/5.1/ai-rules/simulator-example-query.png)</Frame>
+
+Use the search bar in the top nav panel to simulate, or preview, your staged rules.
+
+### Rule indicators
+
+After entering a search query, the active rules affecting the results are displayed above the results. For example, a query for the term `keyboard` with a query rewrite rule would display an indicator for the rewritten query `wireless keyboard` in the left panel of the Simulator:
+
+<Frame>![Active query rewrite rules](/assets/images/5.1/ai-rules/simulator-example-query02-framed.png)</Frame>
+
+You can edit the query rewrite rule by hovering over this indicator and clicking the edit button. A dialog box will appear:
+
+<Frame>![Rule indicator edit](/assets/images/5.1/ai-rules/simulator-example-query03.png)</Frame>
+
+Similarly, when a business rule is triggered by a search condition, it will appear in the right panel of the Simulator:
+
+<Frame>![Active business rules](/assets/images/5.1/ai-rules/simulator-example-query04.png)</Frame>
+
+## Analytics
+
+<Frame>![Rules Editor Analytics](/assets/images/5.6/rules-ui-analytics-56.png)</Frame>
+
+The Analytics screen is available as part of the [Predictive Merchandiser](#predictive-merchandiser), a separate offering from Fusion. See the [Predictive Merchandiser documentation](/fusion/5.9/591/predictive-merchandiser) for more information.
+
+Learn how to use the [Rules Editor Analytics screen](/how-to/8859/use-the-analytics-screen-in-the-rules-editor).
+
+### UI elements
+
+#### Data date range
+
+* **Quick Range Selectors.** Click one of the quick range selectors to facet your data.
+
+  <Frame>![Data date range selectors](/assets/images/5.1/ai-rules/ui/rules-ui-dashboard-date.png)</Frame>
+* **Calendar Selector.** Use the calendar selector to specify a start and end date and time facet for your data.
+
+  <Frame>![Calendar selector](/assets/images/5.1/ai-rules/ui/rules-ui-dashboard-date-calendar.png)</Frame>
+
+#### Visitor data
+
+* **Data Cards**
+
+  <Frame>![Data cards](/assets/images/5.1/ai-rules/ui/rules-ui-dashboard-visitor-cards.png)</Frame>
+
+  + **Site Visits.** The total number of visits.
+  + **Total Searches.** The total number of searches performed.
+  + **Unique Visitors.** The number of unique visitors to your site.
+  + **Average Session.** The average length of time spent on your site.
+* **Data Graph.** Detailed information for the selected data card.
+
+  <Frame>![Data graph](/assets/images/5.1/ai-rules/ui/rules-ui-dashboard-visitor-graph.png)</Frame>

@@ -1,0 +1,58 @@
+export const schema = {
+  "type": "object",
+  "title": "Log Cleanup",
+  "description": "Use this job when you want to delete old logs.",
+  "required": [
+    "id",
+    "collection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "hidden": {
+      "type": "boolean",
+      "title": "Hidden",
+      "description": "Objects marked as hidden will only be returned in the API with hidden=true",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "collection": {
+      "type": "string",
+      "title": "Logs collection",
+      "enum": [
+        "system_logs"
+      ]
+    },
+    "days": {
+      "type": "integer",
+      "title": "Delete logs older than N days",
+      "default": 30
+    },
+    "query": {
+      "type": "string",
+      "title": "Query to match docs to delete",
+      "description": "Default value excludes audit log entries to preserve audit information such as login / logout events.",
+      "default": "-logger_class_s:\"com.lucidworks.cloud.gateway.audit\""
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "system-logs-cleanup"
+      ],
+      "default": "system-logs-cleanup",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

@@ -1,0 +1,89 @@
+---
+title: "query:filter"
+permalink: "1070"
+---
+
+## Description
+
+The filter directive is to be used within the
+[Query tag](/app-studio/4.2/1115/search-query).
+
+### Filter
+
+#### Remove All Filters with Field Name
+
+```xml
+<search:query parameters="*" var="query">
+    <query:filter field="company" action="remove"></query:filter>
+</search:query>
+```
+
+#### Add Filter
+
+```xml
+<search:query parameters="*" var="query">
+    <query:filter field="company" value="twigkit"></query:filter>
+</search:query>
+```
+
+#### Remove Filter
+
+```xml
+<search:query parameters="*" var="query">
+    <query:filter field="company" value="twigkit" action="remove"></query:filter>
+</search:query>
+```
+
+### Range Filter
+
+#### Add Filter
+
+```xml
+<search:query parameters="*" var="query">
+    <query:filter field="age" from="25" to="50" display="25 to 50"></query:filter>
+</search:query>
+```
+
+#### Remove Filter
+
+```xml
+<search:query parameters="*" var="query">
+    <query:filter field="age" from="25" to="50" display="25 to 50" action="remove"></query:filter>
+</search:query>
+```
+
+## Usage
+
+as element:
+
+```xml
+<query:filter
+       field="{string}"
+       [value="{string}"]
+       [from="{Number|Date}"]
+       [to="{Number|Date}"]
+       [display="{string}"]
+       [optional="{string}"]
+       [exclude="{boolean}"]
+       [action="{string}"]
+       [hidden="{boolean}"]
+       [match="{string}"]
+       [type="{string}"]>
+</query:filter>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| field | **string** | The field the filter applies to. |
+| value  *(optional)* | **string** | The value to apply to the field |
+| from  *(optional)* | **Number]link:[Date** | The from value for the range filter. |
+| to  *(optional)* | **Number]link:[Date** | The to value for the range filter. |
+| display  *(optional)* | **string** | The display value for the range filter. |
+| optional  *(optional)* | **string** | If the filter is optional (or) (field or value) |
+| exclude  *(optional)* | **boolean** | If the filter should exclude values matching this filter. |
+| action  *(optional)* | **string** | Whether to remove the filter or add the filter. (Default:'add') |
+| hidden  *(optional)* | **boolean** | Whether the filter should be hidden (visible in breadcrumbs and URLs) or not. |
+| match  *(optional)* | **string** | Determines whether to match the value of the filter exactly, or partially, with either left or right wildcards. Accepted values are 'left_partial' or 'partial' or 'right_partial' or 'exact'. |
+| type  *(optional)* | **string** | Explicitly set the type of the filter, 'string' or 'number'. A string filter value will be wrapped in double quotes. |

@@ -1,0 +1,42 @@
+---
+title: "ng:inject"
+permalink: "1121"
+---
+
+## Description
+
+Transcludes the content and sets the scope of the transcluded content to
+that of the parent directive. ngTransclude would set the scope of the
+transcluded content to the scope of the view. More information on the
+reason for this directive can be found here:
+
+https://github.com/angular/angular.js/issues/7874#issuecomment-47644966
+
+## Usage
+
+as element:
+
+```xml
+<ng:inject>
+</ng:inject>
+```
+
+as attribute
+
+```xml
+<ANY ng-inject>
+   ...
+</ANY>
+```
+
+as class
+
+```xml
+<ANY class="ng-inject">
+   ...
+</ANY>
+```
+
+### Directive info
+
+* This directive creates new scope.

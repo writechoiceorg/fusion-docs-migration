@@ -1,0 +1,61 @@
+---
+title: "Milvus Response Update Stage"
+permalink: "8843"
+---
+
+The Milvus Response Update stage updates response documents with vectors similarity and ensemble scores (see [Milvus documentation](/fusion/5.9/8821/milvus)). It should be used after the [Milvus Ensemble Query stage](/fusion/5.9/8844/milvus-ensemble-query-stage) and after the [Solr Query stage](/fusion/5.9/265/solr-query-stage).
+
+<Note>
+**Deprecated**
+
+This stage is deprecated in Fusion 5.9.5 and later. It will be removed in a future release.
+
+Replace the Milvus Response Update Query Stage with [Seldon](/fusion/5.9/33ccfb/seldon-vectorize-query-stage) or [Lucidworks AI vector query stages](/fusion/5.9/owi8af/lwai-vectorize-query). These alternatives improve performance when updating response documents with vector similarity data.
+</Note>
+
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/milvus-response-update.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,78 @@
+---
+title: "Call Pipeline Index Stage"
+permalink: "214"
+---
+
+The Call Pipeline index stage calls another index pipeline.
+You can use this stage to reuse pipeline logic across multiple pipelines.
+You can also use it to index certain data separately from the rest, update a data model, or distribute indexing across multiple collections or pods.
+
+In the context of an index pipeline, the Call Pipeline stage creates a "fork" that runs another pipeline in parallel with the main pipeline.
+The called pipeline does not return any data to the pipeline that called it, so it should end with a stage that writes the output to a collection, a data model, or some other endpoint.
+Note that this is different than Call Pipeline stages in query pipelines, where the called pipeline does return its output to the pipeline that called it.
+
+In this example, the main pipeline calls a pipeline that indexes some metadata separately from the main document collection:
+
+<Frame>![An index pipeline that calls another pipeline](/assets/images/diagrams/call-pipeline-index1.png)</Frame>
+
+As another example, multiple index pipelines can end with a Call Pipeline stage, and the called pipeline can perform some final processing before indexing the documents; this is a way to reuse pipeline logic so that data from different datasources can be indexed in the same consistent format:
+
+<Frame>![Three index pipelines that all call the same auxiliary pipeline](/assets/images/diagrams/call-pipeline-index2.png)</Frame>
+
+<Tip>
+Use a naming convention for your pipelines that lets you easily differentiate between your main pipelines and the ones you are using as call pipelines.
+For example, you can add a suffix like `_cpl` to differentiate your call pipelines from other pipelines.
+</Tip>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Using Call Pipelines** focuses on how the Call Pipeline stage works differently in index pipelines versus query pipelines and how to use it in both:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/using-call-pipelines" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/call-pipelines-ql.jpeg" alt="Using Call Pipelines" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Call Pipelines** focuses on how to implement reusable pipelines and call them from other pipelines:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/call-pipelines" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/call-pipelines.jpg" alt="Call Pipelines" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/call-pipeline.mdx";
+
+<SchemaParamFields schema={schema}/>

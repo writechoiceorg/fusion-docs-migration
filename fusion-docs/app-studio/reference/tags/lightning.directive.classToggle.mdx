@@ -1,0 +1,36 @@
+---
+title: "class:toggle"
+permalink: "1161"
+---
+
+## Description
+
+Applies a class to the target when toggled on.
+
+## Usage
+
+as element:
+
+```xml
+<class:toggle
+       target="{string}"
+       toggle-class="{string}"
+       [name="{string}"]>
+</class:toggle>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | jQuery selector for element |
+| toggle-class | **string** | Name of class to toggle |
+| name  *(optional)* | **string** | Name of toggle. If set the user’s preference for the toggle will be saved |
+
+## Example
+
+`<search:class-toggle target="#chart" class="hide" name="chart">Toggle</search:class-toggle>`

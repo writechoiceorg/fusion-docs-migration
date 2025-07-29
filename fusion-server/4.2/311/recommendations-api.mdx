@@ -1,0 +1,170 @@
+---
+title: "Recommendations API"
+permalink: "311"
+---
+
+
+The Recommendations REST API uses signals and aggregated signals to return a list of items that can be used for recommendations.
+
+<Note>
+This API requires a [Fusion AI license](/fusion-ai/4.2/505/licensing).
+</Note>
+
+To use the REST API Recommendations service to get recommendations for items in some collection, that collection must have associated signals and aggregated-signals system collections. How good the recommendations are depends on how well the information in the signals and aggregated signals collections, which is derived from observed user behavior, matches user behavior going forward.
+
+In addition to these endpoints, is also possible to get recommendations as part of a query request.
+
+See [Recommendations and Boosting](/fusion-ai/4.2/482/recommendations-and-boosting) for a discussion of when to use the API and when to use recommender query stages.
+
+## Recommendation types
+
+The API includes separate endpoints for retrieving different types of recommendations:
+
+|  |  |
+| --- | --- |
+| `itemsForQuery` | Get items for a defined query.  The response is a list of *document IDs* and their weights. |
+| `queriesForItem` | Get queries for a defined item (a document ID). This finds the top queries that led users to the defined item.  The response is a list of *query terms* and their weights. |
+
+## Output
+
+The output includes the following sections:
+
+<table class="tableblock frame-all grid-all stretch">
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <code>header</code>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        The query parameters (in a section named <code>queryParams</code>) and the total time it took to process the query.
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <code>items</code>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        Depending on the recommendation type:
+        <ul>
+          <li>
+            <code>itemsForQuery</code><br/>
+            The document IDs and the weights of aggregated events that match the query. This type supports a debug option that adds a <code>debug</code> section to the output.
+          </li>
+          <li>
+            <code>queriesForItem</code><br/>
+            The queries and the weights of aggregated events that match the document ID.
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Examples
+
+Below are examples for each recommendation type.
+
+### itemsForQuery
+
+Get the top items for the query 'ipod':
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/recommend/lucidworks102/itemsForQuery?q=ipod&fq=count_d:4&debug=true
+```
+
+**OUTPUT**
+
+```json
+{
+  "header" : {
+    "queryParams" : {
+      "aggrType" : "*",
+      "rows" : 10,
+      "collection" : "lucidworks102",
+      "aggrRows" : 100,
+      "debug" : true,
+      "q" : "ipod",
+      "fq" : [ "count_d:4" ]
+    },
+    "totalTime" : 5
+  },
+  "items" : [ {
+    "weight" : 1.0726584E-11,
+    "docId" : "8771929"
+  }, {
+    "weight" : 3.865899E-12,
+    "docId" : "9225439"
+  }, {
+    "weight" : 9.230597E-12,
+    "docId" : "3109302"
+  } ],
+  "debugInfo" : {
+    "aggrTime" : 1,
+    "queryTime" : 4,
+    "solrParams" : {
+      "mm" : [ "50%" ],
+      "pf" : [ "query_t^3", "query_t~2^7", "query_t~0^1" ],
+      "fl" : [ "id", "doc_id_s", "weight_d" ],
+      "sort" : [ "score desc,weight_d desc" ],
+      "q" : [ "ipod" ],
+      "qf" : [ "query_t" ],
+      "collection" : [ "lucidworks102_signals_aggr" ],
+      "fq" : [ "aggr_type_s:*", "count_d:4" ],
+      "rows" : [ "100" ],
+      "defType" : [ "edismax" ]
+    }
+  }
+}
+```
+
+### queriesForItem
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/recommend/lucidworks102/queriesForItem?docId=9225439
+```
+
+**OUTPUT**
+
+```json
+{
+  "header" : {
+    "queryParams" : {
+      "aggrType" : "*",
+      "rows" : 10,
+      "collection" : "lucidworks102",
+      "docId" : "9225439"
+    },
+    "totalTime" : 8
+  },
+  "items" : [ {
+    "query" : "ipod",
+    "weight" : 3.865899E-12
+  }, {
+    "query" : "columbusday ipod mp3 20111009",
+    "weight" : 3.5141304E-12
+  }, {
+    "query" : "apple itouch",
+    "weight" : 2.3619889E-12
+  }, {
+    "query" : "ipod 4th generation",
+    "weight" : 1.6436526E-12
+  }, {
+    "query" : "ipod touch 4th generation",
+    "weight" : 9.674966E-13
+  }, {
+    "query" : "onlinemidnightsale ipod mp3players",
+    "weight" : 9.568035E-13
+  }, {
+    "query" : "ipod touch",
+    "weight" : 7.774231E-13
+  }, {
+    "query" : "itouch",
+    "weight" : 7.707221E-13
+  } ]
+}
+```
+

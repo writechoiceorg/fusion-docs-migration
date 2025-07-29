@@ -1,0 +1,97 @@
+export const schema = {
+  "type": "object",
+  "title": "Cooccurrence Similarity",
+  "description": "Compute a mutual-information item similarity model",
+  "required": [
+    "id",
+    "trainingCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Recommender Training Collection",
+      "description": "User/Item preference collection (often a signals collection or signals aggregation collection)"
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr query to filter training data (e.g. downsampling or selecting based on min. pref values)",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputItemSimCollection": {
+      "type": "string",
+      "title": "Item-to-item Similarity Collection",
+      "description": "Collection to store batch-computed item/item similarities (if absent, none computed)"
+    },
+    "userIdField": {
+      "type": "string",
+      "title": "Training Collection User Id Field",
+      "description": "Solr field name containing stored user ids",
+      "default": "user_id_s",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Training Collection Item Id Field",
+      "description": "Solr field name containing stored item ids",
+      "default": "itemIdField",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "weightField": {
+      "type": "string",
+      "title": "Training Collection Weight Field",
+      "description": "Solr field name containing stored weights or preferences the user has for that item",
+      "default": "weight_d",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numSims": {
+      "type": "integer",
+      "title": "Number of Item Similarities to Compute",
+      "description": "Batch compute and store this many item similarities per item",
+      "default": 10
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "cooccurrence"
+      ],
+      "default": "cooccurrence",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

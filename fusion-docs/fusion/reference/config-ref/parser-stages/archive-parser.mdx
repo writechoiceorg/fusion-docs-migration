@@ -1,0 +1,24 @@
+---
+title: "Archive Parser Stage"
+permalink: "366"
+---
+
+The Archive parser stage can parse the majority of common archive and compressed file formats. They are parsed into their constituent documents, which can then be parsed further or sent straight to the index pipeline. The following archive formats are supported:
+
+* tar
+* zip
+* jar
+* 7z
+* ar
+* arj
+* Unix dump
+* cpio
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/archive.mdx";
+
+<SchemaParamFields schema={schema}/>

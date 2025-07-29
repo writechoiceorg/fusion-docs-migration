@@ -1,0 +1,40 @@
+---
+title: "Displaying a Chart"
+permalink: "3151"
+---
+
+The Chart Display tag displays the facet provided in a chart.
+
+The body of the Chart Display tag can contain a [Series Facet](/fusion/5.9/3150/faceting-a-data-series) tag for rendering multiple series using facets and also a [Series Result List](/fusion/5.9/3149/search-result-data-series) tag for rendering multiple series using results.
+
+Along with this, there are other tags to customize the chart. These include the [Chart Tooltip](/fusion/5.9/3144/chart-tooltips) tag for modifying the tooltip, [Chart Legend](/fusion/5.9/3153/chart-legend) tag for modifying the legend, [Chart Credit](/fusion/5.9/3147/adding-credits) tag for adding a credit to the chart, and the [Chart Export](/fusion/5.9/3148/exporting-a-chart) tag for exporting the chart.
+
+## Usage
+
+### Displaying a facet
+
+To visualize information in facets using frequency to build the graph, use the facetName attribute:
+
+```xml
+<chart:display response="response" facet-name="current_products" title="Current Products" type="pie"></chart:display>
+```
+
+<Frame>![Pie chart](/assets/images/appkit/4.2/highchart-facet-pie.png)</Frame>
+
+### Displaying a polar chart
+
+```xml
+<chart:display response="response" facet-name="current_products" title="Current Products" type="line" radar-or-polar="polar"></chart:display>
+```
+
+<Frame>![Polar chart](/assets/images/appkit/4.2/highchart-polar.png)</Frame>
+
+### Displaying a radar chart
+
+```xml
+<chart:display response="response" facet-name="current_products" title="Current Products" type="line" radar-or-polar="radar"></chart:display>
+```
+
+<Frame>![Radar chart](/assets/images/appkit/4.2/highchart-radar.png)</Frame>
+
+To see all related attributes, see the [chart:credit](/fusion/5.9/1127/chart-credit) tag documentation.

@@ -1,0 +1,31 @@
+---
+title: "Send PagerDuty Message Stage"
+permalink: "273"
+---
+
+This stage sends a [PagerDuty](https://www.pagerduty.com/) Message from Fusion, for alerting, monitoring, and more, using Fusion’s [Messaging Services](/fusion-server/4.2/135/messaging-and-alerting).
+
+Read more about PagerDuty integration in Fusion on our [blog](https://lucidworks.com/post/pagerduty-integration-in-lucidworks-fusion/).
+
+## Enabling PagerDuty Messaging
+
+Before you can use the PagerDuty pipeline stage, you must enable PagerDuty messaging in Fusion:
+
+1. Click **Applications > System > Messaging Services**.
+2. Select **PagerDuty Message Service** from the drop-down menu.
+3. Enter the following information:
+
+   * [PagerDuty service key](https://developer.pagerduty.com/documentation/integration/events/)
+   * PagerDuty Service API URL; this should be `https://events.pagerduty.com/generic/2010-04-15/create_event.json`.
+4. Click **Save message service**.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/send-pagerduty-message.mdx";
+
+<SchemaParamFields schema={schema}/>

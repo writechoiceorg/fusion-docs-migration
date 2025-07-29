@@ -1,0 +1,34 @@
+---
+title: "OAuth"
+permalink: "3163"
+---
+
+Authentication against OAuth 2.0 services is possible using the individual authentication provider modules which simplify the configuration of OAuth parameters and deal with the differences that exist between common OAuth endpoints.
+
+A general OAuth provider can be used by including the `twigkit.security.provider.oauth` module. This requires a custom `spring-security.xml` file, but it is recommended to use one of the prepackaged modules we provide for these services.
+
+Using OAuth can create a seamless experience where, after the token handshake and approval is complete, the user will always be logged into the application as long as their session is active.
+
+## ADFS
+
+The Active Directory Federation Services (ADFS) security provider is available in Appkit.
+
+<Frame>![ADFS login screen](/assets/images/appkit/4.2/adfs-login-screen.png)</Frame>
+
+<Note>
+OAuth based authentication against ADFS requires **ADFS 3** (or newer) which is available from Windows Server 2012 R2 onwards.
+</Note>
+
+[Learn how to set up ADFS authentication.](/how-to/3013/set-up-active-directory-federation-services-adfs-authentication)
+
+## Facebook
+
+[Learn how to set up Facebook authentication.](/how-to/3039/set-up-facebook-authentication)
+
+## Google
+
+[Learn how to set up Google authentication.](/how-to/3076/set-up-google-authentication)
+
+## Office 365
+
+[Learn how to set up Office 365 authentication.](/how-to/3025/set-up-office-365-authentication)

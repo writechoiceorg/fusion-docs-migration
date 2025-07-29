@@ -1,0 +1,44 @@
+---
+title: "Hadoop Connector"
+permalink: "18"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.x.
+
+</Note>
+
+
+
+## How Hadoop connectors work
+
+The Hadoop crawlers take full advantage of the scaling abilities of the MapReduce architecture and will use all of the nodes available in the cluster just like any other MapReduce job. This has significant ramifications for performance since it is designed to move a lot of content, in parallel, as fast as possible (depending on the system’s capabilities), from its raw state to the Fusion index. The Hadoop crawlers work in stages:
+
+1. Create one or more [SequenceFiles](https://cwiki.apache.org/confluence/display/HADOOP2/SequenceFile) from the raw content. This can be done in one of two ways:
+   * If the source files are available in a shared Hadoop filesystem, prepare a list of source files and their locations as a SequenceFile. The raw contents of each file are not processed until step 2.
+   * If the source files are not available, prepare a list of source files and the raw content, stored as a [Behemoth](https://github.com/DigitalPebble/behemoth) document. This process is currently done sequentially and can take a significant amount of time if there is a large number of documents and/or if they are very large.
+2. Run a MapReduce job to extract text and metadata from the raw content using Apache Tika. This is similar to the Fusion approach of extracting content from crawled documents, except it is done with MapReduce.
+3. Run a MapReduce job to send the extracted content from HDFS to the index pipeline for further processing.
+
+The first step of the crawl process converts the input content into a SequenceFile. In order to do this, the entire contents of that file must be read into memory so that it can be written out in the SequenceFile. Thus, you should be careful to ensure that the system does not load into memory a file that is larger than the Java heap size of the process. In certain cases, Behemoth can work with existing files such as SequenceFiles to convert them to Behemoth SequenceFiles. Contact Lucidworks for possible alternative approaches.
+
+The processing approach is currently "all or nothing" when it comes to ingesting the raw content and all steps must be completed each time, regardless of whether the raw content has changed. Future versions may allow the crawler to restart from the SequenceFile conversion process. In the meantime, incremental crawling is not supported for this connector.
+
+## Fusion login configuration file
+
+The Fusion login config file required by the datasource configuration parameter `login_config` is a Java Authentication and Authorization Service (JAAS) configuration file which needs to be present on every mapper/reducer node which will inject data to Fusion.
+
+Here is a sample file that describes the structure expected by Fusion:
+
+```js
+FusionClient {
+ com.sun.security.auth.module.Krb5LoginModule required
+ useKeyTab=true
+ useTicketCache=false
+ storeKey=false
+ keyTab="/home/keytabs/hadoop.keytab";
+};
+```
+
+`FusionClient` is the application name and can be set to anything. Be sure to set the `login_app_name` parameter to the same value if you change it. The other parameters can be configured as required and the `keyTab` value should point to the location on the node where the keytab file can be found.

@@ -1,0 +1,177 @@
+---
+title: "ServiceNow V1 Connector"
+permalink: "10"
+---
+
+For configuration details, see [ServiceNow V1 Connector Configuration Reference](/fusion-connectors/44/servicenow-v1).
+
+The ServiceNow Datasource retrieves data from the ServiceNow repository.
+
+Access to ServiceNow requires both a ServiceNow username and password, as well as an OAuth client password and token.
+
+<Tip>
+**Important**
+
+See [ServiceNow Product Documentation](https://docs.servicenow.com) for more information.
+</Tip>
+
+
+
+## ServiceNow connector assessment
+
+### Considerations
+
+Consider the following when assessing the ServiceNow connector:
+
+1. Authentication
+2. Validation
+3. Crawl
+4. Recrawl
+5. Field Mapping
+6. Security Trimming
+
+### Authentication
+
+* There are two authentication mechanisms: basic and OAuth 2.0. **The connector will use OAuth2.0**
+* An Oauth Application has to be registered on the ServiceNow instance.
+
+  Complete the following to register an OAuth application:
+   **Login into the ServiceNow instance** In the System Oauth section, select the Application Registry option
+   **Select New application button and then *Create an Oauth API endpoint for external clients*** Then, enter the name of the application and a password
+  ** After this the application is registered on the ServiceNow instance
+* The connector will need the following parameters to authenticate:
+
+  + username
+  + password
+  + client id (from Oauth Application)
+  + client secret (from Oauth Application)
+* The connector will request an access token using the above parameters to the Service `<INSTANCE-NAME>.service-now.com/oauth_token.do.`
+
+  Example query to request an access token:
+
+  ```bash
+  curl -v -d 'grant_type=password&client_id=6aeafaa07a47a20a69a8aae0f009833a&client_secret=secret&username=admin&password=password' https://dev16040.service-now.com/oauth_token.do
+  
+  ```
+* The connector will add the access token to every request as an Authorization header
+
+### Validation
+
+* The connector expects a list of table names to retrieve data from. That list needs to be validated.
+* A list of available tables on ServiceNow instance can be retrieved querying the `sys_db_object` Data Dictionary table:
+
+  Query to retrieve tables on ServiceNow instance
+
+  ```bash
+  https://dev16040.service-now.com/api/now/v1/table/sys_db_object?sysparm_fields=name
+  
+  ```
+
+### Crawl
+
+* The connector will retrieve records for each table, one table at a time
+* Records from a table can be retrieved in batches using the following Table API parameters: `sysparm_limit` and `sysparm_offset`
+* The Transaction Quotas parameter for default page size value will be 100, to prevent reaching the only known limit: Inbound REST requests cannot run longer than 60 seconds
+* The records iteration will continue while the number of records retrieved in a page is less than the page size
+* Crawl example queries:
+
+  ```bash
+  First page query
+  https://dev16040.service-now.com/api/now/table/incident?sysparm_limit=100&sysparm_offset=0
+
+  Second page query
+  https://dev16040.service-now.com/api/now/table/incident?sysparm_limit=100&sysparm_offset=100
+
+  Third page query
+  https://dev16040.service-now.com/api/now/table/incident?sysparm_limit=100&sysparm_offset=200
+  
+  ```
+* ServiceNow tables can have custom fields, the connector will retrieve the fields of each table and store their types. A list of custom fields is included in the *Field Types* topic for the release you are running.
+* During document processing, the type of each field will be discovered. If it is found the proper suffix will be added, otherwise the type will be detected.
+
+### Recrawl
+
+* Each table contains the field sys_updated_on which is updated every time the record changes
+* For recrawl, the connector will retrieve the new, modified, and deleted records
+* Example query to retrieve new and modified records:
+
+  ```bash
+  https://dev16040.service-now.com/api/now/table/incident?sysparm_query=sys_updated_on>2015-10-08+20:12:27
+  
+  ```
+* The parameter `sysparm_query` should be encoded
+* ServiceNow default Date format: `yyyy-MM-dd`, described in the *Default date and time fields* topic for the release you are running
+* Deleted records can be retrieved using the table: `sys_audit_delete`, described in the *Use the Deleted Records module to restore a deleted record* topic for the release you are running
+* Example query to retrieve deleted records:
+
+  ```bash
+  https://dev16040.service-now.com/api/now/v1/table/sys_audit_delete?sysparm_query=tablename=incident
+  
+  ```
+
+### Field Mapping
+
+* The Id field of each document will be built using the format:
+
+  ```bash
+  instance URL + "/" + tableName + ".do?sysid=" + sys_id
+  
+  ```
+* The field of each table can be retrieved using the Data dictionary table
+* Example query to retrieve table fields:
+
+  ```bash
+  https://dev16040.service-now.com/api/now/table/sys_dictionary?sysparm_query=name=incident
+  
+  ```
+* Tables can contain more fields than retrieved with the `sys_dictionary` table
+
+### Security Trimming
+
+* The connector will support the security trimming feature
+* **Only the ACLs that give access to a whole table will be considered**
+* The ACLs configured to give access to specific fields will be ignored
+* **The Fusion username should be the same as the ServiceNow’s user email**
+* At Index time:
+
+  + The connector will store in the `acl_ss` field the ID of the roles with access to the document (row)
+  + Active ACLs of type *record* with *read* permission will be retrieved
+  + The query to retrieve the roles with access to a table:
+
+    Example query to retrieve roles with access to Problem table
+
+```bash
+https://dev16040.service-now.com/api/now/v1/table/sys_security_acl_role?sysparm_query=sys_security_acl.name=problem^sys_security_acl.operation.name=read^sys_security_acl.active=true^sys_security_acl.type=record
+
+```
+
+* At Search time:
+
+  + The connector expects the Fusion username should be the same as ServiceNow email
+  + Given the user’s email, the first step is to validate if that users has *admin* role
+
+Example query to find out if a user has admin role
+
+```bash
+https://dev16040.service-now.com/api/now/v1/table/sys_user_has_role?sysparm_query=user.email=admin@example.com^role.name=admin
+
+```
+
+* If the user is a ServiceNow admin user then he/she will have full access to all the documents
+* If the user is not a ServiceNow *admin* then the connector will retrieve the roles assigned to the user and the groups the user is member of to finally get the roles assigned to each group
+
+Example query to retrieve roles assigned to user
+
+```bash
+https://dev16040.service-now.com/api/now/v1/table/sys_user_has_role?sysparm_query=user.email=$USER_EMAIL
+
+```
+
+Example query to retrieve roles assigned to group
+
+```bash
+https://dev16040.service-now.com/api/now/v1/table/sys_group_has_role?sysparm_query=group=$GROUP_ID
+
+```
+
+* The security trimming filter will be built with the roles retrieved from the user and its groups

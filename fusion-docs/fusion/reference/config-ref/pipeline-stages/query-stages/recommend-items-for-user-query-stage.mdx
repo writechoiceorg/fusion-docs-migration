@@ -1,0 +1,79 @@
+---
+title: "Recommend Items for User Stage"
+permalink: "529"
+---
+
+The Recommend Items for User query pipeline stage uses signals about item choices to recommend other similar items for a specific user. Personalization for the user can be based on the user’s search history, browsing history, or purchase history, and so on.
+
+This pipeline stage uses items-for-user recommendations that have been precomputed by the [BPR Recommender](/fusion/5.9/8805/bpr-recommender-jobs).
+
+See also [Items-for-user Recommendations](/fusion/5.9/477/items-for-user-recommendations) to learn how to configure this recommender type and fetch recommendations.
+
+## Prerequisites
+
+**Enable recommendations:**
+
+Before creating a Recommend Items for Item stage, enable recommendations.
+
+* **In the Fusion UI** – With Query Workbench open, click **Settings > Enable Recommendations**.
+* **Using the REST API** – Use this command to enable recommendations:
+
+  ```bash
+  curl -u USERNAME:PASSWORD -X PUT http://FUSION_HOST:FUSION_PORT/api/collections/COLLECTION_NAME/features/recommendations -H 'content-type: application/json' -d '{"enabled":true}'
+  ```
+
+<Note>
+When you enable recommendations, Fusion creates a query pipeline that already contains this stage, and that is configured for boosting. The query pipeline is `COLLECTION_NAME_items_for_user_recommendations`.
+</Note>
+
+## Using live signals
+
+The **Estimate Recent Results** option uses live signals to augment items-for-user recommendations with real-time recommendations.
+
+When this is enabled, Fusion first looks up items from previously generated recommendations that are similar to the new items. If there are none then it looks up similar users who also interacted with that item to get a list of recommendations based on the new items. It then combines those new recommendations with the job-based recommendations already generated for that user, to generate a final list of recommendations.
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/recommend-items-for-user.mdx";
+
+<SchemaParamFields schema={schema}/>

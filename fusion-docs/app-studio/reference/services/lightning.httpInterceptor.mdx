@@ -1,0 +1,64 @@
+---
+title: "httpInterceptor"
+permalink: "1217"
+---
+
+## Description
+
+Intercepts all `$http` requests that return with an error. It will then broadcast the event `httpInterceptorError`
+which will provide the error object containing the status code, status text and other error information.
+
+### Usage
+
+```js
+angular
+module('myApp', ['lightning'] )
+.* .run(['$rootScope', '$templateCache','$location','$timeout', function ($rootScope, $templateCache, $location,$timeout) {
+$rootScope.$on('httpInterceptorError', function(event,error) {
+    //File not found is HTML
+    if(error.config.headers.Accept == 'text/html'){
+        if(error.status == '404'){
+            alert('Page Not Found!');
+            //Timeout is required to redirect the page after all other events have fired
+            $timeout(function(){
+                $location.path('search');
+            },0)
+        }
+    }
+});
+```
+
+## Events
+
+### httpInterceptorError
+
+Broadcast the event `httpInterceptorError` when a `$http` request receives an error,
+this will provide the error object containing the status code, status text and other error information.
+
+#### Usage
+
+```js
+angular
+module('myApp', ['lightning'] )
+.* .run(['$rootScope', '$templateCache','$location','$timeout', function ($rootScope, $templateCache, $location,$timeout) {
+$rootScope.$on('httpInterceptorError', function(event,error) {
+//File not found is HTML
+if(error.config.headers.Accept == 'text/html'){
+if(error.status == '404'){
+alert('Page Not Found!');
+//Timeout is required to redirect the page after all other events have fired
+$timeout(function(){
+$location.path('search');
+},0)
+}
+}
+});
+```
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope

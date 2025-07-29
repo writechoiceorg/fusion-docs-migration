@@ -1,0 +1,47 @@
+---
+title: "widget:modal"
+permalink: "1108"
+---
+
+## Description
+
+Creates a modal. The directive is automatically moved to the body so it
+works consistently.
+
+## Usage
+
+as element:
+
+```xml
+<widget:modal
+       id="{string}"
+       [title="{string}"]
+       [modal-classes="{string}"]>
+</widget:modal>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id | **string** | An ID that can be used to trigger the modal to open |
+| title  *(optional)* | **string** | Title for the modal |
+| modal-classes  *(optional)* | **string** | Add classes to the modal elements |
+
+## Example
+
+#### Source
+
+```xml
+<button class="tk-stl-button" widget-open-modal="id">Open Modal</button>
+<widget:modal title="Hello World" id="id">
+    <search:platform var="platform" conf="platorms.solr"></search:platform>
+    <search:query var="query" query="docs"></search:query>
+    <search:response var="response" query="query" platform="platform"></search:response>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+</widget:modal>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetModal.png)</Frame>

@@ -1,0 +1,26 @@
+---
+title: "Forked Apache Tika Parser Stage"
+permalink: "367"
+---
+
+<Tip>
+**Important**
+
+
+This stage is deprecated in 5.8.x and 5.9.x, and removed in 5.9.10. Use [Tika Asynchronous Parser](/fusion/5.9/lo9hdj/asynchronous-tika-parsing) instead.
+</Tip>
+
+
+
+A simplified Apache Tika parser more geared towards an Enterprise Search crawl where all documents are parsed in a forked Java Virtual Machine. If memory issues occur during the parse, such as an Out Of Memory condition, the connector job is unaffected.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/forked-apache-tika-deprecated.mdx";
+
+<SchemaParamFields schema={schema}/>

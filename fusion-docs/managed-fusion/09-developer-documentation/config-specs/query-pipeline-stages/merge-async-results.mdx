@@ -1,0 +1,18 @@
+---
+title: "Merge Async Results"
+description: "Query pipeline stage configuration specifications"
+permalink: "xh02h2"
+---
+
+Wait for previous [asynchronous stages](/managed-fusion/5.9/8qf1w6/query-pipelines#async) to complete and merge their results into the active request.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/merge-async-results.mdx";
+
+<SchemaParamFields schema={schema}/>

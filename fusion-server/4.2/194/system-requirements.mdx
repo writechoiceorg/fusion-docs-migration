@@ -1,0 +1,180 @@
+---
+title: "System Requirements"
+permalink: "194"
+---
+
+Requirements for Fusion installation are detailed below.
+
+<Tip>
+**Important**
+
+Lucidworks recommends *not* virus scanning the `fusion/data` folder. Virus scanning can cause slow performance, and it can cause downtime if it quarantines an index file identified as a possible virus.
+</Tip>
+
+
+<Tip>
+Fusion does not support installation under a directory whose name contains a space.
+</Tip>
+
+
+
+## Supported Operating Systems
+
+<Note>
+Certain systems may place limits on open files or processes that may be used by a process or user (for example, Unix systems may use `ulimit` and the `limits.conf` file). Fusion may require increasing these limits. We recommend setting these to "unlimited" or the maximum allowed by the system. If "unlimited" is not an option, we suggest a minimum limit of 65535 on the number of open files, and a minimum limit of 16384 on the number of processes for the Fusion user.
+</Note>
+
+
+
+### Supported for production use of Fusion services
+
+**Operating system**:
+
+* Windows Server 2012, 2012 R2, and 2016 (x64 only)
+
+  <Note>
+  Windows systems must have the Microsoft Visual C++ 2010 SP1 package installed.
+  </Note>
+
+* Linux 64-bit (x86_64/amd64 only) with 2.6 or later kernel
+
+  <Note>
+  RedHat based Linux, including CentOS, must be 6.6.x or later. See http://www.infoq.com/news/2015/05/redhat-futex for more information.
+  </Note>
+
+**JVM**:
+
+See [Java requirements](#java) below.
+
+### Also supported for trial and development use of Fusion services
+
+**Operating system**:
+
+* Windows 7, 8, 8.1, and 10 64-bit (x64 only)
+* Mac OS X 10.8 and later
+
+For information about the embedded versions of Solr, ZooKeeper, and so forth, see the [Release Notes](/fusion-server/4.2/97/release-notes).
+
+**JVM**:
+
+See [Java requirements](#java) below.
+
+## Hardware requirements
+
+### Fusion and Solr nodes
+
+Here are some *minimum* recommendations for different Fusion deployments. These are for the nodes that run Fusion (including ones that *also* run Solr and/or ZooKeeper, if those cluster arrangements are used), as well as for external (non-Fusion) nodes for SolrCloud nodes:
+
+| Deployment type | Memory | CPU |
+| --- | --- | --- |
+| Development/Testing | 16 GB | 4 cores |
+| Small Production* | 32 GB | 8 cores |
+| Large Production** | 64+ GB | 8+ cores |
+
+* Small production environments will have 2+ nodes with these specs, on which both Fusion and Solr are installed. (3+ nodes are recommended.) Even if you have only a small amount of content, we recommend provisioning an 8 core machine as having only 4 cores runs into a possible issue with allocating enough Java heap memory.
+
+** Large production environments will have 3+ nodes with these specs.
+
+### ZooKeeper nodes
+
+Here are some *minimum* recommendations for the nodes that run ZooKeeper. These nodes can be more lightweight than the nodes that run Fusion and/or Solr. With the exception of small development/testing deployments, ZooKeeper nodes should only run ZooKeeper (not Fusion or Solr). Because ZooKeeper synchronizes all its operations to disk, we recommend using a disk with high throughput and low latency for your ZooKeeper nodes.
+
+| Deployment type | Memory | CPU |
+| --- | --- | --- |
+| Development/Testing | 4 GB | 4 cores |
+| Small Production | 4+ GB | 4+ cores |
+| Large Production | 4+ GB | 4+ cores |
+
+### Fusion components
+
+You can run Fusion components on different nodes. Different Fusion components require different amounts of resources. Below are the *minimum* recommended memory requirements; consult Lucidworks for specific recommendations tailored to your unique use case, data load, and production needs.
+
+| Fusion component | *Minimum* RAM |
+| --- | --- |
+| Connectors | 2 GB |
+| API service | 1 GB |
+| Fusion UI | 512 MB |
+| Solr | 2 GB |
+| Spark master | 512 MB |
+| Spark worker | 1 GB |
+
+## Supported Java Development Kits
+
+The following JDKs have been tested with Fusion 4.2:
+
+* **Zulu OpenJDK.** [Download Azul Zulu Builds of OpenJDK | Azul](https://www.azul.com/downloads/)
+* **Adopt OpenJDK.** [Latest release | AdoptOpenJDK - Open source, prebuilt OpenJDK binaries](https://adoptopenjdk.net/releases.html)
+
+  <Note>
+  This includes support for all major Linux distributions of OpenJDK 1.8 and Adopt OpenJDK 1.8 for Windows operating systems.
+  </Note>
+
+
+* **RedHat OpenJDK.** [OpenJDK Download | Red Hat Developer](https://developers.redhat.com/products/openjdk/download)
+
+  <Danger>
+  RedHat licensing is only free on Linux platforms. It is *not* free on Windows platforms.
+  </Danger>
+
+
+* **Oracle 8u201**. The last supported binary code license (BCL) JDK.
+
+## Java requirements
+
+<Note>
+Java 8 is recommended for Lucidworks Fusion 4.2. In some cases, Java 9 can be used without issue. Java 10 and later is not supported by Lucidworks Fusion 4.2.
+</Note>
+
+Fusion is a Java-based application, and some features require a pre-installed JDK. The JRE alone may not be sufficient.
+
+* [Oracle JDK 1.8](https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html), 64-bit (x64 only)
+* [OpenJDK JDK 1.8](https://openjdk.java.net/install/), 64-bit (x64/x86_64 only)
+* [AdoptOpenJDK 1.8](https://adoptopenjdk.net/releases.html?variant=openjdk8&jvmVariant=hotspot), 64-bit (x64 only)
+
+  <Tip>
+  **Important**
+  
+  For Windows users, the Fusion start and stop logging output found in `$Fusion\var\logs\metrics\metric.log` tends to be more reliable when using AdoptOpenJDK.
+  </Tip>
+
+### Checking your Java version
+
+Fusion scripts execute both the `java` and `javac` commands, which are usually aliases for the current Java installation. To check which version of Java is invoked, run the following commands from a shell or terminal window:
+
+```
+java -version
+javac -version
+echo $JAVA_HOME     // Unix
+echo %JAVA_HOME%    // Windows
+```
+
+### JavaScript pipeline stages
+
+Fusion’s JavaScript pipeline stages are application-specific custom JavaScript programs. The first time a pipeline is run, the JDK compiles the JavaScript using the Nashorn JavaScript engine.
+
+## Cluster Requirements
+
+### Supported Solr Versions
+
+Fusion includes an embedded instance of Solr; see the [Release Notes](/fusion-server/4.2/97/release-notes) to find out which Solr version is included in each Fusion release.
+
+Fusion Server 4.2 is certified with Solr
+7.5.0 (included).
+
+We strongly recommend that you use Network Time Protocol (NTP) on a SolrCloud cluster to ensure that nodes use synchronized time. While this is not strictly required, reasoning about log contents and database entries becomes impossible without it. Information and instructions on how to install and run NTP are available at [www.ntp.org](http://www.ntp.org/).
+
+### Supported ZooKeeper Versions
+
+Fusion includes an embedded instance of ZooKeeper; see the [release history](/fusion-server/4.2/97/release-notes) to find out which version of ZooKeeper is included in each Fusion release. For demo, trial, and some testing deployments, you can use the embedded ZooKeeper. *For production deployments, we recommend using an external ZooKeeper cluster.*
+
+ZooKeeper 3.4.11 is supported for external ZooKeeper instances.
+
+A ZooKeeper cluster must have 3+ nodes configured as an ensemble, and it must have an odd number of nodes. We recommend three ZooKeeper nodes in a ZooKeeper cluster/ensemble. Only for very large SolrCloud clusters (50+ nodes) might you need more ZooKeeper nodes.
+
+## Recommended HTTP Clients
+
+The Fusion API can be accessed from any HTTP client, and allows you to build user interfaces and applications that work with any browser. However, the Fusion Administration UI, Dashboards, and built-in Search UI are supported only with:
+
+* Chrome latest version
+* Firefox latest version and latest Extended Support Release (ESR)
+* Internet Explorer 11

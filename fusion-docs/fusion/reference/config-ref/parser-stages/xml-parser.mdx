@@ -1,0 +1,24 @@
+---
+title: "XML Parser Stage"
+permalink: "372"
+---
+
+The XML parser stage parses whole XML documents by default, but it can also be configured to parse only specific nodes without loading the entire document into memory. It can also split an XML document into multiple documents. XPATH-like expressions are used to select specific nodes to parse, such as `/posts/row` or `/posts/record`. Nested XML elements are flattened.
+
+To create new documents from selected elements, configure `rootPaths`.
+
+<Note>
+The XML Transformation index pipeline stage is deprecated in favor of this parser stage.
+</Note>
+
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/xml.mdx";
+
+<SchemaParamFields schema={schema}/>

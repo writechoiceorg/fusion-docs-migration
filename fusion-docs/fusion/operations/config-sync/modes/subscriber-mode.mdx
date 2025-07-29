@@ -1,0 +1,122 @@
+---
+title: "Subscriber Mode"
+permalink: "t51vvb"
+---
+
+Subscriber mode is a long-running process that watches a Git branch for changes.
+You can use this mode to make Git the source of truth for the Fusion configuration.
+
+When a change is detected, the subscriber pulls the latest changes from the branch and applies them to the Fusion cluster.
+The subscriber is designed to be safe and idempotent, meaning it can be run multiple times without causing issues.
+
+Changes are applied using REST API calls based on the type of object.
+For example, a query pipeline update is applied using a `PUT` call to the query pipeline API endpoint.
+
+* All the appropriate validation occurs before the update is applied
+* Avoids having to keep track of link objects outside Fusion
+* Lets Fusion trigger all the necessary dependent changes as needed
+* Better error handling if something goes wrong, the API may be able to correct itself
+
+If the ConfigSync subscriber is down when an update to the subscriber branch is applied, then the subscriber applies the changes when it restarts.
+The subscriber keeps track of the latest Git SHA1 hash it has applied to the target environment (stored in ZooKeeper).
+Thus, if the subscriber branch changes while the service is offline, when it re-initializes, it compares the stored Git SHA1 with the latest it gets from a `git pull` operation during startup.
+
+See [Configure the ConfigSync mode](/how-to/config-sync/r4vnii/configure-the-config-sync-mode) for steps to configure Subscriber mode.
+
+## Disaster recovery support
+
+ConfigSync (in subscriber mode) can restore a Fusion cluster from source control in the event of a disaster.
+You can also use it to restore the Fusion configuration to a specific state by specifying a branch, commit, or date.
+
+Read more about [Data restoration](/fusion/5.9/0iq2cv/config-sync-restore-options)
+
+## Filters
+
+Subscriber mode supports [App filters](/fusion/5.9/7p74hf/apps-filter) and [Object filters](/fusion/5.9/ztfcnr/object-filters).
+
+## Ordered updates
+
+The subscriber orders updates of Fusion objects based on the update type (`DELETE`, `CREATE`, `UPDATE`) and resource type (such as changes to index pipelines applied before index profiles).
+For example, a query profile can refer to a query pipeline and optionally an experiment.
+Thus, operations are performed on query pipelines and experiments before query profiles.
+
+Read more about ordered updates in [Supported objects](/fusion/5.9/u8n1i5/supported-objects).
+
+## Rollback
+
+The subscriber pulls updates from the GitHub branch.
+Thus, to "rollback", a Fusion admin needs to push a change to the branch to set the desired state for Fusion objects.
+In other words, the subscriber doesn’t have the concept of rollback but applies the changes based on the current HEAD of the branch it watches.
+
+## Collections Deletion
+
+ConfigSync (in subscriber mode) does not delete collections.
+This is because deleting a collection is a destructive operation that can lead to data loss.
+
+## Environment specific Substitution Variables
+
+One of the challenges of promoting config changes from one environment to another is the need to apply environment specific config changes.
+For instance, the JDBC database URL would be different for staging and production.
+ConfigSync provides a very simple mechanism to parameterize environment specific settings.
+In subscriber mode, before applying changes to the target environment, ConfigSync matches substitution variables from four possible variables files:
+
+```
+REPO_ROOT
+|__ vars.json
+|__ <APP>
+    |__ vars.json
+```
+
+Project level `vars.json` takes precedence over the root level `vars.json`
+
+Each variable has an optional [glob path](https://javapapers.com/java/glob-with-java-nio/) matcher and [JSON Path](https://www.baeldung.com/guide-to-jayway-jsonpath) component.
+For instance, the following variable sets any stage property named `secret` to value `STAGE_SECRET` for the query pipeline with ID `lab4`:
+
+```json
+{
+  "key": "/queryPipelines/lab4:$.stages.*.secret",
+  "value": "STAGE_SECRET"
+}
+```
+
+Here’s an example of a variable that does not have a path component, which means it is evaluated for every object processed by the subscriber before it makes the API call:
+
+```json
+{
+  "key": "$.stages.*.paramToTag",
+  "value": "QUERY"
+}
+```
+
+Any stage `paramToTag` property is updated to the value `QUERY`.
+
+### Secret Variables
+
+Secret variables are a special type of variable that are sourced from a file, java system property, or environment variable.
+This is useful for sensitive information like passwords, API keys, etc.
+The secret variable is a JSON object with the following properties:
+
+#### File
+
+```json
+{
+  "key": "$.stages.*.dbPassword",
+  "type": "secret",
+  "secretPath": "/etc/secret-volume/db-password"
+}
+```
+
+In this example, the `dbPassword` setting for any stage is populated from a file located at `/etc/secret-volume/db-password`.
+
+#### Env or System Property
+
+```json
+{
+  "key": "$.stages.*.dbPassword",
+  "type": "secret",
+  "secretEnv": "DB_PASSWORD"
+}
+```
+
+In this example, the `dbPassword` setting for any stage is populated from an environment variable named `DB_PASSWORD`.
+If the environment variable is not set, the java system property is checked as a fallback.

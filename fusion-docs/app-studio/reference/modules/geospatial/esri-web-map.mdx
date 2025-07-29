@@ -1,0 +1,26 @@
+---
+title: "Esri Web Maps"
+permalink: "3173"
+---
+
+The Esri Web Map tag is used within the Geo Map tag to present content from an ArcGIS web map hosted with Esri or on premises.
+
+## Usage
+
+If the web map is hosted with Esri, you can add the web map without a portal URL by specifying the web map ID. (For example, http://www.arcgis.com/home/webmap/viewer.html?webmap=de87749b005346d59e1cd34275154c96)
+
+```xml
+<geo:map provider="esri" response="response" address-field="customer_address" label-field="name" height="700px">
+   <esri:webmap id="de87749b005346d59e1cd34275154c96"></esri:webmap>
+</geo:map>
+```
+
+If the web map is hosted on your own servers, simply specify the web map ID and the URL of the server; for example:
+
+```xml
+<geo:map provider="esri" response="response" address-field="customer_address" label-field="name" height="700px">
+   <esri:webmap id="de87749b005346d59e1cd34275154c96" url="http://yourportalurl.com/sharing/rest/content/items"></esri:webmap>
+</geo:map>
+```
+
+To see all related attributes, see the [esri:webmap](/fusion/5.9/1102/esri-webmap) tag documentation.

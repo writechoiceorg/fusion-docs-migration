@@ -1,0 +1,287 @@
+---
+title: "table:result-list"
+permalink: "1153"
+---
+
+## Description
+
+Creates a table
+
+The following tags can be nested within the table result list tag.
+
+* [Table Header](/app-studio/4.2/1067/table-header)
+* [Table Header Cell](/app-studio/4.2/1128/table-header-cell)
+* [Table Body](/app-studio/4.2/1176/table-body)
+* [Table Row](/app-studio/4.2/1060/table-row)
+* [Table Cell](/app-studio/4.2/1172/table-cell)
+
+## Usage
+
+as element:
+
+```xml
+<table:result-list
+       response="{string}"
+       results="{array}">
+</table:result-list>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response to populate the table with. (Use results or response not both.) |
+| results | **array** | A list of results to be rendered in the table. (Use results or response not both.) |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_table">Table</h3>
+<table:result-list response="response">
+    <table:header>
+        <table:header-cell sort="true">Name</table:header-cell>
+        <table:header-cell label="Urk"></table:header-cell>
+        <table:header-cell name="Date"></table:header-cell>
+        <table:header-cell name="Number"></table:header-cell>
+        <table:header-cell name="multi"></table:header-cell>
+        <table:header-cell name="Prefix"></table:header-cell>
+        <table:header-cell name="Suffix"></table:header-cell>
+        <table:header-cell name="Empty"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="name"></table:cell>
+            <table:cell name="url" url-field="url" target="_blank"></table:cell>
+            <table:cell name="date" date-format="fullDate"></table:cell>
+            <table:cell name="number" number-format="$#,###.00"></table:cell>
+            <table:cell name="multi" show="2"></table:cell>
+            <table:cell name="prefix" prefix="£"></table:cell>
+            <table:cell name="suffix" suffix=" kg." url="https://en.wikipedia.org/wiki/Kilogram"></table:cell>
+            <table:cell name="empty" default-value="No Value"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+<hr />
+<h3 id="example_table">Table (with results)</h3>
+<table:result-list results="response.results">
+    <table:header>
+        <table:header-cell sort="true">Name</table:header-cell>
+        <table:header-cell label="Urk"></table:header-cell>
+        <table:header-cell name="Date"></table:header-cell>
+        <table:header-cell name="Number"></table:header-cell>
+        <table:header-cell name="multi"></table:header-cell>
+        <table:header-cell name="Prefix"></table:header-cell>
+        <table:header-cell name="Suffix"></table:header-cell>
+        <table:header-cell name="Empty"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="name"></table:cell>
+            <table:cell name="url" url-field="url" target="_blank"></table:cell>
+            <table:cell name="date" date-format="fullDate"></table:cell>
+            <table:cell name="number" number-format="$#,###.00"></table:cell>
+            <table:cell name="multi" show="2"></table:cell>
+            <table:cell name="prefix" prefix="£"></table:cell>
+            <table:cell name="suffix" suffix=" kg." url="https://en.wikipedia.org/wiki/Kilogram"></table:cell>
+            <table:cell name="empty" default-value="No Value"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+<hr />
+<h3 id="example_vertical-comparison">Vertical Comparison (class="tbl-compare")</h3>
+<table:result-list response="response" class="tbl-compare">
+    <table:header>
+        <table:header-cell sort="true">Name</table:header-cell>
+        <table:header-cell label="Urk"></table:header-cell>
+        <table:header-cell name="Date"></table:header-cell>
+        <table:header-cell name="Number"></table:header-cell>
+        <table:header-cell name="multi"></table:header-cell>
+        <table:header-cell name="Prefix"></table:header-cell>
+        <table:header-cell name="Suffix"></table:header-cell>
+        <table:header-cell name="Empty"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="name"></table:cell>
+            <table:cell name="url" url-field="url" target="_blank"></table:cell>
+            <table:cell name="date" date-format="fullDate"></table:cell>
+            <table:cell name="number" number-format="$#,###.00"></table:cell>
+            <table:cell name="multi" show="2"></table:cell>
+            <table:cell name="prefix" prefix="£"></table:cell>
+            <table:cell name="suffix" suffix=" kg." url="https://en.wikipedia.org/wiki/Kilogram"></table:cell>
+            <table:cell name="empty" default-value="No Value"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+<hr />
+<h3 id="example_stacked">Stacked (class="tbl-stacked")</h3>
+<table:result-list response="response" class="tbl-stacked">
+    <table:header>
+        <table:header-cell sort="true">Name</table:header-cell>
+        <table:header-cell label="Urk"></table:header-cell>
+        <table:header-cell name="Date"></table:header-cell>
+        <table:header-cell name="Number"></table:header-cell>
+        <table:header-cell name="multi"></table:header-cell>
+        <table:header-cell name="Prefix"></table:header-cell>
+        <table:header-cell name="Suffix"></table:header-cell>
+        <table:header-cell name="Empty"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="name"></table:cell>
+            <table:cell name="url" url-field="url" target="_blank"></table:cell>
+            <table:cell name="date" date-format="fullDate"></table:cell>
+            <table:cell name="number" number-format="$#,###.00"></table:cell>
+            <table:cell name="multi" show="2"></table:cell>
+            <table:cell name="prefix" prefix="£"></table:cell>
+            <table:cell name="suffix" suffix=" kg." url="https://en.wikipedia.org/wiki/Kilogram"></table:cell>
+            <table:cell name="empty" default-value="No Value"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+<hr />
+<h3 id="example_compare-combination">Compare Combination (class="tbl-combo-compare")</h3>
+<table:result-list response="response" class="tbl-combo-compare">
+    <table:header>
+        <table:header-cell sort="true">Name</table:header-cell>
+        <table:header-cell label="Urk"></table:header-cell>
+        <table:header-cell name="Date"></table:header-cell>
+        <table:header-cell name="Number"></table:header-cell>
+        <table:header-cell name="multi"></table:header-cell>
+        <table:header-cell name="Prefix"></table:header-cell>
+        <table:header-cell name="Suffix"></table:header-cell>
+        <table:header-cell name="Empty"></table:header-cell>
+    </table:header>
+    <table:body>
+        <table:row>
+            <table:cell name="name"></table:cell>
+            <table:cell name="url" url-field="url" target="_blank"></table:cell>
+            <table:cell name="date" date-format="fullDate"></table:cell>
+            <table:cell name="number" number-format="$#,###.00"></table:cell>
+            <table:cell name="multi" show="2"></table:cell>
+            <table:cell name="prefix" prefix="£"></table:cell>
+            <table:cell name="suffix" suffix=" kg." url="https://en.wikipedia.org/wiki/Kilogram"></table:cell>
+            <table:cell name="empty" default-value="No Value"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+$scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                hits:{
+                    act:['long','1234']
+                },
+                facets: {
+                },
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Testing Tester']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 35]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2014-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[123456789]
+                                },
+                                multi:{
+                                    name:'multi',
+                                    val:['Multi','Value','Field']
+                                },
+                                prefix:{
+                                    name:'prefix',
+                                    val:['10']
+                                },
+                                suffix:{
+                                    name:'suffix',
+                                    val:['10']
+                                },
+                                empty:{
+                                    name:'empty',
+                                    val:[]
+                                }
+                            },
+                        },
+                    },
+                    {
+                        result: {
+                            fields: {
+                                name: {
+                                    name: 'name',
+                                    val: ['Foo Bar']
+                                },
+                                url: {
+                                    name: 'url',
+                                    val: ['http://twigkit.com']
+                                },
+                                age: {
+                                    name: 'age',
+                                    val: ['Long', 26]
+                                },
+                                date: {
+                                    name: 'date',
+                                    val: ['2015-11-11T00:00:00']
+                                },
+                                blank:{
+                                    name:'blank',
+                                    val:null,
+                                },
+                                number:{
+                                    name:'number',
+                                    val:[-123456789]
+                                },
+                                multi:{
+                                    name:'multi',
+                                    val:['Multi','Value','Field']
+                                },
+                                prefix:{
+                                    name:'prefix',
+                                    val:['-10']
+                                },
+                                suffix:{
+                                    name:'suffix',
+                                    val:['-10']
+                                },
+                                empty:{
+                                    name:'empty',
+                                    val:null
+                                }
+                            },
+                        },
+                    },
+                ],
+            }
+
+            ResponseService.setResponse('response', $scope.response);
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/tableResultList.png)</Frame>

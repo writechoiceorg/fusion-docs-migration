@@ -1,0 +1,112 @@
+---
+title: "Indexing Hierarchical Taxonomies"
+permalink: "3207"
+---
+
+For efficient hierarchical faceting in Solr you should index the nodes in your hierarchy as a multi-valued field using a depth (or level) prefix. This follows Solr best practice for hierarchical faceting, as described here:
+
+http://wiki.apache.org/solr/HierarchicalFaceting
+
+As an example, suppose you have three documents with these values for the `location` field:
+
+```
+Doc#1: Europe > Germany > Berlin
+Doc#2: Europe > France > Paris
+Doc#3: North America > United States > California > San Francisco
+```
+
+These three documents fall into this taxonomy:
+
+```
+Europe (Doc#1, Doc#2)
+|
+|
++ France (Doc#1)
+|   |
+|   +- Paris (Doc#1)
+|
++- Germany (Doc#2)
+    |
+    +- Berlin (Doc#2)
+
+North America (Doc#3)
+|
++- United States (Doc#3)
+      |
+      + California (Doc#3)
+          |
+          +- San Francisco (Doc#3)
+```
+
+To represent this taxonomy structure in your index, you would add these values for the (multivalued) `location` field:
+
+```
+Doc#1:
+    location:
+        0/Europe
+        1/Europe/Germany
+        2/Europe/Germany/Berlin
+
+Doc#2:
+    location:
+        0/Europe
+        1/Europe/France
+        2/Europe/France/Paris
+
+Doc#3:
+    location:
+        0/North America
+        1/North America/United States
+        2/North America/United States/California
+        3/North America/United States/California/San Francisco
+```
+
+The way to read this is that Doc#1 matches the `Europe` level-0 (or root) category *and* the `Europe > Germany` level-1 category, and so forth. Through this indexing scheme, you can get facet counts for all documents that belong to the `Europe > Germany` category (at level 1) by querying for "1/Europe/Germany" as a Solr facet prefix, but equally all documents that as a result belong to `Europe` at a broader level. Finally this allows us to also get facet counts for all documents with any `location` value by requesting "0/" as a facet prefix, for example.
+
+## Optimising the retrieval of child nodes
+
+When you display a hierarchical facet in Appkit, Appkit initially only shows the top-level nodes in the taxonomy and asynchronously fetch nodes further down the tree by using Solr facet prefix queries as each node gets expanded. This greatly reduces the size of the taxonomy that would have to be fetched initially, if you had to request the whole tree and render it on the page all at once. This means that, irrespective of how deep and wide your taxonomy is, it can be represented in the user interface in a performant manner.
+
+However, when using only one categorisation field, Appkit does not know whether to show a link to expand each node unless it looks ahead and does another Solr query to check whether a given node has any children. To address this, you can further augment the information Appkit indexes for each document that is tagged with hierarchical categories, so that Appkit can quickly look up both a single tree level (for example, `facet.prefix = 0/`) and also determine which of the nodes at a given level have children (using a single facet query).
+
+More specifically, for each hierarchical facet `my_facet`, you create an additional meta-facet named `my_facet_parents` that contains information about the taxonomy categories that have children (that is, those nodes that are not leaf nodes in the hierarchy). Using the example from above, you would index `location` in exactly the same way as before. In addition, you would index these terms for the new `location_parents` meta-facet:
+
+```
+Doc#1:
+    location:
+        0/Europe
+        1/Europe/Germany
+        2/Europe/Germany/Berlin
+
+    location_parents:
+        0/Europe
+        1/Europe/Germany
+
+Doc#2:
+    location:
+        0/Europe
+        1/Europe/France
+        2/Europe/France/Paris
+
+    location_parents:
+        0/Europe
+        1/Europe/France
+
+Doc#3:
+    location:
+        0/North America
+        1/North America/United States
+        2/North America/United States/California
+        3/North America/United States/California/San Francisco
+
+    location_parents:
+        0/North America
+        1/North America/United States
+        2/North America/United States/California
+```
+
+<Note>
+The new `location_parents` field has all the same index terms as `location` except *the last level is omitted*. The intended meaning is that Doc#1 is indexed with the term `0/Europe` in `location_parents` because it contains `location` values that are the children of `Europe`, and so forth.
+</Note>
+
+With this scheme in place, Appkit will automatically generate and run a single facet query to retrieve all top-level nodes and identify those nodes that have children.

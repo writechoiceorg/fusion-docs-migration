@@ -1,0 +1,50 @@
+---
+title: "User API"
+description: "Managed Fusion Proxy APIs"
+permalink: "1zank4"
+---
+
+The [User API](?open-api=true#/operations/getUser) manages user accounts in the following ways:
+
+* Create user
+* Update user information
+* List all users
+* View user data
+* Update user passwords
+* Remove existing user accounts
+
+This API should only be called to manage users in the native [security realm](/managed-fusion/5.9/sq6b80/security-realms), which manages both authentication and authorization within the Managed Fusion UI. Users from other security realms, such as LDAP or SAML, are managed directly by the Managed Fusion auth proxy access control component. It referred to as the "auth proxy" because it handles both authentication and authorization for all requests to the Managed Fusion REST API services for SSO services.
+
+Before working with the User API to create a user, be sure the native security realm is set up and ready. You can manage security realms using the [Realms API](/managed-fusion/5.9/ivfdzd/realms-api).
+
+Users also have the ability to be assigned to different roles. Roles are used as a way to control what actions a user can take within the Managed Fusion environment. The [Roles API](/managed-fusion/5.9/3islcs/roles-api) allows you to set up and manage roles and their associated privileges by assigning permissions. When adding users, you can specify which roles will be applied using an array with the `roleNames` parameter. It is a good practice to have roles defined and configured prior to setting up users in the system. You can restrict actions for a specific user by listing them in an array with the [`permissions`](/managed-fusion/5.9/ro1m7q/permissions) parameter.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Example to create a user
+
+To [create a user](?open-api=true#/operations/createUser) you will need to give them a unique `id`. They need to be assigned to a security realm using the `realmName` parameter. Use `roleNames` to assign them a role. For users with multiple roles, this is assigned by including all of their roles in the `roleNames` array. The `permissions` parameter can be used to restrict which HTTP methods a user is allowed. If `permissions` is left blank, they will be able to use any HTTP methods defined by their role.
+
+```bash
+curl --request POST \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/users \
+  --header 'Accept: */*' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "id": "UNIQUE_ID",
+  "username": "NAME_OF_USER",
+  "realmName": "native",
+  "password": "PASSWORD",
+  "roleNames": [
+    "search", "developer"
+  ],
+  "timezone": "Mountain Time (US & Canada)",
+  "permissions": [
+    {
+      "methods": [
+        "GET", "POST", "PUT"
+      ],
+    }
+  ]
+}'
+```

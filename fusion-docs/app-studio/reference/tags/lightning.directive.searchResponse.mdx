@@ -1,0 +1,42 @@
+---
+title: "search:response"
+permalink: "1202"
+---
+
+## Description
+
+The response directive sends a query to the twigkit API and stores the
+response on a scoped variable and in the
+[Response Service](#/api/lightning.ResponseService)
+
+Inside of the tag you can access the average response time
+(`$parent.averageResponseTime`) and the previous response time
+(`$parent.previousResponseTime`).
+
+## Usage
+
+as element:
+
+```xml
+<search:response
+       var="{string}"
+       platform="{object}"
+       query="{object}"
+       [error-page="{string}"]
+       [on="{string}"]>
+</search:response>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var | **string** | The name of the variable to store the response in |
+| platform | **object** | The platform to query against |
+| query | **object** | A query object |
+| error-page  *(optional)* | **string** | Error page to redirect to when Platform throws an exception. |
+| on  *(optional)* | **string** | Event that is broadcasted for when the response should reload. Default: reloadSearch. |

@@ -1,0 +1,78 @@
+---
+title: "Structure of a Web Application"
+permalink: "3091"
+---
+
+Appkit web applications follow a standard Java web project structure. If using Maven for build and dependency management, the application structure is as follows:
+
+```
+project-name/
+   `pom.xml`
+   src/
+      main/
+         java/
+         resources/
+            conf/
+         webapp/
+            assets/
+            styles/
+            WEB-INF/
+               pages/
+               tags/
+```
+
+If deploying directly in a servlet container such as Tomcat rather than using Maven, however, the application structure is simply:
+
+```
+project-name/
+   assets/
+   styles/
+   WEB-INF/
+      classes/
+        conf/
+      pages/
+      tags/
+```
+
+Below, we take a closer look at four areas of the application: `pom.xml`, the assets and styles folders, the WEB-INF folder, and the resources or classes folder.
+
+## pom.xml
+
+The build process is managed by the `pom.xml` file. It contains references to the Maven repositories and version information for the dependencies. When the application is built (using Maven) all dependencies are automatically retrieved, and a web application archive (WAR file) is generated. Configuration files are automatically placed in the correct folders within the WAR.
+
+## Assets and styles folders
+
+The assets folder is where assets such as images are kept. The main logos in a standard Appkit application are stored and served from here.
+
+The styles folder contains CSS and Less files that are specific to the application. The central stylesheet for configuring styling is classic-settings.less, which in turn includes several partial stylesheets that are stored in the `theme/partials/` folder.
+
+Custom styling using Less can be added to `classic-settings.less` and the partial stylesheets, and custom CSS to the `custom.css` file.
+
+## WEB-INF folder
+
+The WEB-INF folder includes pages, tags, and a handful of configuration files. It also includes the standard Java web application `web.xml` configuration file.
+
+### Pages folder
+
+The pages folder is where the JSP files are kept. search.jsp or content.jsp is typically the main search page. Additional pages can be created here as needed.
+
+### Tags folder
+
+The tags folder stores .tag files — commonly referred to as "widgets" — that are specific to the particular application. They can then be referenced in the JSPs using the client: prefix. Some of the default widgets include:
+
+* **header.tag.** this widget contains the search header including the logo and search box
+
+You can modify the existing .tag files as well as add your own.
+
+### Configuration files
+
+In addition to the Appkit specific [configuration files](/fusion/5.9/3092/configuration-files) under 'conf' there are also these web application configuration files:
+
+* **url-rules.xml.** This file is where URL routing can be configured. There is a default rule in place that says the /${foo}/ URL path should use the WEB-INF/pages/$\{foo}.jsp JSP page, hence /search/ would be routed to the page search.jsp.
+* **wro.properties.** The application uses wro4j to optimize CSS and JavaScript resources for delivery. wro.properties can be used to specify which resources should be bundled together. Wro packages all the resources when the application starts, as well as recompiling on the fly if a CSS or JavaScript file is modified.
+
+### Resources or classes folder
+
+The resources folder (if running with Maven/Jetty), or WEB-INF/classes if deploying with Tomcat, is the primary location for configuration files in the application. The `spring-security.xml` file contains security configuration. The `platform-cache.xml` file defines how responses from the search platform should be cached, and log4j2.xml controls the logging level.
+
+Finally, there is the `conf` folder that provides a cascading property framework. Properties can be set at a general level (such as 'platforms.gsa') and then overwritten more specifically (for example, 'platforms.gsa.people'). These property trees are reported in the log at startup and can then be referenced throughout the application.

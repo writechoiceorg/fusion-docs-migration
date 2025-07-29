@@ -1,0 +1,23 @@
+---
+title: "LWAI Chunker Index Stage"
+description: "Lucidworks AI"
+permalink: "i2nz4x"
+---
+
+The LWAI Chunker Index Stage asynchronously breaks down large text documents into smaller, semantically meaningful chunks, vectorizes those chunks for [Neural Hybrid Search](/fusion/5.9/u1gxz0/chunking#chunking-in-neural-hybrid-search), and stores those vectors in Solr. For more information, see the [Lucidworks AI Async Chunking API](/lw-platform/ai/fpqd94/async-chunking-api).
+
+To use this stage, non-admin Fusion users must be granted the `PUT,POST,GET:/LWAI-ACCOUNT-NAME/**` permission in Fusion, which is the Lucidworks AI API Account Name defined in [Lucidworks AI Gateway](/lw-platform/ai/41gdb7/lucidworks-ai-gateway) when this stage is configured.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/lw-platform/index-stages/lwai-chunker-stage.mdx";
+
+<SchemaParamFields schema={schema}/>
+

@@ -1,0 +1,167 @@
+export const schema = {
+  "type": "object",
+  "title": "Active Directory Security Trimming",
+  "description": "Retrieve AD user's security identifiers and build security filter",
+  "required": [
+    "server",
+    "bindName",
+    "bindPassword"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "asyncConfig": {
+      "type": "object",
+      "title": "Asynchronous Execution Config",
+      "required": [
+        "enabled",
+        "asyncId"
+      ],
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable Async Execution",
+          "description": "Run the expensive data loading or processing part of this stage in a separate thread allowing the pipeline to continue executing. The results of this asynchronous execution can be merged into the pipeline request using a downstream \"Merge Async Results\" stage.",
+          "default": false
+        },
+        "asyncId": {
+          "type": "string",
+          "title": "Async ID",
+          "description": "A unique value to use as reference in downstream \"Merge Async Results\" stages."
+        }
+      }
+    },
+    "overrideUserIdentityHandling": {
+      "type": "boolean",
+      "title": "Override Default User Identity Handling?",
+      "description": "Default handling first attempts to take the user identity from a 'fusion-user-id' http-header, which is the logged-in user ID from the Fusion proxy service. If that value is empty, a 'username' query parameter is tried instead. When this DataSource property is enabled, the specified source and key properties are used explicitly, without any fallback behavior.",
+      "default": false
+    },
+    "userIdentitySource": {
+      "type": "string",
+      "title": "User ID source",
+      "description": "Specify whether the value comes from an http header or query parameter.",
+      "enum": [
+        "query_param",
+        "header"
+      ],
+      "default": "query_param"
+    },
+    "userIdentityKey": {
+      "type": "string",
+      "title": "User ID key",
+      "description": "e.g. username, userID, etc.",
+      "default": "username"
+    },
+    "datasources": {
+      "type": "array",
+      "title": "Restrict filter to Datasource(s)",
+      "description": "A list of Fusion datasources to which security-trimming should be restricted, allowing content from other datasources to pass through un-filtered; if empty, all matching content is subject to filtering.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "server": {
+      "type": "string",
+      "title": "Active Directory Url",
+      "description": "E.g. ldap://hostname:port",
+      "format": "ldap://[^:]+(:\\d+)?"
+    },
+    "bindName": {
+      "type": "string",
+      "title": "Bind Name",
+      "description": "username in userPrincipalName format (e.g. user@example.com)",
+      "format": "[^@]+@.+"
+    },
+    "bindPassword": {
+      "type": "string",
+      "title": "Bind Password",
+      "hints": [
+        "secret"
+      ]
+    },
+    "filterAttribute": {
+      "type": "string",
+      "title": "Filter Attribute",
+      "description": "Active Directory attribute to use as the security-trimming filter criterion",
+      "enum": [
+        "objectSid",
+        "sAMAccountName",
+        "userPrincipalName"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "enableCache": {
+      "type": "boolean",
+      "title": "Enable Cache",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "cacheSize": {
+      "type": "integer",
+      "title": "Cache Size",
+      "default": 1000,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "expirationTime": {
+      "type": "integer",
+      "title": "Cache Expiration Time",
+      "description": "(in seconds)",
+      "default": 3600,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "referral": {
+      "type": "string",
+      "title": "AD referral",
+      "description": "The method for processing referrals encountered by the service provider",
+      "enum": [
+        "follow",
+        "ignore",
+        "throw"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 7,
+  "unsafe": false
+}

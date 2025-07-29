@@ -1,0 +1,30 @@
+---
+title: "Signals in Appkit"
+permalink: "3122"
+---
+
+Appkit provides support for the [Fusion REST Signals API](/fusion/5.9/549/signals-api), allowing user clicks and the creation of annotations (bookmarks, topics etc) to be recorded and tracked.
+
+To learn how to use these signals with Appkit, see [Incorporating Fusion Signals in Appkit Applications](/how-to/incorporate-signals-in-appkit.html).
+
+## Creating a collection for signals tracking
+
+Using the [Fusion UI](/fusion/5.9/concepts/general-ui-overview.html), when a primary data collection is created, this also creates a collection for the signals. By default, the name of this signals collection is by `<primary collection>_signals`, where `<primary collection>` should be substituted with the name of the primary data collection. After data has been indexed and ingested into the primary collection, the Appkit Fusion Signals module can be used to populate the signals collection.
+
+## Tracking user clicks and annotations
+
+Currently, Appkit will send information on user clicks that trigger URL requests as well as when a user creates an annotation, for example, a bookmark or comment.
+
+A signal event of type `click` will include, amongst other things, information about the URL that was clicked as well as the number of times that URL was clicked.
+
+A signal event of type `annotation` will include, amongst other things, information about the annotation target, the collection, and the creator.
+
+For a full list of properties that are stored, refer to the signals collection associated with your application.
+
+## Authentication
+
+Activity tracking requires authentication. Both [service account impersonation](/how-to/3021/fusion-impersonation-via-a-service-account) and the Fusion [Sessions API](/how-to/3030/set-up-lucidworks-fusion-authentication) can be used for this purpose.
+
+Service account impersonation requires credentials for the service account and these are stored in the Fusion platform configuration. These credentials can be accessed by setting the name of the Fusion platform configuration via the `platform-config` parameter in the Fusion activity tracking configuration.
+
+If the credentials for a service account are not provided or cannot be found, a check will be made to see if a Fusion session cookie is available. Typically, this will be present when the user is known to the Fusion and the Session API has been set up accordingly.

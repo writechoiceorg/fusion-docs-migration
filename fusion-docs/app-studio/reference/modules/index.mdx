@@ -1,0 +1,214 @@
+---
+title: "Modules"
+permalink: "3142"
+---
+
+Appkit’s suite of search components is modular, which means you are able to get a working solution into place quickly using tried-and-tested components.
+
+## Activity Tracking
+
+Appkit can capture any and all interaction users have with an Appkit powered application. This includes what queries were typed, filters applied, sort order used, and links opened.
+
+The information is stored in a highly scalable embedded search index which can be used to:
+
+* Data mine or analyze information through a regular Appkit user interface
+* Empower and aid users in content discovery by grouping together similar queries using statistical methods and suggesting alternatives to users seeking similar content
+* Perform auditing and compliance functions in secure applications
+
+[Read more](/fusion/5.9/3172/activity-tracking)
+
+## Collaboration
+
+The social and collaboration tools provided by the Social module extend the search application with the ability to store user-generated information on individual documents and document collections, and to share this information among groups of authenticated users.
+
+Features include:
+
+* **Saved searches.** Users can save important keyword search queries, apply filters, and retrieve the information later.
+* **Saved results.** Users can bookmark results, add them to a basket, and search those saved items.
+* **Rating.** Users can choose to rate or "like" results, giving a social signal to their peers. Rating analytics can be used to influence ranking.
+* **Tagging.** Users can tag content with keywords, which content owners can use to improve data quality.
+* **Annotations.** Users can annotate/comment on results and edit or delete their own comments. Users cannot edit or delete the comments of others.
+* **Topics.** Users can create topics and any captured metadata. For example, saved searches can be associated with a topic.
+
+[Read more](/fusion/5.9/3155/social-and-collaboration-tools)
+
+## Geospatial
+
+[**Esri Web Maps**](/fusion/5.9/3173/esri-web-maps)
+
+The Esri Web Map tag is used within the Geo Map tag to present content from an ArcGIS web map hosted with Esri or on premises.
+
+[**Maps**](/fusion/5.9/3174/maps)
+
+The Map tag displays results on a geographical map, abstracting the underlying map provider.
+
+## Media
+
+The Media module supports on-the-fly [image transcoding](/fusion/5.9/3187/image-formatting-and-transcoding) to mobile formats and resizing including cropping and square cropping. It further supports capturing and transcoding particular pages from multi-page TIFF files and features built in caching. The Media module also supports efficient [exporting search results](/fusion/5.9/3188/export-services) to CSV and Excel.
+
+[Read more](/fusion/5.9/3189/media-module)
+
+[**Export Services**](/fusion/5.9/3188/export-services)
+
+The Excel export service is constrained by the fact that the Excel document needs to be created in memory and therefore recommended for relatively small result sets. For larger exports, we recommend using the CSV export service.
+
+[**Image Formatting and Transcoding**](/fusion/5.9/3187/image-formatting-and-transcoding)
+
+The Image tag displays images from a given field in a result. It will automatically resize, and cache the image for performance.
+
+## Security
+
+[Read more](/fusion/5.9/3162/authentication)
+
+### Authentication
+
+#### OAuth
+
+Authentication against OAuth 2.0 services is possible using the individual authentication provider modules which simplify the configuration of OAuth parameters and deal with the differences that exist between common OAuth endpoints.
+
+A general OAuth provider can be used by including the `twigkit.security.provider.oauth` module. This requires a custom `spring-security.xml` file, but it is recommended to use one of the prepackaged modules we provide for these services.
+
+[Read more](/fusion/5.9/3163/o-auth)
+
+#### SAML
+
+We have a method of configuring SAML authentication with a simplified process. SAML is still a complex standard and so a lot of the relevant information from the previous SAML instructions is still included here.
+
+Appkit provides an extension for SAML based authentication. SAML is a recognized standard for authentication with many providers and implementations available.
+
+[Read more](/fusion/5.9/3165/saml-configuration)
+
+[**SAML Troubleshooting**](/fusion/5.9/3164/troubleshooting-saml)
+
+The SAML authentication standard is a broad XML specification covering a range of functionality and 'binding' protocols. As such, it is not uncommon to encounter problems integrating applications (Service Provider’s) with SAML Identity Providers. Numerous technologies can form the SSO back-end (Identity Provider) and there is no 'one-size-fits-all' approach.
+
+### Authorization
+
+**Role-based Access**
+
+In many cases, you might want to restrict access to your application, or parts of your application, to specific groups of users. To enable this option, you must add the file `conf/security/access.conf` to your application’s configuration tree.
+
+### Configuration
+
+[**User Web Service**](/fusion/5.9/3160/user-web-service)
+
+Although it is disabled by default, there is a web service that returns all of the details for the currently logged in user.
+
+Every operation and capability of Appkit can be invoked via REST-ful web service endpoints supporting both XML and JSON responses for asynchronous client-side operations, and integrating with external systems. For example, users can perform secure searches to any platform supported by Appkit.
+
+## Visualizations
+
+The *chart tag library* is a collection of JSP tags for creating charts to visualize both search results (document result sets) and facets.
+
+[Read more](/fusion/5.9/3152/visualisations)
+
+[**Adding Credits**](/fusion/5.9/3147/adding-credits)
+
+To display credits on the chart in the bottom right hand corner, use the Chart Credit tag with the `text` and `href` attributes.
+
+[**Chart Legend**](/fusion/5.9/3153/chart-legend)
+
+A legend is displayed when the chart has multiple series. With the Chart Legend tag, you can customize the legend with a title, border and location on the chart along with other things. This tag must be nested in the [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+[**Chart Tooltips**](/fusion/5.9/3144/chart-tooltips)
+
+Tooltips display information when you hover over a point or area of the chart. Tooltips can be set across the whole chart or specifically to a series using the Chart Tooltip tag.
+
+[**Displaying a Chart**](/fusion/5.9/3151/displaying-a-chart)
+
+The Chart Display tag displays the facet provided in a chart.
+
+[**Exporting a Chart**](/fusion/5.9/3148/exporting-a-chart)
+
+To give users the option to export a chart, include the Chart Export tag within the Chart Display tag. Adding the tag will enable exporting without adding any attributes.
+
+[**Faceting a Data Series**](/fusion/5.9/3150/faceting-a-data-series)
+
+To render information in facets, use the Series Facet tag, which must be nested within a [Chart Display tag](/fusion/5.9/3151/displaying-a-chart).
+
+[**Histogram**](/fusion/5.9/3145/histogram)
+
+The histogram visualization displays the filters of a facet as a left-to-right series of bars.
+
+[**Search Result Data Series**](/fusion/5.9/3149/search-result-data-series)
+
+To render information from fields of a result list into a data series, use the Series Result List tag and use the label-field and value-field attributes.
+
+[**Tag Cloud**](/fusion/5.9/3146/tag-cloud)
+
+Visualize the top filters of a facet as a tag cloud.
+
+## Workflow and Data Processing
+
+A workflow processor is an atomic unit of business logic that can modify a query before it is submitted to a search platform, or transform a search response before rendering. This capability is used extensively for doing runtime data cleaning when, for example, it is not feasible to re-index a whole collection to fix issues in the source data.
+
+[Read more](/fusion/5.9/3181/workflow-and-data-processing-module)
+
+### Query Processors
+
+Add a Filter to a Query. By creating or passing in a Filter instance, you can override or set all attributes of the filter that will then be added to the Query.
+
+[Read more](/fusion/5.9/3180/query-processors)
+
+### Response Processors
+
+[**Facet Processors**](/fusion/5.9/3186/facet-processors)
+
+Facet response processors include ones to perform these operations:
+
+* Duplicate a facet.
+* Create facets.
+* Fill in date filters for a facet.
+* Parse and formatting filter values from one Date format to another.
+* Create a pseudo date facet.
+* Set or changing Parameters for a facet.
+* Sort facets based on various properties and parameters.
+* Process facet filter values formatted as paths to represent them as hierarchical trees.
+* Remove facets from a Response.
+* Create pseudo facets based on values in a given field or fields.
+* Process hierarchical facets so that only one level is rendered at a time.
+* Define a pseudo facet from a list of facets in the response.
+
+[**Field Processors**](/fusion/5.9/3182/field-processors)
+
+Field response processors include ones to perform these operations:
+
+* Capitalise the display value of the given field names.
+* Add Highlighting to Fields.
+* Tag a document with classifications based on field values.
+* Format a date object, replacing the original date value with another.
+* Parse dates out of field values.
+* Set the value of a field that is missing a value, based on the value of a different field.
+* Parse the String value of the specified fields into an Object representation.
+* Create a multivalued field from a single field value by using a separator.
+* Extract the hostname from URLs and place it in a field named 'site'.
+* Process fully qualified URLs in field values and markup, and add anchor tags for active links in the display values.
+* Statically add metadata to documents that match a given regular expression.
+* Replace field values (actual, display, or both) that are HTML or URL encoded with decoded values.
+* Replace field values (actual, display, or both) that match a given regular expression with a different value.
+* Make Twitter users and hashtags clickable in the display value.
+* Duplicate a field, creating two separate instances.
+* Create a new field by joining multiple existing fields using a pattern expression.
+* Localize the values of a field using a specified bundle.
+
+[**Filter Processors**](/fusion/5.9/3184/filter-processors)
+
+Filter response processors include ones to perform these operations:
+
+* Capitalize the display value of the given filter.
+* Parse dates out of facet filter values.
+* Sort facet filters by count.
+* Sort facet filters by actual value.
+* Replace display values in FacetFilters for specified or all Facets.
+* Retrieve other filter values for the same facet, despite there being one or more filters for that facet already applied.
+* Remove facet filters that match a regular expression pattern from a facet.
+* Replace filter values (actual, display, or both) that match a given regular expression with a different value.
+* (Since 4.2.0) Dynamically format the display value of a date range facet according to the size of the range.
+
+[**General Response Processors**](/fusion/5.9/3183/general-response-processors)
+
+General response processors include ones to perform these operations:
+
+* Perform a left join on fields.
+* Log response metadata and attributes to log4j.
+* Group results by a given Field value.

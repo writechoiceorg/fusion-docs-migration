@@ -1,0 +1,232 @@
+---
+title: "Token and Phrase Spell Correction"
+description: "Job configuration specifications"
+permalink: "9pf532"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+Detect misspellings in queries or documents using the numbers of occurrences of words and phrases.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Resolving Underperforming Queries** focuses on tips for tuning, running, and cleaning up Fusion’s query rewrite jobs:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/resolving-underperforming-queries-with-query-rewriting-jobs" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/resolving-underperforming-queries.png" alt="Resolving Underperforming Queries" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+|  |  |
+| --- | --- |
+| **Default job name** | `COLLECTION_NAME_spell_correction` |
+| **Input** | Raw signals (the `COLLECTION_NAME_signals` collection by default) |
+| **Output** | Synonyms (the `COLLECTION_NAME_query_rewrite_staging` collection by default) |
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: | ✅ | ✅ | ✅ |  |  |  |  |  |
+
+This job extracts tail tokens (one word) and phrases (two words) and finds similarly-spelled head tokens and phrases. For example, if two queries are spelled similarly, but one leads to a lot of traffic (head) and the other leads to a little or zero traffic (tail), then it is likely that the tail query is misspelled and the head query is its correction.
+
+If several matching head tokens are found for each tail token, the job can pick the best correction using multiple configurable criteria.
+
+You can review, edit, deploy, or delete output from this job using the [Query Rewriting UI](/managed-fusion/5.9/tw7rlx/query-rewriting#ui).
+
+<Tip>
+Misspelled terms are completely replaced by their corrected terms. If you want to expand the query to include all alternative terms, set the synonyms to bi-directional. See [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection) for more information.
+</Tip>
+
+
+This job’s output, and output from the [Phrase Extraction job](/managed-fusion/5.9/xzyz7w/phrase-extraction-jobs), can be used as input for the [Synonym Detection job](/managed-fusion/5.9/a2jy7t/synonym-detection-jobs).
+
+Solr treats spelling corrections as synonyms. See the blog post [Multi-Word Synonyms: Solr Adds Query-Time Support](https://lucidworks.com/post/multi-word-synonyms-solr-adds-query-time-support/) for more details.
+
+## 1. Create a job
+
+Create a Token and Phrase Spell Correction job in the Jobs Manager.
+
+How to create a new job
+
+1. In the Managed Fusion workspace, navigate to <InlineImage src="/assets/images/5.0/icons/workspace-menu-collections.png"/> > **Jobs**.
+2. Click **Add** and select the job type **Token and phrase spell correction**.
+
+    The New Job Configuration panel appears.
+
+## 2. Configure the job
+
+Use the information in this section to configure the Token and Phrase Spell Correction job.
+
+### Required configuration
+
+The configuration must specify:
+
+* **Spark Job ID.** Used in the API to reference the job. Maximum 63 alphabetic characters, hyphen (-), and underscore (_).
+* **INPUT COLLECTION.** The `trainingCollection` parameter that can contain signal data or non-signal data. For signal data, select **Input is Signal Data** (`signalDataIndicator`). Signals can be raw (from the `_signals` collection) aggregated (from the `_signals_aggr` collection).
+* **INPUT FIELD.** The `fieldToVectorize` parameter.
+* **COUNT FIELD**
+
+  For example, if signal data follows the default Managed Fusion setup, then `count_i` is the field that records the count of raw signals and `aggr_count_i` is the field that records the count after aggregation.
+
+<Note>
+See [Configuration properties](#configuration-properties) for more information.
+</Note>
+
+### Event types
+
+The spell correction job lets you analyze query performance based on two different events:
+
+* The main event (the **Main Event Type**/`mainType` parameter)
+* The filtering/secondary event (the **Filtering Event Type**/`filterType` parameter)
+
+  If you only have one event type, leave this parameter empty.
+
+For example, if you specify the main event type to be `click` with a minimum count of 0 and the filtering event type to be `query` with a minimum count of 20, then the job:
+
+* Filters on the queries that get searched at least 20 times.
+* Checks among those popular queries to determine which ones didn’t get clicked at all, or were only clicked a few times.
+
+### Spell check documents
+
+If you unselect the **Input is Signal Data** checkbox to indicate finding misspellings from content documents rather than signals, then you do not need to specify the following parameters:
+
+* Count Field
+* Main Event Field
+* Filtering Event Type
+* Field Name of Signal Type
+* Minimum Main Event Count
+* Minimum Filtering Event Count
+
+### Use a custom dictionary
+
+You can upload a custom dictionary of terms that are specific to your data, and specify it using the **Dictionary Collection** (`dictionaryCollection`) and **Dictionary Field** (`dictionaryField`) parameters. For example, in an e-commerce use case, you can use the catalog terms as the custom dictionary by specifying the product catalog collection as the dictionary collection and the product description field as the dictionary field.
+
+### Example configuration
+
+This is an example configuration:
+
+<Frame>![Spell correction job configuration](/assets/images/4.1/spellcheck-config.png)</Frame>
+
+When you have configured the job, click **Save** to save the configuration.
+
+## 3. Run the job
+
+<Tip>
+If you are finding spelling corrections in aggregated data, you need to run an aggregation job before running the Token and Phrase Spelling Correction job. You *do not* need to run a Head/Tail Analysis job. The Token and Phrase Spell Correction job does the head/tail processing it requires.
+</Tip>
+
+How to run the job
+
+1. In the Managed Fusion workspace, navigate to <InlineImage src="/assets/images/5.0/icons/workspace-menu-collections.png"/> > **Jobs**.
+2. Select the job from the job list.
+3. Click **Run**.
+4. Click **Start**.
+
+## 4. Analyze job output
+
+After the job finishes, misspellings and corrections are output into the
+`query_rewrite_staging`
+collection by default; you can change this by setting the `outputCollection`.
+
+An example record is as follows:
+
+```
+correction_s                  laptop battery
+mis_string_len_i              14
+misspelling_s                 laptop baytery
+aggr_job_id_s                 162fcf94b20T3704c333
+score                         1
+collation_check_s             token correction included
+corCount_misCount_ratio_d     2095
+sound_match_b                 true
+id                            bf79c43b-fc6d-43a7-931e-185fdac5b624
+aggr_type_s                   tokenPhraseSpellCorrection
+aggr_id_s                     ecom_spell_check
+correction_types_s            phrase => phrase
+cor_count_i                   68648960
+suggested_correction_s        baytery=>battery
+cor_string_len_i              14
+token_wise_correction_s       baytery=>battery
+cor_token_size_i              2
+edit_dist_i                   1
+timestamp_tdt                 2018-04-25T13:23:40.728Z
+mis_count_i                   32768
+lastChar_match_b              true
+mis_token_size_i              2
+token_corr_for_phrase_cnt_i   1
+```
+
+For easy evaluation, you can export the result output to a CSV file.
+
+<Frame>![Spellcheck output](/assets/images/4.1/spellcheck-output.png)</Frame>
+
+## 5. Use spell correction results
+
+You can use the resulting corrections in various ways. For example:
+
+* Put misspellings into the synonym list to perform auto-correction.
+* Help evaluate and guide the Solr spellcheck configuration.
+* Put misspellings into typeahead or autosuggest lists.
+* Perform document cleansing (for example, clean a product catalog or medical records) by mapping misspellings to corrections.
+
+### Useful output fields
+
+In the job output, you generally only need to analyze the `suggested_corrections` field, which provides suggestions about using token correction or whole-phrase correction. If the confidence of the correction is not high, then the job labels the pair as "review" in this field. Pay special attention to the output records with the "review" labels.
+
+With the output in a CSV file, you can sort by `mis_string_len` (descending) and `edit_dist` (ascending) to position more probable corrections at the top. You can also sort by the ratio of correction traffic over misspelling traffic (the `corCount_misCount_ratio` field) to only keep high-traffic boosting corrections.
+
+For phrase misspellings, the misspelled tokens are separated out and put in the `token_wise_correction` field. If the associated token correction is already included in the one-word correction list, then the `collation_check` field is labeled as "token correction include." You can choose to drop those phrase misspellings to reduce duplications.
+
+Managed Fusion counts how many phrase corrections can be solved by the same token correction and puts the number into the `token_corr_for_phrase_cnt` field. For example, if both "outdoor surveillance" and "surveillance camera" can be solved by correcting "surveillance" to "surveillance", then this number is 2, which provides some confidence for dropping such phrase corrections and further confirms that correcting "surveillance" to "surveillance" is legitimate.
+
+You might also see cases where the token-wise correction is not included in the list. For example, "xbow" to "xbox" is not included in the list because it can be dangerous to allow an edit distance of 1 in a word of length 4. But if multiple phrase corrections can be made by changing this token, then you can add this token correction to the list.
+
+<Tip>
+Phrase corrections with a value of 1 for `token_corr_for_phrase_cnt` and with `collation_check` labeled as "token correction not included" could be potentially-problematic corrections.
+</Tip>
+
+Managed Fusion labels misspellings due to misplaced whitespaces with "combine/break words" in the `correction_types` field. If there is a user-provided dictionary to check against, and both spellings are in the dictionary with and without whitespace in the middle, we can treat these pairs as bi-directional synonyms ("combine/break words (bi-direction)" in the `correction_types` field).
+
+The `sound_match` and `lastChar_match` fields also provide useful information.
+
+## Job tuning
+
+The job’s default configuration is a conservative, designed for higher accuracy and lower output. To produce a higher volume of output, you can consider giving more permissive values to the parameters below. Likewise, give them more restrictive values if you are getting too many results with low accuracy.
+
+<Note>
+When tuning these values, always test the new configuration in a non-production environment before deploying it in production.
+</Note>
+
+|  |
+| --- |
+| `trainingDataFilterQuery`/**Data filter query** |
+| See [Event types](#events) above, then adjust this value to reflect the secondary event for your search application. To query all data, set this to `*:*`. |
+| `minCountFilter`/**Minimum Filtering Event Count** |
+| Lower this value to include less-frequent misspellings based on the data filter query. |
+| `maxDistance`/**Maximum Edit Distance** |
+| Raise this value to increase the number of potentially-related tokens and phrases detected. |
+| `minMispellingLen`/**Minimum Length of Misspelling** |
+| Lower this value to include shorter misspellings (which are harder to correct accurately). |
+
+## Query rewrite jobs post-processing cleanup
+
+To perform more extensive cleanup of query rewrites, complete the procedures in [Query rewrite jobs post-processing cleanup](/how-to/5017lo/query-rewrite-jobs-post-processing-cleanup).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/token-and-phrase-spell-correction.mdx";
+
+<SchemaParamFields schema={schema}/>

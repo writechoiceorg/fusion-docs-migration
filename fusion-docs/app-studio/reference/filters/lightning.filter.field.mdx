@@ -1,0 +1,28 @@
+---
+title: "field"
+permalink: "1016"
+---
+
+## Description
+
+Returns a result from the response
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ field_expression | field[:field] }}
+```
+
+### In JavaScript
+
+```js
+$filter('field')(result[, field])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| result | string | The result object to get the field from. |
+| field *(optional)* | number | The name of the field to retrieve |

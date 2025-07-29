@@ -1,0 +1,45 @@
+---
+title: "Search Responses"
+permalink: "3127"
+---
+
+The Response tag (`<search:response>`) sends a Query to a given Platform and stores the Response in a JSP variable.
+
+## Usage
+
+This example shows how to submit a query using a given Platform and retrieve the response:
+
+```xml
+<search:response var="myResponse" platform="platform" query="query"></search:response>
+```
+
+The resulting response object can be accessed using an angular expression in the HTML page on which it is located. For example, `{{myResponse}}`.
+
+## Configuration parameters
+
+- `var (java.lang.String)`
+    Variable name to reference the Response from the Platform.  
+    Default: `response`
+
+- `platform (twigkit.platform.Platform)`
+    The Platform instance to use.
+
+- `query (twigkit.model.Query)`
+    An instance of an Appkit Query to send to the Platform.
+
+- `errorPage (java.lang.String )`
+    Error page to redirect to when Platform throws an exception.  
+Default: `/WEB-INF/tags/widgets/error/error.jsp`
+
+- `on (java.lang.String)`
+    Event that is broadcasted for when the response should reload. Default: reloadSearch. (optional)
+
+## Tag body
+
+The body of the Response tag can be used to trigger a widget:spinner as the app waits for the response to return from the platform.
+
+```xml
+<search:response var="response" platform="platform" query="query" error-page="/error">
+    <widget:spinner></widget:spinner>
+</search:response>
+```

@@ -1,0 +1,92 @@
+---
+title: "Field Facet Stage"
+permalink: "252"
+---
+
+The Field Facet query pipeline stage is used to add a
+link:[Solr Field Facet query](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Field-ValueFacetingParameters)
+to the search query pipeline.
+
+A field facet query computes the top values for a field and returns the list of those values along with a count of the subset
+of documents in the search results which match that term.
+Field faceting works best over fields which contain a single label or set of labels from a finite, controlled lexicon
+such as product category.
+Facet field parameters can be tuned for performance, see:
+[Facet Field Configuration](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Field-ValueFacetingParameters).
+
+It is possible to specify more than one field facets.
+For each field facet you must specify the field name plus the following additional parameters:
+
+* **Limit.** The maximum number of terms to be returned. Default 100.
+* **Offset.** The number of top facet values to skip in the response. Default 0.
+* **Sort.** The order in which to list facet values: `count` ordering is by documents per term, descending, and `index` ordering is sorted on term values themselves.
+* **Missing.** The number of documents in the results set which have no value for the facet field.
+* **Choice of facet method (advanced).** Specify Solr algorithm used to calculate facet counts.
+  (See [Facet Method Configuration](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.methodParameter) for details).
+  One of:
+
+  + `enum`. Small number of distinct categories.
+  + `fc` ("field cache"). Many different values in the field, each document has low number of values, multi-valued field.
+  + `fcs` ("single value string fields"). Good for rapidly changing indexes.
+
+For further details see: [Solr Faceting Overview](https://lucene.apache.org/solr/guide/faceting.html).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Faceting** focuses on how to use facets to ensure faster, smarter search results:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/faceting-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/faceting-course.jpeg" alt="Faceting" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/facets.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,63 @@
+---
+title: "Solr V1"
+description: "Connector Configuration Reference"
+permalink: "53"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+A Solr connector pulls documents from an external standalone Solr instance or SolrCloud cluster using
+Solr’s [javabin](http://wiki.apache.org/solr/javabin) response type and streaming response parser.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+For Solr v4.7 and greater, cursorMark deep-paging is used. For earlier versions of Solr, standard paging (start+rows) is used.
+
+The following Solr components and parameters can be configured:
+
+* collection/core (also allows default/empty core)
+* query (*:* by default)
+* filter queries
+* query parser
+* request handler (defaults to /select)
+* stored fields to retrieve
+
+Also, since cursorMark deep paging should be used when possible:
+
+* sort spec (default: id asc)
+
+This connector can be configured to store information about datasources and the data ingested in a ConnectorDB crawldb instance.
+
+## Limitations
+
+* Cannot do incremental crawls. (May be possible to do so in the future using source Solr docs' version field.)
+* Cannot do manual filtered deep paging.
+* Does not check that both sort spec and field list contain uniqueKey field.
+* Cannot handle encrypted connection to Solr.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-solr.mdx";
+
+<SchemaParamFields schema={schema}/>
+

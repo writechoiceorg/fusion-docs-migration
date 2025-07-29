@@ -1,0 +1,333 @@
+---
+title: "Methods for Recommendations and Boosting"
+permalink: "475"
+---
+
+This topic provides an overview of different methods for generating recommendations and boosts. "Content-based" and "collaborative" recommendations are two broad categories. More specific recommendation methods are also explained.
+
+## Content-based vs collaborative recommendations
+
+Recommendation methods can be divided into two broad categories: collaborative recommendations and content-based recommendations.
+
+Collaborative recommendations always require signals. Some also require a job that pre-computes a matrix of values that can be queried. When these values are used for boosting, then certain query pipeline stages are needed as well.
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 37.5%;" />
+    <col style="width: 12.5%;" />
+    <col style="width: 25%;" />
+    <col style="width: 25%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Method</th>
+      <th class="tableblock halign-left valign-top">Requires aggregated signals</th>
+      <th class="tableblock halign-left valign-top">Required job</th>
+      <th class="tableblock halign-left valign-top">Boosting stage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top" colspan="4">
+        <div class="content"><div class="paragraph">
+          <p><strong>Collaborative recommendations</strong></p>
+        </div>
+        <div class="paragraph">
+          <p>These methods analyze how users have interacted with documents.</p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/476/items-for-item-recommendations">Items-for-item</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8805/bpr-recommender-jobs">BPR Recommender</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/assets/attachments/pipelines/APPName_item_item_rec_pipelines_bpr.json"><code>APPName_item_item_rec_pipelines_bpr.json</code></a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/477/items-for-user-recommendations">Items-for-user</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8805/bpr-recommender-jobs">BPR Recommender</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/529/recommend-items-for-user-stage">Recommend Items for User</a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/481/items-for-query-recommendations">Items-for-query</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8802/query-to-query-session-based-similarity-jobs">Query-to-Query Session-Based Similarity jobs</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/479/queries-for-query-recommendations">Queries-for-query</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8802/query-to-query-session-based-similarity-jobs">Query-to-Query Session-Based Similarity jobs</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/483/boost-with-signals">Boost with signals</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/511/boost-with-signals-stage">Boost with Signals</a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/crfvw5/trending-recommender-jobs">Trending items or queries</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/yihzwd/trending-recommender-jobs">Trending Recommender</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/478/users-for-item-recommendations">Users-for-item recommendations</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph"><p>✓</p></div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8805/bpr-recommender-jobs">BPR Recommender</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top" colspan="4">
+        <div class="content"><div class="paragraph">
+          <p><strong>Content-based recommendations</strong></p>
+        </div>
+        <div class="paragraph">
+          <p>These methods analyze the content of documents or queries.</p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="#items-for-item">Items-for-item</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/8807/content-based-recommender-jobs-experimental">Content-Based Recommender</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/assets/attachments/pipelines/APPName_item_item_rec_pipelines_content.json" target="_blank" rel="noopener"><code>APPName_item_item_rec_pipelines_content.json</code></a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="#boost-docs">Boost documents</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/536/boost-documents-stage">Boost Documents</a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="#param-boosting">Parameterized boosting</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/527/parameterized-boosting-stage">Parameterized Boosting</a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="#more-like-this">More Like This</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/516/solr-more-like-this-stage">Solr MoreLikeThis</a></p>
+        </div></div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="#rules">Business rules</a></p>
+        </div></div>
+      </td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top"></td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content"><div class="paragraph">
+          <p><a href="/fusion/5.9/535/apply-rules-stage">Apply Rules</a></p>
+        </div></div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Fusion recommendation and boosting methods
+
+This section provides an overview of each method, with links to more detailed topics.
+
+| Collaborative recommendations | Content-based recommendations |
+| --- | --- |
+| * [Items-for-item](#items-for-item)<br/>● [Items-for-user](#items-for-user)<br/>● [Items-for-query](#items-for-query)<br/>● [Queries-for-query](#queries-for-query)<br/>● [Boost with signals](#boost-with-signals)<br/>● [Trending items or queries](#trending-items)<br/>● [Users-for-item](#users-for-item) | * [Items-for-item](#items-for-item)<br/>● [Boost Documents](#boost-docs)<br/>● [Parameterized Boosting](#param-boosting)<br/>● [More Like This](#more-like-this)<br/>● [Business rules](#rules) |
+
+When you [enable recommendations](/fusion/5.9/480/getting-started-with-recommendations-and-boosting), this automatically enables the items-for-user and items-for-item recommendation methods. To use additional recommendation methods, you must configure them separately.
+
+### Items-for-item recommendations
+
+Items-for-item recommendations present items that are similar to a specified item. For example, when the user is viewing a BMX bicycle, Fusion can recommend other BMX bicycles. Similarity can be based on different criteria, such as click patterns, people who bought this also bought that, percentage match of document tags, and so on.
+
+See [Items-for-Item Recommendations](/fusion/5.9/476/items-for-item-recommendations) for details.
+
+### Items-for-user recommendations
+
+Items-for-user recommendations use the [Recommend Items for User](/fusion/5.9/529/recommend-items-for-user-stage) query stage to present items that are similar to ones in which the user has previously shown interest, based on the user’s search history, browsing history, purchase history, and so on. This is one type of [collaborative recommendation](/fusion/5.9/475/methods-for-recommendations-and-boosting#content-based-vs-collaborative).
+
+See [Items-for-User Recommendations](/fusion/5.9/477/items-for-user-recommendations) for details.
+
+### Items-for-query recommendations
+
+The Items for Query recommender is the primary algorithm that supports recommendations on the search results page.
+
+Items-for-query recommendations are based on how other users interacted with search results from the same query. This is one type of [collaborative recommendation](/fusion/5.9/475/methods-for-recommendations-and-boosting#content-based-vs-collaborative).
+
+For example, if users have searched for "titanic" in the past and many of them clicked on the search result for the DVD of the movie *Titanic* (as opposed to books or memorabilia), then this method boosts the DVD item on subsequent searches for "titanic".
+
+See [Items-for-Query Recommendations](/fusion/5.9/481/items-for-query-recommendations) for details.
+
+### Queries-for-query recommendations
+
+Queries-for-query recommendations are queries performed by other users who also performed the current query. For example, when a user searches for "madonna", your app may also suggest searches for "evita", "a league of their own", "lady gaga", and so on.
+
+See [Queries for Query](/fusion/5.9/479/queries-for-query-recommendations) for details.
+
+### Boost with signals
+
+The Boost With Signals query pipeline stage performs automatic boosts based on the contents of the aggregated signals collection. For this type of boosting, signals must be enabled but recommendations need not be.
+
+See [Boost With Signals](/fusion/5.9/483/boost-with-signals) for details.
+
+### Trending items or queries
+
+The [Trending Recommender job](/fusion/5.9/yihzwd/trending-recommender-jobs) analyzes signals to measure customer engagement over time. Use this job to identify spikes in popularity for specific items or queries, then display those items to your users or analyze the trends for business purposes. You can configure any time window, such as daily, weekly, or monthly.
+
+See [Trending items or queries](/fusion/5.9/crfvw5/trending-items-and-queries) for details.
+
+### Users-for-item recommendations
+
+Users-for-item recommendations retrieve the set of users who have interacted with an item, weighted by the number of interactions. This can be useful for community-driven use cases or for marketing campaigns. For example, on your organization’s intranet, clicking a search result could display the item plus a list of colleagues who have interacted with the same item.
+
+See [Users-for-Item Recommendations](/fusion/5.9/478/users-for-item-recommendations) for details.
+
+### Boost documents
+
+The Boost Documents query pipeline stage adds boosting parameters to matched documents based on user-defined rules. Boosts are defined with a term value to boost and the boost factor to add. The boosting parameters are added to the `bq` Solr query parameter.
+
+See [Boost Documents](/fusion/5.9/536/boost-documents-stage) for details.
+
+### Parameterized boosting
+
+The Parameterized Boosting query pipeline stage reads the `boostValues` (in `List<DocumentResult>` format) from the context variable (added by a [Rollup Aggregation stage](/fusion/5.9/282/rollup-aggregation-stage) or a [JavaScript stage](/fusion/5.9/283/java-script-stage)), and adds boosts to the main query using `bq` or `boost` based on the stage configuration. The weights for the boost values can also be scaled.
+
+See [Parameterized Boosting](/fusion/5.9/527/parameterized-boosting-stage) for details.
+
+### More Like This
+
+This stage uses the content of the current document to query for similar documents, using [Solr’s MoreLikeThis component](/solr-reference-guide/10368/more-like-this).
+
+This stage provides content-based recommendations. For collaborative recommendations, use the [Recommend Items for Item stage](/fusion/5.9/514/recommend-items-for-item-stage).
+
+See [Solr MoreLikeThis](/fusion/5.9/516/solr-more-like-this-stage) for details.
+
+### Business rules
+
+Business rules are manually-created formulas for rewriting queries. This is the most versatile strategy for creating custom query rewrites. It supports a variety of conditions and actions to address a wide range of use cases. When you need a very specific query rewrite, this is the best strategy.
+
+Business rules are applied in the [Apply Rules stage](/fusion/5.9/535/apply-rules-stage) of the query pipeline.
+
+See [Business Rules](/fusion/5.9/8835/business-rules) to learn how to create, edit, and publish business rules. See [Query Rewriting](/fusion/5.9/489/query-rewriting) for additional query rewriting methods.
+
+## BPR algorithm
+
+The Bayesian Personalized Ranking (BPR) algorithm is used to configure items-for-item, items-for-user, or user-for-item recommendations. The BPR job generates effective results in a short run time. See the [BPR Recommender](/fusion/5.9/8805/bpr-recommender-jobs) for more information.

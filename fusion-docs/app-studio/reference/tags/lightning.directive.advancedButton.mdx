@@ -1,0 +1,32 @@
+---
+title: "advanced:button"
+permalink: "1186"
+---
+
+## Description
+
+Creates a button for triggering the advanced search.
+
+## Usage
+
+as element:
+
+```xml
+<advanced:button
+       [button-label="{string}"]
+       [search-within-checkbox="{boolean}"]
+       [search-within-label="{boolean}"]
+       [search-within-default-value="{boolean}"]
+       [action="{string}"]>
+</advanced:button>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| button-label  *(optional)* | **string** | Label for the button |
+| search-within-checkbox  *(optional)* | **boolean** | Show the 'search within' option as a checkbox. This enables the query to retain the filters already applied when checked. If not checked the search is reset when a query is entered and the form submitted. If you want this functionality but don’t want a checkbox showing, you can use this attribute set to be false, and set `search-within-default-value` to be true - this uses a hidden field instead of a checkbox. |
+| search-within-label  *(optional)* | **boolean** | The label for the 'search within' checkbox. |
+| search-within-default-value  *(optional)* | **boolean** | Whether to enable 'search within' by default. The default is option is 'false'. |
+| action  *(optional)* | **string** | Page the search should take place on, results will not change automatically when an action is set. |

@@ -1,0 +1,27 @@
+---
+title: "Solr MoreLikeThis"
+description: "Query pipeline stage configuration specifications"
+permalink: "uja4sz"
+---
+
+This stage uses the content of the current document to query for similar documents, using Solr’s MoreLikeThis component.
+
+This stage provides content-based recommendations. For collaborative recommendations, use the [Recommend Items for Item stage](/managed-fusion/5.9/hq339y/recommend-items-for-item-stage).
+
+See [Methods for recommendations and Boosting](/managed-fusion/5.9/l0emoh/methods) for more information.
+
+## Tips
+
+* The incoming query must include an `id` field in order to get recommendations from this stage. The stage returns documents similar to the one specified by this field.
+* Since these secondary queries tend to be large, this stage can impact search performance. You can improve performance by first [clustering your documents](/managed-fusion/5.9/x7s5ub/document-clustering-jobs), then configuring this stage to query a specific document cluster instead of all documents.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/solr-morelikethis.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,75 @@
+---
+title: "esri:webmap"
+permalink: "1102"
+---
+
+## Description
+
+Adds webmap layers from an esri webmap. The webmap id must be applied to
+the geo-map element.
+
+## Usage
+
+as element:
+
+```xml
+<esri:webmap
+       [url="{string}"]
+       [toggle-layers="{boolean}"]>
+</esri:webmap>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| url  *(optional)* | **string** | The URL to the arcgis portal, if not supplied the default will be used by esri. |
+| toggle-layers  *(optional)* | **boolean** | Whether layers can be turned on and off. |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_esri-map">Esri Map</h3>
+<geo:map response="response2" provider="esri" address-field="address" label-field="name" webmap-id="ef9c7fbda731474d98647bebb4b33c20" zoom-level="13">
+    <esri:webmap toggle-layers="true"></esri:webmap>
+</geo:map>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+            $scope.response2 = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {},
+                results: [
+                    {
+                        result: {
+                            fields: {
+                                name:{
+                                    val:'Twigkit CA',
+                                },
+                                address: {
+                                    val:'1551 McCarthy Boulevard, Suite 209, Milpitas, CA 95035',
+                                    },
+                                lat:{
+                                    val:'37.442172'
+                                },
+                                long:{
+                                    val:'-121.9151737'
+                                }
+                            }
+                        },
+
+                    }],
+            }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/esriWebmap.png)</Frame>

@@ -1,0 +1,62 @@
+---
+title: "ServiceNow V1"
+description: "Connector Configuration Reference"
+permalink: "44"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The ServiceNow Datasource retrieves data from the ServiceNow repository.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+For more information, see the:
+
+* [ServiceNow REST API reference documentation](https://docs.servicenow.com/bundle/paris-application-development/page/build/applications/concept/api-rest.html).
+* [ServiceNow Developer REST API specifications](https://developer.servicenow.com/dev.do#!/reference/api/orlando/rest/).
+
+ServiceNow records are stored in named tables.
+
+## Configuration
+
+The account used to crawl needs to have the `personalize_dictionary` role in addition to READ access to the following System Tables:
+
+* Crawl
+
+  + sys_dictionary
+  + sys_glide_object
+  + sys_db_object
+* Recrawl
+
+  + sys_audit_delete
+* Sec trimming:
+
+  + sys_security_acl_role
+  + sys_group_has_role
+  + sys_user_grmember
+  + sys_user_has_role
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-servicenow.mdx";
+
+<SchemaParamFields schema={schema}/>
+

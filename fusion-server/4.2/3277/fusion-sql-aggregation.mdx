@@ -1,0 +1,19 @@
+---
+title: "Fusion SQL Aggregation"
+permalink: "3277"
+---
+
+SQL aggregations are translated to Solr facet queries to take advantage of Solr’s distributed aggregation capabilities. This allows for interactive data analysis over large data sets.
+
+Single and multi-dimension aggregation using supported aggregation functions operate over the entire query result and are designed to return accurate results. The supported aggregation functions that are fully pushed down to the search engine are: `count(*)`, `count(distinct)`, `sum`, `avg`, `min`, `max`.
+
+An example of a SQL aggregation that is translated to a Solr facet query is below:
+
+```sql
+select company_name, count(*) as cnt from orders group by company_name
+order by cnt desc
+```
+
+## Having Clause
+
+A `HAVING` clause can also be applied to single and multi-dimension aggregations.

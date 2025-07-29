@@ -1,0 +1,24 @@
+---
+title: "Connectors APIs"
+permalink: "e5kftb"
+---
+
+The Connector APIs are a group of APIs that you can use to configure connectors. You can use them to [configure datasources and the crawl database](/managed-fusion/5.9/kwpz3n/connector-datasources-api), [install connectors and update existing ones](/managed-fusion/5.9/ba1vor/connector-plugins-api), and [create logs of installed connector configurations](/managed-fusion/5.9/czuxv5/connector-plugins-repository-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+Connectors pull data into Managed Fusion. They work together with parsers and index pipelines to comprise [datasources](/fusion-connectors/31/datasources). You can use connectors to pull data from a variety of data repositories, applications, and websites. Use the [find your connector](/fusion-connectors/3/find-your-connector) tool to view all connectors supported in your version of Fusion.
+
+Connectors are system objects, which means installing, updating, and deleting connectors affects all apps in your Fusion deployment.
+
+<Note>
+Some endpoints only work with V2 connectors. To learn more about the different connector frameworks, refer to [V1 and V2 connectors](/fusion-connectors/331vyj/v-1-and-v-2-connectors).
+</Note>
+
+## Connector security
+
+For high-security applications, you can configure connectors to run [remotely behind firewalls](/fusion-connectors/8xhsoc/remote-v-2-connectors), instead of hosting them in Managed Fusion. Also, some connectors support security trimming, which restricts query results based on user ID. In Managed Fusion 5.9.0 and later, connectors use [graph security trimming](/managed-fusion/5.9/nm4b2l/graph-security-trimming). In Managed Fusion 5.8.1 and earlier, they use the [security trimming stage](/managed-fusion/5.9/hnw5gy/security-trimming).
+
+## Connector compatibility
+
+Connectors are developed and released separately from Managed Fusion, although their functionality and compatibility is closely tied to Managed Fusion versions. Refer to the [connector release notes](/fusion-connectors/4/release-notes) for more information.

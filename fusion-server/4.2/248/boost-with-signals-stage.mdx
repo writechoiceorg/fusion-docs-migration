@@ -1,0 +1,229 @@
+---
+title: "Boost with Signals Stage"
+permalink: "248"
+---
+
+The Boost with Signals query pipeline stage uses [aggregated signals](/fusion-ai/4.2/473/aggregations) to selectively boost items in the set of search results.
+
+Using the main query and the stage configuration parameters, this stage performs a secondary query to the `_signals_aggr` collection and returns updated boost weights for the items in the main query’s search results. Items that have received more user interaction also receive higher boost weights.
+
+See [Recommendation Methods](/fusion-ai/4.2/475/methods-for-recommendations-and-boosting) for more information.
+
+This stage supports [asynchronous processing](/fusion-server/4.2/173/query-pipelines#async).
+
+<Tip>
+This stage accesses the `signals_aggr` collection. Before using it, verify that the following [permission](/fusion-server/4.2/123/permissions) is set:  
+`GET:/solr/<collection-name>_signals_aggr/select`
+</Tip>
+
+
+
+## Configuration overview
+
+The fields below are especially useful to understand when configuring this stage.
+
+<table class="tableblock frame-all grid-all stretch">
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Number of Recommendations</strong></p></div>
+          <div class="paragraph"><p><code>numRecommendations</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Sets the <code>rows</code> query param in the main query as the maximum number of query results which will be boosted by this pipeline stage.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Number of Signals</strong></p></div>
+          <div class="paragraph"><p><code>numSignals</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Sets the <code>rows</code> query param in the query that searches the <code>_signals_aggr</code> collection, so only the specified number of aggregated signals are retrieved and used for boosting. When signals boosting is applied to a query, aggregated signals records are queried from the appropriate <code>_signals_aggr</code> collection to find out the popularity or boost weight for documents which have signals. <code>numSignals</code> limits the number of records to be queried from a <code>_signals_aggr</code> collection and used to calculate this boost.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Aggregation Type</strong></p></div>
+          <div class="paragraph"><p><code>aggrType</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>A filter to retrieve aggregated signals in the <code>_signals_aggr</code> collection per each aggregated signal’s <code>aggr_type_s</code> field value.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Solr Field to Boost On</strong></p></div>
+          <div class="paragraph"><p><code>boostId</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>The document field in the main collection on which to perform boosting. Typically it should use default field, which is <code>id</code>.</p>
+          </div>
+          <div class="paragraph">
+            <p>This field corresponds to the <strong>Rollup Field</strong>/<code>rollupField</code> field. Together, these two fields act like a <code>&lt;field&gt;:&lt;value&gt;</code> pair in the query modification for boosting.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Boost Method</strong></p></div>
+          <div class="paragraph"><p><code>boostingMethod</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>This adds a query parameter to the original query, either “query-param” or “query-parser”. The result is <code>(“query-param” or “query-parser”) + Boost Param(“boost” or <code>bq</code>)</code>, as in the examples below:</p>
+          </div>
+
+          ```js  “query-param” + "boost", result boost query param
+          boost="map(query({!field f='id' v='6239046,13026192'}), 0, 0, 1, 27.1705)"  
+          ```
+
+          ```js “query-parser” + "boost", result boost query param
+          bp_xxx_bbqx="map(query({!field f='id' v='6239046,13026192'}), 0, 0, 1, 27.1705)"  
+          ```
+
+          <div class="admonitionblock tip">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="icon"><i class="fa icon-tip" title="Tip"></i></td>
+                  <td class="content">
+                    When <code>Boost Param</code> uses <code>bq</code>, similar logic applies. When <strong>Boost Param</strong>/<code>boostingParam</code> uses “boost”, it works with both “query-param” and “query-parser”.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Rollup Field</strong></p></div>
+          <div class="paragraph"><p><code>rollupField</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Indicates which aggregated signal document field the boost parameter will use for the final boosting. It works in combination with the <strong>Solr Field to Boost On</strong>/<code>boostId</code> field.</p>
+          </div>
+          <div class="paragraph">
+            <p>This should be set to the field in the aggregated signal collection that stores the doc list that is aggregated as one record. By default it’s set to <code>doc_id_s</code>, because by default this is used in the <a href="/fusion-ai/4.2/471/sql-aggregations#collection_click_signals_aggregation">click_signal_aggr SQL job</a>.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Rollup Weight Field</strong></p></div>
+          <div class="paragraph"><p><code>rollupWeightField</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Indicates the final boost weight used to calculate the new score for docs retrieved by the main query.</p>
+          </div>
+          <div class="paragraph">
+            <p>Similar to <strong>Rollup Field</strong>/<code>rollupField</code> above, this should be set to the field in the aggregated signal collection that stores the final weight that was calculated. By default it’s <code>weight_d</code>, because by default this is used in the <a href="/fusion-ai/4.2/471/sql-aggregations#collection_click_signals_aggregation">click_signal_aggr SQL job</a>.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph"><p><strong>Final Boost Weight Expression</strong></p></div>
+          <div class="paragraph"><p><code>weightExpression</code></p></div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Calculates the final weight using the weight and score retrieved from the <code>_signals_aggr</code> collection.</p>
+          </div>
+          <div class="paragraph">
+            <p>The default value is <code>math:log(weight_d + 1) + 10 * math:log(score+1)</code>.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Solr query parameters
+
+These parameters are used in the **Solr Query parameters**/`queryParams` field for retrieving signal aggregation docs from the `_signals_aggr` collection. These Solr query params will affect which aggregated signals are used for producing the boosting parameter on the main query.
+
+|  |  |
+| --- | --- |
+| `qf=query_t` | Defines which field to query. In the default case, the query searches on the `query_t` field of aggregated signal docs. |
+| `pf=query_t^50` | Boosts docs within the set of retrieved docs using phrase matching. |
+| `pf2=query_t^20` | `pf2` is similar to `pf`; the difference is that `pf2` works on bigram phrases. |
+| `pf3=query_t^10` | `pf3` is similar to `pf`; the difference is that `pf3` works on trigram phrases. |
+
+## FAQs
+
+If there is `fq` in the main query, how is it matched with the correct aggregated signal?
+
+In this case, you need to use the `lw.rec.fq` query parameter in the main query. `lw.rec.fq` can be parsed by the Boost with Signals stage, and therefore the filters specified in it can be added to the Solr query that is retrieving the aggregated signals.
+
+For example, if we have filter query param `fq=format:CD&fq=name:Latin`, this needs to be translated into `lw.rec.fq=filters_s:"format:cd $ name:latin"`. Values must be lowercase. The final main query should be:
+
+```
+http://localhost:8764/api/apollo/apps/demo_app/query-pipelines/demo_app/collections/demo_app/select?echoParams=all&wt=json&json.nl=arrarr&sort&start=0&q=apple&debug=true&rows=10&lw.rec.fq=filters_s:"format:cd $ name:latin"
+```
+
+Now the Boost with Signals stage will only retrieve aggregated signals that have the same filter query.
+
+<Note>
+If there are multiple `fq` values (for example, `format:cd` and `name:latin`), they are ordered alphabetically as strings and joined with " $ " (a $ with a space on each side). In the example, `"format:cd $ name:latin"`.
+</Note>
+
+What if my aggregated signals are in a different collection?
+
+You can point the Boost with Signals stage to a different signal collection by adding a `collection` parameter in the `Solr Query Parameters` section.
+
+<Frame>![BwS collection](/assets/images/4.2/BwS_collection.png)</Frame>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/boost-with-signals.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,153 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to run a python/pyspark job",
+  "properties": {
+    "envOptions": {
+      "description": "Set environment variables for driver",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "ENV properties",
+      "type": "array"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "javaOptions": {
+      "description": "Java options to pass to Spark driver/executor",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Java options",
+      "type": "array"
+    },
+    "pythonFiles": {
+      "description": "Blob resource (.zip, .egg, .py files) to place on the PYTHONPATH for Python apps",
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "Python Files",
+      "type": "array"
+    },
+    "resourceName": {
+      "blobType": "file:spark",
+      "description": "Name of the resource uploaded to Blob store. This should match with the Blob name",
+      "minLength": 1,
+      "reference": "blob",
+      "title": "Blob Resource (python file)",
+      "type": "string"
+    },
+    "script": {
+      "description": "Custom python/pyspark script to be submitted as a Fusion job",
+      "hints": [
+        "code/python",
+        "lengthy"
+      ],
+      "minLength": 1,
+      "title": "Python Script",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "submitArgs": {
+      "description": "Additional options to pass to the Spark Submit when running this job.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      },
+      "title": "Spark args",
+      "type": "array"
+    },
+    "type": {
+      "default": "custom_python_job",
+      "enum": [
+        "custom_python_job"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "verboseReporting": {
+      "default": true,
+      "description": "Enables verbose reporting for SparkSubmit",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Verbose reporting",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "id",
+    "type"
+  ],
+  "title": "Custom Python Job",
+  "type": "object"
+}

@@ -1,0 +1,76 @@
+---
+title: "Connector Plugins Repository API"
+description: "Managed Fusion Connectors APIs"
+permalink: "czuxv5"
+---
+
+The Connector Plugins Respository API lists plugins from the built-in plugin repository.
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+When you install a connector or plug-in in Managed Fusion, you do not need to supply the .zip file. The installation obtains the .zip file from the repository.
+</Note>
+
+## Examples
+
+The examples below use the following parameter values:
+
+| Parameter | Value |
+| --- | --- |
+| **User** | `admin` |
+| **Password** | `Password123` |
+| **Cluster** | `http://EXAMPLE_COMPANY.b.lucidworks.cloud` |
+
+Change these values if you are using the example commands.
+
+### Listing plugins
+
+<Note>
+A plugin’s `version` and `sdkVersion` value depends on the connector’s [platform version](/fusion-connectors/24/concepts#v1-and-v2-platform-versions) and update history. You might encounter a plugins with very different `version` values, such as `2.1.0` and `5.2.0`. The variance in versioning is expected.
+</Note>
+
+**All plugins**
+
+```bash
+curl -u USERNAME:PASSWORD {cluster}/connectors/repository
+[ {
+  "id" : "lucidworks.fs",
+  "version" : "2.1.0",
+  "sdkVersion" : "2.0.0",
+  "location" : "com/lucidworks/connector/plugins/lucidworks.connector.fs/2.1.0/lucidworks.connector.fs-2.1.0.zip"
+},
+{
+  "id" : "lucid.twitter-search",
+  "version" : "5.2.0",
+  "sdkVersion" : "5.2.0",
+  "location" : "com/lucidworks/connector/plugins/lucid.twitter-search/5.2.0/lucid.twitter-search-5.2.0.zip"
+},
+{
+  ...
+} ]
+
+```
+
+**Specific plugin**
+
+```bash
+curl -u USERNAME:PASSWORD {cluster}/connectors/repository?name=lucidworks.fs
+[ {
+  "id" : "lucidworks.fs",
+  "version" : "2.1.0",
+  "sdkVersion" : "2.0.0",
+  "location" : "com/lucidworks/connector/plugins/lucidworks.connector.fs/2.1.0/lucidworks.connector.fs-2.1.0.zip"
+} ]
+
+```
+
+**Invalid plugin**
+
+If you attempt to list an invalid plugin name, the output will appear as follows:
+
+```bash
+curl -u USERNAME:PASSWORD {cluster}/connectors/repository?name=lucidworks.asd
+[ ]
+
+```

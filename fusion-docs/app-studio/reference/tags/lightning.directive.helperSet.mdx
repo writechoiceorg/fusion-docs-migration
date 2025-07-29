@@ -1,0 +1,44 @@
+---
+title: "helper:set"
+permalink: "1178"
+---
+
+## Description
+
+The Set directive sets a variable in the view to a new variable in the
+view controller.
+
+## Usage
+
+as element:
+
+```xml
+<helper:set
+       var="{string}"
+       value="{string}">
+</helper:set>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| var | **string** | The name of the new variable |
+| value | **string** | The variable to copy |
+
+## Example
+
+#### Source
+
+```xml
+<helper:set var="myText" value="'My Text Result'"></helper:set>
+<p><strong>myText:</strong> {{myText}}</p>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/helperSet.png)</Frame>

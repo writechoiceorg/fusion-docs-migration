@@ -1,0 +1,41 @@
+---
+title: "AWS S3 V1"
+description: "Connector Configuration Reference"
+permalink: "52"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.3.5
+
+The AWS S3 V1 Connector can access AWS S3 buckets in native format.
+
+<Note>
+
+Deprecation and removal notice
+
+This connector is deprecated as of Fusion 5.2 and is removed or expected to be removed as of Fusion 5.5. Use the AWS S3 V2 connector instead.
+
+For more information about deprecations and removals, including possible alternatives, see [Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+
+</Note>
+
+
+
+The connector uses the S3 API to request data from S3. It calls the `listBucket` service, which lists all buckets owned by the user account supplied to the connector.
+
+When creating an S3 data source using the UI, Fusion automatically verifies that the user information supplied has access to the bucket defined in the URL property. If the bucket is not in the list returned by S3, data source creation may fail. At crawl time, if the bucket is not in the list returned by S3, the crawl fails.
+
+Permission errors when trying to create or crawl the data source may be caused by incorrect username or password, or they may be due to user account permissions. The user account must have List Bucket permissions for the account which owns the bucket that the crawler is trying to access.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-s3.mdx";
+
+<SchemaParamFields schema={schema}/>
+

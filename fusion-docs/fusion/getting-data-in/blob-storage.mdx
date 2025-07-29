@@ -1,0 +1,77 @@
+---
+title: "Blob Storage"
+permalink: "153"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+
+Fusion accepts large binary objects (blobs) for upload, and stores them in Solr. Blob uploads are used to install models, lookup lists, JDBC drivers, and more.
+
+## Blob Types
+
+A `resourceType` query parameter can be used to specify the blob type. For example, specify `file` when uploading a text or CSV file, like this:
+
+```bash
+curl -H 'Content-Type: text/csv' -u USERNAME:PASSWORD -X PUT 'https://FUSION_HOST:FUSION_PORT/api/apps/APP_NAME/blobs/quickstart/EXAMPLE.csv?resourceType=file' --data-binary @/path/EXAMPLE.csv
+```
+
+The complete list of valid values for `resourceType` is below:
+
+| Type | Description |
+| --- | --- |
+| `banana` | A Banana [dashboard](/fusion/5.9/139/dashboards) |
+| `catalog` | An [analytics catalog](/fusion/5.9/329/catalog-api) |
+| `driver:jdbc` | A [JDBC driver](/how-to/916/upload-a-jdbc-driver-to-fusion-server) |
+| `file:js-index` | A JavaScript file for use with a [Managed Javascript index stage](/fusion/5.9/217/managed-java-script-index-stage) |
+| `file:js-query` | A JavaScript file for use with a [Managed Javascript query stage](/fusion/5.9/258/managed-java-script-stage) |
+| `file` | Any uploaded file, such as from the [Quickstart](/how-to/660/quickstart) or the [Index Workbench](/fusion/5.9/158/index-workbench) |
+| `model:open-nlp` | An [OpenNLP model](/fusion/5.9/221/open-nlp-ner-extraction-index-stage) |
+| `unspecified` | A blob of unknown type  If no `resourceType` is specified on upload, "other" is assigned by default. |
+| `plugin:index-stage` | An [index stage plugin](/fusion/5.9/159/index-stage-sdk) |
+| `plugin:query-stage` | A [query stage plugin](/fusion/5.9/hbu2ug/query-stage-sdk) |
+
+## The Blob manager
+
+In addition to the [Blob Store API](/fusion/5.9/305/blob-store-api), the Fusion UI provides an interface to the blob store in the [Fusion workspace](/fusion/5.9/116/fusion-ui-tour#workspace) at **System** > **Blobs**.
+
+* Click **Add** to upload a new blob.
+* Select an uploaded blob to view, replace, or delete it.
+* Click **Add** to upload a new blob.
+* Select an uploaded blob to view, replace, or delete it.
+
+### Blob editor
+
+The blob editor gives the ability to edit blobs in the Fusion UI in a variety of formats:
+
+* CSV
+* Java
+* JavaScript
+* Python
+* SCALA
+* Typescript
+* Plain text
+
+Navigate to **System > Blobs**, select a blob, and click the **Edit blob** button to open the editor:
+
+<Frame>![Edit blob button](/assets/images/5.2/blobs-json-edit.png)</Frame>
+
+<Note>
+* If the **Edit blob** button is not available, the blob type cannot be edited with the blob editor.
+* For Fusion 5.4.x and later, JavaScript can be edited directly in the Fusion UI.
+</Note>
+
+
+
+The editor has several elements worth noting:
+
+| Elements | Description |
+| --- | --- |
+| <InlineImage src="/assets/images/5.2/json-editor/copy.png"/> | Copies the JSON to the clipboard. |
+| <InlineImage src="/assets/images/5.2/json-editor/paste.png"/> | Pastes the clipboard into the editor. Only valid JSON is accepted. |
+| <InlineImage src="/assets/images/5.2/json-editor/expand.png"/> | Expands the editor to a fullscreen view. |
+| <InlineImage src="/assets/images/5.2/json-editor/condense.png"/> | Condenses the editor to a compact view. |
+| <InlineImage src="/assets/images/5.2/json-editor/save.png"/> | Saves the JSON in the editor and updates the blob. |
+| <InlineImage src="/assets/images/5.2/json-editor/reset.png"/> | Resets changes made since the last time changes were applied. |
+
+For instructions, see [Use the Blob Editor](/how-to/3302/use-the-blob-editor).

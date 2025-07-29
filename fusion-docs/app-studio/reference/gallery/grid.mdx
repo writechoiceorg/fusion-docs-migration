@@ -1,0 +1,345 @@
+---
+title: "Grid"
+permalink: "1032"
+---
+
+## Grid System
+
+| API | Device width when breakpoint overrides default |
+| --- | --- |
+| default | Sets default layout direction unless overridden by another breakpoint. |
+| @xs-width | width < 35.5 em |
+| @sm-width | 600 em ⇐ width < 35.5 em |
+| @md-width | 35.5 em ⇐ width < 48 em |
+| @lg-width | 48 em ⇐ width < 64 em |
+| @xl-width | width >= 80 em |
+
+Twigkit uses a response 24 column grid system. The column widths are specified using a ratio of 24ths.
+
+For example at the attribute `sm="1-3"` to the `layout:block` tag to set the width to 1/3 of the container width on small screens.
+
+By default `layout:blocks` will be 100% width.
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid02.png)</Frame>
+
+```xml
+<layout:grid styling="text-white">
+    <layout:block xs="1"><layout:box styling="bg-raspberry-dark">1 (Default)</layout:box></layout:block>
+    <layout:block xs="23-24"><layout:box styling="bg-raspberry">23-24</layout:box></layout:block>
+    <layout:block xs="7-8"><layout:box styling="bg-raspberry-light">7-8</layout:box></layout:block>
+    <layout:block xs="5-6"><layout:box styling="bg-strawberry-light">5-6</layout:box></layout:block>
+    <layout:block xs="4-5"><layout:box styling="bg-strawberry">4-5</layout:box></layout:block>
+    <layout:block xs="3-4"><layout:box styling="bg-strawberry-dark">3-4</layout:box></layout:block>
+    <layout:block xs="2-3"><layout:box styling="bg-carrot">2-3</layout:box></layout:block>
+    <layout:block xs="1-2"><layout:box styling="bg-carrot-light">1-2</layout:box></layout:block>
+</layout:grid>
+```
+
+## Grid Breakpoints
+
+Widths can be specified for each of the `xs`, `sm`, `md`, `lg`, and `xl` breakpoints individually.
+
+`lg`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid03a.png)</Frame>
+
+`md`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid03b.png)</Frame>
+
+`sm`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid03d.png)</Frame>
+
+```xml
+<layout:grid styling="text-white">
+    <layout:block xs="1">
+        <layout:box styling="bg-sunflower">Always full width</layout:box>
+    </layout:block>
+    <layout:grid>
+        <layout:block xl="1-3" md="1-2">
+            <layout:box styling="bg-pumpkin-light">xl=1-3, md=1-2</layout:box>
+        </layout:block>
+        <layout:block xl="1-3" md="1-2">
+            <layout:box styling="bg-pumpkin">xl=1-3, md=1-2</layout:box>
+        </layout:block>
+        <layout:block xl="1-3" md="1">
+            <layout:box styling="bg-pumpkin-dark">xl=1-3, md=1</layout:box>
+        </layout:block>
+    </layout:grid>
+</layout:grid>
+```
+
+## Grid Offsets
+
+An offset attribute can be used to push the `layout:block` to the right, leaving an empty space
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid04.png)</Frame>
+
+```xml
+<layout:grid styling="text-white">
+    <layout:block xs="1">
+        <layout:box styling="bg-mint">Always full width</layout:box>
+    </layout:block>
+    <layout:grid>
+        <layout:block xl="1-3" md="1-2">
+            <layout:box styling="bg-mint-light">xl=1-3, md=1-2</layout:box>
+        </layout:block>
+        <layout:block xl="1-3" md="1-2" xl-offset="1-3">
+            <layout:box styling="bg-mint">xl=1-3 xl-offset=1-3, md=1-2</layout:box>
+        </layout:block>
+    </layout:grid>
+    <layout:grid>
+        <layout:block xs="1-2" xs-offset="1-4" sm-offset="1-2" md-offset="0">
+            <layout:box styling="bg-aqua">No offset md and above</layout:box>
+        </layout:block>
+    </layout:grid>
+    <layout:grid>
+        <layout:block xs="1-2" sm-offset="1-4">
+            <layout:box styling="bg-aqua-dark">Offset at sm and above</layout:box>
+        </layout:block>
+    </layout:grid>
+</layout:grid>
+```
+
+## Nested
+
+Standard Button
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid06.png)</Frame>
+
+```xml
+<layout:grid styling="text-white">
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-aqua-light">
+            .tk-rgrid-u-1 <br>
+            .tk-rgrid-u-sm-1-2 <br>
+            .tk-rgrid-u-md-1-4 <br>
+        </layout:box>
+    </layout:block>
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-sky-light">
+            .tk-rgrid-u-1 <br>
+            .tk-rgrid-u-sm-1-2 <br>
+            .tk-rgrid-u-md-1-4 <br>
+        </layout:box>
+    </layout:block>
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-sky">
+            .tk-rgrid-u-1 <br>
+            .tk-rgrid-u-sm-1-2 <br>
+            .tk-rgrid-u-md-1-4 <br>
+        </layout:box>
+    </layout:block>
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-sky-dark">
+            .tk-rgrid-u-1 <br>
+            .tk-rgrid-u-sm-1-2 <br>
+            .tk-rgrid-u-md-1-4 <br>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+```
+
+## Image
+
+Standard Button
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid07.png)</Frame>
+
+```xml
+<layout:grid>
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-paper">
+            <p>
+                .tk-rgrid-u-1 <br>
+                .tk-rgrid-u-sm-1-2 <br>
+                .tk-rgrid-u-md-1-4 <br>
+            </p>
+        </layout:box>
+    </layout:block>
+    <layout:block xs="1-1" sm="1-2" md="1-4">
+        <layout:box styling="bg-paper-dark">
+            <p>
+                .tk-rgrid-u-1 <br>
+                .tk-rgrid-u-sm-1-2 <br>
+                .tk-rgrid-u-md-1-4 <br>
+            </p>
+        </layout:box>
+    </layout:block>
+    <layout:block xs="1-1" sm="1-2" md="2-4">
+        <layout:box styling="bg-paper">
+            <p>
+                .tk-rgrid-u-sm-1-2 <br>
+                .tk-rgrid-u-md-2-4 <br>
+            </p>
+            <layout:grid>
+                <layout:block sm="1-1" md="1-2">
+                    <layout:box styling="bg-paper-light">
+                        <p>
+                            .tk-rgrid-u-1 <br>
+                            .tk-rgrid-u-md-1-2 <br>
+                        </p>
+                    </layout:box>
+                </layout:block>
+                <layout:block sm="1-1" md="1-2">
+                    <layout:box styling="bg-paper-dark">
+                        <p>
+                            .tk-rgrid-u-1 <br>
+                            .tk-rgrid-u-md-1-2 <br>
+                        </p>
+                    </layout:box>
+                </layout:block>
+            </layout:grid>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+```
+
+## Justify Content
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid08.png)</Frame>
+
+```xml
+<layout:grid>
+    <layout:block styling="center-content bg-raspberry text-white" md="1-2">
+        <p>Long content</p>
+        <br><br><br><br><br><br><br>
+    </layout:block>
+    <layout:block md="1-2">
+        <div styling="stretch-content">
+            <layout:block styling="center-content bg-strawberry text-white" md="1-2">item 1</layout:block>
+            <layout:block styling="center-content bg-carrot text-white" md="1-2">item2</layout:block>
+            <layout:block styling="center-content bg-pumpkin text-white full-width">item 3</layout:block>
+        </div>
+    </layout:block>
+</layout:grid>
+```
+
+## Hide
+
+You can hide the layout by using hide or show at your desire size point `styling="hide-xs"`
+
+`xl`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid09a.png)</Frame>
+
+`md`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid09b.png)</Frame>
+
+`xs`
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid09d.png)</Frame>
+
+```xml
+<layout:grid>
+    <layout:block md="1-5" styling="hide-xs bg-concrete-light">
+        <layout:box>hide @xs-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="hide-sm bg-concrete">
+        <layout:box>hide @sm-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="hide-md bg-concrete-dark">
+        <layout:box>hide @md-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="hide-lg bg-asphalt-light">
+        <layout:box>hide @lg-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="hide-xl bg-asphalt">
+        <layout:box>hide @xl-width</layout:box>
+    </layout:block>
+</layout:grid>
+
+<layout:grid>
+    <layout:block md="1-5" styling="show-xs bg-pink-light">
+        <layout:box>show @xs-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="show-sm bg-pink">
+        <layout:box>show @sm-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="show-md bg-pink-dark">
+        <layout:box>show @md-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="show-lg bg-lavender">
+        <layout:box>show @lg-width</layout:box>
+    </layout:block>
+    <layout:block md="1-5" styling="show-xl bg-lavender-dark">
+        <layout:box>show @xl-width</layout:box>
+    </layout:block>
+</layout:grid>
+```
+
+## Alignments
+
+Default (Stretch)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid10.png)</Frame>
+
+Align All Items Top (`.tk-rgrid-align-top`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid11.png)</Frame>
+
+Align All Items Bottom (`.tk-rgrid-align-bottom`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid12.png)</Frame>
+
+Align All Items Middle (`.tk-rgrid-align-middle`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid13.png)</Frame>
+
+Stretch All Items (`.tk-rgrid-align-stretch`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid14.png)</Frame>
+
+Item Alignment Overrides
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid15.png)</Frame>
+
+## Justify Items
+
+Default, Align items to the start (`.tk-rgrid-justify-start`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid16.png)</Frame>
+
+Align items to the end of the container (`.tk-rgrid-justify-end`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid17.png)</Frame>
+
+Center items (`.tk-rgrid-justify-center`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid18.png)</Frame>
+
+Even spacing around items (`.tk-rgrid-justify-around`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid19.png)</Frame>
+
+Even spacing between items (`.tk-rgrid-justify-between`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid20.png)</Frame>
+
+Combination
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid21.png)</Frame>
+
+## Container Direction
+
+Row - Default (`.tk-rgrid-direction-row`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid22.png)</Frame>
+
+Row Reverse (`.tk-rgrid-direction-row-reverse`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid23.png)</Frame>
+
+Column (`.tk-rgrid-direction-col`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid24.png)</Frame>
+
+Column Reverse (`.tk-rgrid-direction-col-reverse`)
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid25.png)</Frame>
+
+## Offsets
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/grid26.png)</Frame>

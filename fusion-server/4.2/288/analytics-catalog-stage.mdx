@@ -1,0 +1,17 @@
+---
+title: "Analytics Catalog Stage"
+permalink: "288"
+---
+
+The Analytics Catalog query pipeline stage lets you define views of data stored in Fusion collections. You can query the objects in the Analytics Catalog using SQL, [Solr Streaming Expressions](https://cwiki.apache.org/confluence/display/solr/Streaming+Expressions), or regular Solr queries. See also the [Catalog API](/fusion-server/4.2/329/catalog-api).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/analytics-catalog-query.mdx";
+
+<SchemaParamFields schema={schema}/>

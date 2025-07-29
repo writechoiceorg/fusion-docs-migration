@@ -1,0 +1,111 @@
+export const schema = {
+  "type": "object",
+  "title": "File Upload",
+  "description": "A connector that can crawl a single file that has been uploaded through Fusion's Blob Store.",
+  "required": [
+    "parserId",
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Filesystem",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser",
+      "description": "Parser used when parsing raw content. For some connectors, a configuration to 'retry' parsing if an error occurs is available as an advanced setting",
+      "default": "_system"
+    },
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "A connector that can crawl a single file that has been uploaded through Fusion's Blob Store.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "fileId"
+      ],
+      "properties": {
+        "fileId": {
+          "type": "string",
+          "title": "File ID",
+          "description": "The file ID of the blob record that stores this file.",
+          "minLength": 1,
+          "reference": "blob",
+          "blobType": "file"
+        },
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "mediaType": {
+          "type": "string",
+          "title": "File Media Type",
+          "description": "The Media type (aka, MIME type or Content-Type) to associate this file with. Useful during file parsing",
+          "default": "application/octet-stream"
+        }
+      }
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

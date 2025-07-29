@@ -1,0 +1,86 @@
+---
+title: "Stored Parameters Collection"
+permalink: "172"
+---
+
+A Stored Parameters collection contains lists of parameters, where each list is has a unique identifier called a "key".
+These lists of parameters can be plugged into Fusion query pipelines. The Stored Parameters facility provides a
+mapping layer between the keys and specific actions carried during search and is somewhat similar to database triggers
+or stored procedures. The use for this collection is to store Solr facet parameters for a particular document or product category, where
+the facet parameters are stored as a JSON object.
+An example of what the input JSON is shown in a section below.
+
+A Stored Parameters collection is an auxiliary Fusion collection which is associated with a primary collection via naming conventions:
+for a primary collection, the name of the associated Stored Parameters collection consists of the name of the primary collection plus the suffix "_stored_parameters".
+
+In the Fusion UI, Stored Parameter collections are not displayed in the list of collections in the Collections Admin panel,
+nor are there controls on the UI for creating or populating these collections; all collection administration is done via calls
+to the REST API.
+
+## Stored Parameters for Facets
+
+* An existing facets configuration can be converted into the required format via a once-off custom script (e.g. written by Lucidworks solution engineers or by a customer’s technical team).
+* Note that if a caller wants particular behavior e.g. specifying that all results should be from a given category, then it is up to them to specify that in their original request (e.g. using a filter query "fq" setting).
+* A new Stored Parameter Query Stage can then be used in a query pipeline to add the required parameters for a given key (e.g. a category ID).
+
+## Stored Parameters Example
+
+The following example shows how faceting can be carried out over a hierarchy of categories and subcategories where there
+are many known subcategory-specific attributes to query on.
+The example data is taken from the Best Buy product catalog data.
+
+In this list of stored parameter objects, the set of fields used are:
+
+* "id" : record ID (or "key" in the sense of a "Key-Value" store) of the category to facet on.
+* "label_s" : human-readable label for this record, i.e., the category name
+* "in_ids_ss" : parent categories, if an intermediate category in a category hierarchy. Intended use is in traversing a directed graph of categories.
+* "out_ids_ss" : child categories, if an intermediate category in a category hierarchy. Intended use is in traversing a directed graph of categories.
+* "parameters_ss" : list of arbitrary Solr parameters that can be used to construct a query that is relevant for the entity described by this record. In this example, it is the list of facet parameters to use for this specific category.
+
+```json
+[
+    {"id": "abcat0600000",
+      "label_s": "Movies & Music",
+      "in_ids_ss": ["cat00000"],
+      "out_ids_ss": ["cat02001", "cat02015"] },
+    { "id": "cat02001",
+      "label_s": "Music",
+      "in_ids_ss": ["abcat0600000"],
+      "out_ids_ss": ["cat02673", "cat02012", "cat02004"] },
+    { "id": "cat02010",
+      "label_s": "Rock",
+      "in_ids_ss": ["cat02001"],
+      "out_ids_ss": ["cat02673", "cat02687", "cat02661", "cat02662", "cat02675", "cat02678", "cat02680"],
+      "parameters_ss": ["facet.field=attr_format_", "facet.field=attr_albumLabel_", "facet.field=attr_genre_"] },
+    { "id": "cat02673",
+      "label_s": "Hard Rock",
+      "in_ids_ss": ["cat02010"],
+      "parameters_ss": ["facet.field=attr_format_", "facet.field=attr_albumLabel_", "facet.field=attr_genre_"] },
+    { "id": "abcat0208001",
+      "label_s": "Batteries" },
+    { "id": "abcat0208002",
+      "label_s": "Alkaline Batteries",
+      "in_ids_ss": ["abcat0208001"],
+      "parameters_ss": ["facet.field=attr_hardGoodType_"] }
+]
+```
+
+## Direct Access and Navigation
+
+A caller can query the `COLLECTION_NAME_stored_parameters` system collection directly.
+
+For example, a Solr request to get the human-readable label stored in field "label_s" for a specific category ID is:
+
+```
+`http://127.0.0.1:8983/solr/COLLECTION_NAME_stored_parameters/query?q=id:<category_id>&fl=label_s`
+```
+
+Direct access allows for navigation up and down a hierarchy of categories by listing incoming and outgoing links that specify a category’s location.
+For example, the Solr requests to find the parent(s) and children of a given category, respectively, are:
+
+```
+`http://127.0.0.1:8983/solr/COLLECTION_NAME_stored_parameters/query?q=id:<category_id>&fl=in_ids_ss`
+`http://127.0.0.1:8983/solr/COLLECTION_NAME_stored_parameters/query?q=id:<category_id>&fl=out_ids_ss`
+```
+
+Note that this kind of "graph navigation" can become inefficient if it requires submitting a large number of queries to navigate up and down the hierarchy.

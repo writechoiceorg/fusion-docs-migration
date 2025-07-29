@@ -1,0 +1,23 @@
+---
+title: "Apache Tika Parser Index Stage"
+permalink: "207"
+---
+
+The Apache Tika Parser index stage type includes rules for parsing documents with [Apache Tika](http://tika.apache.org/).
+Fusion uses Tika v1.13.
+(Note that components of the Solr distribution included with Fusion contian their own Tika jar files; these are not used by Fusion.)
+
+## Compatibilty Issues
+
+Raw streams create new docs which Tika then tries to parse again. For this reason, avoid using the SDK connector or any other client that streams to the index pipeline.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/apache-tika-parser-deprecated.mdx";
+
+<SchemaParamFields schema={schema}/>

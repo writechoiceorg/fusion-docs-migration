@@ -1,0 +1,71 @@
+---
+title: "Jobs and Scheduling"
+permalink: "184"
+---
+
+A *job* is a runnable Fusion object that performs a specific activity. Datasource jobs, Spark jobs, and tasks are all types of jobs. Examples of the activities include:
+
+* Aggregating signal data
+* Training a shallow neural model and projecting each document onto the resulting vector embedding space
+* Loading data into a data source
+
+## Job types
+
+Each job type is a type of Fusion object that you can run or schedule to be run.
+
+|  |  |
+| --- | --- |
+| `datasource` | A job to ingest data according to the specified datasource configuration, such as `datasource:movie-db`. Datasources are created using the [Connector Datasources API](/fusion/5.9/353/connector-datasources-api) or the Fusion UI.  See [Datasource Jobs](/fusion/5.9/186/datasource-jobs). |
+| `spark` | A Spark job to process data, such as `spark:dailyMetricsRollup-counters`. Spark jobs are created using the [Spark Jobs API](/fusion/5.9/312/spark-jobs-api) or the Fusion UI.  See [Spark Jobs](/fusion/5.9/187/spark-jobs). |
+| `task` | A job to perform an HTTP call or log cleanup, such as `task:delete-old-system-logs`. Tasks are created using the Fusion UI.  See [Tasks](/fusion/5.9/183/tasks). |
+
+## The Jobs manager
+
+The Jobs manager, available in the Fusion workspace at **Collections** > **Jobs**, provides a simple interface for viewing and scheduling jobs. You can also create tasks and Spark jobs here.
+
+<Note>
+You cannot create, run, or schedule datasource jobs in the Jobs manager. You must create them on the Datasources page, in the Index Workbench, or in the Quickstart. To run a datasource job, use the [scheduler](/fusion/5.9/185/fusion-schedules#the-scheduler).
+</Note>
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Managing and Scheduling Jobs** focuses on how to create, configure, and schedule jobs using the Fusion UI:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/managing-and-scheduling-jobs" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/managing-and-scheduling-jobs.jpg" alt="Managing and Scheduling Jobs" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Jobs and Scheduling** focuses on some of the most common jobs in Fusion:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/jobs-and-scheduling" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/jobs-and-scheduling.jpeg" alt="Jobs and Scheduling" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

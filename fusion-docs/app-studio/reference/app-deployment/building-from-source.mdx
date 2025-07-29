@@ -1,0 +1,197 @@
+---
+title: "Building from Source"
+permalink: "3140"
+---
+
+Appkit can either be deployed as a simple web application archive (.war) file — [see Installing Appkit](/how-to/3073/deploying-a-war-file) — or as a Java Web Application built using [Maven](http://maven.apache.org), as described in this article.
+
+## Install Java 1.8 JDK, Git and Maven for your platform
+
+1. [Download](https://www.oracle.com/java/technologies/javase-jdk8-downloads.html) and install the Oracle (SUN) Java SE JDK 1.8.
+2. Install [npm 9.0.2](https://www.npmjs.com/get-npm).
+3. Configure Maven by saving the following `settings.xml` file in your Maven configuration folder within your App Studio Enterprise project (`/bin/settings.xml`). See the [Maven Settings Reference](http://maven.apache.org/settings.html) for more information.
+
+    ```xml
+    <?xml version="1.0"?>
+    <!-- Credentials for Twigkit repositories -->
+    <settings xmlns="http://maven.apache.org/SETTINGS/1.1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.1.0 http://maven.apache.org/xsd/profile-1.1.0.xsd">
+        <servers>
+            <server>
+                <id>twigkit.com</id>
+                <username>evaluator</username>
+                <password>AP6YhQQWq5cqu85Eu5JwMZnJk48</password>
+            </server>
+            <server>
+                <id>twigkit.com-releases</id>
+                <username>evaluator</username>
+                <password>AP6YhQQWq5cqu85Eu5JwMZnJk48</password>
+            </server>
+            <server>
+                <id>twigkit.com-snapshots</id>
+                <username>evaluator</username>
+                <password>AP6YhQQWq5cqu85Eu5JwMZnJk48</password>
+            </server>
+        </servers>
+
+        <profiles>
+            <profile>
+                <id>twigkit-default</id>
+
+                <!-- Artifact repositories -->
+                <repositories>
+                    <repository>
+                        <id>twigkit.com</id>
+                        <name>Twigkit</name>
+                        <url>https://twigkit.jfrog.io/twigkit/repo</url>
+                        <releases>
+                        </releases>
+                        <snapshots>
+                        </snapshots>
+                    </repository>
+                </repositories>
+
+                <!-- Plugin repositories -->
+                <pluginRepositories>
+                    <pluginRepository>
+                        <id>twigkit.com</id>
+                        <name>Twigkit</name>
+                        <url>https://twigkit.jfrog.io/twigkit/repo/</url>
+                        <releases>
+                            <enabled>true</enabled>
+                            <updatePolicy>never</updatePolicy>
+                            <checksumPolicy>warn</checksumPolicy>
+                        </releases>
+                        <snapshots>
+                            <enabled>true</enabled>
+                            <updatePolicy>always</updatePolicy>
+                            <checksumPolicy>warn</checksumPolicy>
+                        </snapshots>
+                    </pluginRepository>
+                </pluginRepositories>
+
+            </profile>
+        </profiles>
+
+        <activeProfiles>
+            <activeProfile>twigkit-default</activeProfile>
+        </activeProfiles>
+    </settings>
+    ```
+
+## Download App Studio Enterprise
+
+Go to the [App Studio Enterprise download page](/app-studio/4.2/994/app-studio-enterprise) and download the latest copy.
+
+## Run the web application
+
+After you have downloaded the Git project, you can run the application using the included start scripts. Enter this command from the project folder:
+
+```bash
+./app-studio start
+```
+
+Or, for Windows:
+
+```bash
+app-studio.bat start
+```
+
+After the application has started, you can access it from your browser at `http://localhost:8080/`.
+
+## Package the web application
+
+To package the web application for deployment (rather than run it locally), you can run this command from the project folder:
+
+```bash
+./app-studio package
+```
+
+Or, for Windows:
+
+```bash
+app-studio.bat package
+```
+
+This will generate a web application archive file (.war) in the target/ folder. You can then deploy the generated package as described in [Deploying an Appkit .war file](/how-to/3073/deploying-a-war-file).
+
+Appkit also supports creating self-starting applications which bundle the application server. When you package the application a self-starting archive is also created:
+
+In the `/target` folder you will find both the WAR file and the self-starting one, for example, `app-studio-enterprise.jar` (note the .jar suffix). To run the application use:
+
+```bash
+java -jar app-studio-enterprise.jar
+```
+
+## Use build profiles to package the web application for different runtime environments
+
+Often the only differences between applications deployed to different environments are in the resources, that is, configuration settings, security configuration, or in the license key that is used. To facilitate these differences Appkit also provides the capability to configure which runtime environment you want to deploy to when packaging an application for distribution.
+
+To configure an application for different environments, the resources to be deployed to a particular environment are stored in `src/main/profiles/<environment>` in the source code tree. The assumption being that the main source tree will continue to contain all the resources intended for the `production` build of the application (that is, `src/main/resources`). For example, to configure an application for use in three different environments, in this case `dev`, `staging`, and eventually `production`, the source tree could be set up as follows:
+
+```
+/src
+    /main
+        /profiles
+            /dev
+                /conf
+                spring-security.xml
+                twigkit.lic
+            /staging
+                twigkit.lic
+        /java
+        /resources << here is where the resources will be stored for the production build
+```
+
+To package an application with a particular build profile, the profile name is given with the `-P` flag. For example, to deploy to the `dev` environment you would use this command:
+
+```bash
+./app-studio package -P dev
+```
+
+Prior to packaging, the contents of the build profile directory are merged with the resources under the main resources directory, overwriting any existing files, and including any additional files. This does not change any of the resources stored under the main resources directory, intended for the `production` build. The profile resources are only merged with main resources in the pre-packaging phase of the build after they are in the `target/classes` directory.
+
+After the application has been packaged, the war and jar files associated with that particular application profile will be stored under the application’s `dist/<environment>` directory where `<environment>` is the name given to the build profile. For example:
+
+```
+/dist
+    /dev
+        <application-name>.jar
+        <application-name>.war
+    /staging
+        <application-name>.jar
+        <application-name>.war
+    <application-name>-1.0-SNAPSHOT.jar << both this and the war file below are for the production build
+    <application-name>.war
+```
+
+Here, you can see that the application has been packaged for three different environments. One for the `dev` environment, another for the `staging` environment, and finally one for the `production` environment. The `<application-name>` would be replaced by the name of the application. The application version number is appended to the production jar file.
+
+To test a profile locally, you can use its self-starting archive JAR file. To run the application, navigate to the directory the JAR file is in and use this command:
+
+```bash
+java -jar <application-name>.jar
+```
+
+Again replacing `<application-name>` with the actual name of the application.
+
+### Develop a Maven build profile by overlaying configurations
+
+Together with configuring different build profiles for different runtime environments, Appkit also offers the ability to [overlay configurations](/how-to/3073/deploying-a-war-file) via the Jetty Maven plugin. This can be very useful when you want to test whether specific values can be used in the build profile prior to deployment.
+
+By default, when a build profile is run via the Jetty Maven plugin, a default overlay will also be used if it is placed in `src/dev/resources/conf`:
+
+```bash
+mvn clean jetty:run -Pdevelopment -Dtwigkit.profile=dev
+```
+
+However, if the path to the overlay is different it can still be picked up by adding the system parameter `-Dtwigkit.conf.overlay`:
+
+```bash
+mvn clean jetty:run -Pdevelopment -Dtwigkit.profile=dev -Dtwigkit.conf.overlay="file://src/dev/my_resources/conf”
+```
+
+In terms of merge order, the build profile is merged first followed by the overlay. So you will see in the final loaded configuration that the overlay takes precedence.
+
+<Note>
+The overlay is purely meant for development. It will not be used when an app is deployed (via `mvn clean package`). During this phase, any resource under the build profile will overwrite the equivalent resource in the main app.
+</Note>

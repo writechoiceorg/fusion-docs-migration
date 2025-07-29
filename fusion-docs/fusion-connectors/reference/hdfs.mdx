@@ -1,0 +1,48 @@
+---
+title: "HDFS V1"
+description: "Connector Configuration Reference"
+permalink: "55"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+[Hadoop Distributed File System (HDFS)](https://hadoop.apache.org/docs/r1.2.1/hdfs_design.html).
+It traverses the Hadoop file system as it would a regular Unix filesystem.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+See also the Hadoop connectors, which use [MapReduce](https://hadoop.apache.org/docs/r1.2.1/mapred_tutorial.html) to distribute the crawl processes. For Fusion 4.x, see the following connectors reference pages:
+
+* [Apache Hadoop 2](/fusion-connectors/82/apache-hadoop-2)
+* [Cloudera](/fusion-connectors/74/cloudera)
+* [Hortonworks](/fusion-connectors/40/hortonworks)
+* [MapR](/fusion-connectors/22/remote-connectors)
+
+When there is a lot of content to process, these MapReduce-enabled connectors will be significantly faster.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-hdfs.mdx";
+
+<SchemaParamFields schema={schema}/>
+

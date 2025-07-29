@@ -1,0 +1,46 @@
+---
+title: "Collection Features API"
+description: "Fusion Admin APIs"
+permalink: "333"
+---
+
+
+The Collection Features API lets you observe the status of features across collections. To manipulate features for a specific collection, use the [Collections API](/fusion/5.9/307/collections-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Features
+
+There are four available features:
+
+| Property | Description |
+| --- | --- |
+| signals | Create a parallel collection for the storage of signals data (such as user clicks, or ratings). Signals will need to be indexed and aggregated in order to be used. See the section on [Signals](/fusion/5.9/469/signals) for more information. |
+| partitionByTime | Partition the corresponding Solr collection by time; see [Time-Based Partitioning](/fusion/5.9/165/time-based-partitioning). |
+| recommendations | Get configuration information about recommendations. Parameters (`params`) are:  `idField`. The document field that contains the document ID.  `itemsForUser`. Whether items-for-user recommendations are enabled (`true`) or disabled (`false`).  `itemsForQuery`. Whether items-for-query recommendations are enabled (`true`) or disabled (`false`).  `itemsForItem`. Whether items-for-query recommendations are enabled (`true`) or disabled (`false`).  `queriesForQuery`. Whether queries-for-query recommendations are enabled (`true`) or disabled (`false`). |
+
+## Examples
+
+*List the status of all features:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/features/status
+```
+
+RESPONSE
+
+```json
+ [ {
+  "name" : "searchLogs",
+  "collectionId" : "demo",
+  "params" : { },
+  "enabled" : false
+}, {
+  "name" : "signals",
+  "collectionId" : "demo",
+  "params" : { },
+  "enabled" : false
+} ]
+```

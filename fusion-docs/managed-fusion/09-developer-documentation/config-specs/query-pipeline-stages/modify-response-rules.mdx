@@ -1,0 +1,26 @@
+---
+title: "Modify Response with Rules"
+description: "Query pipeline stage configuration specifications"
+permalink: "33huzc"
+---
+
+Most rules operate on the request, but some [rule types](/managed-fusion/5.9/tw7rlx/query-rewriting#types), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+See [Rules](/managed-fusion/5.9/tw7rlx/query-rewriting) for additional details about how to configure this set of features.
+
+**TIPS**:
+
+* The [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage) stage must be enabled as a prerequisite for this stage.
+* This stage has no configuration keys; simply enable or disable the stage.
+* Although this stage is available without a Managed Fusion license, it is only effective after creating [rules](/managed-fusion/5.9/tw7rlx/query-rewriting) in Managed Fusion.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/modify-response-with-rules.mdx";
+
+<SchemaParamFields schema={schema}/>

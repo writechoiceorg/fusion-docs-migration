@@ -1,0 +1,21 @@
+---
+title: "Configure Fusion Logging in Fusion 4.0"
+permalink: "671"
+---
+
+Fusion uses the [Apache Log4j 2](http://logging.apache.org/log4j/2.x/manual/index.html) logging framework with Jetty to log each of the Fusion components.
+
+Logging is configured with an XML configuration file named `log4j2.xml`. Log levels, frequencies, and log rotation policy can be configured by changing these configuration files:
+
+|  |  |
+| --- | --- |
+| API service | `https://FUSION_HOST:FUSION_PORT/conf/api-log4j2.xml` |
+| Connectors | `https://FUSION_HOST:FUSION_PORT/conf/connectors-classic-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/connectors-rpc-agent-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/connectors-rpc-log4j2.xml` |
+| Solr | `https://FUSION_HOST:FUSION_PORT/conf/solr-log4j2.xml` |
+| Spark | `https://FUSION_HOST:FUSION_PORT/conf/spark-driver-launcher-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-driver-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-driver-scripted-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-master-agent-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-master-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-worker-agent-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/spark-worker-log4j2.xml` |
+| SQL | `https://FUSION_HOST:FUSION_PORT/conf/sql-agent-log4j2.xml`  `https://FUSION_HOST:FUSION_PORT/conf/sql-log4j2.xml` |
+| UI | `https://FUSION_HOST:FUSION_PORT/conf/admin-ui-log4j2.xml` |
+| ZooKeeper | `https://FUSION_HOST:FUSION_PORT/conf/zk-log4j2.xml` |
+| Other Fusion services | `https://FUSION_HOST:FUSION_PORT/conf/proxy-log4j2.xml` |
+
+The [Log4j2 Configuration](http://logging.apache.org/log4j/2.x/manual/configuration.html) guide provides documentation and examples of all logging configuration options.

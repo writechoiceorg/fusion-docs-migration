@@ -1,0 +1,19 @@
+---
+title: "Query Pipeline Stage Template Expression Variables"
+permalink: "398"
+---
+
+Query stages have the following variables available:
+
+* `ctx`. [Context](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/context): used to pass variables between stages
+* `reqResp`. [QueryRequestAndResponse](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/query/queryrequestandresponse): deserializes pre-request parameters and makes them available
+
+The format required is `<request.q>`.
+
+## Example
+
+Check that a query has an `fq` filter on a given field for a given value:
+
+In the UI, set property name to `ids` and Property Value to `req.hasParam("fq")`
+
+<Frame>![javascript values](/assets/images/4.2/javascript-field.png)</Frame>

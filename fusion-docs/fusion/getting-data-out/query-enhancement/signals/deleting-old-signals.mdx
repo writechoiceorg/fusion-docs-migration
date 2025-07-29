@@ -1,0 +1,10 @@
+---
+title: "Deleting Old Signals"
+permalink: "468"
+---
+
+Signals are not automatically deleted by default, and over time they occupy an increasing amount of storage space.
+
+To avoid running out of storage space as a result of your growing collection of signals, you must decide on a signals retention policy, then configure and schedule a [REST Call job](/fusion/5.9/384/rest-call-jobs) that regularly deletes old signals.
+
+The duration for which signals should be kept depends on your use case and your organization’s policies. For example, in some cases signals could be deleted after 30 days, while in other cases they may remain useful for a year, or even forever.

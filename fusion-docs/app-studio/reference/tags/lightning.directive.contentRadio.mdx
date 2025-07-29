@@ -1,0 +1,44 @@
+---
+title: "content:radio"
+permalink: "1114"
+---
+
+## Description
+
+Creates a radio button
+
+## Usage
+
+as element:
+
+```xml
+<content:radio
+       label="{string}"
+       field="{string}"
+       value="{string}">
+</content:radio>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| label | **string** | The label for the textarea |
+| field | **string** | The name of the field. |
+| value | **string** | The value of the field when selected |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_stacked">Stacked</h3>
+<content:form styling="form-stacked">
+    <content:radio label="Test" field="test" value="tested"></content:radio>
+    <content:radio label="Do not test" field="test" value="untested"></content:radio>
+</content:form>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/contentRadio.png)</Frame>

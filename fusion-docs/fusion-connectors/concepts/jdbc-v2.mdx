@@ -1,0 +1,205 @@
+---
+title: "JDBC SQL V2 Connector"
+permalink: "11251"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 5.4.x and later, if used as part of a normal deployment. It is also available in Fusion 5.3.x, when used as a remote connector.
+
+</Note>
+
+
+
+The JDBC SQL V2 connector uses a Java-based API to fetch documents from a relational database.
+
+For configuration details, see [JDBC V2 Connector Configuration Reference](/fusion-connectors/8850/jdbc-v2).
+
+If you are using Fusion 5.3 or earlier, see [Use a Remote Connector with Pulsar Proxy](/how-to/8869/use-a-remote-connector-with-pulsar-proxy).
+
+## Load the JDBC driver
+
+<Note>
+
+This section is only relevant to Fusion 5.3 and earlier.
+
+</Note>
+
+
+
+Specify the `.jar` file for the JDBC driver on the **classpath** of the runner. The following is an example of the Java command:
+
+```bash
+java -cp connector-plugin-standalone.jar:driver1.jar:driver2.jar:driver3.jar com.lucidworks.connectors.ConnectorPluginStandaloneApp remote-config.yaml
+```
+
+## Blob store for JDBC drivers
+
+<Note>
+
+This section is only relevant to Fusion 5.4 and later.
+
+</Note>
+
+
+
+When you add the JDBC drivers to the blobStore, the connector pulls the drivers and adds the information to the Java **classpath**.
+
+<Tip>
+**Important**
+
+Since the connector pulls all the drivers in blobStore, you must ensure there are no conflicting `.jar` files.
+</Tip>
+
+
+
+## Supported JDBC drivers
+
+This section contains a list of supported JDBC drivers that are compatible with any driver/database that implements a SQL standard.
+
+Authentication parameters may be provided as part of the connection string. It is not necessary to include a username and password in the datasource configuration.
+
+### MySQL
+
+* [Download driver](https://dev.mysql.com/downloads/connector/j/)
+* **Default driver class name: com.mysql.cj.jdbc.Driver**
+* [Connection URL specification](https://dev.mysql.com/doc/connector-j/en/connector-j-reference-jdbc-url-format.html)
+
+  For example: `jdbc:mysql://mysql:3306/testdb`
+
+### Postgresql
+
+* [Download driver](https://jdbc.postgresql.org/download/)
+* **Default driver class name: org.postgresql.Driver**
+* [Connection URL specification](https://jdbc.postgresql.org/documentation/use/#connecting-to-the-database)
+
+  For example: `jdbc:postgresql://postgres:5432/testdb`
+
+### Microsoft SQL Server and Azure SQL Service
+
+* [Download driver](https://docs.microsoft.com/en-us/sql/connect/jdbc/download-microsoft-jdbc-driver-for-sql-server?view=sql-server-ver15)
+* **Default driver class name: com.microsoft.sqlserver.jdbc.SQLServerDriver**
+* [Connection URL specification](https://docs.microsoft.com/en-us/sql/connect/jdbc/building-the-connection-url?view=sql-server-ver15)
+
+  For example: `jdbc:sqlserver://mssql:1433`
+* Also used for cloud-based Azure SQL Service
+
+  For example: `jdbc:sqlserver://azure-test.database.windows.net:1433;database=testdbencrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;`
+
+### Oracle database
+
+* [Download driver](https://www.oracle.com/database/technologies/appdev/jdbc-downloads.html)
+* **Default driver class name: oracle.jdbc.OracleDriver**
+* [Connection URL specification](https://docs.oracle.com/cd/E11882_01/appdev.112/e13995/oracle/jdbc/OracleDriver.html)
+
+  For example: `jdbc:oracle:thin:@oracledb:1521:orc1`
+
+### IBM DB2
+
+* [Download driver](https://www.ibm.com/support/pages/db2-jdbc-driver-versions-and-downloads)
+* **Default driver class name: com.ibm.db2.jcc.DB2Driver**
+* [Connection URL specification](https://www.ibm.com/support/knowledgecenter/SSEPGG_11.5.0/com.ibm.db2.luw.apdv.java.doc/src/tpc/imjcc_r0052342.html)
+
+  For example: `jdbc:db2://db2:50000/testdb`
+
+## Crawl
+
+The JDBC V2 connector retrieves data based on the user-supplied SQL query. The SQL implementation allows full use of all features, but for best results, structure the SQL query to utilize pagination.
+
+### Automatic pagination
+
+Automatic pagination is enabled by default.
+You can disable it by setting `enableAutomaticPagination` to `false`.
+The `batchSize` field sets the number of documents per "page".
+
+When a SQL query includes pagination terms such as `OFFSET`, `LIMIT`, or `ROWS ONLY`, the SQL query terms override automatic pagination.
+
+When crawling an IBM DB2 database, the pagination method depends on your database version:
+
+* IBM DB2 version < 11.5 - Pagination is performed using subqueries.
+* IBM DB2 version >= 11.5 - Pagination is performed using rows and offsets.
+
+  Appending `--subquery` to the SQL query statement forces the connector to paginate using subqueries regardless of the IBM DB2 database version.
+
+### Special variables for pagination
+
+Use the following properties to specify pagination:
+
+* `${limit}`
+* `${offset}`
+
+The properties are:
+
+* Placeholders that the connector updates based on `batchSize`.
+* Used in native SQL as values for the `LIMIT` and `OFFSET` parameters, respectively.
+
+Examples of SQL statements that include the properties for:
+
+* MySQL, postgresql, and DB2: `SELECT * FROM example_table LIMIT ${limit} OFFSET ${offset}`
+* Microsoft, Azure, and Oracle: `SELECT * FROM example_table ORDER BY id OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`
+
+### Nested queries
+
+The connector supports nested queries, which:
+
+* Are a set of SQL queries performed on each row returned by the main query
+* Can degrade performance significantly because they are executed on every row returned
+
+  ```text
+  Use the `${id}` variable to retrieve items associated with a specific primary key. For example:
+  
+  ```
+
+`SELECT * FROM example_table ORDER BY id OFFSET ${offset} ROWS FETCH NEXT ${limit} ROWS ONLY`
+
+### Incremental crawl
+
+In addition to the main SQL query, users can also specify an optional delta SQL query that returns only new and modified items to increase performance during recrawls. The special `${limit}` and `${offset}` pagination variables are the same as in normal crawls.
+
+#### Special incremental crawl variable
+
+Use the `${last_index_time}` variable for an incremental crawl, which is:
+
+* A placeholder that contains the time the last crawl completed
+* Used to filter results for items added or modified since the last time the datasource job was run
+* Stored as a timestamp in the following format:
+
+  **yyyy-MM-dd HH:mm:ss.SSS**
+
+<Note>
+The format may not be compatible with all driver date math implementations without additional conversion steps.
+</Note>
+
+
+
+An example of a SQL statement that includes the `${last_index_time}` property is:
+
+`SELECT * FROM example_table WHERE (timestamp_column >= ${last_index_time})`
+
+Depending on the database used, it may be necessary to surround `${last_index_time}` in single quotes. For example, `'${last_index_time}'`.
+
+#### Stray content deletion
+
+Stray content deletion is:
+
+* A plug-in feature that deletes documents from a content collection that are not rediscovered on subsequent crawls after the first crawl. This process is also referred to as removing stale documents from the content collection.
+* Enabled by default
+* Configured by the user because native SQL does not provide the ability to retrieve rows that have been deleted from a table
+
+<Warning>
+Using a delta query to perform incremental crawling only returns new and modified items. If stray content deletion is enabled when the delta query is run, unmodified items that are still valid are deleted.
+</Warning>
+
+
+
+## Processor flow diagram
+
+The diagram represents the flow for full crawls.
+
+NOTE:
+Incremental crawls are the same except they begin with the **Checkpoint Processor**, which emits a page candidate with the:
+
+* Delta SQL query if provided
+* Original query if the delta query is not provided
+
+<Frame>![Processor flow diagram](/assets/images/5.3/processor-flow-diagram.png)</Frame>

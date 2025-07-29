@@ -1,0 +1,57 @@
+---
+title: "Template Expressions"
+permalink: "10911"
+---
+
+Template expressions are a way to map field values in a document. They are used to configure some Fusion index pipeline stages, query pipeline stages, and messaging services. When the value of a configuration parameter is a template expression, that expression is dynamically evaluated at runtime by the [StringTemplate](https://github.com/antlr/stringtemplate4/blob/master/doc/cheatsheet.md) library.
+
+Fusion template expressions are delimited by angle bracket characters `<` and `>`.
+The expression consists of the name of a variable in the scope of that component.
+
+Since these variables are Java objects, if object **foo** of type Foo has a field named **bar**, the expression **`<foo.bar>`** will evaluate to the string representation of the contents of field **bar**.
+
+For example, given a PipelineDocument where a field named **title** has a value of **Star Wars**, the template expression `<doc.title>` evaluates to **Star Wars**.
+
+## Index pipeline stage template expression variables
+
+Index stages have the following variables available:
+
+* `ctx`. [Context](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/context): used to pass variables between stages
+* `doc`. [PipelineDocument](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/common/pipeline/pipelinedocument): Fusion internal representation of a Solr Document. Please note that if you change this class in ways that affect the serialized form (adding fields, for example) you need to change the deserialization code in `GenericJSONDocumentMessageReader`.
+
+The format required is `<request.q>`.
+
+## Query pipeline stage template expression variables
+
+Query stages have the following variables available:
+
+* `ctx`. [Context](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/context): used to pass variables between stages
+* `reqResp`. [QueryRequestAndResponse](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/queryrequestandresponse): deserializes pre-request parameters and makes them available
+
+The format required is `<request.q>`.
+
+## Example
+
+Check that a query has an `fq` filter on a given field for a given value:
+
+In the UI, set property name to `ids` and Property Value to `req.hasParam("fq")`
+
+<Frame>![javascript values](/assets/images/4.2/javascript-field.png)</Frame>
+
+## Messaging services template expression variables
+
+Messages have a set of variables which correspond to the parts of a system message:
+
+* id
+* to
+* from
+* subject
+* body
+* type
+* schedule
+
+A system message is the result of evaluating the following expression:
+
+```xml
+<id><to><from><subject><body><type><schedule>
+```

@@ -1,0 +1,32 @@
+---
+title: "Landing Pages"
+description: "Query pipeline stage configuration specifications"
+permalink: "nkaamc"
+---
+
+The Landing Pages query pipeline stage provides the mechanism by which specific search queries will be pinned to certain URLs.
+This stage returns one or more URLs which can be used for redirection.
+It does not preform a redirection; this must be done by the calling application.
+The redirection URLs are returned in a separate section of the Managed Fusion response object, with attribute name `fusion`.
+
+This stage is configured using Landing Page Rules, which consist of the following:
+
+* `keyword`. Words, phrases, or a regex.
+* `mode`. Filtering logic applied to the query, one of:
+
+  + `exact`. The keyword and the query must match exactly. This is case-sensitive.
+  + `phrase`. The phrase matching on the items in the keywords list.
+  + `regex`. Treat items in the keywords list as a regex
+  + `match`. Must match every item in the keyword list, but does not require phrase matching.
+* `url`. A list of URLs.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/landing-pages.mdx";
+
+<SchemaParamFields schema={schema}/>

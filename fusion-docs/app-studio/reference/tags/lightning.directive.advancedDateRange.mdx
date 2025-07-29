@@ -1,0 +1,45 @@
+---
+title: "advanced:date-range"
+permalink: "1154"
+---
+
+## Description
+
+Creates an advanced search date range picker. Must be used within a `<search:advanced>` tag. A filter for the field specified is only set once both dates have been set.
+
+## Usage
+
+as element:
+
+```xml
+<advanced:date-range
+       field="{string}"
+       values="{string}"
+       [date-format="{string}"]
+       [min-view="{string}"]>
+</advanced:date-range>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| field | **string** | The field to apply the filter to. |
+| values | **string** | The checkbox values to display. These can be represented (comma separated) as field=displayName combinations and must match the actual value of a filter. |
+| dateFormat  *(optional)* | **string** | The display date format of the dates. Defaults to 'medium'. |
+| minView  *(optional)* | **string** | The minimum view of the date picker to display. Values: 'year/month/day/hour/minute'. Default 'minute'. |
+
+## Example
+
+#### Source
+
+```xml
+<search:advanced>
+    <search:box></search:box>
+    <advanced:date-range fields="source=Source,Material"></advanced:date-range>
+</search:advanced>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/advancedDateRange.png)</Frame>

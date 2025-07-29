@@ -1,0 +1,36 @@
+---
+title: "Tabs tag"
+permalink: "3107"
+---
+
+The Tabs tag displays user interface components for tab-based navigation or filtering. The tag can be used to either output path-based tabs or filter tabs.
+
+With path-based tabs, the tag outputs a fixed set of tabs that link to different URLs in the search application. This can be used to direct the user’s search query between different views or collections, for example.
+
+When displaying filter tabs, specific filters from a given facet are output even when the filter has no hits. This is often used for tab-based filtering, such as when the chosen facet partitions the search collections into different types of content. Be aware that when displaying filter tabs, this tag performs a second query to the search platform.
+
+<Note>
+The Tabs tag subsumes the functionality of the older Filter Tabs tag.
+</Note>
+
+## Usage for path-based tabs
+
+This example shows how to display a fixed set of tabs, each linking to a different search URL. In this case, the tag outputs three tabs, labelled 'Content', 'People' and 'All content', which link to `<contextPath>/content`, `<contextPath>/people` and `<contextPath>`, respectively. When clicking on each of the three tabs, the current search query (the `query` object) is taken into account and appended to the URL that is generated.
+
+```xml
+<search:tabs query="query" tabs="content=Content,people=People" all="true" all-label="All content"></search:tabs>
+```
+
+## Usage for tab-based filtering
+
+This example shows how to display filter tabs for a particular field. Filter based tabs are enabled by the addition of a `field-name="mediaType"` attribute, mediaType being the chosen field to filter on.
+
+In this case both 'Videos' and 'Podcasts' filter will be grouped under the 'Multimedia' tab (using an OR query).
+
+```xml
+<search:tabs field-name="mediaType" tabs="Articles,Blogs,Videos|Podcasts=Multimedia"
+    all-label="Everything" platform="platform" response="response"
+    query="query" count-number="rounded"></search:tabs>
+```
+
+For a complete list of attributes, see the [`search:tabs`](/fusion/5.9/1194/search-tabs) tag doc.

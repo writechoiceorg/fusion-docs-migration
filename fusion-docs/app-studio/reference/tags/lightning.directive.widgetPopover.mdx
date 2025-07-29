@@ -1,0 +1,102 @@
+---
+title: "widget:popover"
+permalink: "1149"
+---
+
+## Description
+
+The popover widget allows the popover content to be displayed in a popup
+when the popover trigger is clicked.
+
+## Usage
+
+as element:
+
+```xml
+<widget:popover
+       [direction="{string}"]
+       [mode="{string}"]
+       [close-on-click="{string}"]
+       [close-on-mouseleave="{string}"]
+       [on-close="{function}"]
+       [hover-timeout="{number}"]>
+</widget:popover>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| direction  *(optional)* | **string** | Where the popover should appear (top, left, right, bottom, bottom-left, bottom-center-left, bottom-center-right). Default: bottom |
+| mode  *(optional)* | **string** | How the popover should open (hover or click). Default: click |
+| close-on-click  *(optional)* | **string** | Close the popover when the popover is clicked on. Default: false |
+| close-on-mouseleave  *(optional)* | **string** | Close the popover when the mouse leaves the element. |
+| on-close  *(optional)* | **function** | Function to call when the popover is closed. |
+| hover-timeout  *(optional)* | **number** | A number to determining the number of milliseconds the popover should be displayed for after the user leaves the popover-trigger. (Only applicable to hover mode.) Default: 1000 |
+
+## Example
+
+#### Source
+
+```xml
+<layout:box>
+    <widget:popover direction="bottom" styling="popover-medium">
+        <popover-trigger>
+            <button styling="button">Bottom</button>
+        </popover-trigger>
+        <popover-content>
+            <h3 id="example_title">Title</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur cum distinctio dolores enim esse fuga incidunt laboriosam maxime nam odio pariatur provident, quae quam quidem quod saepe voluptas. Maiores, obcaecati.</p>
+        </popover-content>
+    </widget:popover>
+</layout:box>
+
+<layout:box>
+    <widget:popover direction="top" styling="popover-small">
+        <popover-trigger><button styling="button">Top</button></popover-trigger>
+        <popover-content>
+            <h3 id="example_title">Title</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur cum distinctio dolores enim esse fuga incidunt laboriosam maxime nam odio pariatur provident, quae quam quidem quod saepe voluptas. Maiores, obcaecati.</p>
+        </popover-content>
+    </widget:popover>
+</layout:box>
+</div>
+
+<layout:box>
+    <widget:popover direction="left">
+        <popover-trigger><button styling="button">Left</button></popover-trigger>
+        <popover-content>
+            <h3 id="example_title">Title</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur cum distinctio dolores enim esse fuga incidunt laboriosam maxime nam odio pariatur provident, quae quam quidem quod saepe voluptas. Maiores, obcaecati.</p>
+        </popover-content>
+    </widget:popover>
+</layout:box>
+
+<layout:box>
+    <widget:popover direction="right" styling="popover-large">
+        <popover-trigger><button styling="button">Right</button></popover-trigger>
+        <popover-content>
+            <h3 id="example_title">Title</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consequuntur cum distinctio dolores enim esse fuga incidunt laboriosam maxime nam odio pariatur provident, quae quam quidem quod saepe voluptas. Maiores, obcaecati.</p>
+        </popover-content>
+    </widget:popover>
+</layout:box>
+
+<layout:box>
+    <widget:popover mode="hover">
+        <popover-trigger><button styling="button">Hover</button></popover-trigger>
+        <popover-content>
+            <h3 id="example_hover">Hover</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Accusantium aliquam debitis deserunt eum minus molestiae mollitia perspiciatis possimus provident quae. Architecto corporis dicta ea harum odio saepe suscipit, totam ut!</p>
+        </popover-content>
+    </widget:popover>
+</layout:box>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetPopover.png)</Frame>

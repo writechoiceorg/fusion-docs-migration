@@ -1,0 +1,22 @@
+---
+title: "weighted_sum"
+permalink: "3263"
+---
+
+The `weighted_sum` UDAF takes a weight, type, and type-weight mapping to produce an aggregated weight. For example, consider the following SQL snippet:
+
+```
+   SELECT query,
+          doc_id,
+          filters,
+          weighted_sum(typed_weight_d, type, 'click:1.0,cart:10.0') AS weight_d
+     FROM signal_type_groups
+ GROUP BY query, doc_id, filters
+```
+
+When applied to the rows in the table below, the `weighted_sum` function produces a final `weight_d` of 12.0 (2*1.0 + 1*10.0). The UDAF is passed rows grouped by `query`, `doc_id`, and `filters`.
+
+| `query` | `type` | `doc_id` | `filters` | `typed_weight_d` |
+| --- | --- | --- | --- | --- |
+| `iPad` | `click` | `1` | `gear` | `2` |
+| `iPad` | `cart` | `1` | `gear` | `1` |

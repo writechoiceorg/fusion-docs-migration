@@ -1,0 +1,111 @@
+---
+title: "Parsers"
+permalink: "370"
+---
+
+Parsers provide fine-grained configuration for inbound data. You configure parsers with stages, much like index pipelines and query pipelines. Parsers can include conditional parsing and nested parsing. You can configure them through the [Fusion UI](#ui-config) or the [Parsers API](#api-config).
+
+Connectors receive the inbound data, convert it into a byte stream, and send the byte stream to a parser’s configured parsing stages. The parser selects a parsing stage to handle the stream, which parses the data and produces documents that are sent to the index pipeline.
+
+Each parsing stage evaluates whether the inbound stream matches the stage’s default media types or filename extensions. The first stage that finds a match processes the data and can output one or both of the following:
+
+* Zero or more pipeline documents for consumption by the index pipeline
+* Zero or more new input streams for re-parsing
+
+  This recursive approach is useful for containers (for example, `zip` and `tar` files). The output of the container parsing can be another container or a stream of uncompressed content that requires its own parsing.
+
+Stages that might match the stream beyond the first match will not be used.
+
+A few static fields impact the overall parser configuration. They are accessible when you select the parser in the Index Workbench:
+
+| Field | Description |
+| --- | --- |
+| Document ID Source Field | Field in the source file that contains the document ID |
+| Maximum Parser Recursion Depth | Maximum number of times the parser may recurse over the file, before proceeding to the next parser. This is useful for files with hierarchical structures (for example, `zip` and `tar` files). |
+| Enable automatic media type detection | Whether to automatically detect the media type of the source files. If disabled, the parser uses the media type `application/octet-stream`. |
+
+## Built-in parser stages
+
+These parser stages are available for configuration:
+
+* [Forked Apache Tika parser stage](/fusion-server/4.2/367/forked-apache-tika-parser-stage)
+* [Apache Tika parser stage](/fusion-server/4.2/371/apache-tika-parser-stage)
+* [Archive parser stage](/fusion-server/4.2/366/archive-parser-stage)
+* [CSV parser stage](/fusion-server/4.2/375/csv-parser-stage)
+* [Fallback parser stage](/fusion-server/4.2/378/fallback-parser-stage)
+* [Grok parser stage](/fusion-server/4.2/373/grok-parser-stage)
+* [HTML parser stage](/fusion-server/4.2/374/html-parser-stage)
+* [JSON parser stage](/fusion-server/4.2/369/json-parser-stage)
+* [Solr Update parser stage](/fusion-server/4.2/368/solr-update-parser-stage)
+* [Text parser stage](/fusion-server/4.2/377/text-parser-stage)
+* [XML parser stage](/fusion-server/4.2/372/xml-parser-stage)
+
+Datasources that use connectors that retrieve fixed-structure content (such as those for Twitter and Jira) have hard-coded parsers and do not expose any configurable parser options.
+
+## Configure parsers
+
+When you configure a datasource, you can use the [Index Workbench](/fusion-server/4.2/158/index-workbench) or the [Parsers API](/fusion-server/4.2/308/parsers-api) to create a parser. A parser consists of an ordered list of parser stages, some global parser parameters, and the stage-specific parameters. You can re-order the stages list by dragging them up or down in the Index Workbench.
+
+Any parser stage can be added to the same parser multiple times if different configuration options are needed for different stages. Datasources with fixed-structure data will also be parsed by Fusion, but with default settings that do not need to be customized.
+
+There is no limit to the number of stages that can be included in a parser. The priority-order of the stages is completely flexible. In a default parser configuration, a fallback parser is provided at the end of the parsing stage list to handle streams no other stage matches. If present, this stage is selected and attempts to parse anything that has not yet been matched.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+### Configure a parser in the Fusion UI
+
+To configure parser stages using the Fusion UI:
+
+1. In the [Fusion workspace](/fusion-server/4.2/116/fusion-ui#workspace),
+   navigate to the [Index Workbench](/fusion-server/4.2/158/index-workbench).
+2. At the upper right of the Index Workbench panel, click **Load**.
+3. Under **Load**, click the name of the index pipeline.
+4. Click the parser to open its configuration:
+
+   <Frame>![Parser](/assets/images/4.0/index-workbench-parser.png)</Frame>
+5. Click a specific stage to open its configuration panel:
+
+   <Frame>![Parser stage configuration](/assets/images/4.0/index-workbench-parser-config.png)</Frame>
+
+### Configure a parser in the REST API
+
+The [Parsers API](/fusion-server/4.2/308/parsers-api) provides a programmatic interface for viewing, creating, and modifying parsers, as well as sending documents directly to a parser.
+
+* To get all currently-defined parsers: `http://localhost:8764/api/parsers/`
+* To get the parser schema: `http://localhost:8764/api/parsers/_schema`
+
+Here is a very simple parser example, for parsing JSON input:
+
+```json
+{ "id": "simple-json",
+  "type": "json",
+            //  arbitrary parser-specific options here.
+        "prettify": false
+}
+```
+
+The example below shows a parser that can parse JSON input, as well as JSON that is inside zip, tar, or gzip containers, or any combination (such as .tar.gz). The order of the stages begins with the outermost containers and ends with the innermost content.
+
+```json
+{ "id": "default-json",
+  "type": "composite",
+  "parsers": [
+    { "id" : "zip-parser",
+      "type" : "zip" },
+    { "type" : "gz" },
+    { "type" : "tar" },
+    { "id": "json-parser",
+      "type": "json",
+      "prettify": false
+    }
+  ]
+}
+```
+
+ID is optional, just as in pipeline stages. Many parser stages require no configuration other than `type`.
+
+## Field parser index pipeline stage
+
+The parsers themselves only parse whole documents. Parsing of content embedded in fields is performed separately by the Field Parser index pipeline stage. This stage identifies the field that requires parsing and the parser to use.

@@ -1,0 +1,33 @@
+---
+title: "widget:tutorial"
+permalink: "1141"
+---
+
+## Description
+
+Checks a cookie to determine whether to show the content and sets the
+cookie when an event is triggered
+
+## Usage
+
+as element:
+
+```xml
+<widget:tutorial
+       cookie="{string}"
+       [event="{string}"]
+       [delete="{string}"]>
+</widget:tutorial>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| cookie | **string** | The name of the cookie to check and set |
+| event  *(optional)* | **string** | The name of the event to set the cookie. Defaults to cookie attribute  '_set' |
+| delete  *(optional)* | **string** | The name of the event to delete the cookie. Defaults to cookie attribute  ``` '_delete' ``` |

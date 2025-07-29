@@ -1,0 +1,62 @@
+export const schema = {
+  "type": "object",
+  "title": "Tag Part-of-Speech",
+  "description": "Tag sentences with part-of-speech information. Requires Sentence Detection on the same fields earlier in the pipeline",
+  "required": [
+    "tokenizerModel",
+    "posModel",
+    "source"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "tokenizerModel": {
+      "type": "string",
+      "title": "Tokenizer Model",
+      "reference": "blob",
+      "blobType": "model:open-nlp"
+    },
+    "posModel": {
+      "type": "string",
+      "title": "Part of Speech Model",
+      "reference": "blob",
+      "blobType": "model:open-nlp"
+    },
+    "source": {
+      "type": "array",
+      "title": "Source Fields",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "category": "Natural Language Processing",
+  "categoryPriority": 5
+}

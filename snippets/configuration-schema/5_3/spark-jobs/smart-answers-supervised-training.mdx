@@ -1,0 +1,653 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Trains Smart Answers model on a supervised basis with pre-trained or trained embeddings and deploys the trained model to the ML Model Service",
+  "properties": {
+    "answerColName": {
+      "description": "Name of the field containing answers",
+      "minLength": 1,
+      "title": "Answer Field",
+      "type": "string"
+    },
+    "baseLR": {
+      "description": "Base learning rate that should be used during training. Reasonable values are from 0.0001 to 0.003 depending on model base. It's better to use lower LR with Transformer models.",
+      "title": "Base learning rate",
+      "type": "number"
+    },
+    "deployModelName": {
+      "description": "Name of the model to be used for deployment (must be a valid DNS subdomain with no underscores)",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z][\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Model Deployment Name",
+      "type": "string"
+    },
+    "distance": {
+      "default": "cosine_similarity",
+      "description": "Vectors distance/similarity that should be used during training and in the pipelines. Choose one of: ['cosine_similarity', 'dot_product_similarity', 'euclidean_distance'].",
+      "enum": [
+        "cosine_similarity",
+        "dot_product_similarity",
+        "euclidean_distance"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Distance",
+      "type": "string"
+    },
+    "embSPDP": {
+      "default": 0.3,
+      "description": "Fraction of input to drop with Dropout layer (from 0-1)",
+      "title": "Dropout ratio",
+      "type": "number"
+    },
+    "embTrainable": {
+      "default": false,
+      "description": "Choose this to fine-tune token embeddings during model training. Tends to work well with eCommerce data.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Fine-tune Token Embeddings",
+      "type": "boolean"
+    },
+    "epochs": {
+      "title": "Number of epochs to be used in training",
+      "type": "integer"
+    },
+    "eps": {
+      "description": "Epsilon is the AdamW optimizer. By default 1e-8 is used for RNN models and 1e-6 is used for Transformer models.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Eps",
+      "type": "number"
+    },
+    "evalAnnIndex": {
+      "default": "auto",
+      "description": "Choose this to use Approximate Nearest Neighbor search during evaluation. For big datasets it can speed up the evaluation time with minimum loss in accuracy, for small datasets it will most likely make it slower.",
+      "enum": [
+        "auto",
+        "true",
+        "false"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Eval ANN index",
+      "type": "string"
+    },
+    "extraTrainingArgs": {
+      "description": "Add any additional arguments for the Python training scripts in this field",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Extra training args for Python scripts",
+      "type": "string"
+    },
+    "globalPoolType": {
+      "default": "self_attention",
+      "description": "Determines how token vectors should be aggregated to obtain final content vector. Must be one of: [avg, max, self_attention].",
+      "enum": [
+        "avg",
+        "max",
+        "self_attention"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Global Pool Type",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "infBatch": {
+      "description": "Batch size during validation. If left blank, this will be set automatically based on the input data",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Inference batch size used in validation",
+      "type": "integer"
+    },
+    "kList": {
+      "default": "[1,3,5]",
+      "description": "The k retrieval position that will be used to compute for each metric",
+      "title": "Metrics@k list",
+      "type": "string"
+    },
+    "lowerCases": {
+      "default": false,
+      "description": "Whether to lower case all words in training, i.e. whether to treat upper case and lower case words equally. Only utilized for custom embeddings or for the default model base: word_en_300d_2M.",
+      "title": "Lower case all words",
+      "type": "boolean"
+    },
+    "maxGradNorm": {
+      "description": "Max norm used for gradients clipping. By default it’s not used for RNN models but 1.0 value is used for Transformer models.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Max Grad Norm",
+      "type": "number"
+    },
+    "maxLen": {
+      "description": "Maximum length of text processed by the model. Texts longer than this value will be trimmed. This parameter is especially important for Transformer-based models as it affects training and inference time. Note that the maximum supported length for Transformer models is 512, so you can specify any value up to that. The default value is the max value between three times the STD of question lengths and two times the STD of answer lengths.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Max length",
+      "type": "integer"
+    },
+    "maxTokensNum": {
+      "default": 5000,
+      "description": "Drop document if the total words is greater than this value",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Maximum number of words in doc",
+      "type": "integer"
+    },
+    "maxVocabSize": {
+      "description": "Maximum number of words in vocabulary, words will be trimmed if frequency is too low. Only utilized for custom embeddings or for the default model base: word_en_300d_2M.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Maximum vocabulary size",
+      "type": "integer"
+    },
+    "minLR": {
+      "description": "Minimum learning rate used during training. Reasonable values are from 0.00001 to 0.00003.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Minimum learning rate",
+      "type": "number"
+    },
+    "minTokensNum": {
+      "default": 1,
+      "description": "Drop document if the total words is lower than this value",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Minimum number of words in doc",
+      "type": "integer"
+    },
+    "modelBase": {
+      "default": "word_en_300d_2M",
+      "description": "Specify one of these custom embeddings: ['word_custom', 'bpe_custom'] or choose one of the included pre-trained embeddings / models.",
+      "enum": [
+        "word_custom",
+        "bpe_custom",
+        "word_en_300d_2M",
+        "bpe_en_300d_10K",
+        "bpe_en_300d_200K",
+        "bpe_ja_300d_100K",
+        "bpe_ko_300d_100K",
+        "bpe_zh_300d_50K",
+        "bpe_multi_300d_320K",
+        "distilbert_en",
+        "distilbert_multi",
+        "biobert_v1.1"
+      ],
+      "title": "Model base",
+      "type": "string"
+    },
+    "modelReplicas": {
+      "default": 1,
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "title": "Model replicas",
+      "type": "integer"
+    },
+    "monitorMetric": {
+      "default": "mrr@3",
+      "description": "The main metric at k that should be monitored to decide when to stop training. Possible metrics are: [\"map\", \"mrr\", \"recall\", \"precision\"]",
+      "title": "Monitor metric",
+      "type": "string"
+    },
+    "monitorMetricsList": {
+      "default": "[\"map\", \"mrr\", \"recall\"]",
+      "description": "List of evaluation metrics on validation data that will be printed in the log at the end of each epoch. Possible metrics are: [\"map\", \"mrr\", \"recall\", \"precision\"]",
+      "title": "Metrics list",
+      "type": "string"
+    },
+    "monitorPatience": {
+      "description": "Stop training if no improvement in metrics by this number of epochs",
+      "title": "Monitor patience",
+      "type": "integer"
+    },
+    "numClusters": {
+      "default": 0,
+      "description": "DEPRECATED: please, consider using Milvus for fast dense vector similarity search. Number of clusters to be used for fast dense vector retrieval. Note no clustering will be applied if this is set to 0. If left blank, cluster count will be inferred by the job depending on the data",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Number of clusters",
+      "type": "integer"
+    },
+    "numFlatEpochs": {
+      "description": "Number of epochs used in flat stage for learning rates. Reasonable value would be one-half of the epochs, so the other half will be with Cosine Annealing learning rate.",
+      "title": "Number of flat epochs",
+      "type": "integer"
+    },
+    "numWarmUpEpochs": {
+      "description": "Number of epochs used for the warm-up stage for learning rates. Reasonable values are from 0-4 epochs, usually 1-2 are used.",
+      "title": "Number of warm-up epochs",
+      "type": "integer"
+    },
+    "questionColName": {
+      "description": "Name of the field containing questions",
+      "minLength": 1,
+      "title": "Question Field",
+      "type": "string"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "rnnNamesList": {
+      "description": "List of layers of RNNs to be used, with possible values of lstm, gru. E.g. [\"lstm\", \"lstm\"]. This value will be automatically decided based on data if left blank",
+      "title": "RNN function list",
+      "type": "string"
+    },
+    "rnnUnitsList": {
+      "description": "List of RNN layer units numbers, corresponding to RNN function list. E.g. 150, 150. This value will be automatically decided based on data if left blank",
+      "title": "RNN function units list",
+      "type": "string"
+    },
+    "secretName": {
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Cloud storage secret name",
+      "type": "string"
+    },
+    "seed": {
+      "default": 12345,
+      "description": "Random seed for sampling",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Seed",
+      "type": "integer"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "testMode": {
+      "default": false,
+      "description": "If set to true, then the training will exit after the first iteration. Useful for ensuring that the end-to-end pipeline is working",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Test Mode",
+      "type": "boolean"
+    },
+    "textsFormat": {
+      "description": "The format of the texts training data - solr, parquet etc.",
+      "title": "Texts format",
+      "type": "string"
+    },
+    "topKClusters": {
+      "default": 10,
+      "description": "How many closest clusters the model can find for each query. At retrieval time, all answers in top k nearest clusters will be returned and reranked",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Top k of clusters to return",
+      "type": "integer"
+    },
+    "trainBatch": {
+      "description": "Batch size during training. If left blank, this will be set automatically based on the input data",
+      "title": "Training batch size",
+      "type": "integer"
+    },
+    "trainingCollection": {
+      "description": "Solr collection or cloud storage path where training data is present.",
+      "minLength": 1,
+      "title": "Training data path",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Training Data Filter Query",
+      "type": "string"
+    },
+    "trainingFormat": {
+      "default": "solr",
+      "description": "The format of the training data - solr, parquet etc.",
+      "minLength": 1,
+      "title": "Training data format",
+      "type": "string"
+    },
+    "trainingSampleFraction": {
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1. Leave blank for no sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Training Data Sampling Fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "argo-qna-supervised",
+      "enum": [
+        "argo-qna-supervised"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "unidecode": {
+      "default": true,
+      "description": "Use Unidecode library to transform Unicode input into ASCII transliterations. Only utilized for custom embeddings or for the default model base: word_en_300d_2M",
+      "title": "Apply unicode decoding",
+      "type": "boolean"
+    },
+    "useAutoML": {
+      "default": false,
+      "description": "Automatically tune hyperparameters (will take longer to train). Transformer models aren't used in this regime",
+      "title": "Perform auto hyperparameter tuning",
+      "type": "boolean"
+    },
+    "useLabelingResolution": {
+      "default": false,
+      "description": "Check this to determine similar questions and similar answers via labeling resolution and graph connected components. Does not work well with noisy data like eCommerce queries. But helps with FAQ / QnA data.",
+      "title": "Use Labeling Resolution",
+      "type": "boolean"
+    },
+    "useLayerNorm": {
+      "default": false,
+      "description": "Check this to use layer norm for pooling.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Layer Norm",
+      "type": "boolean"
+    },
+    "useMixedPrecision": {
+      "default": "auto",
+      "description": "Check this option to train a model with mixed precision support.This will only work if the node has a GPU. You'll only see a speed up on newer NVidia GPUs (Turing and later) with Transformer models.",
+      "enum": [
+        "auto",
+        "true",
+        "false"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Mixed Precision",
+      "type": "string"
+    },
+    "useXbm": {
+      "default": "auto",
+      "description": "Stores encoded representations of previous batches in memory for better negative examples sampling. Works well for Transformer models. Leave this at 'auto' to let the training module determine this.",
+      "enum": [
+        "auto",
+        "true",
+        "false"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Cross-batch memory",
+      "type": "string"
+    },
+    "valSize": {
+      "default": 0.1,
+      "description": "Proportion of the unique questions that should be used as validation samples. When val_size > 1, then that specific number of unique questions will be sampled rather than a proportion.",
+      "exclusiveMinimum": false,
+      "minimum": 0.001,
+      "title": "Validation sample size",
+      "type": "number"
+    },
+    "w2vEpochs": {
+      "default": 15,
+      "description": "Number of epochs to train custom word2vec embeddings",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Word2Vec training epochs",
+      "type": "integer"
+    },
+    "w2vTextColumns": {
+      "description": "Which fields in the text collection to use. If multiple fields, please separate them by comma, e.g. description_t,title_t.",
+      "title": "Texts collection fields",
+      "type": "string"
+    },
+    "w2vTextsCollection": {
+      "description": "Solr collection or cloud storage path which contains extra documents that will be used to get better vocabulary coverage as well as to train custom word embeddings if custom Model Base is specified.",
+      "title": "Texts data path",
+      "type": "string"
+    },
+    "w2vVectorSize": {
+      "default": 150,
+      "description": "Word-vector dimensionality to represent text (suggested dimension ranges: 100~300)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Size of word vectors",
+      "type": "integer"
+    },
+    "w2vWindowSize": {
+      "default": 8,
+      "description": "The window size (context words from [-window, window]) for Word2Vec",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Word2Vec window size",
+      "type": "integer"
+    },
+    "weightColName": {
+      "description": "Name of the field to be used for weights",
+      "minLength": 1,
+      "title": "Weight Field",
+      "type": "string"
+    },
+    "weightDecay": {
+      "description": "L2 penalty used in AdamW optimizer. Bigger values will provide stronger regularization. Default values are 0.0003 for RNN models and 0.01 for Transformer models.",
+      "title": "Weight decay",
+      "type": "number"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    },
+    "xbmEpochActivation": {
+      "description": "After which epoch cross-batch memory should be activated. By default it’s activated after the first epoch for Transformer models.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Cross-batch epoch activation",
+      "type": "integer"
+    },
+    "xbmMemorySize": {
+      "description": "Number of examples from the previous batches that are stored in memory. The default size for Transformer models is 256.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Cross-batch memory size",
+      "type": "integer"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingFormat",
+        "trainingDataFilterQuery",
+        "seed",
+        "trainingSampleFraction",
+        "questionColName",
+        "answerColName",
+        "weightColName",
+        "w2vTextsCollection",
+        "w2vTextColumns",
+        "textsFormat",
+        "deployModelName",
+        "modelReplicas",
+        "secretName"
+      ]
+    },
+    {
+      "label": "Data Preprocessing",
+      "properties": [
+        "useLabelingResolution",
+        "unidecode",
+        "lowerCases",
+        "minTokensNum",
+        "maxTokensNum",
+        "maxVocabSize"
+      ]
+    },
+    {
+      "label": "Custom Embeddings Initialization",
+      "properties": [
+        "w2vEpochs",
+        "w2vVectorSize",
+        "w2vWindowSize"
+      ]
+    },
+    {
+      "label": "Evaluation Parameters",
+      "properties": [
+        "valSize",
+        "monitorMetric",
+        "monitorPatience",
+        "monitorMetricsList",
+        "kList",
+        "evalAnnIndex"
+      ]
+    },
+    {
+      "label": "General Encoder Parameters",
+      "properties": [
+        "embTrainable",
+        "maxLen",
+        "globalPoolType",
+        "useLayerNorm",
+        "numClusters",
+        "topKClusters"
+      ]
+    },
+    {
+      "label": "RNN Encoder Parameters",
+      "properties": [
+        "embSPDP",
+        "rnnNamesList",
+        "rnnUnitsList"
+      ]
+    },
+    {
+      "label": "Training Parameters",
+      "properties": [
+        "epochs",
+        "trainBatch",
+        "infBatch",
+        "baseLR",
+        "numWarmUpEpochs",
+        "numFlatEpochs",
+        "minLR",
+        "weightDecay",
+        "distance",
+        "eps",
+        "maxGradNorm",
+        "useMixedPrecision",
+        "useXbm",
+        "xbmMemorySize",
+        "xbmEpochActivation"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "trainingFormat",
+    "questionColName",
+    "answerColName",
+    "deployModelName",
+    "modelReplicas",
+    "modelBase",
+    "type"
+  ],
+  "title": "Smart Answers Supervised Training",
+  "type": "object"
+}

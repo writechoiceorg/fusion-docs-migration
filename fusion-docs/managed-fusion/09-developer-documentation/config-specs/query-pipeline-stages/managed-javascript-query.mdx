@@ -1,0 +1,60 @@
+---
+title: "Managed JavaScript"
+description: "Query pipeline stage configuration specifications"
+permalink: "zfwfyr"
+---
+
+This stage manipulates a query using a script from the [blob store](/managed-fusion/5.9/03ti2e/blob-storage). The script must have the blob type `file:js-query`.
+
+See also: [Custom JavaScript Stages For Query Pipelines](/managed-fusion/5.9/4k288e/custom-java-script-query-stages).
+
+## Uploading a JavaScript blob
+
+In Managed Fusion 5.9, JavaScript blobs must be uploaded using the [Blob Store API](/managed-fusion/5.9/6q1cvp/blob-store-api), like this:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: text/javascript' --data-binary @query-pipeline-js-stage.js http://EXAMPLE_COMPANY.lucidworks.cloud/api/apps/APP_NAME/blobs/query-pipeline-js-stage.js?resourceType=file:js-query
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+Open the [blob manager](/managed-fusion/5.9/03ti2e/blob-storage#the-blob-manager) to verify that the new blob is present:
+
+<Frame>![Uploaded JavaScript blob in the blob manager](/assets/images/4.1/known-issue-APOLLO-15672-query.png)</Frame>
+
+## Referencing a JavaScript blob
+
+Use any of the following formats for the `ref`/**Script Reference** configuration field:
+
+```bash
+query-pipeline-js-stage.js
+```
+
+```bash
+blob:query-pipeline-js-stage.js
+```
+
+```bash
+urn:x-fusion:blob:query-pipeline-js-stage.js
+```
+
+<Note>
+The examples above use `query-pipeline-js-stage.js` as the blob ID.
+</Note>
+
+### Edit JavaScript
+
+Select **Edit** in the **Script Reference** field to edit JavaScript directly in the Managed Fusion UI.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/managed-javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

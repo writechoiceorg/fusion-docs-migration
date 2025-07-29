@@ -1,0 +1,28 @@
+---
+title: "fact"
+permalink: "1003"
+---
+
+## Description
+
+Returns the first fact of the provided fact name from the response. If no fact is found it will return null.
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ fact_expression | fact:fact-name }}
+```
+
+### In JavaScript
+
+```js
+$filter('fact')(response, fact-name)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| response | object | The response object to get the fact from |
+| fact-name | string | The fact name |

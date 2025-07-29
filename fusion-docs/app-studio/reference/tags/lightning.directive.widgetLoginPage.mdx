@@ -1,0 +1,63 @@
+---
+title: "widget:login-page"
+permalink: "1159"
+---
+
+## Description
+
+Creates a login page with a form. All of the attributes are passed to
+the form.
+
+## Usage
+
+as element:
+
+```xml
+<widget:login-page
+       [logo="{string}"]
+       [logo-alt="{string}"]
+       [title="{string}"]
+       [message="{string}"]
+       [action="{string}"]
+       [method="{string}"]
+       [username="{string}"]
+       [password="{string}"]
+       [username-placeholder="{string}"]
+       [password-placeholder="{string}"]
+       [remember="{string}"]
+       [submit-label="{string}"]
+       [access-denied="{string}"]
+       [error-message="{string}"]>
+</widget:login-page>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| logo  *(optional)* | **string** | The path to the logo |
+| logoAlt  *(optional)* | **string** | The alt text for the logo |
+| title  *(optional)* | **string** | The title text that displays below the logo |
+| message  *(optional)* | **string** | The message to display below the title |
+| action  *(optional)* | **string** | URL to send the form data to |
+| method  *(optional)* | **string** | The form method to use. Default POST |
+| username  *(optional)* | **string** | The name of the username input |
+| password  *(optional)* | **string** | The name of the password input |
+| username-placeholder  *(optional)* | **string** | The placeholder of the username input |
+| password-placeholder  *(optional)* | **string** | The placeholder of the password input |
+| remember  *(optional)* | **string** | The name of the remember input. Default: remember. Set to false to hide remember me checkbox  *(default: "remember")* |
+| submit-label  *(optional)* | **string** | The text on the submit button. Default: Login  *(default: "Login")* |
+| access-denied  *(optional)* | **string** | Checks the URL for the value of access-denied, if found the error message will be displayed E.g. access=denied |
+| error-message  *(optional)* | **string** | The error message to display when the login is rejected. Default: Invalid username or password  *(default: "Invalid username or password")* |
+
+## Example
+
+#### Source
+
+```xml
+<widget:login-page></widget:login-page>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetLoginPage.png)</Frame>

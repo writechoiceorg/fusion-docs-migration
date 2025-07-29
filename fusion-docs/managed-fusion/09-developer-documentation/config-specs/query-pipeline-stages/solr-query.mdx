@@ -1,0 +1,18 @@
+---
+title: "Solr Query"
+description: "Query pipeline stage configuration specifications"
+permalink: "y1y2ol"
+---
+
+The Solr Query stage transforms the Managed Fusion query pipeline [Request](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/request) object into a Solr query and sends it to Solr.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/solr-query.mdx";
+
+<SchemaParamFields schema={schema}/>

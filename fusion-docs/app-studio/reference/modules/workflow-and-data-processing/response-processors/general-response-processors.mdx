@@ -1,0 +1,29 @@
+---
+title: "General Response Processors"
+permalink: "3183"
+---
+
+General response processors include ones to perform these operations:
+
+* Perform a left join on fields.
+* Log response metadata and attributes to log4j.
+* Group results by a given Field value.
+
+### twigkit.search.processors.response.LeftJoinProcessor
+
+Perform a left join on the specified fields, adding results with the same values in the specified fields as 'related' results.
+Appkit carries out additional searches against the platform to retrieve each related result.
+
+- `joinFields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.ResponseLoggingProcessor
+
+Log Response metadata and attributes to log4j as TRACE.
+
+### twigkit.search.processors.response.ResultGroupProcessor
+
+Group results by a given Field value, making group entries related results for the first one.
+
+- `groupBy (java.lang.String)`
+    The field containing the identifying value to group results by.

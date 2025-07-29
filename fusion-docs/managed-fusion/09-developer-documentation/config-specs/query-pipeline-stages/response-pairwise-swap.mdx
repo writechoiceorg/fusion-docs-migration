@@ -1,0 +1,20 @@
+---
+title: "Response Pairwise Swap"
+description: "Query pipeline stage configuration specifications"
+permalink: "wmqc3m"
+---
+
+This is a [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) stage that helps "de-bias" results by swapping the search results at any two positions, such as positions 1 and 2, positions 3 and 4, and so on. This stage must be used *after* the [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage) in your pipeline.
+
+This stage is especially useful when combined with [experiments](/managed-fusion/5.9/mykfo7/experiments), where a small percentage of traffic is given swapped results to minimize position bias when using click signals for ranking. The [Response Shuffle stage](/managed-fusion/5.9/l45eky/response-shuffle-stage) provides an another method for minimizing this bias.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/response-pairwise-swap.mdx";
+
+<SchemaParamFields schema={schema}/>

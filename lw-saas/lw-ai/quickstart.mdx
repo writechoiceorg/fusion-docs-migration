@@ -1,0 +1,130 @@
+---
+title: 'Quickstart'
+description: ''
+icon: 'rocket'
+---
+
+Lucidworks AI brings intelligent, AI-driven capabilities to your Fusion environment. Follow these steps to get started.
+
+<Steps>
+  <Step title="Connect Lucidworks AI to Fusion">
+    Ensure Lucidworks AI is integrated with your Fusion deployment. If you are using Managed Fusion, Lucidworks handles the integration. If you are self-hosted, use the Lucidworks AI Gateway to complete the setup.
+
+    <Frame caption="Fusion integrations in Lucidworks Platform">
+      <img src="/images/fusion-integration.png"/>
+    </Frame>
+  </Step>
+
+  <Step title="Define your use case and model requirements">
+  Identify the use case you want to support and understand which models are best suited for it. You can adjust for performance and accuracy to find the right balance.
+    <AccordionGroup>
+        <Accordion title="Use cases">
+            Lucidworks AI supports a variety of use cases like vector search, RAG, summarization, and keyword extraction. Each use case is tied to specific models optimized for that task. You can retrieve available use cases and their supported models using the Use Case API. 
+            
+            Start by selecting the use case that matches your goal, such as answering questions or ranking results.
+        </Accordion>
+
+        <Accordion title="Models" defaultOpen="true">
+            Lucidworks AI gives you access to models that understand your content. You can use built-in models or train your own with your data. Training is simple and just needs basic query and document files. 
+
+            <Frame caption="RAG models in Lucidworks AI">
+              <img src="/images/lw-ai-rag-models.png"/>
+            </Frame>
+            
+            Start with a built-in model and customize later if needed.
+        </Accordion>
+
+        <Accordion title="Balancing performance and accuracy">
+            Lucidworks AI offers a range of pre-trained models that vary in size, quality, and speed. Smaller models respond faster and use less storage, while larger models return more accurate results. 
+            
+            Start with a base or small model and test different options to see what performs best with your data. You can always scale up or down based on your needs.
+        </Accordion>
+
+    </AccordionGroup>
+  </Step>
+
+  <Step title="Enable vector-based matching for more accurate results">
+    Send documents through your index pipeline to Lucidworks AI for vector generation, and configure your query pipeline to do the same for incoming queries. This creates the foundation for semantic scoring, allowing advanced retrieval methods to deliver more accurate, intuitive matches.
+  </Step>
+
+
+  <Step title="Deliver immediate value through smarter results and AI answers">
+    Enable Neural Hybrid Search to combine lexical and semantic scoring, returning both exact matches and intuitive results. 
+    
+    <Frame caption="Neural Hybrid Search delivers a blend of lexical and semantic search results">
+      <img src="/images/nhs-searches.png"/>
+    </Frame>
+    
+    Then, use Lucidworks AI to retrieve the most relevant document chunks and generate synthesized answers through retrieval-augmented generation. This gives users high-quality results and grounded responses from day one.
+  </Step>
+
+</Steps>
+
+
+## Connect Lucidworks AI to Fusion
+
+Lucidworks AI must be connected to your Fusion environment before you can use its features. If you're using Managed Fusion, this integration is already handled for you. If you're self-hosting Fusion, you need to set up the Lucidworks AI Gateway.
+
+The Lucidworks AI Gateway lets your Fusion instance securely communicate with hosted AI services. Each integration is defined in a simple YAML file containing credentials, scopes, and endpoint details. You can manage multiple integrations if needed.
+
+To set up the gateway:
+
+1. Sign in to [Lucidworks Platform](https://platform.lucidworks.com) as a workspace owner.
+2. Go to **Lucidworks AI** > **Integrations**.
+3. Select your integration. If it’s not listed, contact your Lucidworks representative.
+4. Copy the provided YAML configuration and save it as `account.yaml`.
+
+A single integration might look like:
+
+```yaml
+lwai-gateway:
+  lwai:
+    credentials: |
+      fusion.lwai.default.baseUrl: https://<application_id>.applications.lucidworks.com
+      fusion.lwai.default.authEndpoint: https://identity.lucidworks.com/oauth2/XXXXXXXXXX/v1/token     
+      fusion.lwai.account[0].name: your-account-name
+      fusion.lwai.account[0].scopes: signals.push,machinelearning.predict,machinelearning.model
+      fusion.lwai.account[0].clientId: YYYYYYYYYYYYYYYYYY
+      fusion.lwai.account[0].clientSecret: YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY
+```
+
+Once you’ve added your configuration, apply it using Helm:
+
+```bash
+helm upgrade <kubernetes-namespace> lucidworks/fusion -f <fusion-values>.yaml
+```
+
+## Define your use case and model requirements
+
+Start by deciding what you want your AI to do. Lucidworks AI supports use cases like search ranking, question answering, summarization, and more. Each use case is backed by specific models optimized for that task.
+
+You can begin with pre-trained models or create your own using your data. Training a model requires basic catalog and query files with shared identifiers. Lucidworks AI makes it easy to get started with built-in defaults, and you can always switch to custom models later as your needs evolve.
+
+Keep performance and accuracy in mind. Smaller models respond faster and use fewer resources. Larger models offer higher quality results but may be slower. Try different options to find the best fit for your use case.
+
+
+## Configure indexing and querying for vectorization
+
+To enable semantic scoring, you need to vectorize both documents and queries using Lucidworks AI.
+
+Start by modifying your index pipeline to send documents to Lucidworks AI. The system generates vector embeddings representing document meaning. This can be configured for synchronous or asynchronous processing depending on your indexing volume and performance needs.
+
+Next, configure your query pipeline to send incoming queries to Lucidworks AI for vectorization. This generates query embeddings that can be compared against document vectors. The similarity between these vectors forms the basis for semantic retrieval.
+
+Vectorization alone doesn’t change search behavior, but it sets the foundation for advanced retrieval techniques like Neural Hybrid Search and RAG.
+
+## Enable Neural Hybrid Search
+
+Neural Hybrid Search combines traditional lexical scoring with semantic scoring to return highly relevant results. It uses both keyword-based matching and vector similarity to surface exact matches and intuitive content that shares meaning with the user’s query.
+
+To enable Neural Hybrid Search, update your query pipeline to include a neural scoring stage. This stage uses the query and document vectors already generated in earlier steps. You can configure blending parameters to tune the weight of lexical versus semantic scoring depending on your use case.
+
+This approach ensures users see the most accurate and useful results—even when their queries don’t exactly match your content.
+
+## Use RAG for generative answers
+
+Retrieval-augmented generation (RAG) allows Lucidworks AI to return synthesized, AI-generated responses grounded in your data. When a user submits a query, Lucidworks AI retrieves the most relevant document chunks using vector-based matching. These chunks are then passed to a generative model that composes a coherent, informative answer.
+
+To enable RAG, add a generation stage to your query pipeline. This stage uses Lucidworks AI to retrieve content and generate responses based on the configured use case and model.
+
+RAG is ideal for use cases where users expect direct answers instead of a list of documents, such as customer support, product guidance, or internal knowledge lookup.

@@ -1,0 +1,67 @@
+---
+title: "Security"
+permalink: "122"
+---
+
+<Tip>
+**Important**
+
+Lucidworks recommends *not* virus scanning the `fusion/data` folder. Virus scanning can cause slow performance, and it can cause downtime if it quarantines an index file identified as a possible virus.
+</Tip>
+
+Fusion uses a number of security measures:
+
+* **Authenticating UI users** – Fusion authenticates users when they log in. Logging in creates a new Fusion session. Fusion also authenticates users when the [Sessions](/fusion-server/4.2/339/sessions-api) REST API creates a session.
+* **Authorizing UI users** – Fusion authorizes users to use specific parts of the Fusion UI.
+
+    <Note>
+    UI users must also be authorized to make API requests, because the UI makes API requests.
+    </Note>
+
+* **Audit trail (log) with USERID generated for all successful and failed login attempts.** Audit logs are sent to a Solr collection [system logs](/fusion-server/4.2}/1731/logging). These logs are distinguished from other system logs in the collection by the following attribute:
+
+  + `logger_class_s:"com.lucidworks.cloud.gateway.audit"`
+* **Authenticating and authorizing users who make API requests**
+* **Password Encryption**- Fusion uses 128-bit AES keys to encrypt passwords and "AES/CBC/PKCS7Padding" for the cipher. The ciphertext is also signed.
+* **Using session cookies**
+* **Using an external authentication provider** (optional) - A security realm can specify use of an external authentication provider, such as LDAP, JWT, or SAML.
+* **Using SSL/TLS to ensure that data in flight between your application and Fusion is not observable** (optional) - See [SSL Security (Unix)](/how-to/848/ssl-security-unix) or [SSL Security (Windows)](/how-to/905/ssl-security-windows).
+* **Constraining the documents that are indexed** (optional)
+* **Trimming the documents that are returned by queries based on authorization** (optional)
+
+## Fusion user login
+
+When logging into the Fusion UI, a user provides a username and password, as well as their assigned security realm. An administrator must specify these in Fusion (using the native security realm) or configure Fusion to use an external authentication provider (for example, LDAP or SAML).
+See [Access control](/fusion-server/4.2/124/access-control).
+
+Fusion uses [roles](/fusion-server/4.2/126/roles) defined by [permissions](/fusion-server/4.2/123/permissions)
+to authorize Fusion UI access and perform tasks in Fusion, including searching. The recommended method to delegate permissions is as follows:
+
+* Assign each user to a role and create custom roles as needed.
+* Assign permissions on a per-app basis.
+
+## Manage users with security realms
+
+Fusion uses [security realms](/fusion-server/4.2/127/security-realms) to authenticate users of the Fusion UI.
+Each user has an assigned security realm, which the user must select when logging in. If the user selects a different realm, authentication fails.
+
+A security realm also provides a list of roles as follows:
+
+* The list always includes the role(s) that are specified in the security realm.
+* (Optional) If an external directory service (such as LDAP) is used for authentication, the list can also contain roles that are mapped from the names of the directory-service groups. That is, you can configure a security realm to return group information for users from *that same* directory service.
+* (Optional) The security realm can reference one or more Fusion roles or, when using an external directory service provider, use group membership information from the provider to determine roles for users. Fusion maps the group names to role names and adds these roles to the user’s list of roles.
+
+<Note>
+Fusion does not use permissions from LDAP to authorize UI access or API requests. It only obtains group names (optionally), which are used as role names or are mapped to role names. If an [Active Directory Security Query Trimming Stage](/fusion-server/4.2/296/active-directory-security-trimming-stage) is used, then directory-service permissions *are* used for trimming. If a connector supports security trimming, then connector permissions *are* used for trimming.
+</Note>
+
+## Per-Request Authentication
+
+Requests to the Fusion REST API must specify a security realm for per-request authentication, unless a session cookie is used (which contains information about the security realm).
+
+Fusion authorizes requested operations based on API permissions specified for the user and for the user’s role(s). Fusion considers the role(s) specified in the user definition and in the security realm.
+Fusion creates a list of roles when a session is created, that is, when a user logs in or when the [Sessions](/fusion-server/4.2/339/sessions-api) REST API creates a session.
+Authorization based on [permissions](/fusion-server/4.2/123/permissions) and its layering is at request time.
+
+You can define multiple [security realms](/fusion-server/4.2/127/security-realms) for a Fusion instance. A Fusion instance can manage multiple security realms, which allows users from different domains
+to have (different levels of) access to specific Fusion collections.

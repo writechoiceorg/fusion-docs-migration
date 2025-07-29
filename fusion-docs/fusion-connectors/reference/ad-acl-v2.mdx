@@ -1,0 +1,66 @@
+---
+title: "Active Directory for ACLs V2"
+description: "Connector Configuration Reference"
+permalink: "69"
+---
+
+Latest version: v2.1.4
+
+Compatible with Fusion version: 5.1.0 through 5.5.2
+
+The Active Directory Connector for ACLs V2 plugin:
+
+* Is a special connector that supports other data sources with collecting Access Control List (ACL) data
+* Indexes ACL information into a configured "sidecar" Solr collection, for use by other connectors
+* Connects to LDAP, AD, and Azure AD instances to add objects directly to a special collection for use in [security trimming queries](/fusion/5.9/296/active-directory-security-trimming-stage)
+* Extends the Azure AD model from V1 to return a **delta link** at the end of a crawl, allowing incremental delta searches for groups and users
+
+<Note>
+
+Deprecation and removal notice
+
+This connector is deprecated as of June 19, 2023 and is removed or expected to be removed as of January 31, 2024. The Active Directory for ACLs V2 connector is not compatible with Fusion 5.6 and later, regardless of the removal date. Use the LDAP ACLs V2 connector instead.
+
+For more information about deprecations and removals, including possible alternatives, see [Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+
+</Note>
+
+
+
+## Flow overview
+
+1. **LDAP initial crawl** for first paginated list of results. When complete, the initial crawl creates a checkpoint as the starting point for incremental crawls.
+2. **LDAP incremental crawls** uses checkpoints to produce specific, paginated access control elements. When complete, the incremental crawl creates another checkpoint to use as a starting point for further incremental crawls.
+3. **Azure AD crawl** fetches groups and users stored in Azure AD. Both User and Group retrieval is using the [MS API delta link request](https://docs.microsoft.com/en-us/graph/delta-query-overview) to retrieve incremental changes. Unlike LDAP, AD request returns additions and deletions in a single search, so there is no need to split crawls onto two searches per object.
+
+### Flow details
+
+The same type of request with an empty delta link parameter is used for the initial crawl. Objects are retrieved as delta going back to the very beginning of the Azure AD instance.
+
+For non-removed Azure groups, the Azure group processor sends an additional request to server to populate its `memberof` collection.
+
+If an error occurs (for example, a wrong Azure response), then an error is emitted. This causes future crawls to start from the first page of a crawl, using the initial delta link for the current crawl.
+
+<Tip>
+**Important**
+Azure rejects delta links older than 30 days. This mean incremental crawls must be performed more often than oncer per month.
+</Tip>
+
+
+
+## Configuration
+
+* The `aclCollectionName` field value should match the associated value in the main datasource. For example, **Sharepoint** > **Security Trimming** > **ACL Collection Name**.
+* To improve performance, narrow search results for users and groups by setting the `userBaseDn` and `groupBaseDn` field values. These fields must select the subtree of the `baseDn` field.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-ldap.mdx";
+
+<SchemaParamFields schema={schema}/>
+

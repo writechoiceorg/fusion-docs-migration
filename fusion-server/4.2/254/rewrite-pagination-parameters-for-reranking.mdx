@@ -1,0 +1,17 @@
+---
+title: "Rewrite Pagination Parameters for Reranking"
+permalink: "254"
+---
+
+Rewrite the `start` and `rows` parameters to request a constant number of documents from Solr, and apply `start` and `rows` pagination to the response at the end of the pipeline.
+
+This stage is used in conjunction with other stages that rerank documents. It is included in the [default query pipeline](/fusion-ai/4.2/461/smart-answers) that enables [Smart Answers](/how-to/684/faq-solution-part-2#default-pipelines).
+
+This stage requires a [Fusion AI](/fusion-ai/4.2/428/fusion-ai) license.
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/qna-rewrite-pagination-parameters-for-reranking.mdx";
+
+<SchemaParamFields schema={schema}/>

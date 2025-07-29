@@ -1,0 +1,89 @@
+---
+title: "JDBC Lookup Stage"
+permalink: "260"
+---
+
+The JDBC Lookup query pipeline stage is used to call out to a database as part of a pipeline stage, to inject results into either the context/request or the pipeline document.
+For example, if you needed to look up a user from a DB and add their profile information onto a request for downstream use in a pipeline, the JDBC Lookup Stage would facilitate this.
+
+<Note>
+You must first [upload the JDBC driver to Fusion](/how-to/916/upload-a-jdbc-driver-to-fusion-server).
+</Note>
+
+
+
+This stage supports [asynchronous processing](/fusion/5.9/173/query-pipelines#async).
+
+## Stage configuration example
+
+An example of setup for a JDBC Lookup query pipeline stage.
+
+*Upload stage config via POST to Fusion REST API endpoint `api/query-stages/instances`*
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type: application/json" -d '{"id": "jdbc-quer","type":"jdbc-query-lookup","driver":"postgresql-9.3-1101-jdbc4.jar","connection":"jdbc:postgresql:database","username":"user","password":"password1","preparedStatement":"select ID as id from DATABASE;"}' http://FUSION_HOST:FUSION_PORT/api/query-stages/instances
+```
+
+*Response*
+
+```json
+{
+  "type" : "jdbc-query-lookup",
+  "id" : "jdbc-quer",
+  "driver" : "postgresql-9.3-1101-jdbc4.jar",
+  "connection" : "jdbc:postgresql:database",
+  "username" : "user",
+  "password" : "password1",
+  "preparedStatement" : "select ID as id from DATABASE;",
+  "fetchSize" : -1,
+  "join" : true,
+  "rows" : 10,
+  "skip" : false,
+  "label" : "jdbc-query-lookup",
+  "type" : "jdbc-query-lookup"
+}
+```
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/jdbc-lookup.mdx";
+
+<SchemaParamFields schema={schema}/>

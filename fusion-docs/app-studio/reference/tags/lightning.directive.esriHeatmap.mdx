@@ -1,0 +1,139 @@
+---
+title: "esri:heatmap"
+permalink: "1100"
+---
+
+## Description
+
+The heatmap directive
+
+## Usage
+
+as element:
+
+```xml
+<esri:heatmap
+       response="{string}"
+       facet-name="{string}"
+       [height="{string}"]
+       [width="{string}"]
+       [basemap="{string}"]>
+</esri:heatmap>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | Name of the response. |
+| facet-name | **string** | Facet containing the data. |
+| height  *(optional)* | **string** | The height of the map container. Default is 400px. |
+| width  *(optional)* | **string** | The width of the map container. Default is 100%. |
+| basemap  *(optional)* | **string** | The map to use to display the points on. Default: topo - [Esri options](https://developers.arcgis.com/javascript/4.2/api-reference/esri-Map.html#basemap) |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_geo_loc_coordraw-facet">geo_loc_coord.raw Facet</h3>
+<esri:heatmap response="response" facet-name="geo_loc_coord.raw" basemap="gray"></esri:heatmap>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout', function($scope,$timeout) {
+            $scope.response = {
+                page: 2,
+                query: {
+                    rpp: 50
+                },
+                facets: {
+                    heat: {
+                        filters: [
+                            {
+                                val: '37.770090, -122.408904',
+                                count: 1,
+                            },
+                            {
+                                val: '37.782745, -122.444586',
+                                count: 1,
+                            },
+                            {
+                                val: '37.782842, -122.443688',
+                                count: 1,
+                            },
+                            {
+                                val: '37.782919, -122.442815',
+                                count: 1,
+                            },
+                            {
+                                val: '37.782992, -122.442112',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783100, -122.441461',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783206, -122.440829',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783273, -122.440324',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783316, -122.440023',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783357, -122.439794',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783371, -122.439687',
+                                count: 1,
+                            },
+                            {
+                                val: '37.783368, -122.439666',
+                                count: 1,
+                            },
+                        ]
+                    },
+                    "geo_loc_coord.raw": {
+            "id": "geo_loc_coord.raw",
+            "field": "geo_loc_coord.raw",
+            "filters": [{
+                "field": "geo_loc_coord.raw",
+                "count": 39,
+                "facts": {},
+                "val": "51.4964,   -0.1224",
+                "rel": []
+            }, {
+                "field": "geo_loc_coord.raw",
+                "count": 3,
+                "facts": {},
+                "val": "52.2599,    0.2288",
+                "rel": []
+            }
+            ],
+            "params": {},
+            "display": "geo_loc_coord.raw",
+            "max-count": 39.0,
+            "min-count": 0.0,
+            "sum-of-counts": 42.0
+        },
+                },
+                results: []
+            }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/esriHeatmap.png)</Frame>

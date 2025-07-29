@@ -1,0 +1,48 @@
+---
+title: "collaborate:bookmark-list"
+permalink: "1069"
+---
+
+## Description
+
+The bookmark list directive to render a list of bookmarks, you can put
+your own html inside the bookmark list to customise it, in order to do
+this you will need to do the following :-
+
+```xml
+<collaborate:bookmark-list>
+     <li ng-repeat="bookmark in $parent.bookmarks">YOUR CUSTOM CODE HERE</li>
+</collaborate:bookmark-list>
+```
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:bookmark-list
+       [title="{string}"]
+       [delete-label="{string}"]
+       [target="{string}"]
+       [topic="{number}"]
+       [collection="{string}"]
+       [date-format="{string}"]
+       [url-target="{string}"]>
+</collaborate:bookmark-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| title  *(optional)* | **string** | If set, title will be used displayed above bookmarks |
+| delete-label  *(optional)* | **string** | Label to display for the delete action. Default: “x” |
+| target  *(optional)* | **string** | If set, only display bookmarks related to this target document. |
+| topic  *(optional)* | **number** | Optionally, bookmarks can be scoped to a particular topic. If this attribute is set, then the tag will list only those bookmarks that are linked to that topic. Passing topic 0 will check that a topic has not be associated with the bookmark |
+| collection  *(optional)* | **string** | Optionally, bookmarks can be scoped to a particular collection, identified by a string ID. If this attribute is set, then the tag will list only those bookmarks that belong to the given collection. |
+| date-format  *(optional)* | **string** | Format to use for the bookmark created date. Default: `dd/MM/yyyy h:mma`. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+| url-target  *(optional)* | **string** | Set an HTML target attribute for the anchor tag. For example use _blank to have the bookmark link open in a new window. |

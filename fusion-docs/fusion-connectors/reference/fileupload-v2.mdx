@@ -1,0 +1,57 @@
+---
+title: "File Upload V2"
+description: "Connector Configuration Reference"
+permalink: "r9iys5"
+---
+
+Latest version: v1.0.0
+
+Compatible with Fusion version: 5.9.0 and later
+
+The File Upload V2 connector provides a convenient way to quickly ingest data from your local filesystem.
+
+A common use for the File Upload connector is parsing and indexing information stored locally in a CSV file. It also works with JSON files, PDF files, and more. Files ingested by the File Upload connecter are uploaded to the [blob store](/fusion/{version}/153/blob-storage), where a file ID is created while the contents of the file are indexed into Fusion.
+
+## Remote connectors
+
+V2 connectors support [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.7.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+Below is an example configuration showing how to specify the file system to index under the `connector-plugins` entry in your `values.yaml` file:
+
+```yaml
+additionalVolumes:
+- name: fusion-data1-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data1-pvc
+- name: fusion-data2-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data2-pvc
+additionalVolumeMounts:
+- name: fusion-data1-pvc
+    mountPath: "/connector/data1"
+- name: fusion-data2-pvc
+    mountPath: "/connector/data2"
+
+```
+
+You may also need to specify the user that is authorized to access the file system, as in this example:
+
+```yaml
+securityContext:
+    fsGroup: 1002100000
+    runAsUser: 1002100000
+
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-file-upload.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,70 @@
+---
+title: "Filters"
+permalink: "a8nbty"
+---
+
+ConfigSync supports [App filters](/fusion/5.9/7p74hf/apps-filter) and [Object filters](/fusion/5.9/ztfcnr/object-filters).
+
+Below is an example configuration in the `fusion-config-sync` section of the Helm chart that synchronizes all apps but only specific objects:
+
+```yaml
+pub:
+  apps: "*"
+  objects: &objects
+    # filter tmp file names
+    name-filter: ".*_lw_tmp.*"
+    # possible modes: all, any
+    json-matchers-mode: "any"
+    # filter audit properties by json pointer
+    prop-filter: >
+      /created,
+      /modified,
+      /createdAt,
+      /updatedAt,
+      /updates
+    solr-configs:
+      name-filter: "^(system_|_default).*"
+    solr-collections:
+      name-filter: "^system_.*"
+    apps:
+      prop-filter: >
+        /properties/previousCollectionId
+    configurations:
+      name-filter: "^config-sync.+"
+    datasources-v2:
+      prop-filter: >
+        /_id
+    blobs:
+      name-filter: "^quickstart/.+"
+      json-matchers: >
+        /contentType=.+
+    collections:
+      name-filter: "^system_.+"
+    spark-jobs:
+      # data-migration jobs
+      name-filter: "^lw_(import|export)_.+"
+    tasks:
+      # data-migration tasks
+      name-filter: "^lw_export_finalizer_.+"
+    index-pipelines:
+      prop-filter: >
+        /properties/secretSourcePipelineId,
+        /stages/secretSourceStageId,
+        /stages/licensed
+    query-pipelines:
+      prop-filter: >
+        /properties/secretSourcePipelineId,
+        /stages/secretSourceStageId,
+        /stages/licensed
+    users:
+      json-matchers: >
+        /username!=admin
+    roles:
+      json-matchers: >
+        /name!=admin
+    groups:
+      json-matchers-mode: "any"
+      json-matchers: >
+        /id=_shared,
+        /isSystem=false
+```

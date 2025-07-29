@@ -1,0 +1,20 @@
+---
+title: "Response Shuffle"
+description: "Query pipeline stage configuration specifications"
+permalink: "l45eky"
+---
+
+This is a [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) stage that helps "de-bias" results by shuffling the top N results randomly. Since most users click on result #1 before #2, this stage is helpful for distributing clicks more evenly among the top N results. This stage must be used *after* the [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage) in your pipeline.
+
+This stage is especially useful when combined with [experiments](/managed-fusion/5.9/mykfo7/experiments), where a small percentage of traffic is given shuffled results to minimize position bias when using click signals for ranking. The [Response Pairwise Swap stage](/managed-fusion/5.9/wmqc3m/response-pairwise-swap-stage) provides an another method for minimizing this bias.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/response-shuffle.mdx";
+
+<SchemaParamFields schema={schema}/>

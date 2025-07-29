@@ -1,0 +1,57 @@
+---
+title: "Boosting"
+permalink: "megfoh"
+---
+
+[Signals](/managed-fusion/5.9/ws4w2h/signals) contain data about how users interact with search results. Once your Managed Fusion app has accumulated a sufficient number of [aggregated signals](/managed-fusion/5.9/78vsm6/aggregation-jobs), they become useful for automatically producing recommendations and boosts for better relevance and higher conversion rates.
+
+The same data used to produce recommendations can also be used for automatic boosting. So although recommendations and boosts are different (as explained below), these topics use "recommender data" to refer to the data that can be used for boosting as well as for recommendations.
+
+## Recommendations vs boosts
+
+Recommendations and boosts are two ways of presenting AI-powered estimations about which items are most likely to interest a user:
+
+<table>
+  <colgroup>
+    <col style="width: 50%;" />
+    <col style="width: 50%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Recommendations</th>
+      <th>Boosts</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>
+        <p>Personalized search results from a special, automatic query, <em>whether or not the user has performed a query</em>.</p>
+        <p>Recommendations can be based on a variety of criteria, as in the examples below:</p>
+        <ul>
+          <li>"Based on your purchase history, you might be interested in these items."</li>
+          <li>"People who viewed this item also viewed these items."</li>
+          <li>"People who searched for 'ipad' also searched for these items."</li>
+        </ul>
+      </td>
+      <td>
+        <p>Modifications to the <em>scores</em> of the items in a query’s search results.</p>
+        <p>The set of search results does not change, but their ranking does. For example:</p>
+        <ul>
+          <li>Boost the most popular items</li>
+          <li>Boost items this user has clicked before</li>
+          <li>Boost seasonal items</li>
+        </ul>
+        <p>Boosts can also be configured manually, using the <a href="/managed-fusion/5.9/ukxc4p/query-workbench#boosting-and-blocking">Query Workbench</a> or the <a href="/managed-fusion/5.9/03vd0y/business-rules">Query Rewriting UI</a>. You can also perform boosts within a set of recommendations.</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+These topics explain how to configure and use recommendations and boosts:
+
+* [Get started](/managed-fusion/5.9/y3kiwa/get-started) shows you how to quickly enable the basic feature set and see some results.
+* [Recommendation methods](/managed-fusion/5.9/l0emoh/methods) explains the available approaches to recommendations and boosting, including methods that do not rely on signals.
+
+## See also
+
+* [Boost with Signals](/managed-fusion/5.9/y9max1/boost-with-signals)

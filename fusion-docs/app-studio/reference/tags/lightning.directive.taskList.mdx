@@ -1,0 +1,33 @@
+---
+title: "task:list"
+permalink: "1086"
+---
+
+## Description
+
+Displays the current user’s task list and regularly checks for updates.
+Any HTML within the tag will have access to a `task` variable for the
+current task being iterated over in the list. As well as the `stop`,
+`start`, and `delete` methods for interacting with the task.
+
+## Usage
+
+as element:
+
+```xml
+<task:list
+       [empty-text="{string}"]
+       [interval="{Number}"]
+       [date-format="{string}"]
+       [show-expiry="{string}"]>
+</task:list>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| emptyText  *(optional)* | **string** | The message to show if the user has no tasks. Default: "You have no tasks." |
+| interval  *(optional)* | **Number** | How often statues updates should be requested in milliseconds. Default 1000. Set to false to disable. |
+| date-format  *(optional)* | **string** | Date format to display all dates in. Default 'medium'. |
+| show-expiry  *(optional)* | **string** | Date format to display all dates in. Default 'medium'. |

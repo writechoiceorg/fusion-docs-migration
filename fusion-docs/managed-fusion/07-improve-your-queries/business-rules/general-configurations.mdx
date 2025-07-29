@@ -1,0 +1,72 @@
+---
+title: "General configurations"
+description: "Business rules"
+permalink: "oitb8y"
+---
+
+General configurations are used to characterize a rule, including its name, description, group, and more. They are also used to set a rule’s precedence, or priority over other rules.
+
+## Configuration options
+
+| Required | Parameter | Description | Example |
+| --- | --- | --- | --- |
+| ✅ | Name | A user-friendly name for the rule. | `headphones-sale-01` |
+|  | Description | A description of the rule for the person who manages business rules. This is an arbitrary value which has no effect on the rule’s purpose or execution. | `"Rule for the upcoming sale on headphones. Boosts limited stock items."` |
+|  | Rule Group | See [Rule Group](#rule-group) for more information. |  |
+|  | Tags | See [Tags](#tags) for more information. | `browse-rule`, `search-rule` |
+|  | Precedence | Determines when rules should take effect in relation to other triggered rules. A higher number means higher precedence. For example, a rule with precedence of `10` will take effect before a rule with precedence of `3`. | `10` |
+| ✅ | Enabled | Determines whether the rule is enabled. If set to `false`, the rule will not fire under any conditions. | `true` |
+
+### Rule group
+
+Rule groups are used for logically grouping rules for interpretation and debugging purposes. The rule group is specified in the debug response. It does not affect which rules fire.
+
+### Tags
+
+Tags are assigned in the UI. By using tags, you can:
+
+* **Quickly sort rules.** Tags appear in the facet options of the Business Rules editor for fast sorting. Click a tag facet to see all rules associated with the tags.
+* **Easily define triggers.** Triggers are associated with tags to determine the conditions under which the rules fire. This reduces the number of triggers needed and speeds up the development process.
+
+  To target which rules fire, you can specify one or more tagnames in the request URL of the user search app. The rule containing the matching tagname is triggered. For example:
+
+  + One pin rule is defined with "pin the document titled **Brussel Sprouts** when someone searches for garden", and it is tagged with `vegetable`.
+  + A second pin rule is defined with "pin the document titled **Tomato** when someone searches for garden", but it is *not* tagged with `vegetable`. Instead, this rule is tagged with `fruit`.
+  + A third pin rule is defined with "pin the document titled **Vegetables** when someone searches for garden", and it is tagged with `vegetable`.
+
+    If the request URL is:
+
+    `https://EXAMPLE_COMPANY.lucidworks.cloud/api/apps/APP_NAME/query/QUERY_PROFILE?q=garden&tags=vegetable`, then only the first and third rules are fired.
+
+    To fire all three rules, the request URL is:
+
+    `https://EXAMPLE_COMPANY.lucidworks.cloud/api/apps/APP_NAME/query/QUERY_PROFILE?q=garden&tags=vegetable,fruit`.
+
+    <Note>
+    Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+    </Note>
+* **Separate rules by development stage.** You can add the tags `development`, `testing`, and `production` to distinguish between rules in various stages of development.
+* **Define different search experiences.** In some cases, you may want to define a different experience for users who browse and users who search. Keep track of these experiences by tagging the rules accordingly.
+
+Tags are also included in the response results:
+
+```json
+{
+  "response" : {
+    "numFound" : 213,
+    "start" : 0,
+    "maxScore" : 0.0,
+    "docs" : [ ... ]
+  },
+  "facet_counts" : {
+    "facet_fields" : {
+      "tags" : {
+        "development" : 1,
+        "testing" : 3,
+        "production" : 2,
+      }
+    },
+    "facet_ranges" : { }
+  }
+}
+```

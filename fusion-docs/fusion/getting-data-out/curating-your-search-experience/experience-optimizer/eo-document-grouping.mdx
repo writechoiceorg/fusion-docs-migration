@@ -1,0 +1,45 @@
+---
+title: "Document Grouping"
+permalink: "4jzskx"
+---
+
+Experience Optimizer makes it easy to group documents together so they can be presented to the user. This can be useful when you want to show several documents that are relevant to each other, for example.
+
+<Frame>![result list](/assets/images/experience-optimizer/eo-result-list.png)</Frame>
+
+Document groups can be boosted or blocked. If you want to promote a document group that is new, for example, you can boost the group to the top of the results.
+
+You can still apply rules individually to documents within a group. This allows you to boost a document based on a specific user’s search behavior. If a user that is typically interested in ballet searches for "dance" content, you can boost ballet-related articles to the top of the group.
+
+<Frame>![ballet boost](/assets/images/experience-optimizer/eo-boost-ballet.png)</Frame>
+
+## Best practices
+
+These parameters group documents, and are defined in the Additional Query Parameters Stage:
+
+| Parameter Name | Parameter Value | Update Policy |
+| --- | --- | --- |
+| group | true | default |
+| group.format | grouped | default |
+| group.ngroups | true | default |
+| group.field | style_id_s | default <br/><br/> NOTE: You must configure `groupField=<field>` if you use [App Studio](/fusion/5.9/963/fusion-app-studio) to create your search application. |
+
+For more information about adding a query pipeline and additional query parameters, see:
+
+* [Add a Query Pipeline Stage](/how-to/702/add-a-query-pipeline-stage)
+* [Additional Query Parameters Stage](/fusion/5.9/294/additional-query-parameters-stage)
+
+### Collapse/Expand parser grouping
+
+The Collapse/Expand parser allows grouping with the following parameters:
+
+| Parameter Name | Parameter Value |
+| --- | --- |
+| expand | true |
+| enableElevation | true |
+| group | false |
+
+<Note>
+See [Collapse and Expand Results](https://solr.apache.org/guide/collapse-and-expand-results.html) for more information.
+</Note>
+

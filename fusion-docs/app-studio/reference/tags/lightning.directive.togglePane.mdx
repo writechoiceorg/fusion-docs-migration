@@ -1,0 +1,51 @@
+---
+title: "toggle:pane"
+permalink: "1166"
+---
+
+## Description
+
+The toggle pane directive.
+
+## Usage
+
+as element:
+
+```xml
+<toggle:pane
+       [visible="{boolean}"]>
+</toggle:pane>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| visible  *(optional)* | **boolean** | Used to denote if the pane should be shown by default. |
+
+## Example
+
+#### Source
+
+```xml
+<toggle:controls labels="Pane 1, Pane 2, Pane 3" panes="panes"></toggle:controls>
+<toggle:panes id="panes">
+    <toggle:pane>
+        <h3 id="example_pane-1">Pane 1</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-2">Pane 2</h3>
+    </toggle:pane>
+    <toggle:pane>
+        <h3 id="example_pane-3">Pane 3</h3>
+    </toggle:pane>
+</toggle:panes>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/togglePane.png)</Frame>

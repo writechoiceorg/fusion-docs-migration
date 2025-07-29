@@ -1,0 +1,65 @@
+---
+title: "instant:result-list"
+permalink: "1126"
+---
+
+## Description
+
+The Instant Result List directive allows you to show results matching
+the users typed query under the search box.
+
+### Caveats
+
+* You cannot use an `ng-if` on a direct child of the
+  `<instant:result-list>` tag, instead wrap your `ng-if` with a `<div>`
+  tag. Example:-
+
+**Do Not!**
+
+```xml
+<search:box>
+     <instant:result-list>
+         <search:result ng-if="type == 'foo'"></search:result>
+         <search:result ng-if="type == 'bar'"></search:result>
+     </instant:result-list>
+ </search:box>
+```
+
+**Do**
+
+```xml
+<search:box>
+     <instant:result-list>
+         <div>
+             <search:result ng-if="type == 'foo'"></search:result>
+             <search:result ng-if="type == 'bar'"></search:result>
+         </div>
+     </instant:result-list>
+ </search:box>
+```
+
+## Usage
+
+as element:
+
+```xml
+<instant:result-list
+       [platform="{string}"]
+       [query="{string}"]
+       [children-selector="{string}"]
+       [wildcard="{string}"]>
+</instant:result-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform  *(optional)* | **string** | The platform to get the results from, if no platform is defined it will try and use a platform called 'platform'. |
+| query  *(optional)* | **string** | The query to use against the platform. If the search-within checkbox is checked the filters of this query will be reset. Also if rpp is set on the query then this will be used when getting back the results, otherwise it will be set to 5. |
+| children-selector  *(optional)* | **string** | A selector for selecting the children elements that should be used for the arrow key selection mechanism. Should be used when the children to be selected are not the immediate children of resultList. |
+| wildcard  *(optional)* | **string** | Whether to add a wildcard to the search query.  Valid values:  * **left** - `*searchQuery` * **right *(default)*** - `searchQuery*` * **both** - `*searchQuery*` * **none** - `searchQuery` |

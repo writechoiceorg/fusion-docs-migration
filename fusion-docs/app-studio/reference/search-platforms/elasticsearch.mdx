@@ -1,0 +1,215 @@
+---
+title: "Elasticsearch"
+permalink: "3190"
+---
+
+## Setup
+
+To add Elasticsearch connectors to a Maven project, you must add one of the following dependencies to your project’s `pom.xml` file, depending on which version of Elastic you are using:
+
+* For pre-V5 Elasticsearch, add this dependency:
+
+  ```xml
+  <dependency>
+      <groupId>twigkit</groupId>
+      <artifactId>twigkit.elasticsearch.v2</artifactId>
+      <version>${project.parent.version}</version>
+  </dependency>
+  ```
+  
+* For Elasticsearch v5, add this dependency:
+
+  ```xml
+  <dependency>
+      <groupId>twigkit</groupId>
+      <artifactId>twigkit.elasticsearch.v5</artifactId>
+      <version>${project.parent.version}</version>
+  </dependency>
+  ```
+  
+* For Elasticsearch v6, add this dependency:
+
+  ```xml
+  <dependency>
+      <groupId>twigkit</groupId>
+      <artifactId>twigkit.elasticsearch.v6</artifactId>
+      <version>${project.parent.version}</version>
+  </dependency>
+  ```
+  
+
+For projects that are currently using the non-version-numbered dependency below, we recommend that you update the dependency to one of the version-numbered ones above.
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.elasticsearch</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+## Usage
+
+This example shows how to configure an Elasticsearch platform on a JSP page.
+
+```xml
+<search:platform var="platform" conf="platforms.elastic"></search:platform>
+```
+
+This is an example platform configuration that would be at platforms/elastic/elastic.conf, with a number of attributes exposed:
+
+```yaml
+name: twigkit.search.elasticsearch.ElasticSearch
+timeOut: 30000
+resultIDField: id
+highlight: true
+defaultQuery: *:*
+
+# Elasticsearch host in the format my.organisation.com
+host: localhost
+
+# Elasticsearch TCP port (defaults to 9300)
+#port:
+
+# Elastic cluster
+cluster: elasticsearch
+
+# Elastic index
+index: test
+
+#Security Settings for Shield
+#user-name:
+#password:
+```
+
+### Required attributes
+
+- `host (java.lang.String)`
+    The URI of the ElasticSearch Server. Must be specified using the full URI (for example, `http://localhost:1234`; `localhost:1234` will not work).
+
+- `preserveBoosting (java.lang.Boolean)`
+    If true, ensures the query is 'rewritten' by Elasticsearch so that field boosting is preserved.  
+    Default: `false`
+
+### Optional attributes
+
+- `clientTransportSniff (java.lang.Boolean)`
+    Whether to sniff for other nodes on the same cluster allowing for more fault-tolerant and efficient search. Might be required if the Elasticsearch instances are distributed.  
+    Default: `false`
+
+- `cluster (java.lang.String)`
+    The name of the cluster to use (required if using `clientTransportSniff="true"` for sniffing nodes on the cluster allowing for more fault-tolerance and efficient searching)  
+    Default: `''`
+
+- `type (java.lang.String)`
+    The name of the data type to use, which will be defined by a mapping of fields in the Elasticsearch instance  
+    Default: `''`
+
+- `index (java.lang.String)`
+    The search index, for example, 'search' for an index named search.  
+    Default: `''`
+
+- `highlight (java.lang.String)`
+    Fields to apply highlighting to. Specified in a comma separated list.
+
+- `facetSize (java.lang.String)`
+    Determines the total number of all facets to be returned - the Elasticsearch default is 10 which is too small for most applications.
+
+- `applyFiltersToFacets (java.lang.Boolean)`
+    If true: facets returned will be restricted by the filters applied in the query so will match only those with matching documents in the result set.  
+    Default: true
+
+- `shard-size (java.lang.Integer)`
+    For use with terms aggregations, this parameter decides how many terms the co-ordinating node will request from each shard.
+
+- `min-doc-count (java.lang.Long)`
+    For use with terms aggregations, terms will only be returned if they match more than this number of hits.
+
+- `shard-min-doc-count (java.lang.Long)`
+    For use with terms aggregations, terms will only be considered if their local shard frequency is higher than this value.
+
+- `show-term-doc-count-error (java.lang.Boolean)`
+    For use with terms aggregations, setting this value to true will return an error value for each term, which represents the worst case error in the document count.
+
+- `fields-type (java.lang.String)`
+    Available with Elastic Search 5 adapter only. Setting this value to `source` will enable the use of source filtering as described [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-source-filtering.html). Default value is `stored` and uses the legacy stored_fields filtering described [here](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-stored-fields.html).
+
+- `query-term-fields (java.lang.String)`
+    Available with Elastic Search 5 adapter only. The query can also search against multiple fields. These fields can be provided via the "query-term-fields" parameter [here](https://www.elastic.co/guide/en/elasticsearch/reference/5.2/query-dsl-query-string-query.html#_multi_field). Default value is `[]` that searches against all fields.
+
+### Attributes shared across platforms
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified.
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.
+
+## Security with Elastic Shield
+
+You might use the Elastic Shield plugin to Elasticsearch for securing access to your Elasticsearch infrastructure. You can easily configure the Elasticsearch search platform to handle this.
+
+To add an Elasticsearch search platform that is secured by Elastic Shield
+
+1. Add this dependency to your `pom.xml` file:
+
+  ```xml  
+  <dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.elasticsearch.shield</artifactId>
+    <version>${project.parent.version}</version>
+  </dependency>
+  ```
+
+2. Configure the credentials for accessing Elasticsearch secured by the Shield plugin. Specify `user-name` and `password` for the config definition.
+
+  ```
+  ** `*user-name (java.lang.String)*` +
+  The userName to supply
+  ** `*password (java.lang.String)*` +
+  The password to supply
+  ```
+
+## Security with Elastic X-Pack
+
+<Note>
+This functionality is available in post-v5 Elasticsearch.
+</Note>
+
+You might use Elastic X-Pack for securing access to your Elasticsearch infrastructure. You can easily configure the Elasticsearch search platform to handle this.
+
+To add an Elasticsearch search platform that is secured by Elastic X-Pack
+
+Configure the credentials for accessing Elasticsearch secured by Elastic X-Pack. Specify `user-name` and `password` for the config definition.
+
+- `user-name (java.lang.String)`
+    The userName to supply
+- `password (java.lang.String)`
+    The password to supply

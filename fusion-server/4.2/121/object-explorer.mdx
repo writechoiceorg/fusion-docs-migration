@@ -1,0 +1,90 @@
+---
+title: "Object Explorer"
+permalink: "121"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+Object Explorer lets you easily find and manage Fusion *objects* within a specific app and across multiple apps in an entire Fusion deployment.
+
+*Fusion apps* provide tailored search functionality to specific groups of users.
+
+An app is a named set of linked *objects*, including collections, datasources, index and query pipelines, index and query profiles, parsers, and more. Using roles and security realms, you can define security on a per-app basis.
+
+An object is something that has a specific function in a Fusion app, such as an index pipeline or Spark job. It is often something that you configure. An app is an object. Several object types are *groups* that group other objects. For more information about object types, see [Object types](#object-types).
+
+## What you can do in Object Explorer
+
+In Object Explorer, you can explore objects.
+
+<Note>
+Which objects you can explore depends on the [permissions](/fusion-server/4.2/123/permissions) that your security realm and user definition grant you. As the user `admin`, you can explore all objects supported by Object Explorer.
+</Note>
+
+* **Determine which objects are in which apps.** You can determine which objects are in the current app, in any app, in no apps, and in any app or no apps. When you navigate to an object, you can display the apps that the object is in.
+* **View and navigate between related objects.** In Object Explorer, related objects are connected by lines. Clicking an object moves it to the center of the Object Explorer window and displays related objects around it.
+* **View related objects.** When you select an object, Object Explorer centers and displays related objects around it, connected by lines, for example:
+
+    <Frame>![Object Explorer](/assets/images/4.0/object-explorer.png)</Frame>
+    
+* **Perform some management tasks.** You can perform some management tasks inside Object Explorer. For example, you can schedule jobs and tasks from Object Explorer. For other management tasks, Object Explorer takes you to where you need to be.
+* **Add and remove objects** (*Advanced feature*) - When you create an app, it consists of objects. When you create additional apps, Fusion can *share* some objects across apps. Shared objects are in the `_shared` system group, and they have multiple dots on them, one for each app they are in.
+
+  In some cases, you might want to remove an object from an app (undo sharing) or add an object to an app. For example, after configuring a parser in one app, you could share the parser with other apps, *without having to share things you do not want to share*, for example, the collection.
+
+## Object types
+
+You can explore these types of objects with Object Explorer:
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 33.3333%;" />
+    <col style="width: 33.3333%;" />
+    <col style="width: 33.3334%;" />
+  </colgroup>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-app.png" alt="app object" /> App
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-job.png" alt="job object" /> Spark job or task
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-collection.png" alt="collection object" /> Collection
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-datasource.png" alt="datasource object" /> Datasource
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-index-pipeline.png" alt="index pipeline object" /> Index pipeline
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-parser.png" alt="parser object" /> Parser
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-query-pipeline.png" alt="query pipeline object" /> Query pipeline
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-object-generic.png" alt="generic object" /> A generic icon (used for query/index profiles, blobs, experiments)
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-recommendations-group.png" alt="recommendations group object" /> Recommendations group
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-system-group.png" alt="system group object" /> System group
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <InlineImage src="/assets/images/4.0/icons/oe-user-defined-group.png" alt="user-defined group object" /> User-defined group (non-system)
+      </td>
+      <td class="tableblock halign-left valign-top">
+      </td>
+    </tr>
+  </tbody>
+</table>

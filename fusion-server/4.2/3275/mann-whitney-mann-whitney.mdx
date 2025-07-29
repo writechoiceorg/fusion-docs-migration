@@ -1,0 +1,33 @@
+---
+title: "Mann-Whitney (mann_whitney)"
+permalink: "3275"
+---
+
+The `mann_whitney` function performs a Mann-Whitney U-test on two random samples drawn with different queries. The `mann_whitney` function takes four parameters:
+
+1. the numeric field to perform the Mann-Whitney U-test on
+2. the Lucene/Solr query for drawing the first sample
+3. the Lucene/Solr query for drawing the second sample
+4. the sample size for both samples
+
+## Sample syntax
+
+```sql
+select mann_whitney(sepal_width_d, "species_s:versicolor", "species_s:virginica", 150) as u,
+       p_value
+from iris
+```
+
+## Result set
+
+The result set for the `mann_whitney` function contains one row with the results of the `mann_whitney` test. The `mann_whitney` function returns the U-statistic. The `p_value` field can be selected to return the p-value for the Mann-Whitney test.
+
+Sample result set in Apache Zeppelin
+
+<Frame>![Sample result](/assets/images/5.2/udf/mann_whitney1.png)</Frame>
+
+## Visualization
+
+Sample visualization of the `mann_whitney` function using the Apache Zeppelin number visualization:
+
+<Frame>![Sample visualization](/assets/images/5.2/udf/mann_whitney2.png)</Frame>

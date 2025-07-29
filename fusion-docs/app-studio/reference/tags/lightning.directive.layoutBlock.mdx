@@ -1,0 +1,73 @@
+---
+title: "layout:block"
+permalink: "1135"
+---
+
+## Description
+
+Adds grid block classes to element
+
+## Usage
+
+as element:
+
+```xml
+<layout:block
+       [xs="{size}"]
+       [sm="{size}"]
+       [md="{size}"]
+       [lg="{size}"]
+       [xl="{size}"]
+       [xs-offset="{size}"]
+       [sm-offset="{size}"]
+       [md-offset="{size}"]
+       [lg-offset="{size}"]
+       [xl-offset="{size}"]
+       [dynamic="{string}"]>
+</layout:block>
+```
+
+as attribute
+
+```xml
+<ANY layout-block
+     [xs="{size}"]
+     [sm="{size}"]
+     [md="{size}"]
+     [lg="{size}"]
+     [xl="{size}"]
+     [xs-offset="{size}"]
+     [sm-offset="{size}"]
+     [md-offset="{size}"]
+     [lg-offset="{size}"]
+     [xl-offset="{size}"]
+     [dynamic="{string}"]>
+   ...
+</ANY>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| xs  *(optional)* | **size** | The grid ratio to use for the smallest break point |
+| sm  *(optional)* | **size** | The grid ratio to use for the small break point |
+| md  *(optional)* | **size** | The grid ratio to use for the medium break point |
+| lg  *(optional)* | **size** | The grid ratio to use for the large break point |
+| xl  *(optional)* | **size** | The grid ratio to use for above the large break point |
+| xs-offset  *(optional)* | **size** | The offset ratio to use for the smallest break point |
+| sm-offset  *(optional)* | **size** | The offset ratio to use for the small break point |
+| md-offset  *(optional)* | **size** | The offset ratio to use for the medium break point |
+| lg-offset  *(optional)* | **size** | The offset ratio to use for the large break point |
+| xl-offset  *(optional)* | **size** | The offset ratio to use for above the large break point |
+| dynamic  *(optional)* | **string** | Watch for updates to the attributes |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block sm="23-24" md="3-4" lg="1-2" xl="1-4" lg-offset="1-4" xl-offset="1-2">Content</layout:block>
+</layout:grid>
+```

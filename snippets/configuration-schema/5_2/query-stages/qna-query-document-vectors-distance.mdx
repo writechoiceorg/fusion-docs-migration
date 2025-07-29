@@ -1,0 +1,89 @@
+export const schema = {
+  "type": "object",
+  "title": "QnA Query-Document Vectors Distance",
+  "description": "Computes and emits selected distance between Query-Document dense vectors",
+  "required": [
+    "queryVectorContextKey",
+    "documentVectorField",
+    "distanceType",
+    "documentDistanceResultField"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "queryVectorContextKey": {
+      "type": "string",
+      "title": "Query Vector Context Key",
+      "description": "Name of the query context key containing dense vector (as double array)",
+      "default": "query_vector",
+      "minLength": 1
+    },
+    "documentVectorField": {
+      "type": "string",
+      "title": "Document Vector Field",
+      "description": "Name of the document field containing dense vector (as double array) or compressed vector (as string)",
+      "default": "compressed_document_vector_s",
+      "minLength": 1
+    },
+    "keepDocumentVectorField": {
+      "type": "boolean",
+      "title": "Keep document vector field",
+      "description": "Should the document field with the dense vector kept and returned in the response",
+      "default": false
+    },
+    "distanceType": {
+      "type": "string",
+      "title": "Distance Type",
+      "description": "One of the following functions: cosine_similarity, cosine_distance, euclidean_distance, dot_product",
+      "enum": [
+        "cosine_similarity",
+        "cosine_distance",
+        "euclidean_distance",
+        "dot_product"
+      ],
+      "default": "cosine_similarity"
+    },
+    "documentDistanceResultField": {
+      "type": "string",
+      "title": "Document Vectors Distance Field",
+      "description": "Name of the result document field containing vectors distance. Might be used for further results sorting.",
+      "default": "vectors_distance",
+      "minLength": 1
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs.",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

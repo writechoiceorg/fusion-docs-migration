@@ -1,0 +1,36 @@
+---
+title: "Filter Short Fields"
+description: "Index pipeline stage configuration specifications"
+permalink: "fxp7hr"
+---
+
+A Filter Short Fields index stage removes short field values from a pipeline document according to a set of filters where each filter specifies a field name and a minimum length. All field values less than the specified length will be removed from the document.
+
+For the REST API, this stage type is "filter-short-fields".
+
+## Example Stage Specification
+
+*Remove entities in the `author_s` field that are less than 3 characters:*
+
+```json
+{
+  "type" : "filter-short-fields",
+  "id" : "short-stage",
+  "filters" : [ {
+    "sourceField" : "author_s",
+    "length" : 3
+  } ],
+  "skip" : false
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/filter-short-fields.mdx";
+
+<SchemaParamFields schema={schema}/>

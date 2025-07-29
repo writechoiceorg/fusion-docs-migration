@@ -1,0 +1,134 @@
+---
+title: "The DevOps Center"
+permalink: "130"
+---
+
+The DevOps Center is a suite of tools for monitoring, troubleshooting, and incident investigation. It consists of a set of dashboards and an interactive log viewer, providing views into this Fusion cluster’s hosts and services using metrics and events.
+
+* Metrics come from the `system_monitor` collection.
+
+  See [System Metrics](/fusion-server/4.2/198/system-metrics) for details about this collection.
+* Events come from the `system_logs` collection.
+
+You can [export](#export) all metrics and events for any selected time period.
+
+In any Fusion app, you can open the DevOps Center by navigating to **System** > **DevOps Center**:
+
+<Frame>![Navigating to the DevOps Center](/assets/images/4.2/devops-menu-item.png)</Frame>
+
+<Tip>
+In the DevOps Center, dates and times are local, as determined by your browser. In the [Log Viewer](#log-viewer), you can toggle between local time and UTC.
+</Tip>
+
+## System requirements
+
+The DevOps Center is included as part of Fusion Server 4.2 and later. It requires the following:
+
+* Your Web browser must support HTML5.
+* Every node that you want to monitor must be running Fusion Server version 4.2.0 or later.
+* Every node that you want to monitor must be running the `agent` and `log-shipper` services.
+
+The DevOps Center is enabled by Fusion’s default configuration. If you find that the DevOps Center is not correctly populated with data, see the [Troubleshooting](#troubleshooting) section below.
+
+## Cluster dashboard
+
+The first screen that displays is a high-level dashboard showing indicators of general health of your Fusion cluster.
+<Frame>![DevOps Center Cluster dashboard](/assets/images/4.2/devops-cluster.png)</Frame>
+
+The Cluster dashboard includes this data:
+
+* Fusion [license](/fusion-server/4.2/114/licensing) information
+* The number of hosts, collections, and Solr clusters in this cluster
+* The cluster’s service status
+* Average and max values during the selected time interval for the following metrics:
+
+  + Query rate
+  + Response time
+  + Index size
+  + Indexing rate
+  + Active sessions
+
+## Hosts dashboard
+
+Data about individual hosts is available in the Hosts dashboard. The initial view includes all hosts.
+
+<Frame>![DevOps Center Hosts dashboard](/assets/images/4.2/devops-hosts.png)</Frame>
+
+From here you can filter the set of hosts displayed:
+
+* Select one or more status codes to display only the hosts with those statuses.
+* Select one or more services to display only the hosts on which they are running.
+
+Click on any host’s IP address to drill down to additional visualizations about that host:
+
+<Frame>![Single-host view](/assets/images/4.2/devops-hosts-perhost.png)</Frame>
+
+In this single-host view, you can see the following:
+
+Host details
+
+* Cores
+* IP address
+* Operating system
+* Uptime
+* CPU usage
+* CPU load
+* Memory total
+* Memory free
+* Disk total
+* Disk free
+* ulimit files
+
+Host graphs and tables
+
+* CPU utilization
+* CPU load
+* Per-service CPU utilization
+* Time spent in garbage collection (GC)
+* Free memory
+* Free disk space
+* Overview of services running on the host
+
+## Services dashboard
+
+The Services dashboard displays the status of each of the Fusion services: "OK" for services that are running and "Bad" for services that are unreachable. Metrics are also displayed for each service, and these vary depending on the service. A service is marked "Bad" if it does not return metrics after several expected reporting intervals, that is, after a few minutes.
+
+<Frame>![DevOps Center Services dashboard](/assets/images/4.2/devops-services.png)</Frame>
+
+## Datasources dashboard
+
+The Datasources dashboard displays the status, number of fetched documents, number of failed documents, and number of indexed documents for each Fusion datasource. By default, the dashboard displays only the datasources for the currently-selected app. Select one or more apps on the left to view all of the datasources in those apps.
+
+<Frame>![DevOps Datasources dashboard](/assets/images/4.2/devops-datasources.png)</Frame>
+
+## The Log Viewer
+
+The Log Viewer displays service logs and request logs from Fusion’s `system_logs` collection.
+
+<Frame>![DevOps Log Viewer dashboard](/assets/images/4.2/devops-logviewer.png)</Frame>
+
+By default, timestamps are displayed in local time, as determined by your browser. To view timestamps in UTC (unless `default.timezone` is set to another time zone in `fusion.properties`), set **LOCAL TIMEZONE** to "Off".
+
+**Auto-Refesh** is off by default, to display static log data. To display real-time logs, set this to "On".
+
+See [Export Data from the DevOps Center](/how-to/796/export-data-from-the-dev-ops-center) to learn how to export log data.
+
+### Service logs
+
+Service log files are written to the filesystem by each running service, such as `var/log/api/api.log`, `var/log/proxy/proxy.log`, and so on. Fusion indexes them in the `system_logs` collection with `type=java`.
+
+In the DevOps Center, you can filter service logs by:
+
+* Service
+* Log level
+* Host
+
+### Request logs
+
+HTTP request log files are written to the filesystem by Jetty, at `var/log/proxy/jetty_request_<date>.log`. Fusion indexes them in the `system_logs` collection with `type=http`.
+
+In the DevOps Center, you can filter request logs by:
+
+* HTTP status code
+* HTTP method
+* Host

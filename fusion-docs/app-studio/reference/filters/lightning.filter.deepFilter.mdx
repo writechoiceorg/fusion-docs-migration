@@ -1,0 +1,31 @@
+---
+title: "deepFilter"
+permalink: "1015"
+---
+
+## Description
+
+Returns a subset of the given array, containing all the elements matching the given object filter.
+A filter is specified by a selector identifying a property of the objects in the array, and a value
+to match that property against. Matches are left-partial meaning that a match against "ca" will match both "car" and "cat".
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ deepFilter_expression | deepFilter:path:target }}
+```
+
+### In JavaScript
+
+```js
+$filter('deepFilter')(array, path, target)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| array | array | Array of objects to filter on. |
+| path | string | Path of the property to search for the target value |
+| target | string | The value you are looking to match against. |

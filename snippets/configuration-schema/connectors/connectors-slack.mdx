@@ -1,0 +1,557 @@
+export const schema = {
+  "type": "object",
+  "title": "Slack",
+  "description": "Connects to a Slack web service.",
+  "required": [
+    "id",
+    "connector",
+    "type",
+    "pipeline",
+    "properties"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Datasource ID",
+      "description": "Unique name for this datasource.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "connector": {
+      "type": "string",
+      "title": "Connector Type",
+      "description": "Connector Type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "type": {
+      "type": "string",
+      "title": "Datasource Type",
+      "description": "Datasource type supported by the selected connector type.",
+      "hints": [
+        "hidden"
+      ],
+      "minLength": 1
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of an existing index pipeline for processing documents.",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description for this datasource."
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Social",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Connects to a Slack web service.",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Properties",
+      "description": "Datasource configuration properties",
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "collection": {
+          "type": "string",
+          "title": "Collection",
+          "description": "Collection documents will be indexed to.",
+          "hints": [
+            "hidden"
+          ],
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "db": {
+          "type": "object",
+          "title": "Connector DB",
+          "description": "Type and properties for a ConnectorDB implementation to use with this datasource.",
+          "required": [
+            "type"
+          ],
+          "properties": {
+            "type": {
+              "type": "string",
+              "title": "Implementation Class Name",
+              "description": "Fully qualified class name of ConnectorDb implementation.",
+              "default": "com.lucidworks.connectors.db.impl.MapDbConnectorDb",
+              "minLength": 1
+            },
+            "inlinks": {
+              "type": "boolean",
+              "title": "Process Inlinks?",
+              "description": "Keep track of incoming links. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "aliases": {
+              "type": "boolean",
+              "title": "Process Aliases?",
+              "description": "Keep track of original URI-s that resolved to the current URI. This negatively impacts performance and size of DB.",
+              "default": false
+            },
+            "inv_aliases": {
+              "type": "boolean",
+              "title": "Process Inverted Aliases?",
+              "description": "Keep track of target URI-s that the current URI resolves to. This negatively impacts performance and size of DB.",
+              "default": false
+            }
+          },
+          "hints": [
+            "hidden"
+          ]
+        },
+        "token": {
+          "type": "string",
+          "title": "API authentication token",
+          "hints": [
+            "secret"
+          ],
+          "minLength": 1
+        },
+        "politeness": {
+          "type": "boolean",
+          "title": "Throttle",
+          "description": "Throttle Rate Of API Calls",
+          "default": true
+        },
+        "throttle_interval": {
+          "type": "integer",
+          "title": "Throttle Rate",
+          "description": "Throttle Rate Of API Calls To One Request Per N milliseconds",
+          "default": 1000
+        },
+        "public_channels": {
+          "type": "boolean",
+          "title": "Public Channels",
+          "description": "Index Public Channels",
+          "default": true
+        },
+        "private_groups": {
+          "type": "boolean",
+          "title": "Private Channels",
+          "description": "Index Private Channels",
+          "default": false
+        },
+        "im_messages": {
+          "type": "boolean",
+          "title": "Direct Messages",
+          "description": "Index Direct Messages",
+          "default": false
+        },
+        "profiles": {
+          "type": "boolean",
+          "title": "Index Profiles",
+          "description": "Index User Profiles",
+          "default": false
+        },
+        "deletedProfiles": {
+          "type": "boolean",
+          "title": "Include deleted profiles",
+          "description": "If User Profiles are being indexed, setting this to true includes deleted and deactivated users.",
+          "default": false
+        },
+        "guestProfiles": {
+          "type": "boolean",
+          "title": "Include guest profiles",
+          "description": "If User Profiles are being indexed, setting this to true includes users that are single or multi channel guests.",
+          "default": true
+        },
+        "channel_filters": {
+          "type": "array",
+          "title": "Channel filters",
+          "description": "If set, only channels matching the provided regular expressions will be indexed",
+          "items": {
+            "type": "string"
+          }
+        },
+        "enable_security_trimming": {
+          "type": "boolean",
+          "title": "Enable Security Trimming",
+          "description": "Add permissions to each document to control access",
+          "default": false
+        },
+        "securityFilterCacheExpirationTime": {
+          "type": "integer",
+          "title": "Security cache expiration time",
+          "description": "Time in seconds before the security filter cache expires.",
+          "default": 7200
+        },
+        "securityFilterCache": {
+          "type": "boolean",
+          "title": "Enable security filter cache",
+          "description": "Cache of document access control rules.",
+          "default": true
+        },
+        "initial_mapping": {
+          "type": "object",
+          "title": "Initial field mapping",
+          "description": "Provides mapping of fields before documents are sent to an index pipeline.",
+          "properties": {
+            "skip": {
+              "type": "boolean",
+              "title": "Skip This Stage",
+              "description": "Set to true to skip this stage.",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "label": {
+              "type": "string",
+              "title": "Label",
+              "description": "A unique label for this stage.",
+              "hints": [
+                "advanced"
+              ],
+              "maxLength": 255
+            },
+            "condition": {
+              "type": "string",
+              "title": "Condition",
+              "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+              "hints": [
+                "code",
+                "code/javascript",
+                "advanced"
+              ]
+            },
+            "reservedFieldsMappingAllowed": {
+              "type": "boolean",
+              "title": "Allow System Fields Mapping?",
+              "default": false,
+              "hints": [
+                "advanced"
+              ]
+            },
+            "retentionMappings": {
+              "type": "array",
+              "title": "Field Retention",
+              "description": "Define here which fields should be kept or deleted",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: keep (default) or delete",
+                    "enum": [
+                      "keep",
+                      "delete"
+                    ],
+                    "default": "keep",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "updateMappings": {
+              "type": "array",
+              "title": "Field Value Updates",
+              "description": "Define here values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overridden.",
+              "default": [],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "field",
+                  "value"
+                ],
+                "properties": {
+                  "field": {
+                    "type": "string",
+                    "title": "Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "The value to add to or set on the field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: add (default) or set.",
+                    "enum": [
+                      "add",
+                      "set"
+                    ],
+                    "default": "add",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "translationMappings": {
+              "type": "array",
+              "title": "Field Translations",
+              "description": "Define here fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+              "default": [
+                {
+                  "source": "user",
+                  "target": "user_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "username",
+                  "target": "username_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "type",
+                  "target": "type_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "subtype",
+                  "target": "subtype_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "im_user",
+                  "target": "im_user_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "im_username",
+                  "target": "im_username_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "channel",
+                  "target": "channel_s",
+                  "operation": "move"
+                },
+                {
+                  "source": "broadcast",
+                  "target": "broadcast_b",
+                  "operation": "move"
+                },
+                {
+                  "source": "user_mentions",
+                  "target": "user_mentions_ss",
+                  "operation": "move"
+                },
+                {
+                  "source": "text",
+                  "target": "text_t",
+                  "operation": "move"
+                },
+                {
+                  "source": "ts",
+                  "target": "timestamp_tdt",
+                  "operation": "move"
+                },
+                {
+                  "source": "channel_mentions",
+                  "target": "channel_mentions_ss",
+                  "operation": "move"
+                },
+                {
+                  "source": "reactions",
+                  "target": "reactions_ss",
+                  "operation": "move"
+                }
+              ],
+              "hints": [
+                "advanced"
+              ],
+              "items": {
+                "type": "object",
+                "required": [
+                  "source",
+                  "target"
+                ],
+                "properties": {
+                  "source": {
+                    "type": "string",
+                    "title": "Source Field",
+                    "description": "The name of the field to operate on.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "target": {
+                    "type": "string",
+                    "title": "Target Field",
+                    "description": "The name of the target field.",
+                    "hints": [
+                      "advanced"
+                    ]
+                  },
+                  "operation": {
+                    "type": "string",
+                    "title": "Operation",
+                    "description": "The type of operation to perform: copy (default) or move.",
+                    "enum": [
+                      "copy",
+                      "move"
+                    ],
+                    "default": "copy",
+                    "hints": [
+                      "advanced"
+                    ]
+                  }
+                }
+              }
+            },
+            "unmappedRule": {
+              "type": "object",
+              "title": "Unmapped Fields",
+              "description": "Define here how fields not mapped by the above rules should be handled. By default, any remaining fields will be kept on the document.",
+              "properties": {
+                "keep": {
+                  "type": "boolean",
+                  "title": "Keep",
+                  "description": "Keep all unmapped fields",
+                  "default": true,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "delete": {
+                  "type": "boolean",
+                  "title": "Delete",
+                  "description": "Delete all unmapped fields",
+                  "default": false,
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToMoveValuesTo": {
+                  "type": "string",
+                  "title": "Move",
+                  "description": "Move all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "fieldToCopyValuesTo": {
+                  "type": "string",
+                  "title": "Copy",
+                  "description": "Copy all unmapped field values to this field",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToAddToUnmappedFields": {
+                  "type": "string",
+                  "title": "Add",
+                  "description": "Add this value to all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                },
+                "valueToSetOnUnmappedFields": {
+                  "type": "string",
+                  "title": "Set",
+                  "description": "Set this value on all unmapped fields",
+                  "hints": [
+                    "advanced"
+                  ]
+                }
+              },
+              "default": {
+                "keep": true,
+                "delete": false,
+                "fieldToMoveValuesTo": "",
+                "fieldToCopyValuesTo": "",
+                "valueToAddToUnmappedFields": "",
+                "valueToSetOnUnmappedFields": ""
+              }
+            }
+          },
+          "category": "Field Transformation",
+          "categoryPriority": 7,
+          "hints": [
+            "advanced"
+          ],
+          "unsafe": false
+        }
+      },
+      "propertyGroups": [
+        {
+          "label": "Field Mapping",
+          "properties": [
+            "initial_mapping"
+          ]
+        },
+        {
+          "label": "Limit Documents",
+          "properties": [
+            "public_channels",
+            "private_groups",
+            "im_messages",
+            "profiles",
+            "guestProfiles",
+            "deletedProfiles",
+            "channel_filters"
+          ]
+        },
+        {
+          "label": "Crawl Performance",
+          "properties": [
+            "politeness",
+            "throttle_interval"
+          ]
+        },
+        {
+          "label": "Security Trimming",
+          "properties": [
+            "enable_security_trimming",
+            "securityFilterCache",
+            "securityFilterCacheExpirationTime"
+          ]
+        }
+      ]
+    }
+  },
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

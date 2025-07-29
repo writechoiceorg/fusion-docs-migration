@@ -1,0 +1,100 @@
+export const schema = {
+  "type": "object",
+  "title": "Archive",
+  "description": "Decompress and extract common archive and compression formats, e.g. zip, tar, 7z, GZip, BZip2, etc",
+  "required": [
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "6c8c104a-f2aa-4a04-b49d-3d77c3bc1d22"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types for this Parser Stage",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "use default media types for this Parser Stage",
+      "description": "Indicates if parser stage should use the default media types.  Unchecking this box means that ONLY the manually configured media types will be parsed by the parser and you then MUST provide at least one media type.",
+      "default": true
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "alwaysDetect": {
+      "type": "boolean",
+      "title": "Always detect type",
+      "description": "Forces content-type detection. Most compression and archive formats use a magic byte to indicate their type. This can be more reliable than user input.",
+      "default": true
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "archive"
+      ],
+      "default": "archive"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1
+}

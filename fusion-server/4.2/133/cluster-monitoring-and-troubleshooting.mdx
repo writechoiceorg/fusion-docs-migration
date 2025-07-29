@@ -1,0 +1,61 @@
+---
+title: "Cluster Monitoring and Troubleshooting"
+permalink: "133"
+---
+
+## Fusion structure and components
+
+Fusion consists of a collection of services running on one or more nodes in a network, as summarized below.
+
+<Note>
+The default ports listed under **Runs on** below can be altered in `fusion.properties` file located in `/fusion/4.2.x/conf/`.
+</Note>
+
+
+
+### Fusion services
+
+| Service | Runs on | Description |
+| --- | --- | --- |
+| Fusion UI | All nodes in Fusion cluster. Port 8763. | Fusion Admin Web App. |
+| API | All nodes in Fusion cluster. Port 8765. | The API service fulfills REST API requests, processes pipeline stages, and starts, stop, and sometimes monitors scheduled jobs. |
+| Connectors | Fusion nodes. Port 8984. | The connectors service runs connector jobs and processes pipeline stages. |
+| Proxy | All nodes in Fusion cluster. Port 8764. | The proxy service authenticates API requests sent to port 8764 and dispatches to an API or connectors service over port 8765 or 8984. |
+| Apache Solr | All Signals nodes. Port 8983. | Solr for various Fusion collections.  `signals`, `_aggr`, `logs`, `various system* collections` such as models, blobs, history, messages, metrics, etc. On larger installations, Solr is often installed and run separately from Fusion. |
+| Apache Spark | Signals nodes. Various ports. | The Apache Spark service provides large-scale data processing jobs for Spark SQL, aggregation, machine learning, etc. |
+| Web Apps | All nodes in Fusion cluster. Port 8780. | The web apps service runs installed App Studio and/or Rules Editor web applications (war). |
+| Apache Zookeeper | Port 9983. | Apache ZooKeeper configures and manages all Fusion components in a single Fusion deployment. ZooKeeper is often installed and run separately from Fusion. In this case, it typically runs on port 2181. |
+
+### Typical directory structure
+
+```
+├── bin   # scripts for start|stop|status of Fusion services
+├── conf  # contains config for Fusion processes and logging
+├── data  # data directories (often linked or mounted to larger disk)
+│   ├── connectors
+│   ├── nlp
+│   ├── solr
+│   └── zookeeper
+└── var  # default location for log files.
+    ├── log
+       ├── admin-ui
+       ├── agent  # agent used to start/stop services
+       ├── api    # API service calls, jobs, and pipeline stage output
+       ├── connectors
+       │   │   ├── connectors-classic  # Connector and pipeline output
+       │   │   └── connectors-rpc
+       ├── log-shipper
+       ├── proxy
+       ├── solr
+       ├── spark-master
+       ├── spark-worker
+       ├── sql
+       ├── webapps
+       └── zookeeper
+```
+
+In general, each log directory contains a log named after the directory followed by a `.log` suffix. garbage collection (GC) logs are also located in these directories. The GC logs show internal timings for Java garbage collection cycles, as well as logs showing Jetty requests and errors for the given service. Each Fusion service has a `log4j2.xml` settings file located in `/fusion/{fusion}.x/conf` which controls the particulars of log retention and contents.
+
+By default, file rotation is enabled in the `log4j2.xml` settings file. File rotation ensures a new log file is created under the following conditions:
+* A 24-hour period has elapsed
+* A log file has exceeded 100MB

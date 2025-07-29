@@ -1,0 +1,51 @@
+---
+title: "SQL Aggregation"
+description: "Job configuration specifications"
+permalink: "78vsm6"
+---
+
+A Spark SQL aggregation job where user-defined parameters are injected into a built-in SQL template at runtime.
+
+Aggregation jobs compile your raw signals into aggregated signals. Most Managed Fusion jobs that consume signals require aggregated signals.
+
+|  |  |
+| --- | --- |
+| **Default job name** | `COLLECTION_NAME_click_signals_aggregation` |
+| **Input** | Raw signals (the `COLLECTION_NAME_signals` collection by default) |
+| **Output** | [Aggregated signals](/managed-fusion/5.9/wuhhmm/built-in-sql-aggregation-jobs) (the `COLLECTION_NAME_signals_aggr` collection by default) |
+
+|  | query | count_i | type | timstamp_tdt | user_id | doc_id | session_id | fusion_query_id |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Required signals fields: | ✅  | ✅  | ✅  | ✅  |  | ✅  |  | [**1**] |
+
+\* **1** Required if you are using response signals.
+
+## Aggregation properties
+
+The aggregation process is specified by an aggregation type consisting of the following list of properties:
+
+| Name | Description |
+| --- | --- |
+| `id` | Aggregation ID |
+| `groupingFields` | List of signal field names |
+| `signalTypes` | List of signal types |
+| `aggregator` | Symbolic name of the aggregator implementation |
+| `selectQuery` | Query string, default `*:*` |
+| `sort` | Ordering of aggregated signals |
+| `timeRange` | String specifying time range, e.g., `[* TO NOW]` |
+| `outputPipeline` | Pipeline ID for processing aggregated events |
+| `outputCollection` | Output collection name |
+| `rollupPipeline` | Rollup pipeline ID |
+| `rollupAggregator` | Name of the aggregator implementation used for rollups |
+| `sourceRemove` | Boolean, default is false |
+| `sourceCatchup` | Boolean, default is true |
+| `outputRollup` | Boolean, default is true |
+| `aggregates` | List of aggregation functions |
+| `params` | Arbitrary parameters to be used by specific aggregator implementations |
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/sql-aggregation.mdx";
+
+<SchemaParamFields schema={schema}/>

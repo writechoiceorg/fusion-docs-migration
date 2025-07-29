@@ -1,0 +1,59 @@
+---
+title: "JDBC Lookup"
+description: "Query pipeline stage configuration specifications"
+permalink: "a8d5qj"
+---
+
+The JDBC Lookup query pipeline stage is used to call out to a database as part of a pipeline stage, to inject results into either the context/request or the pipeline document.
+For example, if you needed to look up a user from a DB and add their profile information onto a request for downstream use in a pipeline, the JDBC Lookup Stage would facilitate this.
+
+<Note>
+You must first [upload the JDBC driver to Managed Fusion](/how-to/ennwa5/upload-a-jdbc-driver-to-managed-fusion).
+</Note>
+
+This stage supports [asynchronous processing](/managed-fusion/5.9/8qf1w6/query-pipelines#async).
+
+## Example
+
+An example of setup for a JDBC Lookup query pipeline stage.
+
+*Upload stage config via POST to Managed Fusion REST API endpoint `api/query-stages/instances`*
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type: application/json" -d '{"id": "jdbc-quer","type":"jdbc-query-lookup","driver":"postgresql-9.3-1101-jdbc4.jar","connection":"jdbc:postgresql:database","username":"user","password":"password1","preparedStatement":"select ID as id from DATABASE;"}' http://EXAMPLE_COMPANY.lucidworks.cloud/api/query-stages/instances
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+*Response*
+
+```json
+{
+  "type" : "jdbc-query-lookup",
+  "id" : "jdbc-quer",
+  "driver" : "postgresql-9.3-1101-jdbc4.jar",
+  "connection" : "jdbc:postgresql:database",
+  "username" : "user",
+  "password" : "password1",
+  "preparedStatement" : "select ID as id from DATABASE;",
+  "fetchSize" : -1,
+  "join" : true,
+  "rows" : 10,
+  "skip" : false,
+  "label" : "jdbc-query-lookup",
+  "type" : "jdbc-query-lookup"
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/jdbc-lookup.mdx";
+
+<SchemaParamFields schema={schema}/>

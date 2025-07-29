@@ -1,0 +1,45 @@
+---
+title: "System Usage Monitor"
+permalink: "128"
+---
+
+The System Usage Monitor is a voluntary program to allow users to anonymously send metrics about their system to Lucidworks.
+We use this information to analyze the types of systems in use by our customers and how they are used so we can improve our product.
+
+At no point does the system collect information that could identify you, your organization, or the specific documents indexed.
+Only minimal data is sent about the type of content indexed. Our website has more information about our [privacy policy](https://www.lucidworks.com/privacy-policy).
+
+## Information Collected by the Usage Monitor
+
+The System Usage Monitor collects the following types of information:
+
+* The uuid, a randomly generated identifier per Fusion cluster.
+* System information, including the operating system, version, and Java version.
+* Fusion information, including the version, number of Fusion nodes, and number of CPU cores in use.
+* Solr statistics including the number of collections, number, types, and indexing rates of documents, and number, type, and rate of search requests.
+* Aggregation information, including number, types, and rates of aggregation runs, and number, types, and rates of signals requests.
+* Recommendations information, including number, types, and rates of recommendation requests.
+
+You can see the data that will be sent to Lucidworks with the [Usage API](/fusion-server/4.2/346/usage-api) and also in the UI by navigating to **System > System**, then clicking the **Heartbeat Data** tab.
+
+The UI and the REST API report only the data currently scheduled to be sent, so they are not a complete picture of all data collected.
+
+## How Data is Sent
+
+Data is sent to Lucidworks once per week, and also whenever Fusion is restarted.
+
+When Fusion is started, the System Usage Monitor transmits data about your system to a server hosted by Lucidworks with two HTTP requests.
+The first request contains system-level information. If the first request is successful, the second request sends system-specific information.
+
+The information is sent via an encrypted POST request to the heartbeat service. Each request includes a unique identifier, which is anonymous and cannot be used to identify the sender. The IP that sent the request is not stored with the request.
+
+## How to Opt Out
+
+By default, the usage monitor is enabled in your system. If you would like to opt out of sending this data to Lucidworks, you can disable the usage monitor. There are two ways to enable or disable the usage monitor:
+
+* Go to the Heartbeat Data page in the Fusion UI (**System > System > Heartbeat Data**), and deselect the "Report Heartbeat" option.
+* Use the [Configurations API](/fusion-server/4.2/342/configurations-api) and send a PUT request as follows:
+
+  ```bash
+  curl -u USERNAME:PASSWORD -H 'Content-type: application/json' -X PUT -d '"false"' http://localhost:8764/api/configurations/usageMonitor
+  ```

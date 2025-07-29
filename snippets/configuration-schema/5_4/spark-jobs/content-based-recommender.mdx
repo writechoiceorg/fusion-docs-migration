@@ -1,0 +1,582 @@
+export const schema = {
+  "type": "object",
+  "title": "Content based Recommender",
+  "description": "Use this job when you want to compute item similarities based on their content such as product descriptions. ",
+  "required": [
+    "id",
+    "trainingCollection",
+    "trainingFormat",
+    "outputCollection",
+    "outputFormat",
+    "itemIdField",
+    "contentField",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "outputBatchSize": {
+      "type": "string",
+      "title": "Output Batch Size",
+      "description": "Batch size of documents when pushing results to solr",
+      "default": "15000",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "unidecodeText": {
+      "type": "boolean",
+      "title": "Unidecode Text",
+      "description": "Select if you want the text to be unidecoded.",
+      "default": true
+    },
+    "lowercaseText": {
+      "type": "boolean",
+      "title": "Lowercase Text",
+      "description": "Select if you want the text to be lowercased.",
+      "default": true
+    },
+    "vectorizationUseDl": {
+      "type": "boolean",
+      "title": "Use Deep Learning for vectorization",
+      "description": "Select if you want to use deep learning as the method for vectorization. You can choose the other methods too in which case an ensemble will be used.",
+      "default": true
+    },
+    "vectorizationUseFasttext": {
+      "type": "boolean",
+      "title": "Use Word2Vec for vectorization",
+      "description": "Select if you want to use word2vec as the method for vectorization. You can choose the other methods too in which case an ensemble will be used. Custom embeddings will be learned. Useful for jargon."
+    },
+    "vectorizationUseTfidf": {
+      "type": "boolean",
+      "title": "Use Tf-Idf for vectorization",
+      "description": "Select if you want to use Tf-idf as the method for vectorization. You can choose the other methods too in which case an ensemble will be used."
+    },
+    "vectorizationDlEnsembleWeight": {
+      "type": "number",
+      "title": "Deep learning vectorization ensemble weight",
+      "description": "Ensemble weight for deep learning based vectorization if more than one method of vectorization is selected.",
+      "default": 1
+    },
+    "vectorizationFasttextVectorsSize": {
+      "type": "integer",
+      "title": "Size of word vectors",
+      "description": "Word vector dimensions for Word2Vec vectorizer.",
+      "default": 150,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextWindowSize": {
+      "type": "integer",
+      "title": "Word2Vec window size",
+      "description": "The window size (context words from [-window, window]) for Word2Vec.",
+      "default": 5,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextEpochs": {
+      "type": "integer",
+      "title": "Word2Vec training epochs",
+      "description": "Number of epochs to train custom Word2Vec embeddings.",
+      "default": 15,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextSkipGram": {
+      "type": "boolean",
+      "title": "Use SkipGram model",
+      "description": "Whether to use skip gram for training. If unchecked, CBOW will be used.",
+      "default": true,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "vectorizationFasttextMinCount": {
+      "type": "integer",
+      "title": "Min count of words",
+      "description": "Minimum times a token needs to occur in the text to be considered for the vocab.",
+      "default": 1,
+      "hints": [
+        "hidden"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextMaxVocabSize": {
+      "type": "integer",
+      "title": "Max vocab size",
+      "description": "Maximum number of tokens to consider for the vocab. Less frequent tokens will be omitted.",
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextUseSubwordNgram": {
+      "type": "boolean",
+      "title": "Use subword ngrams",
+      "description": "Whether to use subword (character) ngrams.",
+      "default": true,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "vectorizationFasttextMinNgram": {
+      "type": "integer",
+      "title": "Min Ngram size",
+      "description": "Minimum size for ngrams generated.",
+      "default": 3,
+      "hints": [
+        "hidden"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextMaxNgram": {
+      "type": "integer",
+      "title": "Max Ngram size",
+      "description": "Maximum size for ngrams generated.",
+      "default": 6,
+      "hints": [
+        "hidden"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationFasttextEnsembleWeight": {
+      "type": "number",
+      "title": "Word2Vec vectorization ensemble weight",
+      "description": "Ensemble weight for Fasttext based vectorization if more than one method of vectorization is selected.",
+      "default": 1
+    },
+    "vectorizationTfidfUseCharacters": {
+      "type": "boolean",
+      "title": "Use characters ngrams",
+      "description": "Whether to use characters. By default words are used."
+    },
+    "vectorizationTfidfFilterStopwords": {
+      "type": "boolean",
+      "title": "Filter stopwords",
+      "description": "Whether to filter out stopwords before generating Tf-Idf weights.",
+      "default": true
+    },
+    "vectorizationTfidfMinDf": {
+      "type": "number",
+      "title": "Min Document Frequency",
+      "description": "Minimum Df for token to be considered.",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "vectorizationTfidfMaxDf": {
+      "type": "number",
+      "title": "Max Document Frequency",
+      "description": "Maximum Df for token to be considered.",
+      "default": 1,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "vectorizationTfidfMinNgram": {
+      "type": "integer",
+      "title": "Min Ngram size",
+      "description": "Minimum Ngram size to be used.",
+      "default": 1,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationTfidfMaxNgram": {
+      "type": "integer",
+      "title": "Max Ngram size",
+      "description": "Maximum Ngram size to be used.",
+      "default": 3,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationTfIdfMaxVocabSize": {
+      "type": "integer",
+      "title": "Max vocab size",
+      "description": "Maximum number of tokens to consider for the vocab. Less frequent tokens will be omitted.",
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "vectorizationTfidfEnsembleWeight": {
+      "type": "number",
+      "title": "Tf-Idf vectorization ensemble weight",
+      "description": "Ensemble weight for Tf-Idf based vectorization if more than one method of vectorization is selected.",
+      "default": 1
+    },
+    "topKAnn": {
+      "type": "integer",
+      "title": "No. of Item Recs to  compute for ensemble",
+      "description": "This is used to fetch additional recommendations so that the value specified for the Number of User Recommendations to Compute is most likely satisfied after filtering. This is normally set to 10 * (No. of item recommendations to compute)",
+      "default": 100,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "jobRunName": {
+      "type": "string",
+      "title": "Job Run Name",
+      "description": "Identifier for this job run. Use it to filter recommendations from particular runs",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training data path",
+      "description": "Solr collection or cloud storage path where training data is present.",
+      "minLength": 1
+    },
+    "trainingFormat": {
+      "type": "string",
+      "title": "Training data format",
+      "description": "The format of the training data - solr, parquet etc.",
+      "default": "solr",
+      "minLength": 1
+    },
+    "secretName": {
+      "type": "string",
+      "title": "Cloud storage secret name",
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output data path",
+      "description": "Solr collection or cloud storage path where output data is to be written."
+    },
+    "outputFormat": {
+      "type": "string",
+      "title": "Output data format",
+      "description": "The format of the output data - solr, parquet etc.",
+      "default": "solr",
+      "minLength": 1
+    },
+    "partitionFields": {
+      "type": "string",
+      "title": "Partition fields",
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numSimsPerItem": {
+      "type": "integer",
+      "title": "No. of Item Recs to Compute",
+      "description": "Number of recommendations that will be saved per item.",
+      "default": 10,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "deleteOldRecs": {
+      "type": "boolean",
+      "title": "Delete Old Recommendations",
+      "description": "Should previous recommendations be deleted. If this box is unchecked, then old recommendations will not be deleted but new recommendations will be appended with a different Job ID. Both sets of recommendations will be contained within the same collection. Will only work when output path is solr.",
+      "default": true
+    },
+    "excludeFromDeleteFilter": {
+      "type": "string",
+      "title": "Exclude from Delete Filter",
+      "description": "If the 'Delete Old Recommendations' flag is enabled, then use this query filter to identify existing recommendation docs to exclude from delete. The filter should identify recommendation docs you want to keep.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "metadataCategoryFields": {
+      "type": "array",
+      "title": "Metadata fields for item-item evaluation",
+      "description": "These fields will be used for item-item evaluation and for determining if the recommendation pair belongs to the same category.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`.",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "trainingSampleFraction": {
+      "type": "number",
+      "title": "Training Data Sampling Fraction",
+      "description": "Choose a fraction of the data for training.",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "itemIdField": {
+      "type": "string",
+      "title": "Training Item Id Field",
+      "description": "Field name containing stored item ids",
+      "default": "item_id_s",
+      "minLength": 1
+    },
+    "contentField": {
+      "type": "array",
+      "title": "Training Content Field",
+      "description": "Field name containing item content such as product description",
+      "items": {
+        "type": "string"
+      }
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random Seed",
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "default": 12345,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "itemMetadataFields": {
+      "type": "array",
+      "title": "Item Metadata Fields",
+      "description": "List of item metadata fields to include in the recommendation output documents.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "vectorizationDlBatchSize": {
+      "type": "integer",
+      "title": "Batch size to compute encodings",
+      "description": "Compute encodings in batches in case hardware out of memory.",
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "performANN": {
+      "type": "boolean",
+      "title": "Perform approximate nearest neighbor search",
+      "description": "Whether to perform approximate nearest neighbor search (ANN). ANN will drastically reduce training time, but accuracy will drop a little. Disable only if dataset is very small.",
+      "default": true
+    },
+    "maxNeighbors": {
+      "type": "integer",
+      "title": "Max neighbors for indexing",
+      "description": "If perform ANN, size of the potential neighbors for the indexing phase. Higher value leads to better recall and shorter retrieval times (at the expense of longer indexing time).Reasonable range: 5~100",
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 100,
+      "exclusiveMaximum": false,
+      "minimum": 5,
+      "exclusiveMinimum": false
+    },
+    "searchNN": {
+      "type": "integer",
+      "title": "Search Depth",
+      "description": "If perform ANN, the depth of search used to find neighbors. Higher value improves recall at the expense of longer retrieval time.Reasonable range: 100~2000",
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 2000,
+      "exclusiveMaximum": false,
+      "minimum": 100,
+      "exclusiveMinimum": false
+    },
+    "indexNN": {
+      "type": "integer",
+      "title": "Indexing Depth",
+      "description": "If perform ANN, the depth of constructed index. Higher value improves recall at the expense of longer indexing time.Reasonable range: 100~2000",
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 2000,
+      "exclusiveMaximum": false,
+      "minimum": 100,
+      "exclusiveMinimum": false
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-item-recommender-content"
+      ],
+      "default": "argo-item-recommender-content",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingFormat",
+        "outputCollection",
+        "outputFormat",
+        "outputBatchSize",
+        "secretName",
+        "partitionFields"
+      ]
+    },
+    {
+      "label": "Training Data Settings",
+      "properties": [
+        "trainingDataFilterQuery",
+        "trainingSampleFraction",
+        "randomSeed",
+        "itemIdField",
+        "contentField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "numSimsPerItem",
+        "topKAnn",
+        "performANN",
+        "maxNeighbors",
+        "searchNN",
+        "indexNN",
+        "unidecodeText",
+        "lowercaseText",
+        "deleteOldRecs",
+        "excludeFromDeleteFilter"
+      ]
+    },
+    {
+      "label": "Vectorization Parameters",
+      "properties": [
+        "vectorizationUseDl",
+        "vectorizationUseFasttext",
+        "vectorizationUseTfidf"
+      ]
+    },
+    {
+      "label": "Deep Learning Vectorization Parameters",
+      "properties": [
+        "vectorizationDlBatchSize",
+        "vectorizationDlEnsembleWeight"
+      ]
+    },
+    {
+      "label": "Word2Vec Vectorization Parameters",
+      "properties": [
+        "vectorizationFasttextVectorsSize",
+        "vectorizationFasttextWindowSize",
+        "vectorizationFasttextEpochs",
+        "vectorizationFasttextMinNgram",
+        "vectorizationFasttextEnsembleWeight",
+        "vectorizationFasttextMaxVocabSize"
+      ]
+    },
+    {
+      "label": "Tf-Idf Vectorization Parameters",
+      "properties": [
+        "vectorizationTfidfUseCharacters",
+        "vectorizationTfidfFilterStopwords",
+        "vectorizationTfidfMinNgram",
+        "vectorizationTfidfMaxNgram",
+        "vectorizationTfIdfMaxVocabSize",
+        "vectorizationTfidfEnsembleWeight"
+      ]
+    },
+    {
+      "label": "Item Metadata Settings",
+      "properties": [
+        "itemMetadataFields",
+        "metadataCategoryFields"
+      ]
+    }
+  ]
+}

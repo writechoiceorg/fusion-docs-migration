@@ -1,0 +1,284 @@
+---
+title: "Objects API"
+description: "Fusion Admin APIs"
+permalink: "326"
+---
+
+The Objects API lets you import and export objects between Fusion instances. Fusion objects include all your searchable data, plus pipelines, aggregations, and other configurations on which your collections depend.
+
+For more information, [view the API specification.](?open-api=true)
+
+As an alternative in some cases, you can [use the Fusion UI to migrate objects](/how-to/0imnej/migrate-fusion-objects).
+
+<Tip>
+**Important**
+
+
+For both the API and UI, migrating objects is intended for use *within a specific Fusion version*. See [Fusion 5 Upgrades](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) to migrate objects from one Fusion version to a specific Fusion 5.x release.
+</Tip>
+
+You can select all objects, or limit the operation to specific object types or IDs. In addition to export/import endpoints, a validation endpoint is provided for troubleshooting.
+
+<Note>
+By default, system-created collections are not exported. See below for details.
+</Note>
+
+## Object export and import
+
+[Collections](#exporting-and-importing-collections) and [encrypted values](#encrypted-passwords) are treated specially; details are provided below. During import, conflicts are resolved according to the specified [import policy](#import-policies).
+
+For objects other than collections, no implicit filtering is performed; all objects are included by default. However, on export you can [filter by type and ID](#filtering-on-export).
+
+### Supported objects
+
+Fusion lets you export and import object types. ZIP files are the output for all file types listed. To filter by type, use the values below with the `type` query string parameter; see the examples below.
+
+| Object type | Value |
+| --- | --- |
+| apps | `app`<br/> <Tip> The `deep` parameter is not needed for this object type. In the case of apps, all linked objects are included by default. </Tip> |
+| Appkit apps | `appkit` |
+| blob | `blob` |
+| collections (with their dependent objects)  See below for collection-specific details. | `collection` |
+| data-model | `data-model` |
+| datasources | `datasource` |
+| experiment | `experiment` |
+| index pipelines | `index-pipeline` |
+| index profiles | `index-profile` |
+| job configurations | `spark`, `type`, or `data-source` |
+| link | `link` |
+| object group | `group` |
+| parsing configurations | `parser` |
+| query pipelines | `query-pipeline` |
+| query profiles | `query-profile` |
+| schedules for schedulable jobs (spark, type, or datasource) | `job` |
+| search cluster configurations | `search-cluster` |
+| subscription | `subscription` |
+| template | `template` |
+| zone | `zone` |
+
+### Exporting and importing collections
+
+Collections are processed with these dependent objects:
+
+* features
+* index profiles
+* query profiles
+
+Datasources, parser configurations, and pipeline configurations are not included when collections are exported or imported. These must be exported and imported explicitly.
+
+Only user-created collections are included by default. Certain types of collections are excluded:
+
+* the "default" collection
+* collections whose type is not DATA
+* collections whose names start with "system_"
+* "Secondary" collections, that is, collections created by features
+
+  Instead, create the same features on the target system; this automatically creates the corresponding secondary collections.
+
+You can override these exclusions by specifying a collection, like this:
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?collection.ids=default > collection.zip
+
+```
+
+### Encrypted passwords
+
+Some objects, such as datasources and query pipelines, include encrypted passwords for accessing secure data.
+
+* On *export*, these encrypted values are replaced with one of the following:
+
+  + `secret.dataSources.datasourceID.password`
+  + `secret.queryPipelines.pipelineID.stages.active-directory-security-trimming.stageID.bindPassword`
+* On *import*, the original, plaintext passwords must be provided in a separate JSON map as multipart form data:
+
+  ```json
+  {
+     "secret.dataSources.datasourceID.password":"MyDatasourcePassword",
+     "secret.queryPipelines.pipelineID.stages.active-directory-security-trimming.stageID.bindPassword":"MyADPassword"
+  }
+  
+```
+
+  <Tip>
+  Passwords can also be [uploaded via the UI](/how-to/0imnej/migrate-fusion-objects#import-objects-into-an-app).
+  Variables that do not start with `secret.` are ignored.
+  </Tip>
+
+
+
+### Import policies
+
+On import, the `importPolicy` parameter is required. It specifies what to do if any object in the import list already exists on the target system:
+
+|  |  |
+| --- | --- |
+| `abort` | If there are conflicts, then import nothing. |
+| `merge` | If there are conflicts, then skip the conflicting objects. |
+| `overwrite` | If there are conflicts, then overwrite or delete/create the conflicting objects on the target system. |
+
+### Filtering on export
+
+On export, there are two ways to specify the objects to include:
+
+* by type
+
+  To export only specific types of objects, you can specify one or more object types using the `type` query string parameter. See [Supported objects](#types) for a list of valid values.
+* by type and ID
+
+  The `type.ids` parameter lets you list the IDs to match for the specified object type.
+
+The `type` and `type.ids` parameters can be combined as needed.
+
+### Exporting linked objects
+
+Related Fusion objects are linked. You can view linked objects using the [Links API](/fusion/5.9/319/links-api) or the [Object Explorer](/fusion/5.9/121/object-explorer).
+
+When exporting a specific Fusion object, you can also export its linked objects without specifying each one individually. To export all objects linked to the specified object, include the `deep="true"` query parameter in your request. See the [example](#export-examples-linked) below.
+
+## Validation
+
+Objects are validated before import. If any objects fail validation, the whole import request is rejected. A separate endpoint is available for validating objects without importing them.
+
+Validation includes checking whether an object already exists on the target system and whether the user is authorized to create or modify the object.
+
+For collection objects, the following special validation is performed:
+
+* We check the `searchClusterId` of each collection and verify that a cluster with this ID exists on the target system or in the import file (error).
+* We check that features, index profiles, and query profiles belong only to the collections specified in the import file (error).
+* We check that a feature exists on the target system for each feature in the import file (error).
+* We check for index profiles or query profiles that do not exist on the target system or in the import file (warning).
+
+## Status messages
+
+|  |  |
+| --- | --- |
+| `Validation completed with no errors` | The validation method was called and no errors found, though there may be warnings. |
+| `Validation found errors` | The validation was called and errors found. Validation does not stop on the first error, so the complete list of errors is reported. |
+| `Validation was not completed because of system error` | The validation was interrupted by system error. |
+| `Import was not performed because validation errors exist` | The import method was called, but import didn’t start because of validation errors. |
+| `Import was not performed because of input data error` | The import method was called, but import didn’t start, because Fusion could not find a substitution for one of the secret values in objects in import. |
+| `Import was not completed because of system error` | The validation found no errors and import started, but it was interrupted by system error. |
+| `Import was completed` | Validation found no errors and import finished successfully. |
+
+## Examples
+
+**Export all objects**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export > all-objects.zip
+
+```
+
+**Export all datasources**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?type=datasource > datasources.zip
+
+```
+
+**Export a specific datasource and all its linked objects**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?datasource.ids=movies_csv-movies&deep=true > movies.zip
+
+```
+
+**Export all apps**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?type=app > all-apps.zip
+
+```
+
+**Get all app IDs, then export one app by ID**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/apps
+
+[ {
+  "id" : "movies",
+  "name" : "Movies",
+  "description" : "Search the movielens database.",
+  "dataUri" : "/App-Tile-01-460x160.png",
+  "properties" : {
+    "headerImageName" : "headerImage1",
+    "tileColor" : "apps-darkblue",
+    "previousCollectionId" : "movies"
+  }
+}, {
+  "id" : "tech-pubs",
+  "name" : "TechPubs",
+  "description" : "Search the documentation.",
+  "dataUri" : "/App-Tile-02-460x160.png",
+  "properties" : {
+    "headerImageName" : "headerImage2",
+    "tileColor" : "apps-darkblue",
+    "previousCollectionId" : "tech-pubs"
+  }
+} ]
+
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?app.ids=tech-pubs > techpubs.zip
+
+```
+
+<Note>
+When you export an app that includes objects that are shared with other apps, then all apps linked to that object are also exported.
+</Note>
+
+
+
+**Export two apps by ID**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/objects/export?app.ids=tech-pubs,movies > two-apps.zip
+
+```
+
+**Export all datasources and pipelines, plus two specific parsing configurations**
+
+```bash
+curl -u USERNAME:PASSWORD 'https://FUSION_HOST:FUSION_PORT/api/objects/export?type=datasource,index-pipeline,query-pipeline&parser.ids=movies,tech-pubs' > export.zip
+
+```
+
+**Import objects from a file and stop if there are conflicts**
+
+```bash
+curl -u USERNAME:PASSWORD -H "Content-Type:multipart/form-data" -X POST -F 'importData=@/Users/admin/Fusion/export.zip' https://FUSION_HOST:FUSION_PORT/api/objects/import?importPolicy=abort
+
+```
+
+**Import objects, substitute the password variables, and merge any conflicts**
+
+```bash
+curl -u USERNAME:PASSWORD -H "Content-Type:multipart/form-data" -X POST -F 'importData=@/Users/admin/Fusion/export.zip' -F 'variableValues=@password_file.json' https://FUSION_HOST:FUSION_PORT/api/objects/import?importPolicy=merge
+
+```
+
+<Note>
+`password_file.json` must contain plaintext passwords.
+</Note>
+
+
+
+**Import a zip file of Fusion objects and merge any conflicts**
+
+```bash
+curl -u USERNAME:PASSWORD -H "Content-Type:multipart/form-data" -X POST -F 'importData=@/Users/admin/Fusion/techpubs.zip' https://FUSION_HOST:FUSION_PORT/api/objects/import?importPolicy=merge
+
+```
+
+**Import objects into the context of an app**
+
+```bash
+curl -v -H 'Content-Type:multipart/form-data' -X POST -F 'importData=@app_part.zip' 'https://<FUSION_HOST>/api/objects/import?importPolicy=overwrite&context=APP_NAME'
+
+```
+
+**Validate objects**
+
+```bash
+curl -v -H 'Content-Type:multipart/form-data' -X POST -F 'https://FUSION_HOST:FUSION_PORT/api/objects/validate'
+
+```

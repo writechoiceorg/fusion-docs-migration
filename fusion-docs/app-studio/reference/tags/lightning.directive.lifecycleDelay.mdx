@@ -1,0 +1,47 @@
+---
+title: "lifecycle:delay"
+permalink: "1084"
+---
+
+## Description
+
+Delays rendering of an object
+
+## Usage
+
+as element:
+
+```xml
+<lifecycle:delay
+       delay="{string}">
+</lifecycle:delay>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| delay | **string** | The delay in ms |
+
+## Example
+
+#### Source
+
+```xml
+<p>A message will appear after 5 seconds has passed.</p>
+<lifecycle:delay delay="5000">
+    <search:alert style="alertbox-positive">Alert - 5 Seconds has passed.</search:alert>
+</lifecycle:delay>
+<p>A message will appear after 10 seconds has passed.</p>
+<lifecycle:delay delay="10000">
+    <search:alert style="alertbox-warning">Alert - 10 Seconds has passed.</search:alert>
+</lifecycle:delay>
+<p>A message will appear after 20 seconds has passed.</p>
+<lifecycle:delay delay="20000">
+    <search:alert style="alertbox-negative">Alert - 20 Seconds has passed.</search:alert>
+</lifecycle:delay>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/lifecycleDelay.png)</Frame>

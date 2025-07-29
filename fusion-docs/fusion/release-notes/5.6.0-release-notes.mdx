@@ -1,0 +1,124 @@
+---
+title: "Fusion 5.6.0"
+permalink: "mme9fq"
+---
+
+**Release date:** August 10, 2022
+
+<Warning>
+**Caution**
+
+This release removes support for Pulsar. Any existing workflows using Pulsar will no longer function when upgrading to 5.6.
+</Warning>
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | 8.11.1 |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.1 |
+| **Kubernetes** | GKE, AKS, EKS 1.22  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.22  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## New Features
+
+### Predictive Merchandiser
+
+Predictive Merchandiser users can now fire templates and rules at every facet level.
+
+Hierarchical template triggers allow you to fire a search configuration template or rules at a parent or child level in a hierarchy, and even at a faceted level.
+
+**Ways to use hierarchical templates:**
+
+* For a sale on "Winter Coats," you can fire a template at the "Outerwear" level or at any of its children.
+* For an overstock on a particular clothing size, you could fire a template directly at the “Women’s Outerwear, Size Small” filter.
+* When rolling out a new company policy, you could fire a zone on all pages from the homepage down so everyones sees the most important links and documents for the new policy.
+
+See [Predictive Merchandiser Templates](/fusion/5.6/3289/templates#hierarchical-template-triggers) for more information. For instructions on how to use Templates, see [Use Predictive Merchandiser Templates](/how-to/3293/use-predictive-merchandiser-templates).
+
+### Fusion
+
+* Users can now manage API keys from their browser. See [API Keys](/fusion/5.6/7zriph/api-keys) for more information.
+* Added a new query pipeline stage, [Graph Security Trimming Stage](/fusion/5.6/zdzlfu/graph-security-trimming-stage).
+
+  The Graph Security Trimming stage restricts query results according to the user ID as an alternative to [Security Trimming Stage](/fusion/5.9/272/security-trimming-stage). Whereas the Security Trimming stage has one Solr filter query per data source, Graph Security Trimming uses a single filter query for all data sources.
+
+### Fusion Connectors
+
+* Added a new connector, the [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/sharepoint-optimized-v-2). The SharePoint Optimized V2 connector retrieves content and metadata from an on-premises SharePoint repository. This connector replaces the SharePoint V2 Connector in Fusion 5.6.0.
+* Added a new connector, the [LDAP-ACLs Connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2). This connector replaces the LDAP V2 Connector.
+
+## Bug Fixes
+
+### Fusion
+
+* The Jobs panel no longer refreshes constantly while a job is running.
+
+* The `fieldList` property in Index stages now displays the designated title and description.
+
+* Fixed an issue that caused [Spark jobs](/fusion/5.6/187/spark-jobs) to fail when Fusion 5 was deployed using Gatekeeper service on Kubernetes.
+
+* Configured [Realms](/fusion/5.6/127/security-realms) now maintain sign in information.
+
+* In App Import, the **Import** button is no longer inactive if the wrong file type is selected.
+
+* Fixed an issue that caused the [Job History API](/fusion/5.6/182/job-history) to display inaccurate job status information.
+
+* Fixed an issue that caused stage information to be deleted after moving them in the pipeline and saving.
+
+* The `f5-monitoring-kube-state-metrics` service tooltip now displays.
+
+* Fixed an issue that caused jobs to not run after adding a new schedule.
+
+* Fixed an issue that caused an internal server error when creating a new app using numbers as an app name.
+
+* Attempting to access the Rules page with a developer role no longer causes a forbidden error.
+
+* Using the pipe symbol as a Field Delimiter in the Apply Rules query pipeline stage no longer causes a forbidden error.
+
+* Fixed an issue that caused the timezone value to not save.
+
+### Predictive Merchandiser
+
+* Fixed an issue that caused published templates to not display when clicking Start Task on the Merchandiser page.
+
+## Removals
+
+* Removed **Selection of Solr Cluster** on the **Create New Collection** screen in the Admin UI.
+
+* Removed support for Apache Pulsar and replaced it with Apache Kafka. As a result:
+
+    + Logging via Pulsar has been removed.
+    + The Log Viewer has been removed from the Admin UI.
+    + [Remote connector support via Pulsar](/how-to/8869/use-a-remote-connector-with-pulsar-proxy) is no longer possible. This functionality will be replaced in a future release.
+    + The ability to access Pulsar from the Subscriptions API has been removed. You are no longer able to create a custom subscription topic.
+    + The Send to Message Bus index stage has been removed.
+
+* [LDAP-ACLs V2 Connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) replaces the [LDAP V2 Connector](/fusion-connectors/69/active-directory-connector-for-ac-ls-v-2-configuration-reference).
+
+* [SharePoint Optimized V2 Connector](/fusion-connectors/3qqudu/sharepoint-optimized-v-2) replaces the [SharePoint V2 Connector](/fusion-connectors/70/share-point-v-2).
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.
+
+* A bug was discovered in the Spark 3.2.x component that prevents signal aggregation for signals stored in the cloud in Parquet format. For more information about the issue, see the [Spark bug report](https://issues.apache.org/jira/browse/SPARK-38318).
+
+    <Note>
+    This issue is fixed in Fusion 5.7.1.
+    </Note>
+
+* The link to the [Banana dashboards](/fusion/5.6/139/banana-dashboards) in the Fusion UI does not work. You can access Banana dashboards using a direct link at `https://FUSION_HOST:FUSION_PORT/admin/banana/index.html#/dashboard/`.
+
+    <Note>
+    This issue is fixed in Fusion 5.7.0.
+    </Note>

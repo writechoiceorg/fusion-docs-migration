@@ -1,0 +1,28 @@
+---
+title: "result"
+permalink: "1023"
+---
+
+## Description
+
+Returns a result from the response
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ result_expression | result[:index] }}
+```
+
+### In JavaScript
+
+```js
+$filter('result')(response[, index])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| response | string | The response object to get the result from. |
+| index *(optional)* | number | The index of the result to retrieve, index starts at 0. (Defaults to 0). |

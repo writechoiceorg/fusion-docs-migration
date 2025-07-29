@@ -1,0 +1,73 @@
+---
+title: "Index Workbench"
+permalink: "158"
+---
+
+The Index Workbench is a powerful tool that combines key aspects of the data indexing configuration process into one user-friendly panel. It guides the user through the workflow for configuring datasources, parsers and index pipelines, and then running a datasource job to index your data.
+
+<Frame>![Index Workbench](/assets/images/5.6/index-workbench-56.png)</Frame>
+
+## Datasources
+
+A datasource is a complete data ingest configuration that consists of the following components:
+
+* **Connector.** Connectors are out-of-the-box components for pulling your data into Fusion. Lucidworks provides a wide variety of connectors, each specialized for a particular data type. For a list of connectors, see [Fusion Connectors](/fusion-connectors/2/fusion-connectors).
+* **Parser.** Parsers provide fine-grained configuration for inbound data.
+
+  + For Fusion 5.x, see [Parsers](/fusion/5.9/370/parsers) for more information.
+  + For Fusion 4.x, see [Parsers](/fusion-server/4.2/370/parsers) for more information.
+* **Index pipeline.** Index pipelines transform incoming data for indexing by Fusion.
+
+  + For Fusion 5.x, see [Index Pipelines](/fusion/5.9/162/index-pipelines) for more information.
+  + For Fusion 4.x, see [Index Pipelines](/fusion-server/4.2/162/index-pipelines) for more information.
+
+<Frame>![New datasource](/assets/images/5.0/index-workbench-new.png)</Frame>
+
+To set up a new datasource in the Index Workbench, click **New**. The **Add A New Datasource** panel appears, offering three simplified methods of configuring how Fusion fetches your data:
+
+* By URL
+* By local file upload
+* By selecting an installed connector to configure
+
+  See [Connectors Configuration Reference](/fusion-connectors/63/configuration-reference) for a complete list of available connectors. Some are installed by default, and others require separate download and installation.
+
+## Parsers
+
+[Parsers](/fusion/5.9/370/parsers) are a configurable component of the indexing workflow, for flexibility and specificity when parsing inbound data.
+
+<Frame>![Parsers](/assets/images/5.6/index-workbench-parsers-56.png)</Frame>
+
+A parser consists of an ordered list of parser stages that is completely customizable. The same parser stage can be added to a given configuration multiple times if the different specified settings within those stages best suits the parsing of the data. There is no limit to the number of parser stages that can be included in a parser, and the order in which they run is also completely flexible.
+
+In a parser, after all of the doctype-specific parser stages have run, the Tika and Fallback stages are useful catch-all stages that can attempt to parse anything that has not yet been matched. Tika is used for parsing many types of unstructured documents like PDFs, DOCX, and many more. If all of the other stages in the parser fail to completely parse the data, the Fallback stage can copy the raw bytes directly to Solr.
+
+## Index pipelines
+
+An [Index Pipeline](/fusion/5.9/162/index-pipelines) transforms incoming data into a document suitable for indexing by Solr via a series of modularized operations called stages. Fusion provides a variety of specialized index stages to index data effectively. Stages can be selected, configured, and enabled or disabled in the Index Pipeline section of the Index Workbench.
+
+Once you finish configuring a datasource using the Index Workbench, you can move on to setting up queries using the [Query Workbench](/fusion/5.9/167/query-workbench), which provides a similar workflow for configuring and previewing search results.
+
+### Adding a pipeline stage
+
+Click **Add a Stage** to add index pipeline stages that can perform data filtering, transformations, and more.
+
+<Frame>![Add a stage](/assets/images/5.6/index-workbench-stages-add-56.png)</Frame>
+
+The [Solr Indexer stage](/fusion/5.9/227/solr-indexer-stage)
+is the only pipeline stage that is required to complete the indexing process, and therefore exists in every query pipeline. It is always the last stage in a series.
+
+### Re-ordering pipeline stages
+
+The order of the pipeline stages matters, because the output from one stage becomes the input to the next stage. For example, the
+[Solr Indexer stage](/fusion/5.9/227/solr-indexer-stage)
+must always come last in the sequence, so that data is indexed only after it has been processed by all other stages. Putting this stage first in the sequence means that subsequent stages have no effect on the indexed data.
+
+Click and drag any stage in the pipeline to move it up or down in the sequence of stages. The preview panel automatically updates the results to reflect the output of the new sequence.
+
+### Enabling and disabling pipeline stages
+
+By default, every stage in an index pipeline is enabled. While working with a pipeline, it can be helpful to disable stages without removing them completely. This allows you to preserve a stage’s configuration while observing how the search results change in its absence. You can re-enable the stage at any time. When you save a query pipeline, the enabled/disabled state of each stage is also saved.
+
+<Frame>![Enable/disable stages](/assets/images/5.6/index-workbench-stages-disable-56.png)</Frame>
+
+Click the circle next to any stage in order to enable or disable it.

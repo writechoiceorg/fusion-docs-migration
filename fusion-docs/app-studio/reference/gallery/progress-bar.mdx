@@ -1,0 +1,41 @@
+---
+title: "Progress Bars"
+permalink: "1052"
+---
+
+## Default
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/progressbars01.png)</Frame>
+
+```html
+<div styling="progress-bar">
+    <div styling="progress-bar-fill" style="width: 66%"></div>
+</div>
+```
+
+## Background Color
+
+All background colors can be use to change the color of the bar
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/progressbars02.png)</Frame>
+
+```html
+<div styling="progress-bar">
+    <div styling="progress-bar-fill bg-sunflower" style="width: 33%"></div>
+</div>
+```
+
+## Radial
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/progressbars03.png)</Frame>
+
+```xml
+<layout:grid>
+  <layout:block sm="1-2">
+    <progress:radial percentage="33"></progress:radial>
+  </layout:block>
+  <layout:block sm="1-2">
+    <progress:radial percentage="88" fill-class="tk-stl-bg-raspberry" percentage-class="tk-stl-text-raspberry"></progress:radial>
+  </layout:block>
+</layout:grid>
+```

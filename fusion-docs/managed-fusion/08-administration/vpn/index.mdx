@@ -1,0 +1,34 @@
+---
+title: "VPNs"
+permalink: "349r8"
+---
+
+A Virtual Private Network (VPN) establishes a secure, encrypted connection over the internet, effectively extending a private network across a public network. You can configure a VPN to work with Managed Fusion, or choose a [different method](#alternatives-to-vpns) of accessing secured data, such as [remote connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors) and allowlisting.
+
+## VPNs and Managed Fusion
+
+VPNs are essential for safeguarding data transmission, ensuring secure remote access, and connecting multiple networks. You may use a VPN to securely connect Managed Fusion to retrieve data from secured resources that are not publicly accessible. For more information on setting up a VPN, refer to Google’s [guide to high availability VPNs](https://cloud.google.com/network-connectivity/docs/vpn/concepts/topologies).
+
+To use a VPN with Managed Fusion, do the following:
+
+1. Provide a non-overlapping private IP/CIDR range to your Lucidworks representative. For example, `10.0.0.0/18`.
+2. If existing clusters are already deployed, your Lucidworks representative decides if those need to be re-created based on your IP network.
+3. Next, Lucidworks starts the VPN setup process and notifies you once external VPN IPs are generated.
+4. When you receive the external VPN IPs, you can begin the VPN configuration process. You must provide Lucidworks with the following information:
+
+   1. External customer tunnel IPs
+   2. Client Autonomous System Number (ASN)
+   3. Border Gateway Protocol (BGP) Addresses
+   4. Internet Key Exchange (IKE) Secret
+5. Using this information, Lucidworks finishes VPN setup in Google Cloud Platform.
+6. If applicable: When finished, validate VPN traffic and BGP routes.
+
+Some things to note:
+
+* Lucidworks can manually add static routes to the routing table in the Lucidworks network.
+* Alternatively, Lucidworks can use BGP instead of static routes. BGP allows your network to dynamically define the routes to the Lucidworks network. For example, if you decide to add a new server that needs to be crawled in a different network, you can update your routes which will propagate to the Lucidworks routes, and that server will be available automatically.
+* Google GKE (Kubernetes) requires a CIDR range per node in each node pool. These IPs are carved out and given to the node during the cluster creation. Depending on the size of the cluster, these IPs get taken up quickly, resulting in Lucidworks requiring several private IPs. To learn more about IP allocation, refer to [the GKE documentation](https://cloud.google.com/kubernetes-engine/docs/concepts/alias-ips#cluster_sizing_secondary_range_pods).
+
+## Alternatives to VPNs
+
+[Remote connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors) let you access data behind firewalls and are often sufficient for most client configurations. Alternatively, you can use [IP allowlisting](https://en.wikipedia.org/wiki/Whitelist) to connect Managed Fusion to secured data.

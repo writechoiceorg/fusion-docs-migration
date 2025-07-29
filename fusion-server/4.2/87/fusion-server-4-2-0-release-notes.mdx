@@ -1,0 +1,193 @@
+---
+title: "Fusion Server 4.2.0 Release Notes"
+permalink: "87"
+---
+
+**Release date:** 28 February 2019
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.5 | ZooKeeper 3.4.13 | Spark 2.3.1 | Jetty 9.4.11.v20180605 | Ignite 2.3.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+See also the [App Studio 4.2.0 release notes](/app-studio/4.2/964/app-studio-4-2-0-release-notes).
+
+## New features
+
+* **Dynamic, real-time system visualizations with the new [DevOps Center](/fusion-server/4.2/130/the-dev-ops-center)**
+
+    The DevOps Center generates real-time dashboards for visualizing metrics throughout your Fusion system, plus a log viewer where you can explore events and focus on specific event types. You can also [export metrics and events](/fusion-server/4.2/130/the-dev-ops-center#exporting-data-from-the-devops-center) for any timeframe, in CSV format, for external analysis.
+
+    <Frame>![DevOps Center Hosts dashboard](/assets/images/4.2/devops-hosts.png)</Frame>
+* **Faster query pipeline performance with [asynchronous stage processing](/fusion-server/4.2/173/query-pipelines#async)**
+
+    Query pipelines can now be forked for parallel processing so that faster stages can proceed while requests to external resources wait for their responses.
+
+    In this release, you can enable asynchronous execution in the following query stages:
+
+    + [Active Directory Security Trimming](/fusion-server/4.2/296/active-directory-security-trimming-stage)
+    + [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+    + [Boost with Signals](/fusion-server/4.2/248/boost-with-signals-stage)
+    + [JDBC Lookup](/fusion-server/4.2/260/jdbc-lookup-stage)
+    + [Security Trimming](/fusion-server/4.2/272/security-trimming-stage)
+    + [Solr Subquery](/fusion-server/4.2/297/solr-subquery-stage)
+
+    A new [Merge Async Results stage](/fusion-server/4.2/266/merge-async-results-stage) joins the forked pipeline before the final Solr stage.
+
+    For complete instructions, see [Query Pipelines](/fusion-server/4.2/173/query-pipelines#async).
+* **Sitecore support**
+
+    The new [Sitecore connector](/fusion-connectors/68/sitecore) provides full crawl and incremental crawl support for versions 8.x and 9.x of the popular Sitecore CMS, indexing both document content and metadata.
+
+* A new [Dropbox connector](/fusion-connectors/37/dropbox) supports the latest Dropbox API.
+
+* [**New Solr Update XML parser**](/fusion-server/4.2/368/solr-update-parser-stage)
+
+    This is a simple parser for Solr’s various update formats (XML, CSV, JSON, and javaBin).
+
+* **New query pipeline stages**
+
+    These new query pipeline stages support new Fusion AI 4.2.0 features as well as the asynchronous pipeline processing described above.
+
+    + [Query rewriting](/fusion-ai/4.2/489/query-rewriting) stages:
+
+      - [Text Tagger](/fusion-server/4.2/264/text-tagger-stage)
+      - [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+    + [Response rewriting](/fusion-ai/4.2/449/response-rewriting) stages:
+
+      - [Modify Response with Rules](/fusion-server/4.2/295/modify-response-with-rules-stage)
+      - [Response Document Exclusion Stage](/fusion-server/4.2/269/response-document-exclusion-stage)
+      - [Response Document Field Redaction Stage](/fusion-server/4.2/284/response-document-field-redaction-stage)
+      - [Response Pairwise Swap](/fusion-server/4.2/247/response-pairwise-swap-stage)
+      - [Response Shuffle Stage](/fusion-server/4.2/275/response-shuffle-stage)
+    + [Merge Async Results](/fusion-server/4.2/266/merge-async-results-stage) stage for asynchronous processing (see above).
+
+    The [default query pipeline](/fusion-server/4.2/173/query-pipelines#default-query-pipelines) now includes the new [Text Tagger](/fusion-server/4.2/264/text-tagger-stage), [Apply Rules](/fusion-server/4.2/292/apply-rules-stage), and [Modify Response with Rules](/fusion-server/4.2/295/modify-response-with-rules-stage) stages.
+* **New collections**
+
+    + `query_rewrite_staging`
+
+      Rules and certain Spark job results are written to this collection temporarily. See [Query Rewriting](/fusion-ai/4.2/489/query-rewriting) for details.
+    + `query_rewrite`
+
+      Query pipelines read rules and job results from this collection in order to perform [query rewriting](/fusion-ai/4.2/489/query-rewriting). Docs are migrated to this collection from the `query_rewrite_staging` collection.
+    + `job_reports`
+
+      Job histories are now written to this collection.
+    + `_user_prefs`
+
+      This collection stores [App Studio social data](/app-studio/4.2/3155/social-and-collaboration-tools), such as user tags, bookmarks, and so on.
+    + `system_monitor`
+
+      The [new system metrics](/fusion-server/4.2/198/system-metrics) used for the [DevOps Center](/fusion-server/4.2/130/the-dev-ops-center) are written to this collection. These new metrics replace the metrics previously written to the `system_metrics` collection.
+
+* **New REST APIs and endpoints**
+
+    + New [Custom Rules API](/fusion-server/4.2/331/custom-rules-api)
+    + New [Query Rewrite API](/fusion-server/4.2/359/query-rewrite-api)
+    + New [Webapps Admin API](/fusion-server/4.2/336/webapps-admin-api)
+    + New [Webapps Appkit API](/fusion-server/4.2/332/webapps-appkit-api)
+
+    <Note>
+    The Webapps API is deprecated in favor of the new Webapps Appkit API.
+    </Note>
+
+    + [`/index-pipelines/{id}/collections/{collection}/indexMultiple`](/fusion-server/4.2/351/index-pipelines-api#httpfusion-host8764apiindex-pipelinesidcollectionscollectionindexmultiple) submits a set of documents to an index pipeline.
+    + [`/spark/reports/{job}`](/fusion-server/4.2/312/spark-jobs-api#httpfusion-host8764apisparkreportsjob) gets the job results from a specific job.
+    + [`/webapps/{id}/war/manifest`](/fusion-server/4.2/322/webapps-api#httpfusion-host8764apiwebappsidwarmanifest) gets the `.war` file manifest for specified Web app.
+
+## Improvements
+
+* **Broader access to the Object Explorer**
+
+    A new **Explore** button appears in configuration panels for Fusion objects that can be viewed in the [Object Explorer](/fusion-server/4.2/121/object-explorer). Click the button to see the object’s relationships to other Fusion objects.
+
+    <Frame>![Explore button](/assets/images/4.2/explore-button.png)</Frame>
+
+* **Use external management tools to control Fusion configurations**
+
+    Many of the values in `conf/fusion.properties` can now be set using environment variables, enabling you to set them using `systemd`, Docker, Kubernetes, and so on. Default values are also provided. For example, in `api.port = ${API_PORT:-8765}`, the default value is 8765 unless `API_PORT` is defined.
+
+    Note that `ZOOKEEPER_PORT` cannot not be used, and value of `zookeeper.port` in `fusion.properties` must be the same as the value of `clientPort` in `conf/zookeeper/zoo.cfg`.
+* **Improved connectors functionality**
+
+    + Improved incremental crawl performance across all connectors with MapDB upgrade.
+    + Kerberos support in the [Jive connector](/fusion-connectors/76/jive#crawl-a-jive-instance-protected-by-kerberos).
+    + [javascript evaluation](/fusion-connectors/39/web-v-1#crawl-javascript-web-sites).
+    + [Web connector](/fusion-connectors/39/web-v-1) now supports website authentication credentials files in container path.
+    + [javascript evaluation](/fusion-connectors/39/web-v-1#crawl-javascript-web-sites). for crawling websites.
+    + [SharePoint V1](/fusion-connectors/61/share-point-v-1) connector now have bulk start link URL list import.
+    + [Confluence connector](/fusion-connectors/56/confluence) now supports API token based authentication.
+    + The [SMB2/3 Connector](/fusion-connectors/63/configuration-reference) has improved support for crawling distributed file systems.
+    + The [SMB2/3 Connector](/fusion-connectors/63/configuration-reference) now saves the original file path and redirected file paths when crawling distributed file systems.
+    + [JDBC V1 connector](/fusion-connectors/83/jdbc-v-1) has improved settings for managing index commits during crawls.
+    + The [OneDrive connector](/fusion-connectors/49/one-drive-datasource-configuration-reference#crawl-a-subset-of-the-onedrive-space) can now crawl user-specific drives.
+    + Some connectors now give you the option to index metadata about documents that were discarded because they were too large or too small using the new `f.index_items_discarded`/**Index discarded document metadata** parameter. A new field, `_lw_skipped_reason_s`, indicates the reason that the document was skipped during indexing. The new key is available for these connectors:
+
+      - Web: default = false
+      - Sharepoint: default = true
+      - Sharepoint Online: default = true
+      - SMB2: default = false
+      - Box: default = false
+      - Google Drive: default = false
+      - Dropbox: default = false
+      - Local Filesystem: default = false
+    + Several connectors have a new **Enable Plugin Parsing**/`pluginParsing` parameter. When it is enabled, the connector parses raw content before streaming it to the index pipeline. The following connectors support this parameter:
+
+      - Local Filesystem
+      - OneDrive
+      - Sitecore
+      - Windows Share (SMB 2/3)
+
+* The dashboards framework has been upgraded to Banana 1.6.23. See the [Banana release notes](https://github.com/LucidWorks/banana/wiki/Release-Notes).
+
+* For tighter security, CORS is now disallowed by default. You can enable it, if needed, by editing the `proxy.corsAllowOrigin` property in `conf/fusion.properties`.
+
+## Other changes
+
+* The Synonyms UI is no longer available. See the new [Synonym Detection](/fusion-ai/4.2/485/synonym-detection) feature, available with a [Fusion AI](/fusion-ai/4.2/428/fusion-ai) license.
+* The `synonyms` collection has been replaced with the new `query_rewrite` collection.
+
+* The [Recommendations API](/fusion-server/4.2/311/recommendations-api) is deprecated and will be removed in a future release.
+
+## Known issues
+
+* When under load, the Fusion proxy service can occasionally become stuck, causing user authentication to fail. This is the result of the proxy `InputStream` failing to close properly.
+
+  An upgrade to Fusion 4.2.4 is required to fix this issue. See [Upgrade Fusion](/how-to/710/upgrade-fusion-server-4-2-x-to-4-2-y).
+* **Connectors**
+
+    + Repeatedly stopping a V2 datasource job and clearing the datasource may result in an out-of-memory condition. To recover from this state, restart the `connectors-rpc` process:
+
+      ```
+      fusion/4.2.0/bin/connectors-rpc restart
+      ```
+      
+    + In a cluster environment, after installing a V2 connector ([Onedrive](/fusion-connectors/49/one-drive-datasource-configuration-reference) connectors) where multiple connectors-rpc nodes are running, the connector may only install and run on one node instead of propagating to all nodes. If this happens, restart all nodes and then re-install the connector.
+    + Although the [Web V1 connector’s](/fusion-connectors/39/web-v-1) default value for `crawlDBType`/**Crawl database type** is "in-memory", this can cause an out-of-memory condition when crawling large sites. Change the value to "on-disk".
+    + If new items are not picked up when recrawling a [Box.com](/fusion-connectors/79/box-com-v-1) folder, delete the records in the `system_box_distributed_crawl` collection, like this:
+
+      ```bash
+      curl “http://localhost:8983/solr/system_box_distributed_crawl/update?commit=true” -H “Content-Type: text/xml” --data-binary ‘<delete><query>*:*</query></delete>’
+      ```
+
+      Then run the datasource job again.
+    + The [Local Filesystem connector](/fusion-connectors/42/local-filesystem-connector-v-1-configuration-reference) may slow down while crawling an empty folder.
+    + With the [SMB2/3 connector](/fusion-connectors/10901/windows-share-smb-2-3-v2), if multiple start links point to some of the same data, then the data is indexed multiple times. Remove redundant start links and use only the "parent" link.
+    + FS (V2) connector does not save Item metadata in Crawldb. recrawls do not work as expected (some items will be missing or not be evaluated on the next crawl).
+    + When re-installing connector using same plugin id but different file name a deadlock condition may occur resulting in a timeout error.
+* **Fusion UI**
+
+    + In the Query Workbench, some document fields may not appear in the dropdown list of fields for faceting. To work around this, enter the name of the field in the text box and press Return. If the field exists in the dataset, it will be added as a facet even though it does not appear in the list.
+
+        <Frame>![Enter a field name in the text box](/assets/images/4.2/release-notes/APOLLO-17613.png)</Frame>
+    + When using Compare mode in the Query Workbench, configuring the list of display fields may change the display in both panels instead of only the working panel.
+    + After logging out using Chrome version 73.0.3683.75, the login page may not automatically appear. To work around this, do a hard refresh (by holding down the CTRL key while clicking the Reload button).
+    + In the Query Rewriting UI, creating a query rewrite with the same name as an existing query rewrite deletes the existing one. Be sure to create new query rewrites using unique names.
+    + Jobs may display incorrect information about their current status or the time at which they last ran. To work around this, use the [Jobs API](/fusion-server/4.2/327/jobs-api) to verify a job’s status and history.
+    + After you upload a `.war` file to the App Studio interface, the **View Published UI** button disappears from the App Studio configuration panel. To restore this button, click **Edit**, then click **Return to Fusion**.
+    + New index pipelines may not appear in the Index Workbench until you do a hard refresh (by holding down the CTRL key while clicking the Reload button).
+    + In the Query Rewriting UI, after selecting multiple business rules where some rules have tags, adding more tags to the selected rules deletes their existing tags. To work around this, add tags to individual rules instead of adding them in bulk.

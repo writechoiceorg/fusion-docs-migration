@@ -1,0 +1,44 @@
+export const schema = {
+  "type": "object",
+  "title": "Log Cleanup",
+  "description": "Delete old log messages from system logs collection",
+  "required": [
+    "id",
+    "collection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "ID",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Logs collection",
+      "enum": [
+        "audit_logs",
+        "logs"
+      ]
+    },
+    "days": {
+      "type": "integer",
+      "title": "Delete logs older than N days",
+      "default": 30
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "system-logs-cleanup"
+      ],
+      "default": "system-logs-cleanup",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1
+}

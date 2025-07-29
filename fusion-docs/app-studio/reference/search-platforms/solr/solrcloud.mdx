@@ -1,0 +1,116 @@
+---
+title: "SolrCloud"
+permalink: "3204"
+---
+
+The SolrCloud search module brokers all communication with a [SolrCloud cluster](https://cwiki.apache.org/confluence/display/solr/SolrCloud). See also documentation on the Solr[Solr platform] for further background.
+
+## Setup
+
+To add SolrCloud search connectors to a Maven project, you must add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.solr.cloud</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+## Usage
+
+Assuming you have added the correct dependencies to your project (see above), the Solr platform configuration can be accessed by pointing to it in the search:platform tag. In this case the platform is placed in a variable named `platform` using the `var` attribute, and points to a platform configuration in ../conf/platforms/solr/solr.conf:
+
+```xml
+<search:platform var="platform" conf="platforms.solr"></search:platform>
+```
+
+### platforms/solr/solr.conf
+
+In this example platform configuration, we set some general settings for the platform:
+
+```yaml
+name: twigkit.search.solr.cloud.SolrCloud
+resultIDField: id
+defaultQuery: *:*
+zookeeper-host: cld-dapp-slr61:2181,cld-dapp-slr62:2181,cld-dapp-slr63:2181
+defaultFacets: age,weight
+default-collection: mycollection
+```
+
+### Required attributes
+
+- `zookeeper-host (java.lang.String)`
+    The client endpoint of the zookeeper quorum containing the cloud state. The full specification for this string is one or more comma separated `HOST:PORT` values, followed by an optional `chroot` value that starts with a forward slash. Using a `chroot` allows multiple applications to coexist in one ensemble. For full details, see the [ZooKeeper documentation](https://zookeeper.apache.org/doc/r3.2.2/zookeeperAdmin.html).
+
+Here are some examples:
+
+* `host1:2181`
+* `host1:2181,host2:2181,host3:2181/mysolrchroot`
+* `zoo1.example.com:2181,zoo2.example.com:2181,zoo3.example.com:2181`
+
+### Optional attributes
+
+- `groupField (java.lang.String)`
+    Setting this enables Solr Result Grouping or Field Collapsing on the given field.
+
+- `backwardsCompatible (java.lang.Boolean)`
+    For Solr 1.x (for example, 1.4) set backwardsCompatible to true.  
+    Default: `false`
+
+- `ignoreAppliedFilters (java.lang.Boolean)`
+    If this is set to false, facet filters that have already been applied to the Query are added to the list of filters for the facet.  
+    Default: `true`
+
+- `requestMethod (java.lang.String)`
+    Which HTTP request method to use (GET or POST).
+
+- `highlighting (java.lang.Boolean)`
+    Whether to enable hit highlighting (hl parameter) in Solr.  
+    Default: `true`
+
+- `max-query-resend-attempts (java.lang.Integer)`
+    The maximum number of times a query is re-sent after a ZooKeeper session expires.  
+    Default: 1
+
+### Attributes shared across platforms
+
+- `default-collection (java.lang.String)`
+    Specifies the default Solr collection for the request.
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified.
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result. Should correspond to the \<uniqueKey> element in the Solr `schema.xml`.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.
+
+## Use of the fields parameter in the Appkit query tag with the SolrCloud platform
+
+By default, on all platforms, if the optional `fields` parameter is not used in the `<search:query>` tag, all fields will be returned in the response. This is not the case however with the SolrCloud platform. On this platform, if the `fields` parameter is omitted no fields will be returned in the response. This is to work around an issue identified with the SolrCloud platform that does not allow fields given by Appkit to be overridden by those defined in an invariants section of the SolrCloud request handler. To return all fields in the case, the fields parameter would must contain a wildcard character, `fields="*"`.

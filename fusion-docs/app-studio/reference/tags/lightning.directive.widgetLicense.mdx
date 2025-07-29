@@ -1,0 +1,32 @@
+---
+title: "widget:license"
+permalink: "1087"
+---
+
+## Description
+
+Shows the Twigkit license expiration date. When transcluded the
+following scoped variables are available: (bool) licenseExpired (int)
+licenseDaysRemaining (string) licenseExpiryDate (bool) show
+
+## Usage
+
+as element:
+
+```xml
+<widget:license
+       [days-left="{string}"]
+       [date-format="{string}"]>
+</widget:license>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| daysLeft  *(optional)* | **string** | The number of days left on the license. Also excepts numbers in the format \<5 or >5 to specify a range |
+| dateFormat  *(optional)* | **string** | The date format to show the expiration date in |

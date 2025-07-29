@@ -1,0 +1,78 @@
+---
+title: "Tag Part-of-Speech Index Stage"
+permalink: "228"
+---
+
+The Tag Part-of-Speech Index stage (previously called the Part of Speech stage) operates over one of more fields in the Pipeline Document. It marks sentences with part of speech information as annotations which can be used by downstream indexing stages. Therefore this stage requires a Detect Sentences stage defined over these fields earlier in the pipeline.
+
+This stage uses [Apache OpenNLP](http://opennlp.apache.org/) project’s [Part of Speech Tagger](http://opennlp.apache.org/docs/#tools.postagger) to mark tokens with their corresponding word type based on the token itself and the context of the token. The OpenNLP documentation states:
+
+"A token might have multiple pos tags depending on the token and the context. The OpenNLP POS Tagger uses a probability model to predict the correct pos tag out of the tag set. To limit the possible tags for a token a tag dictionary can be used which increases the tagging and runtime performance of the tagger."
+
+Models are available from the OpenNLP [models SourceForge repository](http://opennlp.sourceforge.net/models-1.5/). Model files must be uploaded to Fusion using the [Fusion Blob Store service](/fusion-server/4.2/305/blob-store-api) via the REST API.
+
+## Part-of-speech Tagging in a NLP Pipeline
+
+The following video shows how to use a Part-of-speech indexing stage as part of an NLP pipeline:
+
+<Frame>
+  <iframe width="640" height="480" src="https://www.youtube.com/embed/bbbLAMnfHjY" title="Fusion Learners - OpenNLP and Gazetteer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+</Frame>
+
+## Stage Setup
+
+Here is an example of how to upload a part-of-speech model file to the Fusion blob store:
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT --data-binary @en-pos-maxent.bin -H 'Content-type: text/plain' http://localhost:8764/api/blobs/en-pos-maxent.bin
+```
+
+**OUTPUT**
+
+```json
+{
+  "name" : "en-pos-maxent.bin",
+  "contentType" : "text/plain",
+  "size" : 5696197,
+  "modifiedTime" : "2015-07-15T06:57:48.636Z",
+  "version" : 0,
+  "md5" : "db2cd70395b9e2e4c6b9957015a10607"
+}
+```
+
+This is an example setup of this stage using the previously loaded .bin file:
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"TagPartofSpeech1", "type": "tag-part-of-speech","tokenizerModel":"en-pos-maxent.bin","posModel":"en-pos-perceptron.bin","source": ["sample","text","for","NLP"]}' http://localhost:8764/api/index-stages/instances
+```
+
+**OUTPUT**
+
+```json
+{
+  "type" : "tag-part-of-speech",
+  "id" : "TagPartofSpeech1",
+  "posModel" : "en-pos-perceptron.bin",
+  "tokenizerModel" : "en-sent.bin",
+  "source" : [ "sample", "text", "for", "NLP" ],
+  "skip" : false,
+  "label" : "tag-part-of-speech",
+  "type" : "tag-part-of-speech"
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/tag-part-of-speech.mdx";
+
+<SchemaParamFields schema={schema}/>

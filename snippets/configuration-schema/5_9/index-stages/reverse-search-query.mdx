@@ -1,0 +1,66 @@
+export const schema = {
+  "type": "object",
+  "title": "Reverse Search Query",
+  "description": "This stage sends 'Content Documents' to the reverse-search collection to perform lookups on saved queries.",
+  "required": [
+    "collections"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "collections": {
+      "type": "array",
+      "title": "Reverse search collections",
+      "description": "Names of the reverse search collections with queries to perform the lookup.",
+      "items": {
+        "type": "string"
+      }
+    },
+    "topic": {
+      "type": "string",
+      "title": "Topic name",
+      "description": "Name of the kafka topic to send the matching query ids. If left empty the results will be added to pipeline's context under the key 'reverse-search-lookup.result'."
+    },
+    "timeout": {
+      "type": "integer",
+      "title": "Timeout [ms]",
+      "description": "Time to await for the response from reverse search service",
+      "default": 2000
+    },
+    "ignoreErrors": {
+      "type": "boolean",
+      "title": "Ignore Errors",
+      "description": "If true any failures of the stage will not cause the pipeline failures",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

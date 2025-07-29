@@ -1,0 +1,109 @@
+---
+title: "Configuration Files"
+permalink: "3092"
+---
+
+## Configuration files
+
+You can find the configuration files in `conf/` in the code editor, or in `src/main/resources/conf/` in the project directory. The configuration files are organized by function or by module, as follows:
+
+```
+/conf
+	/activity
+	/message
+	/platforms
+	/processors
+	/security
+	/services
+```
+
+These configuration files support hierarchical cascading of the files via the open source [Fig](https://github.com/twigkit/fig/) project.
+
+This section describes the most important configuration files in the `/config` folder:
+
+* [`config/twigkit.conf`](#twigkit-conf): Global configuration settings.
+* [`config/cors.conf`](#cors-conf): Cross-Origin Resource Sharing (CORS) configuration.
+* `config/platforms/fusion/fusion.conf`: Specify Fusion platform settings.
+* `config/platforms/fusion/data.conf`: Specify which Fusion [query profile](/fusion/5.9/174/query-profiles) to use.
+* `config/security/fusion.conf`: Configure the Fusion security realm.
+
+### `config/twigkit.conf`
+
+The App Studio application looks up global settings from a `twigkit.conf` configuration file that the application tries to locate relative to `config` on the runtime classpath.
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `license-file` | `string` | The path to the license file relative to the `app-studio/` directory, such as `file://./twigkit.lic`. |
+| `ui.trim-white-space` | `string` | "True" to trim white space in the application UI. |
+| `bundleTimeToLive` | `long` | The number of milliseconds a resource bundle (for example, a file like `languages_en.properties`), can remain in the Java resource bundle cache without being validated against the source file from which it was constructed. The value 0 indicates that a bundle must be validated each time it is retrieved from the cache. If `bundleTimeToLive` is negative, or missing, then the bundle cache will have no expiration control (i.e. entries are only evicted from cache due to runtime or memory constraints). |
+
+### `config/cors.conf`
+
+[CORS](http://www.w3.org/TR/cors/) or Cross-Origin Resource Sharing is a recent [W3C](http://www.w3.org) effort to introduce a standard mechanism for enabling cross-domain requests from web browsers to servers that wish to handle them.
+App Studio supports CORS filtering by default. You can control the options for the particular header attributes using the `cors.conf` file at the root of the `/conf` folder.
+
+| Parameter | Type | Description | Default |
+| --- | --- | --- | --- |
+| `cors.allowOrigin` | `string` | Whitespace-separated list of origins that the CORS filter must allow. Requests from origins not included here will be refused with an HTTP 403 "Forbidden" response. If set to `*` (asterisk), any origin is allowed. | `*` |
+| `cors.supportedMethods` | `string` | List of the supported HTTP methods. These are advertized through the [Access-Control-Allow-Methods](http://www.w3.org/TR/cors/#access-control-allow-methods-response-he) header and must also be implemented by the actual CORS web service. Requests for methods not included here will be refused by the CORS filter with an HTTP 405 "Method not allowed" response. | `GET, POST, DELETE, HEAD` |
+| `cors.supportsCredentials` | `boolean` | Indicates whether user credentials, such as cookies, HTTP authentication or client-side certificates, are supported. The CORS filter uses this value in constructing the [Access-Control-Allow-Credentials](http://www.w3.org/TR/cors/#access-control-allow-credentials-respons) header. | `false` |
+| `cors.maxAge` | `integer` | Indicates how long the results of a preflight request can be cached by the web browser, in seconds. If -1 unspecified. This information is passed to the browser via the [Access-Control-Max-Age](https://www.w3.org/TR/cors/#access-control-max-age-response-header) header. | `3600` |
+
+### Hierarchical configuration
+
+To make version control and specialization of configuration easier, the configuration is loaded hierarchically. For example, in the `/platforms` directory are subdirectories for `/fusion` and `/solr`:
+
+```
+/config
+	/platforms
+		/fusion
+		/solr
+```
+
+Within the `/fusion` folder is `/fusion/fusion.conf`, which may contain the following general attributes:
+
+```yaml
+name: twigkit.search.fusion.Fusion
+backwardsCompatible: true
+timeOut: 30000
+resultIDField: id
+highlight: true
+defaultQuery: *:*
+```
+
+Within the same folder, you might find one or more configuration files which inherit or extend this one, such as `data.conf` or `people.conf`. To access a given configuration, use dot notation, such as `platforms.fusion.data` or `platforms.fusion.people`. The configuration system will traverse the hierarchy (no matter how deep) and aggregate the configuration files, overwriting attributes from higher-level files when those attributes also appear in lower-level files.
+
+For example, if `fusion.conf` contains a `defaultQuery` attribute and you create `internal.conf` which also contains a `defaultQuery`, then the value from `internal.conf` is used. This allows you to create variations on the same platform configuration. You can then refer to any platform instance in other configuration files or in the [`search:platform` tag](/fusion/5.9/1156/search-platform):
+
+```xml
+<search:platform conf="platforms.fusion.internal" />
+```
+
+In this case App Studio will use the platform as configured centrally, irrespective of the search engine behind it, effectively abstracting the data provider from the view.
+
+### Configuration locations
+
+The configuration files can be placed outside of the application and centrally accessed by multiple instances.
+To reference these in a different location, set the `twigkit.conf` system property to the absolute file path of the `/conf` folder, like this:
+
+```
+-Dtwigkit.conf=file://${path-to-your-conf-folder}
+```
+
+### Adding special characters to key names in configuration files
+
+To add special characters to key names in configuration files you need to escape the special characters. For example, if a key name contained a whitespace, such as `My key: value` then you would need to escape the whitespace for the configuration to be correctly loaded. In this case, the correct syntax would be:
+
+```yaml
+My key: value
+```
+
+This rule does not just apply to whitespace but any special character that you may wish to use within a key name.
+
+### Cookies
+
+AppKit uses three cookies: `JSESSIONID` for authentication, and `tk.query.ctx_null` and `tk.session` to track session metadata.
+
+* `JSESSIONID` is used by Spring Security for authentication and to maintain the session for the user
+* `tk.query.ctx_null` stores the current query term to track whether the query is refined
+* `appkitRequestCookie` is used to prevent Cross-Site Request Forgery (CSRF) when using social features

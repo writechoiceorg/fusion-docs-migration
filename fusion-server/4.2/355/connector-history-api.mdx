@@ -1,0 +1,89 @@
+---
+title: "Connector History API"
+permalink: "355"
+---
+
+The connector history REST API provides details of the last 50 runs of a named datasource. It also provides a way to clear the history.
+
+When the `cumulative` query parameter is set to "true", the output will include the total number of documents processed as input to the pipeline, skipped, or failed as well as the total number of documents processed as output. Also shown will be the total number of runs of the datasource.
+
+When the `cumulative` query parameter is set to "false", details of each datasource job run will be shown for up to 50 past runs. The details shown will include any messages returned by the job (such as errors), the start and stop times of the job, the number of documents processed as input and output (including skipped or failed), and data for each stage of the index pipeline.
+
+## Examples
+
+Show the cumulative history for a datasource named "Lucid5Docs":
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/connectors/history/Lucid5Docs?cumulative=true
+```
+
+**RESPONSE**
+
+```json
+{
+  "total_time" : 160000,
+  "input" : 378,
+  "skipped" : 5,
+  "failed" : 7,
+  "total_runs" : 7,
+  "output" : 366
+}
+```
+
+Show the detailed history for a datasource named "Lucid5Docs":
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/connectors/history/Lucid5Docs
+```
+
+**RESPONSE**
+
+This output has been truncated to only show one successful run.
+
+```json
+{
+  "message" : null,
+  "id" : "Lucid5Docs",
+  "crawl_stopped" : "2014-06-05T15:16:08+0000",
+  "pipeline" : {
+    "stats" : {
+      "counters" : {
+        "stage.field-mapping::myMapping" : {
+          "processed" : 58
+        },
+        "stage.logging::conn_logging" : {
+          "info" : 116,
+          "processed" : 116
+        },
+        "stage.solr-index::solr-default" : {
+          "processed" : 58
+        },
+        "stage.tika-parser::tika" : {
+          "input" : 58,
+          "processed" : 58
+        }
+      },
+      "gauges" : { },
+      "histograms" : { },
+      "meters" : { },
+      "timers" : { }
+    },
+    "history" : {
+      "events" : [ ]
+    }
+  },
+  "crawl_started" : "2014-06-05T15:15:45+0000",
+  "crawl_state" : "FINISHED",
+  "counters" : {
+    "input" : 60,
+    "skipped" : 1,
+    "failed" : 1,
+    "output" : 58
+  },
+  "job_id" : "Lucid5Docs"
+}
+```

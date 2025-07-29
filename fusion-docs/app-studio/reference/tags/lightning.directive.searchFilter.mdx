@@ -1,0 +1,34 @@
+---
+title: "search:filter"
+permalink: "1192"
+---
+
+## Description
+
+This has been deprecated see [Query Filter](/app-studio/4.0/1070/query-filter).
+
+The filter directive can be used to add a filter to the query.
+
+## Usage
+
+as element:
+
+```xml
+<search:filter
+       field="{string}"
+       value="{string}"
+       [optional="{boolean}"]
+       [exclude="{boolean}"]
+       [hidden="{boolean}"]>
+</search:filter>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| field | **string** | The field the filter applies to. |
+| value | **string** | The value to apply to the field |
+| optional  *(optional)* | **boolean** | If the filter is optional (or) |
+| exclude  *(optional)* | **boolean** | If the filter should exclude values matching this filter. |
+| hidden  *(optional)* | **boolean** | Whether the filter should be hidden (visible in breadcrumbs and URLs) or not. |

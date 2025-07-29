@@ -1,0 +1,76 @@
+---
+title: "Custom Rule Actions"
+permalink: "8834"
+---
+
+Custom rule actions allow you to define a unique action to take when certain conditions are met. They involve three primary components: a query pipeline, a custom rule type, and a rule that is triggered by conditions defined by the user.
+
+To learn use custom rule actions with the API, see [Create Custom Rule Actions with the API](/how-to/699/create-custom-rule-actions-with-the-api).
+
+## Configuration options
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 11.1111%;" />
+    <col style="width: 22.2222%;" />
+    <col style="width: 33.3333%;" />
+    <col style="width: 33.3334%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Required</th>
+      <th class="tableblock halign-left valign-top">Parameter</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+      <th class="tableblock halign-left valign-top">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>id</code></td>
+      <td class="tableblock halign-left valign-top">A unique ID for the custom rule type. The <code>id</code> value must be unique across all apps in Fusion (global namespace).</td>
+      <td class="tableblock halign-left valign-top"><code>custom-rule-type</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>pipeline_id</code></td>
+      <td class="tableblock halign-left valign-top">The ID of the pipeline that is invoked during rule processing.</td>
+      <td class="tableblock halign-left valign-top"><code>custom-rule-pipeline</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>display_type</code></td>
+      <td class="tableblock halign-left valign-top">A user‑friendly name for the custom rule type.</td>
+      <td class="tableblock halign-left valign-top"><code>My Custom Rule</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top" colspan="4">
+        <strong>Rule properties</strong>, included as part of the <code>schema</code>, define the values required from the user to create a rule that uses the custom rule type.
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>custom_param1</code></td>
+      <td class="tableblock halign-left valign-top">The ID of the rule’s parameter. This field is used in the API but is not visible in the Rules Editor.</td>
+      <td class="tableblock halign-left valign-top"><code>1st-rule-parameter</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>type</code></td>
+      <td class="tableblock halign-left valign-top">The type of user‑input.</td>
+      <td class="tableblock halign-left valign-top"><code>string</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>title</code></td>
+      <td class="tableblock halign-left valign-top">A user‑friendly name for the parameter.</td>
+      <td class="tableblock halign-left valign-top"><code>Manufacturer</code></td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">✅</td>
+      <td class="tableblock halign-left valign-top"><code>description</code></td>
+      <td class="tableblock halign-left valign-top">A user‑friendly description of what the field is used for. The <code>description</code> value is shown in the field’s tooltip in the Rules Editor.</td>
+      <td class="tableblock halign-left valign-top"><code>The manufacturer of the product this rule action applies to.</code></td>
+    </tr>
+  </tbody>
+</table>

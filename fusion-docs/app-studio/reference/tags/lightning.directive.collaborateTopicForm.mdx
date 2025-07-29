@@ -1,0 +1,38 @@
+---
+title: "collaborate:topic-form"
+permalink: "1118"
+---
+
+## Description
+
+Generates a form you can use to create a topic.
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:topic-form
+       [name="{string}"]
+       [button-label="{string}"]
+       [namespace="{string}"]
+       [placeholder="{string}"]
+       [show-description="{boolean}"]
+       [description-placeholder="{string}"]>
+</collaborate:topic-form>
+```
+
+## Directive info
+
+This directive creates new scope.
+
+## Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name *(optional)* | string | Default title for a topic. |
+| button-label *(optional)* | string | Label of form submit button. *(default: Save)* |
+| namespace *(optional)* | string | Determines whether the topics created using the form will be "local" (restricted to the user) or "global". *(default: local)* |
+| placeholder *(optional)* | string | Placeholder value to put in the topic name text box. *(default: Type a name for the new topic…)* |
+| show-description *(optional)* | string | Whether to include a text box for adding a description for the topic. |
+| description-placeholder *(optional)* | string | Placeholder value to put in the description text box *(default: Description)* |

@@ -1,0 +1,18 @@
+---
+title: "Write Log Message Index Stage"
+permalink: "208"
+---
+
+The Write Log Message Index stage (called the Log a Message stage in versions earlier than 3.0) is an extension of Fusion’s [Logging Index Stage](/fusion-server/4.2/242/logging-index-stage),
+which logs any message sent to the configured logging system using the [Messaging Services](/fusion-server/4.2/135/messaging-and-alerting).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/write-log-message.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,35 @@
+---
+title: "Box.com V1"
+description: "Connector Configuration Reference"
+permalink: "79"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.2.2
+
+The Box connector retrieves data from a Box.com cloud-based data repository. To fetch content from multiple Box users, you must [create a Box app that uses OAuth 2.0 with JWT server authentication](/how-to/900/configure-a-box-com-datasource#Box-Create-App). For limited testing using a single user account, you can [create a Box app that uses Standard OAuth 2.0 authentication](/how-to/739/configure-box-com-tokens#Box-Auth2).
+
+<Note>
+
+Deprecation and removal notice
+
+This connector is deprecated as of Fusion 5.2 and is removed or expected to be removed as of Fusion 5.3. Use the Box V2 connector instead.
+
+For more information about deprecations and removals, including possible alternatives, see [Deprecations and Removals](/fusion-connectors/ft39rr/deprecations-and-removals).
+
+</Note>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-box.mdx";
+
+<SchemaParamFields schema={schema}/>
+

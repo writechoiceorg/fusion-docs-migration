@@ -1,0 +1,50 @@
+---
+title: "widget:date-range"
+permalink: "1075"
+---
+
+## Description
+
+Creates two date-time picker inputs for setting a date range filter.
+
+## Usage
+
+as element:
+
+```xml
+<widget:date-range
+       field="{string}"
+       [date-format="{string}"]
+       [from-label="{string}"]
+       [to-label="{string}"]
+       [on-set="{function}"]
+       [min-view="{string}"]
+       [from-model="{string}"]
+       [to-model="{string}"]>
+</widget:date-range>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| field | **string** | Field to apply filter to |
+| date-format  *(optional)* | **string** | Date format to display |
+| from-label  *(optional)* | **string** | From input label |
+| to-label  *(optional)* | **string** | To input label |
+| on-set  *(optional)* | **function** | Function to call when a date has been set instead of applying filters. Two arguments are passed to the function from Date object, to Date object |
+| min-view  *(optional)* | **string** | The minimum view of the date picker to display. Values: 'year/month/day/hour/minute'. Default 'minute'. |
+| from-model  *(optional)* | **string** | A binding to a scoped variable, the from date picker will be set using this value. |
+| to-model  *(optional)* | **string** | A binding to a scoped variable, the to date picker will be set using this value. |
+
+## Example
+
+#### Source
+
+```xml
+<widget:date-range field="date"></widget:date-range>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/widgetDateRange.png)</Frame>

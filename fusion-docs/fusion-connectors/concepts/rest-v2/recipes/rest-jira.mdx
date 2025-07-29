@@ -1,0 +1,280 @@
+---
+title: "Jira"
+description: "REST V2 connector"
+permalink: "lihmnw"
+---
+
+The Jira recipe is used to retrieve data from an instance of [Atlassian’s Jira](https://www.atlassian.com/software/jira) issue tracking system.
+
+The configuration details and JSON recipe are added here for convenience, but you can also view them directly at the public [REST configuration repository](https://github.com/lucidworks/rest-configurations/tree/main/jira) on GitHub.
+
+The following Jira elements are retrieved:
+
+* Projects
+* Issues
+* Comments
+* Worklogs
+* Attachments
+
+Jira access to projects and issues may be restricted to certain users. Access of restricted information requires a Jira username and password with sufficient permissions.
+
+For each Jira issue, information on summary, priority, assignee, and more is retrieved. Attachments are indexed as a separate Solr document within Fusion.
+
+When using the Jira recipe, projects and issues run the risk of being assigned the same `idKey` value, leading to missing documents when indexing. To avoid this, set the `idKey` to `self` instead of `id`.
+
+## Jira REST Configuration
+
+This documentation describes aspects of the Jira REST `jira-v1.json` file configuration such as the authentication methods, data crawled and retrieved, pagination information, variables used, and endpoints used. Terminology is also provided as a reference.
+
+The rest-connector will index each jira object listed as a separate solr document:
+
+* Projects
+* Issues
+* Comments
+* Worklogs
+* Attachments
+
+## Authentication methods
+
+The Jira REST configuration supports:
+
+* Basic Authentication using the username and password from an Atlassian account. For more information, see [Basic auth for REST APIs | Atlassian Developer](https://developer.atlassian.com/cloud/confluence/basic-auth-for-rest-apis/).
+* API Token. For information about how to create a new API token, see [API Tokens | Atlassian ID](https://id.atlassian.com/manage/api-tokens).
+
+N.B. The API token is a requirement to authenticate the at Atlassian api. Instead of using the Atlassian account password, Use the token value for the password.
+
+## Supported crawl options
+
+The Jira REST configuration supports the following crawl options:
+
+* Full crawl
+* Recrawl that rely on the strayContentDeletion feature from the connectors-service
+
+## Parser
+
+The default parser is set to `_system` but can be changed to any parser based on index needs.
+
+## Pagination information
+
+This recipe is configured to use pagination by batch size. Needs to configure Query Params, and the property 'Pagination By BatchSize'
+Query Params:
+
+* maxResults=`${LW_BATCH_SIZE}`, where `${LW_BATCH_SIZE}` is a variable
+* startAt=`${LW_INDEX_START}`, where `${LW_INDEX_START}` is a variable
+
+Configure the 'Pagination By BatchSize' properties:
+
+* IndexStart: The starting point. Set to 0 because the Atlassian pagination is zero-index-base. From the queries above, it replaces variable `${LW_INDEX_START}`, the plugin internally increases the value of the indexStart ensuring each page is requested with an updated start-point.
+* BatchSize: The number of elements to retrieve. Set to 50 by default. From the queries above, it replaces variable `${LW_BATCH_SIZE}`
+* Stop Condition Key: Reference the “key” in the response, that needs to be met in order to stop the pagination. To paginate issues, it must be “issues”, to paginate projects it must be 'values'
+* Stop Condition Value: Reference the “value” in the response, that needs to be met in order to stop the pagination. For the jira config, to stop pagination the list of objects retrieved must be empty, then the stop condition should be []
+
+## Variables used
+
+The Jira REST configuration variables used are:
+
+* `${LW_BATCH_SIZE}` - Used with pagination feature. This variable is used to set the `maxResults` query parameter, which controls the number of results that are returned in the response for both `projects`,`worklogs` and `comments`.
+* `${LW_INDEX_START}` - Used with pagination feature. This variable is used to set the startAt query parameter, which is used to traverse the pagination. Jira pagination is zero-index-based. This means the first page number is 0.
+* `${LW_PARENT_DATA_KEY}` - Used with Child Request Configuration. This variable is replaced with the 'id' extracted from root object, by setting the property parentDataKey. The jira use case indicates this variable can be added the URL to execute a GET request to retrieve comments, worklogs and attachments from issues
+
+## Endpoints to configure with the Jira REST connector
+
+The following table describes the jira REST connector endpoints.
+
+**Notes:**
+
+The list of objects is retrieved in batches. Objects include projects, issues, worklogs, and comments. The default number of batch items retrieved is 50. You can configure the query maxResults to retrieve more objects. The maximum value to retrieve is 250.
+
+| Request type | Endpoint | HTTP operation | Query parameter | Description |
+| --- | --- | --- | --- | --- |
+| `Root Request` | /rest/api/2/search | `GET` | fields=assignee,issuetype,priority,project,reporter,status,summary,updated,attachment&startAt=1&maxResults=50 | Returns all jira issues. Each issue contains its list of attachments metadata |
+| `Root Request` | /rest/api/2/project/search | `GET` | description,lead,issueTypes,url,projectKeys,permissions,insight | Return all jira projects. |
+| `Child Request` | /rest/api/2/issue/`${LW_PARENT_DATA_KEY}`/comment | `GET` | startAt=0&maxResult=50 | Returns all comments. The request requires the 'issue Id'. Internally, the plugin replaces the variable `${LW_PARENT_DATA_KEY}` with the 'issue id', which value is extracted from the 'issue object' (root object) by setting the parentDataKey property. |
+| `Child Request` | /rest/api/2/issue/`${LW_PARENT_DATA_KEY}`/worklog | `GET` | startAt=0&maxResult=50 | Returns all worklogs. The request requires the 'issue Id'. Internally, the plugin replaces the variable `${LW_PARENT_DATA_KEY}` with the 'issue id', which value is extracted from the 'issue object' (root object) by setting the parentDataKey property. |
+| `Child Request` | /rest/api/2/attachment/content/`${LW_PARENT_DATA_KEY}` | `GET` | - | Download the attachment content. The request requires the 'attachment Id'. Internally, the plugin replaces the variable `${LW_PARENT_DATA_KEY}` with the 'attachment id', which value is extracted in two steps: *1)* setting prop `parentNestedDataPath=fields.attachment[*]` to extract the attachment metadata list from the issue object. *2)* setting prop `parentDataKey=id` to extract the 'id' from each attachment metadata. The download request will be performed per each attachment metadata found |
+
+## Terminology
+
+The following terms are provided as a reference.
+
+| Term | Description |
+| --- | --- |
+| **Service Endpoints** | The list of service endpoints from which the data is retrieved. Each service endpoint configures a root endpoint request. |
+| **Root Request** | The type of request to retrieve a list of root data objects. |
+| **Child Request** | The type of request to retrieve additional information for the root data objects. The child requests will be performed per each root data object. |
+| **Root Response Mapping** | Defines the mapping between the response and data objects to be indexed. |
+| **Child Response Mapping** | Defines the mapping between the child response and child data objects to be indexed. |
+| **Data Path** | The path to access a specific data object within a response. For example, to access a list of elements named with key `objects`, the DataPath would be `objects`. If not provided, the entire response body will be indexed. This property accepts JsonPath expressions e.g. `objects`, `objects[*]`. |
+| **Data ID** | The identifier key for the data objects extracted with 'Data Path', this value will be used to build the solr-document’s ID. If not provided, a random UUID will be used. This property accepts JsonPath expressions. |
+| **Parent Data Key** | Key to extract data from the root/parent response used in the subsequent request. The extracted value is used to replace the ${LW_PARENT_DATA_KEY} variable in the child request configuration (endpoint, query params or body). For example, endpoint: /api/path/${LW_PARENT_DATA_KEY}/additionalInfo. |
+| **Parent Nested Data Path** | The path to a nested object within the Parent Data. When this property is set, the 'Parent Data Key' should point to the 'id' or 'key' of the nested object. If the nested object is a List, this will be iterated to perform a request per each one. |
+| **Child Data Path** | The path to access a specific object within a child response. For example, to access a list of elements named with the key `objects`, the ChildDataPath would be `objects`. If not provided, the entire response body will be indexed. |
+| **Child Data ID** | The identifier key for the child data object, where the value is the solr-document’s ID. Enter this when the `Custom Solr Field` is empty, otherwise the solr-document’s ID will be a random universally unique identifier (UUID). |
+| **Custom Solr Field** | The field to use to store the child data within the root data objects. If not set, the child data object will be indexed as an individual solr-documents. |
+
+## Recipe
+
+```json
+{
+    "parserId": "_system",
+    "coreProperties": {},
+    "id": "rest-jira",
+    "type": "lucidworks.rest",
+    "properties": {
+        "serviceURL": "https://{add jira url}",
+        "authenticationMode": {
+            "basicAuth": {
+                "password": "xXx-Redacted-xXx",
+                "user": "add email address here!!!"
+            }
+        },
+        "serviceEndpoints": [
+            {
+                "childrenRequests": [
+                    {
+                        "dataRequest": {
+                            "endpoint": "/rest/api/2/issue/${LW_PARENT_DATA_KEY}/comment",
+                            "pagination": {
+                                "paginationByBatchSize": {
+                                    "paginationStopConditionValue": "[]",
+                                    "paginationStopConditionKey": "comments",
+                                    "batchSize": 50,
+                                    "indexStart": 0
+                                }
+                            },
+                            "httpMethod": "GET",
+                            "queries": [
+                                {
+                                    "queryKey": "startAt",
+                                    "queryValue": "${LW_INDEX_START}"
+                                },
+                                {
+                                    "queryKey": "maxResult",
+                                    "queryValue": "${LW_BATCH_SIZE}"
+                                }
+                            ]
+                        },
+                        "childResponseMapping": {
+                            "childDataId": "self",
+                            "childDataPath": "comments",
+                            "parentIdKey": "id"
+                        }
+                    },
+                    {
+                        "dataRequest": {
+                            "endpoint": "/rest/api/2/issue/${LW_PARENT_DATA_KEY}/worklog",
+                            "pagination": {
+                                "paginationByBatchSize": {
+                                    "paginationStopConditionValue": "[]",
+                                    "paginationStopConditionKey": "worklogs",
+                                    "batchSize": 50,
+                                    "indexStart": 0
+                                }
+                            },
+                            "httpMethod": "GET",
+                            "queries": [
+                                {
+                                    "queryKey": "startAt",
+                                    "queryValue": "${LW_INDEX_START}"
+                                },
+                                {
+                                    "queryKey": "maxResults",
+                                    "queryValue": "${LW_BATCH_SIZE}"
+                                }
+                            ]
+                        },
+                        "childResponseMapping": {
+                            "childDataId": "self",
+                            "childDataPath": "worklogs",
+                            "parentIdKey": "id"
+                        }
+                    },
+                    {
+                        "dataRequest": {
+                            "endpoint": "/rest/api/2/attachment/content/${LW_PARENT_DATA_KEY}",
+                            "httpMethod": "GET"
+                        },
+                        "childResponseMapping": {
+                            "childDataId": "self",
+                            "binaryResponse": true,
+                            "parentNestedData": "fields.attachment[*]",
+                            "parentIdKey": "id"
+                        }
+                    }
+                ],
+                "rootRequest": {
+                    "dataRequest": {
+                        "endpoint": "/rest/api/2/search",
+                        "pagination": {
+                            "paginationByBatchSize": {
+                                "paginationStopConditionValue": "[]",
+                                "paginationStopConditionKey": "issues",
+                                "batchSize": 50,
+                                "indexStart": 0
+                            }
+                        },
+                        "httpMethod": "GET",
+                        "queries": [
+                            {
+                                "queryKey": "fields",
+                                "queryValue": "assignee,issuetype,priority,project,reporter,status,summary,updated,attachment"
+                            },
+                            {
+                                "queryKey": "startAt",
+                                "queryValue": "${LW_INDEX_START}"
+                            },
+                            {
+                                "queryKey": "maxResult",
+                                "queryValue": "${LW_BATCH_SIZE}"
+                            }
+                        ]
+                    },
+                    "rootResponseMapping": {
+                        "dataId": "key",
+                        "dataPath": "issues"
+                    }
+                }
+            },
+            {
+                "rootRequest": {
+                    "dataRequest": {
+                        "endpoint": "/rest/api/2/project/search",
+                        "pagination": {
+                            "paginationByBatchSize": {
+                                "paginationStopConditionValue": "[]",
+                                "paginationStopConditionKey": "values",
+                                "batchSize": 50,
+                                "indexStart": 0
+                            }
+                        },
+                        "httpMethod": "GET",
+                        "queries": [
+                            {
+                                "queryKey": "expand",
+                                "queryValue": "description,lead,issueTypes,url,projectKeys,permissions,insight"
+                            },
+                            {
+                                "queryKey": "startAt",
+                                "queryValue": "${LW_INDEX_START}"
+                            },
+                            {
+                                "queryKey": "maxResults",
+                                "queryValue": "${LW_BATCH_SIZE}"
+                            }
+                        ]
+                    },
+                    "rootResponseMapping": {
+                        "dataId": "key",
+                        "binaryResponse": false,
+                        "dataPath": "values"
+                    }
+                }
+            }
+        ],
+        "collection": "{add collection name here}"
+    },
+    "pipeline": "{add pipeline name here}",
+    "connector": "lucidworks.rest"
+}
+
+```

@@ -1,0 +1,138 @@
+---
+title: "Time-based Partitioning"
+permalink: "392"
+---
+
+## Configuration options
+
+When time series indexing is enabled for a collection, you can configure these options using the UI or the
+[Collections API](/fusion-server/4.2/307/collections-api). None are required.
+
+| UI Label,  API Name | Description |
+| --- | --- |
+| Timestamp Field Name  `timestampFieldName` | The name of the field from which to read timestamps. The default is "timestamp". |
+| Partition Time Period  `timePeriod` | The time range for each partition. The default is one day. |
+| Max Active Partitions  `maxActivePartitions` | The number of partitions to keep active. |
+| Delete Expired Partitions  `deleteExpired` | "True" to automatically delete partitions that fall outside of the `maxActivePartitions` window, at intervals of `scheduleIntervalMinutes`. The default is "false". |
+| Preemptive Create Enabled  `preemptiveCreateEnabled` | "True" (the default) to create partitions in advance. |
+| Schedule Interval  `scheduleIntervalMinutes` | The interval, in minutes, at which to perform background maintenance, including preemptively creating partitions (`preemptiveCreateEnabled`) and deleting expired partitions (`deleteExpired`). The default is five minutes. |
+| Partition Num Shards  `numShards` | The number of shards per partition. The default is the value configured for the main Fusion collection. |
+| Partition Replication Factor  `replicationFactor` | The number of copies to keep, per partition. The default is the value configured for the main Fusion collection. |
+| Partition Config Name  `configName` | The name of the Solr configuration set to be applied to new partitions; the default is the configuration used by the primary collection. |
+
+## Examples
+
+Create a new collection called "TimeSeries1":
+
+```bash
+curl -X PUT -H 'Content-type: application/json' -d '{
+  "solrParams": {
+    "numShards": 1,
+    "replicationFactor": 1
+  }
+}' http://localhost:8764/api/collections/TimeSeries1
+```
+
+Enable and configure time-based partitioning for the "TimeSeries1" collection:
+
+```bash
+curl -X PUT -H 'Content-type: application/json' -d '{
+  "enabled": true,
+  "timestampFieldName": "ts",
+  "timePeriod": "5MINUTES",
+  "scheduleIntervalMinutes": 1,
+  "preemptiveCreateEnabled": false,
+  "maxActivePartitions": 4,
+  "deleteExpired": true
+}' http://localhost:8764/api/collections/TimeSeries1/features/partitionByTime
+```
+
+Verify that time-based partitioning is enabled:
+
+```bash
+curl -X GET http://localhost:8764/api/collections/TimeSeries1/features/partitionByTime
+```
+
+Import some sample data into this collection:
+
+```bash
+curl -X POST -H "Content-type:application/vnd.lucidworks-document" -d '[
+  {
+    "id": "1",
+    "fields": [
+      {
+        "name": "ts",
+        "value": "2016-02-24T00:00:01Z"
+      },
+      {
+        "name": "partition_s",
+        "value": "eventsim_2016_02_24_00_00"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "fields": [
+      {
+        "name": "ts",
+        "value": "2016-02-24T00:05:01Z"
+      },
+      {
+        "name": "partition_s",
+        "value": "eventsim_2016_02_24_00_05"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "fields": [
+      {
+        "name": "ts",
+        "value": "2016-02-24T00:10:01Z"
+      },
+      {
+        "name": "partition_s",
+        "value": "eventsim_2016_02_24_00_10"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "fields": [
+      {
+        "name": "ts",
+        "value": "2016-02-24T00:15:01Z"
+      },
+      {
+        "name": "partition_s",
+        "value": "eventsim_2016_02_24_00_15"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "fields": [
+      {
+        "name": "ts",
+        "value": "2016-02-24T00:20:01Z"
+      },
+      {
+        "name": "partition_s",
+        "value": "eventsim_2016_02_24_00_20"
+      }
+    ]
+  }
+]' http://localhost:8764/api/index-pipelines/TimeSeries1-default/collections/TimeSeries1/index
+```
+
+View the Solr configuration for this collection:
+
+```bash
+curl -X GET "http://localhost:8764/api/query-pipelines/TimeSeries1-default/collections/TimeSeries1/select?q=*:*"
+```
+
+The response includes a list of active Solr collections that correspond to this Fusion collection:
+
+```xml
+<str name="collection">TimeSeries1_2016_02_24_00_05,TimeSeries1_2016_02_24_00_10,TimeSeries1_2016_02_24_00_15,TimeSeries1_2016_02_24_00_20</str>
+```

@@ -1,0 +1,119 @@
+---
+title: "Fusion 5.8.0"
+permalink: "2k5m8y"
+---
+
+**Release date:** March 22, 2023
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.8.0  *(based on Solr 9.1.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Kubernetes** | GKE, AKS, EKS 1.24  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.24  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+<Warning>
+Rosette Entity Extractor (REX) or Rosette Base Linguistics (RBL) for the [Babel Street (formerly Basistech) language module](/how-to/10912/use-advanced-linguistics-with-babel-street) are not compatible with Solr 9 included in this version of Fusion. If you rely on the Babel Street language module, do not upgrade until this compatibility issue is resolved.
+</Warning>
+
+## New Features
+
+* Managed Fusion only: Added a new feature called Dynamic Pricing which improves scalability for custom pricing. This feature lets B2B organizations with large product and pricing inventories sort, facet, boost, and filter on custom prices and entitlements.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Dynamic Pricing** focuses on how Dynamic Pricing maximizes custom pricing strategies:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/dynamic-pricing" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/dynamic-pricing.jpg" alt="Dynamic Pricing" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+* Managed Fusion only: Fusion now supports Reverse Search, which lets you set up monitoring queries that automatically include new documents. Instead of running a query multiple times to see if new documents have been added, this feature matches incoming documents to existing relevant queries, improving content awareness and productivity.
+
+* Tika Asynchronous Parsing improves document crawl speeds and prevents memory and stability issues during connector processes. You can [migrate to asynchronous parsing](/how-to/5bk663/use-tika-asynchronous-parsing) to separate document crawling from document parsing, which is useful for large sets of complex documents. For more information, see [Asynchronous Tika Parsing](/fusion/5.8/lo9hdj/asynchronous-tika-parsing).
+
+    <Note>
+    The Apache Tika and Forked Tika stages are now deprecated. Follow the migration steps to begin using asynchronous parsing.
+    </Note>
+
+## Improvements
+
+* Improved recoverability for [on-prem connectors](/fusion-connectors/8xhsoc/on-premises-v-2-connectors) in high network traffic environments.
+
+* Fusion’s custom Solr image has been updated to fusion-solr 5.8.0. This upgrade includes the [benefits and new features in Solr 9](https://solr.apache.org/guide/solr/latest/upgrade-notes/major-changes-in-solr-9.html), while also including custom plugins to support Dynamic Pricing, Reverse Search, and autoscaling.
+
+* Developed new authentication methods for the [MongoDB connector](/fusion-connectors/77/mongo-db-v-1).
+
+## Bug Fixes
+
+### Fusion
+
+* Fixed a bug where the indexing service failed to load some classes from some JDBC drivers.
+
+* Updated the Helm charts used when deploying Prometheus, Grafana, Loki, and Promtail for monitoring.
+
+* Fixed an error with permissions required for the [Upload Model Parameters To Cloud](/fusion/5.8/3xcen9/upload-movel-parameters-to-cloud-job) job.
+
+* [Graph Security Trimming](/fusion/5.8/zdzlfu/graph-security-trimming) stage now works when collections have multiple shards and replicas.
+
+* Fixed a bug where having the same document updated twice in the same job could cause the job to hang.
+
+* Fixed an issue where the [Solr API](/fusion/5.8/313/solr-api) was unable to pass through raw requests using the proxy.
+
+* Updated the query pipeline and indexing container base images to use Java 11 so they are more secure.
+
+* Removed UI link to view logs dashboard as its target screen is no longer available.
+
+* Fixed a UI bug where zone display fields could not be manually removed.
+
+* Fusion panel text editors can now scroll as expected in Firefox.
+
+### Predictive Merchandiser
+
+* Fixed a bug in [Predictive Merchandiser](/fusion/5.8/591/predictive-merchandiser) where templates having a higher precedence using a specified trigger phrase and facet were not appearing when that phrase was searched with that facet selected.
+
+## Deprecations
+
+* [Field Parser Index Stage](/fusion/5.8/234/field-parser-index-stage) is no longer used by Fusion connectors. It is officially deprecated in this release and will be removed entirely in a later release.
+
+* Streaming documents to the `/index` and `/reindex` endpoints of the [Index Pipelines API](/fusion/5.8/351/index-pipelines-api) is deprecated and will eventually stop working altogether in the continuing switch to asynchronous parsing.
+
+* [Tika Server Parser](/fusion/5.8/khf5gb/apache-tika-server-parser) is deprecated and will be replaced by Tika Asynchronous Parser.
+
+* [Apache Tika Parser](/fusion/5.8/371/apache-tika-parser) stage is deprecated and will be removed in a later release.
+
+* The [Forked Apache Tika Parser](/fusion/5.8/367/forked-apache-tika-parser) stage is deprecated and will be removed completely in a later release.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.
+* When using the JavaScript query stage to query Solr, you have to provide parameters including `rows`. Previously `rows` accepted an integer, but now it must be entered as a string as in `("rows", "1")`.
+
+```js
+map.put("q", 'okta_uid_s:"{identifier}" OR username_s:"{identifier}" OR email_s:"{identifier}"'
+    .replace(/{identifier}/ig, userIdentifier))
+map.put("rows", "1")
+```

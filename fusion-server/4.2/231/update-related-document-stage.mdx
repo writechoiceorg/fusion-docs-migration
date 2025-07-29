@@ -1,0 +1,17 @@
+---
+title: "Update Related Document Stage"
+permalink: "231"
+---
+
+This index pipeline stage performs a Solr atomic update on an existing document using data pulled from the current document being processed by the pipeline.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/update-related-document.mdx";
+
+<SchemaParamFields schema={schema}/>

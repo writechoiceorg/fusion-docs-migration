@@ -1,0 +1,70 @@
+---
+title: "Filter Syntax"
+permalink: "3124"
+---
+
+This article describes the syntax of a single Appkit search filter to include in an HTTP request.
+
+```xml
+<filter-expression> ::= <field-expression> <group-expression> <value-expression <display-expression>
+<field-expression> ::= <exclusion-expression> <field-optional-expression> <field-name>
+<exclusion-expression> ::= "-" | ""
+<field-optional-expression> ::= "~" | ""
+
+<group-expression> ::= "(" <group-number> ")"
+<group-number> ::= <digit> | <digit> <group-number>
+
+<field-name> ::= <field-name-prefix> <field-name-suffix>
+<field-name-prefix> ::= <letter> | "_"
+<field-name-suffix> ::= <field-symbol> | <field-symbol> <field-name-suffix>
+<field-symbol> ::= <letter> | <digit> | "_" | "-" | "." | ":" | " " | ""
+
+<value-expression> ::= <value-bracket-left> <filter-value> <value-bracket-right>
+<value-bracket-left> ::= "[" | "("
+<value-bracket-right> ::= "]" | ")"
+
+<filter-value> ::= <value> | <range-value>
+
+<value> ::= <string-expression> | <numeric-value> | <date-value>
+
+<string-expression> ::= <partial-match> <string-value> <partial-match>
+<string-value> ::= '"' <text> '"' | "'" <text> "'"
+<partial-match> ::= '' | '*'
+
+<numeric-value> ::= <floating-point> | <integer>
+<number-sequence> ::= <digit> | <number-sequence> <digit>
+<integer> ::= "0" | <positive-digit> <number-sequence>
+<floating-point> ::= <integer> | <integer> "." <number-sequence>
+
+<date-value> ::= <four-digits> "-" <two-digits> "-" <two-digits> "'T'" <two-digits> ":" <two-digits> ":" <two-digits>
+<two-digits> ::= <digit> <digit>
+<four-digits> ::= <two-digits> <two-digits>
+
+<range-value> ::= <value> "," <value> | "," <value> | <value> ","
+
+<display-expression-opt> ::= "" | "[" <display-expression> "]"
+<display-expression> ::= "[" '"' <display-value> '"' "]" | "[" "'" <display-value> "'" "]"
+```
+
+**Where:**
+
+```xml
+<letter> ::= "A" | "B" | "C" | "D" | "E" | "F" | "G"
+ | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+ | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+ | "V" | "W" | "X" | "Y" | "Z"
+ | "a" | "b" | "c" | "d" | "e" | "f" | "g"
+ | "h" | "i" | "j" | "k" | "l" | "m" | "n"
+ | "o" | "p" | "q" | "r" | "s" | "t" | "u"
+ | "v" | "w" | "x" | "y" | "z" ;
+
+<positive-digit> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9"
+<digit> ::= "0" | <positive-digit>
+```
+
+**Here:**
+
+* `<group-number>` is an integer value denoting a grouping of filter constraints
+* `<field-name>` is the name of the field to apply the constraint to. A valid field name is one that matches the regular expression `[A-Za-z_][A-Za-z_0-9\-\.: ]`
+* `<display-value>` is an optional label to attach to the filter
+* `<filter-value>` is the actual constraint to be applied to the field named \<field-name>

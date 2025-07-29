@@ -1,0 +1,201 @@
+---
+title: "Fusion 5.9.13"
+description: "June 17, 2025"
+permalink: "4dtlz0"
+---
+
+Fusion 5.9.13 is a
+[maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) that introduces
+advanced SKU grouping with Solr collapse, custom certificates for indexing and querying services, and compatibility with Kubernetes 1.32.
+Fusion 5.9.13 also improves authentication resilience with a configurable JWT timeout, and resolves key scheduling and security bugs to ensure greater stability and compliance in enterprise environments.
+
+<Tip>
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+</Tip>
+
+
+
+## What’s new
+
+### Expanded support for collapsed search results
+
+Now Fusion gives you access to all of the available Solr settings for collapsing search results, giving you finer control over how Fusion groups variations of each item into a single search result.
+You can use collapse to improve conversion rates and customer satisfaction by streamlining search results, reducing cognitive load, and surfacing the most relevant product variations first.
+
+For example, you can use a `product_id` field as the collapse field to group all versions or SKUs of a product into a single search result.
+You can also control how Fusion selects the variation that represents the collapsed group; the default is the one most relevant to the user’s query.
+For example, a user who searches for "red shoes" sees all of the red variations of shoes first, with the option to drill down and see all the variations.
+
+<Frame>![Products collapsed by product_id with the red SKU selected](/assets/images/5.9/collapse-products.png)</Frame>
+
+Additional capabilities include:
+
+* **Faceting compatibility**: Facets can reflect counts based on collapsed groups instead of individual SKUs.
+* **Sorting options**: Choose how the representative SKU is selected using sort fields like `sales_rank` or `popularity_score`.
+* **Expand support**: Optional expansion of collapsed groups allows users to see all SKUs for a product on demand.
+* **Commerce Studio integration**: Merchandising actions such as pinning, boosting, and burying now apply to the entire product group, not just individual SKUs.
+* **Query Workbench support**: You can preview collapsed and expanded result sets directly in Query Workbench for easy validation.
+
+This update eliminates the need for custom collapse implementations and makes SKU/product rollup behavior a first-class capability in Fusion.
+
+For complete details about the new configuration options, see the [Query Fields stage](/fusion/5.9/289/query-fields-stage) configuration reference.
+
+### Kubernetes 1.32 support for better security and long-term compatibility
+
+Fusion 5.9.13 introduces full compatibility with Kubernetes version 1.32, ensuring seamless deployment and operation on the latest Kubernetes platforms.
+This update allows you to take advantage of the latest stability, performance, and security improvements in Kubernetes, including better control over sidecar container behavior and improvements to admission webhooks and scheduling logic.
+
+By supporting Kubernetes 1.32, Fusion stays aligned with cloud provider upgrades and helps future-proof your infrastructure, especially on managed services like AKS, EKS, and GKE.
+
+### Improved JWT authentication resilience with configurable timeout
+
+Fusion now allows you to configure the `jwkSetTimeout` variable in the JWT Realm settings, enabling better control over how long Fusion waits for a response when retrieving a JSON Web Key (JWK) set.
+This improves authentication reliability in environments where key providers may respond slowly.
+By increasing the default 500 ms timeout as needed (for example, to 2000 ms), you can reduce the risk of failed authentication due to network latency or external service delays.
+
+You can configure this in the Fusion UI under the **System > Access Control > Security Realms** tab.
+Alternatively, you can set this in the `security.initial-realm-configs` spring boot properties:
+
+```yaml
+security:
+  initial-realm-configs:
+    realmType: jwt
+    enabled: true
+    name: jwt_okta
+    config:
+      autoCreateUsers: true
+      jwtIssuer: https://HOSTNAME/oauth2/default
+      jwkSetUri: https://HOSTNAME/oauth2/default/v1/keys
+      jwkSetTimeout: 2000
+    roleNames:
+      - developer
+
+```
+
+### Configurable vector quantization method in LWAI pipeline stages
+
+Fusion 5.9.13 adds vector quantization in certain Lucidworks AI (LWAI) pipeline stages, making it easier to reduce memory usage and accelerate vector search without sacrificing quality.
+Quantization converts high-precision float vectors into compact 8-bit integer vectors, significantly lowering storage and compute costs.
+
+Now you can choose between `min-max` or `max-scale` quantization methods directly in the pipeline configuration interface for the LWAI vectorization stages:
+
+* [LWAI Vectorize Field Index stage](/fusion/5.9/t16i6m/lwai-vectorize-field)
+* [LWAI Vectorize Query Stage](/fusion/5.9/owi8af/lwai-vectorize-query)
+
+To select the quantization method, go to **Model Config** in the LWAI pipeline stage configuration and enter the `vectorQuantizationMethod` parameter with the value for the desired method:
+
+<Frame>![Vector quantization method configuration in an LWAI pipeline stage](/assets/images/5.9/vector-quantization-method-config.png)</Frame>
+
+### Custom certificates for indexing and querying services
+
+Fusion 5.9.13 introduces the ability add custom certificates for indexing and querying services, making it easier to align to your organization’s specific security requirements. This feature allows a Helm chart update to support persistent custom certificates and adding them into truststores during pod startup.
+
+To add a custom certificate, create a new YAML file for your custom certificates and edit it to include your indexing or querying certificates. You must use different YAML files in order to use different certificates for indexing and querying services. See [Deploy Fusion at Scale](/how-to/931/deploy-fusion-at-scale#custom-certs-indexquery) for full instructions, including the Helm chart update.
+
+### Support for pre-filtering in the Chunking Neural Hybrid Query stage
+
+For parity with the [Neural Hybrid Query stage](/fusion/5.9/mb500k/neural-hybrid-query-stage), the [Chunking Neural Hybrid Query Stage](/fusion/5.9/4klbo6/chunking-neural-hybrid-query-stage) now supports pre-filtering.
+
+Pre-filtering can improve performance by reducing the number of chunks that need to be processed.
+However, in some cases it can also lead to less accurate facet counts and search results.
+
+Pre-filtering is blocked by default.
+You can enable it by unchecking the **Block pre-filtering** checkbox in the Chunking Neural Hybrid Query stage configuration.
+
+## Bug fixes
+
+* Corrected the health reporting behavior for the `job-config` service after ZooKeeper disruptions.
+
+  Fusion now ensures the `/actuator/health` endpoint correctly reflects the actual status of the `job-config` service, even after temporary ZooKeeper unavailability.
+  This prevents false `DOWN` reports that could affect monitoring or automated recovery systems.
+* Updated the `fusion-spark-3.2.2` image to resolve a Fabric8 token refresh bug.
+
+  The Fabric8 Kubernetes client in this Spark image has been patched to fix a bug that prevented token refresh under OIDC authentication.
+  This ensures that Spark jobs using `fusion-spark-3.2.2` run reliably in Kubernetes environments that require token-based authentication.
+* Fixed a bug that prevented Web V2 connector jobs from restarting after failure.
+
+  In previous versions, if a job was interrupted (such as by scaling down the connector pod), the connectors-backend service could enter a corrupted state, preventing future runs of the same job with errors like `The state should never be null`.
+  Fusion now properly resets internal job state, ensuring that failed jobs can be restarted reliably.
+* Fixed Web connector indexing failure caused by corrupted job state
+
+  Fusion 5.9.13 restores indexing functionality for the Webv2 connector (v2.0.1) by resolving an issue that caused a corrupted job state in the `connectors-backend` service.
+
+  Jobs that previously failed with `The state should never be null` can now complete successfully.
+* Fixed an issue that prevented schedule changes from persisting for some datasources.
+
+  In Fusion 5.9.12, clicking **Save** after configuring a new schedule for a datasource in the “Run” dialog could fail silently in certain apps, leaving the schedule unsaved with no warning to the user.
+  This was due to a `job-config` handling issue that affected pre-existing app configurations.
+  Fusion 5.9.13 resolves this issue so that new schedules are reliably saved and acknowledged as expected.
+* Fixed permission handling in the `job-config` service to ensure scheduled jobs run as expected.
+
+  Fusion now correctly handles permission checks when creating or modifying scheduled jobs, preventing failures caused by mismatches between user and service account permissions.
+  This resolves issues where job could not be scheduled or executed following upgrades.
+* Helm charts now support Kubernetes secrets for TLS keystore passwords
+
+  Fusion 5.9.13 updates the Helm charts to eliminate the use of plaintext passwords for TLS keystores. You can now securely manage the keystorePassword using a Kubernetes secret, aligning with hardened OpenShift and enterprise security policies.
+* Upgraded the Spring framework in the `web-apps` service to improve security and ensure compatibility with token authentication behavior on modern Kubernetes platforms.
+
+## Deprecations and removals
+
+For full details, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#removals).
+
+### Hybrid Query pipeline stage
+
+The [Hybrid Query pipeline stage](/fusion/5.9/fgbib5/hybrid-query-stage) is now deprecated.
+Instead, use the [Neural Hybrid Query stage](/fusion/5.9/mb500k/neural-hybrid-query-stage), which combines lexical and vector search and includes improvements such as K-Nearest Neighbors (KNN), chunking, and more.
+
+### Container image for `kafka-exporter`
+
+Bitnami stopped supporting `kafka-exporter` and renamed the [docker repository](https://hub.docker.com/r/bitnami/kafka-exporter-archived) from `bitnami/kafka-exporter` to `bitnami/kafka-exporter-archived`.
+If you were using `kafka-exporter`, then you need to update the repository name in your `values.yaml` file:
+
+```
+kafka.metrics.kafka.image.repository=bitnami/kafka-exporter-archived
+
+```
+
+Changing the repository name will allow you to continue using Kafka metrics evaluation with Prometheus/Grafana.
+
+### Removed deprecated `X-XSS-Protection` header from session API responses
+
+Fusion 5.9.13 removes the deprecated `X-XSS-Protection` HTTP response header from the session API.
+This header is no longer supported by modern browsers and has no effect on security behavior.
+Its removal helps avoid confusion during security audits and aligns with current web security standards.
+
+## Platform support and component versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.29, 1.30, 1.31, 1.32
+* **Microsoft Azure Kubernetes Service (AKS):** 1.29, 1.30, 1.31, 1.32
+* **Amazon Elastic Kubernetes Service (EKS):** 1.29, 1.30, 1.31, 1.32
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.29, 1.30, 1.31, 1.32. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.29, 1.30, 1.31, 1.32
+* **Microsoft Azure Kubernetes Service (AKS):** 1.29, 1.30, 1.31, 1.32
+* **Amazon Elastic Kubernetes Service (EKS):** 1.29, 1.30, 1.31, 1.32
+
+Support is also offered for Rancher Kubernetes Engine (RKE and RKE2) and OpenShift 4 versions that are based on Kubernetes 1.29, 1.30, 1.31, 1.32. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.13  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller |
+| **Ray** | ray[serve] 2.42.1 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

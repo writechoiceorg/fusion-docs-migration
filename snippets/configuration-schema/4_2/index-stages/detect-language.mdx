@@ -1,0 +1,71 @@
+export const schema = {
+  "type": "object",
+  "title": "Detect Language",
+  "description": "Detect the language of the input source fields using https://github.com/optimaize/language-detector. If the output is stored to the document, there will be a new field created for each source field with the language",
+  "required": [
+    "source"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "source": {
+      "type": "array",
+      "title": "Source",
+      "description": "The fields/context keys to detect on.  May be a String Template. See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "outputKey": {
+      "type": "string",
+      "title": "Output Key",
+      "description": "The name of the key to insert into the context if the output type is 'context'.  The value is a map of source name to language.  May be a String Template. See https://github.com/antlr/stringtemplate4/blob/master/doc/index.md",
+      "default": "languages"
+    },
+    "documentPostfix": {
+      "type": "string",
+      "title": "Document Postfix",
+      "description": "The postfix to add to the source name when storing the results on the document (via the output type).",
+      "default": "_lang"
+    },
+    "outputType": {
+      "type": "string",
+      "title": "Output Type",
+      "description": "Select whether the flag should be set on the document or in the Pipeline Context.",
+      "enum": [
+        "document",
+        "context"
+      ]
+    }
+  },
+  "category": "Document Filtering and Enrichment",
+  "categoryPriority": 7,
+  "unsafe": false
+}

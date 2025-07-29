@@ -1,0 +1,239 @@
+---
+title: "Security"
+permalink: "yu6e93"
+---
+
+Managed Fusion uses a number of security measures:
+
+* **Authenticating UI users** – Managed Fusion authenticates users when they log in. Logging in creates a new Managed Fusion session. Managed Fusion also authenticates users when the [Sessions](/managed-fusion/5.9/tu3rmc/sessions-api) REST API creates a session.
+* **Authorizing UI users** – Managed Fusion authorizes users to use specific parts of the Managed Fusion UI.
+
+  <Note>
+  UI users must also be authorized to make API requests, because the UI makes API requests.
+  </Note>
+* **Authenticating and authorizing users who make API requests**
+* **Password Encryption**- Managed Fusion uses 128-bit AES keys to encrypt passwords and "AES/CBC/PKCS7Padding" for the cipher. The ciphertext is also signed.
+* **Using session cookies**
+* **Using an external authentication provider** (optional) - A security realm can specify use of an external authentication provider, such as LDAP, JWT, or SAML.
+* **Constraining the documents that are indexed** (optional)
+* **Trimming the documents that are returned by queries based on authorization** (optional)
+
+## Managed Fusion user login
+
+When logging into the Managed Fusion UI, a user provides a username and password, as well as their assigned security realm. An administrator must specify these in Managed Fusion (using the native security realm) or configure Managed Fusion to use an external authentication provider (for example, LDAP or SAML).
+See [Access control](/managed-fusion/5.9/24whk5/access-control).
+
+Managed Fusion uses [roles](/managed-fusion/5.9/ydvorx/roles) defined by [permissions](/managed-fusion/5.9/ro1m7q/permissions)
+to authorize Managed Fusion UI access and perform tasks in Managed Fusion, including searching. The recommended method to delegate permissions is as follows:
+
+* Assign each user to a role and create custom roles as needed.
+* Assign permissions on a per-app basis.
+
+## Manage users with security realms
+
+Managed Fusion uses [security realms](/managed-fusion/5.9/sq6b80/security-realms) to authenticate users of the Managed Fusion UI.
+Each user has an assigned security realm, which the user must select when logging in. If the user selects a different realm, authentication fails.
+
+A security realm also provides a list of roles as follows:
+
+* The list always includes the role(s) that are specified in the security realm.
+* (Optional) If an external directory service (such as LDAP) is used for authentication, the list can also contain roles that are mapped from the names of the directory-service groups. That is, you can configure a security realm to return group information for users from *that same* directory service.
+* (Optional) The security realm can reference one or more Managed Fusion roles or, when using an external directory service provider, use group membership information from the provider to determine roles for users. Managed Fusion maps the group names to role names and adds these roles to the user’s list of roles.
+
+<Note>
+Managed Fusion does not use permissions from LDAP to authorize UI access or API requests. It only obtains group names (optionally), which are used as role names or are mapped to role names. If an [Active Directory Security Query Trimming Stage](/managed-fusion/5.9/pu7wfp/active-directory-security-trimming-stage) is used, then directory-service permissions *are* used for trimming. If a connector supports security trimming, then connector permissions *are* used for trimming.
+</Note>
+
+## Per-Request Authentication
+
+Requests to the Managed Fusion REST API must specify a security realm for per-request authentication, unless a session cookie is used (which contains information about the security realm).
+
+Managed Fusion authorizes requested operations based on API permissions specified for the user and for the user’s role(s). Managed Fusion considers the role(s) specified in the user definition and in the security realm.
+Managed Fusion creates a list of roles when a session is created, that is, when a user logs in or when the [Sessions](/managed-fusion/5.9/tu3rmc/sessions-api) REST API creates a session.
+Authorization based on [permissions](/managed-fusion/5.9/ro1m7q/permissions) and its layering is at request time.
+
+You can define multiple [security realms](/managed-fusion/5.9/sq6b80/security-realms) for a Managed Fusion instance. A Managed Fusion instance can manage multiple security realms, which allows users from different domains
+to have (different levels of) access to specific Managed Fusion collections.
+
+## Read-only root file system
+
+Managed Fusion 5.9.9 and up supports a read-only root file system to safeguard against unauthorized modifications, protecting your deployment against malicious software and other attacks.
+Most services operate efficiently in this mode, and for components that need write access, a separate writable mount is available.
+It should only be enabled for services that do not require CRUD access.
+
+The table below lists the services that support a read-only root file system, the ones that have it enabled by default, and the Managed Fusion release in which support was added.
+Contact Lucidworks to customize how read-only root file system access is configured for your Managed Fusion deployment.
+
+| Chart Name | Pod Name | Container Name | Supported | Default enabled | Supported version |
+| --- | --- | --- | --- | --- | --- |
+| `admin-ui` | `admin-ui` | `admin-ui` | ✅ | ✅ | 5.9.9+ |
+| `api-gateway` | `api-gateway` | `init/api-gateway` | ✅ | ✅ | 5.9.9+ |
+| `api-gateway` | `api-gateway` | `api-gateway` | ✅ | ✅ | 5.9.9+ |
+| `api-gateway` | `api-gateway` | `generate-jks` | ✅ | ✅ | 5.9.9+ |
+| `apps-manager` | `apps-manager` | `apps-manager` | ✅ | ✅ | 5.9.9+ |
+| `argo` | `argo-server` | `argo-server` | ✅ | ❌ | 5.9.10+ |
+| `argo` | `argo-executor` | `executor` | ✅ | ❌ | 5.9.10+ |
+| `argo` | `argo-mainContainer` | `mainContainer` | ✅ | ❌ | 5.9.10+ |
+| `argo` | `argo-controller` | `controller` | ✅ | ✅ | 5.9.10+ |
+| `argo/minio` | `minio` | `minio` | ✅ | ❌ | 5.9.10+ |
+| `argo/minio` | `minio` | `minio` | ✅ | ❌ | 5.9.10+ |
+| `argo/minio` | `make-bucket-job` | `minio-mc` | ✅ | ❌ | 5.9.10+ |
+| `argo-common-workflows` | `delete-model` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `argo-common-workflows` | `deploy-model` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `argo-common-workflows` | `milvus-maintenance` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `argo-common-workflows` | `upload-model-to-cloud` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `async-parsing` | `async-parsing` | `tika-server` | ✅ | ✅ | 5.9.9+ |
+| `async-parsing` | `async-parsing` | `async-parsing` | ✅ | ✅ | 5.9.9+ |
+| `auth-ui` | `auth-ui` | `auth-ui` | ✅ | ✅ | 5.9.9+ |
+| `classic-rest-service` | `classic-rest-service` | `init/import-certs` | ✅ | ✅ | 5.9.10+ |
+| `classic-rest-service` | `classic-rest-service` | `classic-rest-service` | ✅ | ✅ | 5.9.9+ |
+| `classification` | `argo/classification` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `connector-plugin` | `connector-plugin` | `init/import-certs` | ✅ | ❌ | 5.9.10+ |
+| `connector-plugin` | `connector-plugin` | `connector-plugin` | ✅ | ✅ | 5.9.9+ |
+| `connectors` | `connectors` | `connectors` | ✅ | ✅ | 5.9.9+ |
+| `connectors-backend` | `CRD` |  | ✅ | ✅ | 5.9.9+ |
+| `connectors-backend` | `connectors-backend` | `connectors-backend` | ✅ | ✅ | 5.9.9+ |
+| `fusion-admin` | `fusion-admin` | `admin` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-admin` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-api-gateway` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-indexing` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-kafka` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-logstash` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-pulsar` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `setup-keystore-and-properties` | ✅ | ✅ | 5.9.9+ |
+| `fusion-commons` |  | `check-zk` | ✅ | ✅ | 5.9.9+ |
+| `fusion-config-sync` | `fusion-config-sync` | `fusion-config-sync` | ✅ | ✅ | 5.9.9+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/volume-fix` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/init-workspace` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/write-job-configs` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/write-io-configs` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/add-zkhost` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/pull-data-training-and-metadata` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/pull-data-training-and-metadata-cloud` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/volume-fix2` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/synonym-list` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/download-synonym-dictionary` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/keystroke-list` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/download-keystroke-blob` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/augment` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/push-augmented-data` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-data-augmentation` | `argo/data-augmentation/push-augmented-data-cloud` | `init/main/wait` | ✅ | ❌ | 5.9.10+ |
+| `fusion-indexing` | `fusion-indexing` | `fusion-indexing` | ✅ | ✅ | 5.9.9+ |
+| `fusion-resources` | `fusion-resources-secret-hook` | `setup-keystore-and-properties` | ✅ | ✅ | 5.9.10+ |
+| `insights` | `insights` | `insights` | ✅ | ✅ | 5.9.9+ |
+| `job-launcher` | `job-launcher` | `job-launcher` | ✅ | ✅ | 5.9.9+ |
+| `job-launcher` | `job-launcher` | `kubectl-runner` | ✅ | ✅ | 5.9.9+ |
+| `job-launcher` | `job-launcher-spark-cleanup` | `kubectl-runner` | ✅ | ✅ | 5.9.9+ |
+| `job-launcher` | `spark-kubernetes-driver` | `spark-kubernetes-driver` | ✅ | ❌ | 5.9.10+ |
+| `job-launcher` | `spark-kubernetes-executor` | `spark-kubernetes-executor` | ✅ | ❌ | 5.9.10+ |
+| `job-rest-server` | `job-rest-server` | `job-rest-server` | ✅ | ✅ | 5.9.9+ |
+| `kafka` | `kafka-metrics` | `kafka-exporter` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka-provisioning` | `init/wait-for-available-kafka` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka-provisioning` | `kafka-provisioning` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka` | `kafka` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka` | `jmx-exporter` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka` | `init/check-zk` | ✅ | ✅ | 5.9.9+ |
+| `kafka` | `kafka` | `init/auto-discovery` | ✅ | ❌ | 5.9.10+ |
+| `kafka` | `kafka` | `init/volume-permissions` | ✅ | ❌ | 5.9.10+ |
+| `lwai-gateway` | `lwai-gateway` | `lwai-gateway` | ✅ | ✅ | 5.9.9+ |
+| `ml-model-service` | `ml-model-service` | `java-service` | ✅ | ✅ | 5.9.9+ |
+| `ml-model-service` | `ml-model-service-namespace-hook` | `kubectl-runner` | ✅ | ✅ | 5.9.9+ |
+| `ml-model-service/ambassador` | `ambassador` | `ambassador` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/ambassador` | `ambassador` | `prometheus-exporter` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-writable` | `milvus` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-writable` | `init/wait-for-mysql` | ✅ | ✅ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-writable` | `init/create-for-share-storage` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-admin` | `admin` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-admin` | `init/wait-for-milvus` | ✅ | ✅ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-mishards` | `init/wait-for-mysql` | ✅ | ✅ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-mishards` | `init/wait-for-mysql` | ✅ | ✅ | 5.9.10+ |
+| `ml-model-service/milvus` | `milvus-mishards` | `mishards` | ✅ | ❌ | 5.9.10+ |
+| `ml-model-service/milvus/mysql` | `mysql` | `init/remove-lost-found` | ✅ | ✅ | 5.9.10+ |
+| `ml-model-service/milvus/mysql` | `mysql` | `mysql` | ✅ | ❌ | 5.9.10+ |
+| `pm-ui` | `pm-ui` | `pm-ui` | ✅ | ✅ | 5.9.9+ |
+| `query-pipeline` | `query-pipeline` | `query-pipeline` | ✅ | ✅ | 5.9.9+ |
+| `question-answering` | `argo/qna-coldstart/init-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/write-job-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/add-zkHost` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/pull-data` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/pull-data-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/train` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/list-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/post-model` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-coldstart/apply-seldon-deployment` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/init-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/write-job-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/add-zkhost` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/pull-qa-data-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/pull-qa-data` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/train` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/train-with-texts` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/list-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/post-model` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-supervised/apply-seldon-deployment` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/init-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/write-job-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/add-zkhost` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/list-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/pull-eval-data` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/pull-eval-data-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/evaluate` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/push-eval-results-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `question-answering` | `argo/qna-evaluation/push-eval-results` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/init-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/write-job-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/add-zkhost` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/pull-data-training-and-metadata` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/pull-data-training-and-metadata-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/train-with-metadata` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/train-without-metadata` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/push-recommendations` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/push-recommendations-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/add-default-exclude-query` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-user/init-workspace` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/copy-model` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/write-job-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/write-io-configs` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/add-zkhost` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/pull-data` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/pull-data-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/train` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/push-content` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/push-content-cloud` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/add-default-exclude-query` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `recommender` | `argo/item-recommender-content/delete-old-content-recommendations` | `init/wait/main` | ✅ | ❌ | 5.9.10+ |
+| `reverse-search` | `reverse-search` | `init/set-reverse-search-zone` | ✅ | ✅ | 5.9.10+ |
+| `reverse-search` | `reverse-search` | `init/check-zk` | ✅ | ✅ | 5.9.9+ |
+| `reverse-search` | `reverse-search` | `init/enable-tls-in-reverse-search` | ✅ | ✅ | 5.9.10+ |
+| `reverse-search` | `reverse-search` | `reverse-search` | ✅ | ❌ | 5.9.10+ |
+| `rules-ui` | `rules-ui` | `rules-ui` | ✅ | ✅ | 5.9.9+ |
+| `seldon-core-operator` | `seldon-controller-manager` | `manager` | ✅ | ❌ | 5.9.10+ |
+| `seldon-core-operator` | `seldon-spartakus-volunteer` | `seldon-spartakus-volunteer` | ✅ | ❌ | 5.9.9+ |
+| `seldon-core-operator` | `crd/SeldonDeployment` |  | ✅/❌ | ❌ | 5.9.9+ |
+| `solr` | `solr` | `init/set-solr-zone` | ✅ | ✅ | 5.9.10+ |
+| `solr` | `solr` | `init/enable-tls-in-solr` | ✅ | ✅ | 5.9.10+ |
+| `solr` | `configset-bootstrap` | `configset-bootstrap` | ✅ | ✅ | 5.9.10+ |
+| `solr` | `solr` | `solr` | ✅ | ❌ | 5.9.10+ |
+| `solr` | `solr-exporter` | `exporter` | ✅ | ❌ | 5.9.10+ |
+| `solr` | `solr-exporter` | `init/solr-init` | ✅ | ✅ | 5.9.10+ |
+| `solr-managed` | `configset-bootstrap` | `configset-bootstrap` | ✅ | ✅ | 5.9.10+ |
+| `solr-managed` | `exporter` | `exporter` | ✅ | ❌ | 5.9.10+ |
+| `solr-managed` | `exporter` | `init/solr-init` | ✅ | ✅ | 5.9.10+ |
+| `solr-managed` | `solr` | `init/set-solr-zone` | ✅ | ✅ | 5.9.10+ |
+| `solr-managed` | `solr` | `init/enable-tls-in-solr` | ✅ | ✅ | 5.9.10+ |
+| `solr-managed` | `solr` | `solr` | ✅ | ❌ | 5.9.10+ |
+| `solr-managed` | `solr` | `process-raw` | ✅ | ❌ | 5.9.10+ |
+| `solr-backup-runner` | `solr-backup-runner-backup` | `solr-backups` | ✅ | ❌ | 5.9.10+ |
+| `solr-backup-runner` | `solr-backup-runner-prune` | `solr-prune` | ✅ | ❌ | 5.9.10+ |
+| `templating` | `templating` | `templating` | ✅ | ✅ | 5.9.9+ |
+| `webapps` | `webapps` | `webapps` | ✅ | ✅ | 5.9.9+ |
+| `zookeeper` | `zookeeper` | `zookeeper` | ✅ | ❌ | 5.9.10+ |
+| `zookeeper` | `zookeeper` | `jmx-exporter` | ✅ | ❌ | 5.9.10+ |
+| `zookeeper` | `zookeeper` | `zookeeper-exporter` | ✅ | ❌ | 5.9.10+ |
+| `zookeeper` | `zookeeper-chroots` | `main` | ✅ | ❌ | 5.9.10+ |

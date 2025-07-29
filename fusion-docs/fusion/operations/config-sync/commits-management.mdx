@@ -1,0 +1,89 @@
+---
+title: "Commit management"
+permalink: "ozi0ub"
+---
+
+ConfigSync uses a Git repository to store the configuration files.
+
+It pulls the latest changes from the repository every 30 seconds by default, and applies them to the Fusion cluster.
+You can configure the polling interval; see the [ConfigSync configuration reference](/fusion/5.9/ifv6st/config-sync-configuration-reference).
+
+At the same time, it listens to the changes in the Fusion cluster and pushes them to the Git repository.
+
+Fusion cluster changes have a higher priority than Git repository changes in case of conflicts.
+
+## Latest synced commit
+
+The latest synced commit is the commit that was last applied by ConfigSync.
+ConfigSync tracks it as `latest-synced-commit` whose value is the Git commit hash.
+It uses this value to determine which commits to apply.
+
+ConfigSync applies all commits that are newer than `latest-synced-commit` and sets `latest-synced-commit` to the latest commit.
+
+For example, imagine the following Git commit history:
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit1.png)</Frame>
+
+When ConfigSync performs a `git pull` and finds a new commit, it applies it and sets `latest-synced-commit` to the latest commit.
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit2.png)</Frame>
+
+ConfigSync calculates the difference between `latest-synced-commit` and `latest-git-commit` and applies all commits within that range.
+Then it sets `latest-synced-commit` to `latest-git-commit`.
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit3.png)</Frame>
+
+If needed, you can set `latest-synced-commit` manually:
+
+```
+PUT /api/properties/latest-synced-commit
+Content-Type: text/plain
+
+1111111
+```
+
+This sets `latest-synced-commit` pointer to `1111111`.
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit4.png)</Frame>
+
+After that, ConfigSync reapplies all commits that are newer than `latest-synced-commit` and set `latest-synced-commit` to the latest commit.
+
+## Locked commit
+
+ConfigSync can lock the configuration to a specific commit.
+
+This means that ConfigSync :
+
+* Does not apply any commits that are newer than the locked commit
+* Does not update changes from the Fusion cluster to the Git repository
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit5.png)</Frame>
+
+You can set `locked-commit` using the API:
+
+```
+PUT /api/properties/locked-commit
+Content-Type: text/plain
+
+2222222
+```
+
+<Note>
+If `locked-commit` precedes `latest-synced-commit`, ConfigSync reverts all changes to the `locked-commit` and sets `latest-synced-commit` to `locked-commit`.
+</Note>
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit6.png)</Frame>
+
+All commits that are newer than `locked-commit` are ignored, as well as changes from the Fusion cluster.
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit7.png)</Frame>
+
+After we remove the `locked-commit`, ConfigSync commits all Fusion cluster changes and pulls the latest changes from the Git repository:
+
+```
+DELETE /api/properties/locked-commit
+```
+
+That triggers a merge between `git-changes` and `fusion-changes` where `fusion-changes` has a higher priority in case of conflicts.
+
+<Frame>![Commit history](/assets/images/diagrams/config-sync/commit8.png)</Frame>

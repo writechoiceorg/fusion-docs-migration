@@ -1,0 +1,50 @@
+---
+title: "Additional Query Parameters"
+description: "Query pipeline stage configuration specifications"
+permalink: "8eo8x3"
+---
+
+The Additional Query Parameters query pipeline stage is used to set, append, and remove [Solr query parameters](https://wiki.apache.org/solr/QueryParametersIndex).
+This stage takes a list of query parameters.
+Each parameter is specified as a triple consisting of parameter name, parameter value, and update policy.
+
+Available update policies are: `replace`, `append`, `remove` and `default`.
+The policy 'default' means that this parameter will be added only if it has not yet been set via the request or by a default specification in the Solr config file solrconfig.xml.
+
+## Example Stage Specification
+
+*Set the response format to JSON:*
+
+```json
+{ "type":"set-params",
+   "id":"default-params",
+   "params": [
+      {"key":"wt", "value":"json", "policy":"default"}
+     ],
+   "skip":false
+}
+```
+
+*Return a field named "id", and 10 rows of results:*
+
+```json
+{  "type":"set-params",
+   "id":"default-params",
+   "params": [
+      {"key":"fl", "value":"id", "policy":"append"},
+      {"key":"rows", "value":"10", "policy":"replace"}
+    ],
+   "skip":false
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/additional-query-parameters.mdx";
+
+<SchemaParamFields schema={schema}/>

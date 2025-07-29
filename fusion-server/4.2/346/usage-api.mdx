@@ -1,0 +1,65 @@
+---
+title: "Usage API"
+permalink: "346"
+---
+
+
+The Usage API sends system usage data to Lucidworks. See [System Usage Monitor](/fusion-server/4.2/128/system-usage-monitor) for details.
+
+<Tip>
+**Important**
+
+The Usage API is removed in Fusion 5.x.
+</Tip>
+
+## Examples
+
+*Get the latest data that will be sent to Lucidworks on the next run:*
+
+**INPUT**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/usage
+```
+
+**OUTPUT**
+
+```json
+[ {
+  "type" : "GAUGE",
+  "name" : "solr.clusters",
+  "value" : 3
+}, {
+  "type" : "GAUGE",
+  "name" : "solr.nodes",
+  "value" : 2
+}, {
+  "type" : "RATE",
+  "name" : "recommender.itemsForQuery.timer.rate",
+  "value" : 0
+}, {
+  "type" : "RATE",
+  "name" : "recommender.queriesForItem.timer.rate",
+  "value" : 0
+}, {
+  "type" : "GAUGE",
+  "name" : "nodes",
+  "value" : 2
+}, {
+  "type" : "RATE",
+  "name" : "recommender.queriesForItem.counter.rate",
+  "value" : 0
+}, {
+  "type" : "RATE",
+  "name" : "recommender.itemsForItem.timer.rate",
+  "value" : 0
+}, {
+  "type" : "RATE",
+  "name" : "recommender.itemsForQuery.counter.rate",
+  "value" : 0
+}, {
+  "type" : "RATE",
+  "name" : "recommender.itemsForItem.counter.rate",
+  "value" : 0
+} ]
+```

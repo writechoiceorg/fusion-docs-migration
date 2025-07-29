@@ -1,0 +1,14 @@
+export const InlineImage = ({ src, alt = '', height = '2em' }) => {
+  return (
+    <img
+      src={src}
+      alt={alt}
+      style={{
+        display: 'inline',
+        verticalAlign: 'start',
+        height: height,
+        margin: '0'
+      }}
+    />
+  );
+};

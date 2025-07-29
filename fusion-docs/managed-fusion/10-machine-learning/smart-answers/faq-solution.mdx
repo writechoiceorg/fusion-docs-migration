@@ -1,0 +1,30 @@
+---
+title: "FAQ solution"
+description: "Smart Answers"
+permalink: "gt4677"
+---
+
+The Supervised solution consists of two parts.
+
+## 1. Train a model
+
+Train a deep learning model using existing query/response pairs by configuring the Smart Answers Supervised Training job. See [Train A Smart Answers Supervised Model](/how-to/ti9rcr/train-a-smart-answers-supervised-model).
+
+The job includes an auto-tuning feature that seeks to identify the optimal configuration for your RNN-based model. Transformer-based models like BERT are not used in the auto-tuning.
+
+## 2. Create collections in Milvus
+
+In order to use `{app_name}-smart-answers` pipelines, you need to create collections in Milvus. Please, refer to the [Milvus](/fusion/5.9/8821/milvus) documentation page.
+
+## 3. Configure the pipelines
+
+The trained model should be used at both index and query time in order to perform dense vector search.
+
+* At index time, we provide the `{app_name}-smart-answers` index pipeline to help generate a dense vector representation of answers.
+* At query time, we provide a `{app_name}-smart-answers` query pipeline to conduct run-time neural search. This pipeline transforms the incoming query into a dense vector using the trained model, then compares it with indexed answer dense vectors by computing the cosine distance between them. You can also use a query stage to combine Solr and document vector similarity scores at query time.
+
+See [Configure The Smart Answers Pipelines](/how-to/2bfmm2/configure-the-smart-answers-pipelines). Once your pipelines are configured, see [Evaluate a Smart Answers Query Pipeline](/how-to/tij2o9/evaluate-a-smart-answers-query-pipeline) to test its effectiveness so that you can fine-tune the configuration.
+
+## Short answer extraction
+
+By default, the question-answering query pipelines return complete documents that answer questions. Optionally, you can extract just a paragraph, a sentence, or a few words that answer the question. See [Extract Short Answers from Longer Documents](/how-to/1eti6h/extract-short-answers-from-longer-documents).

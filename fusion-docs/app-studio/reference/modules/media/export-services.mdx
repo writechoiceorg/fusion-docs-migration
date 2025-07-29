@@ -1,0 +1,89 @@
+---
+title: "Export Services"
+permalink: "3188"
+---
+
+## Exporting results to Excel
+
+The Excel export service is constrained by the fact that the Excel document needs to be created in memory and therefore recommended for relatively small result sets. For larger exports, we recommend using the CSV export service.
+
+Use the [`media:excel`](/fusion/5.9/1123/media-excel) tag to generate a link to export results to Excel.
+
+```xml
+<media:excel conf="platforms.gsa.foo" query="query" fetch="10000" fields="title,foo" header="myTitle,myFoo">Export</media:excel>
+```
+
+## Exporting results to CSV
+
+The CSV export service is used for writing search results to a file in comma-delimited format (or other delimited formats). This service requires the platform configuration to use and any combination of query parameters you would normally pass to an Appkit search page.
+
+The CSV export service is highly scalable and will retrieve entire indexes (if deep offset is supported by the search engine) and spool to files in a scalable manner.
+
+You can generate an export link using the [`media:csv`](/fusion/5.9/1160/media-csv) tag:
+
+```xml
+<media:csv conf="platforms.gsa" query="query" delimiter="|" fetch="100000" batch-size="100" fields="foo,bar,zip">Export to CSV</media:csv>
+```
+
+### Offline export
+
+When exporting a large number of documents, it can be preferable to run the export process in the background, to avoid browser time-out. We cater for this possibility by running *offline* exports in a separate thread and storing the CSV output in a file in the local file system of the application server (which might be a shared mount when running multiple nodes). To control how export files are generated and stored, you have these configuration options in `services/media/export/offline` in the configuration hierarchy:
+
+* `compress`: Whether or not to compress the final CSV file into a ZIP archive.
+* `temp-folder`: Folder in which to store exported files on the application server, whilst streaming results from the platform (and before they are moved to their final destination). This can either be an absolute file path or relative to the application server root. If omitted, OS-specific temporary file folders are used.
+* `redirect-path`: Path to redirect user after export has been initiated.
+* `folder`: Folder in which to store exported files on the application server. This can either be an absolute file path or relative to the application server root. The path can be written as an expression, with variables that are resolved for the user that is performing the export:
+
+  + `{{id}}`: The ID of the user.
+  + `{{name}}`: The user name of the user (if different from the ID).
+  + `{{domain}}`: The domain of the user.
+    For example, `/var/data/export/{{domain}}/{{id}}/`.
+
+When an export has been completed, the system sends out a `twigkit.media.export.ExportCompleted` event. You can write your own event handler like so:
+
+```java
+import com.google.common.eventbus.Subscribe;
+
+public class ExportListener {
+
+    @Subscribe
+    public void export(ExportCompleted event) {
+        System.out.println("Done exporting " + event.getFile().getAbsolutePath() + " for user " + event.getUser());
+        // do something specific with this information
+    }
+}
+```
+
+To register an event listener, add this entry to your application’s `AppkitModule`:
+
+```java
+@Override
+	protected void configure() {
+	  ...
+	  eventBus.register(new ExportListener());
+	  ...
+	}
+```
+
+Depending on your business requirements, you might want to email the user a link to the exported CSV, list available CSVs on a home screen, and so forth.
+
+## Configuring export links within your search controls
+
+Often it is useful to provide export options alongside your search results. You can achieve this using the above export tags along with some widget popover code:
+
+```xml
+<block:controls>
+ <widget:popover id="export-controls" title="Export results" link-text="Export" align="right" close-on-click="li">
+ <ul class="tk-stl-toggle-menu">
+ <li> <media:csv conf="platforms.gsa" query="query" delimiter="|" fetch="100000" batch-size="100" fields="title,foo,bar">Export to CSV</media:csv></li>
+ <li> <media:excel conf="platforms.gsa" query="query" fetch="10000" fields="title,foo" header="myTitle,myFoo">Export to Excel</media:excel></li>
+ </ul>
+ </widget:popover>
+</block:controls>
+```
+
+This displays the various export tags in a list, which is shown on toggle of the Export drop-down link.
+
+<Frame>![Media export widget](/assets/images/appkit/4.2/media-export-widget.png)</Frame>
+
+Edit the `link-text="Export"` to change the title of the link, and add further `<li>` elements with links in as required.

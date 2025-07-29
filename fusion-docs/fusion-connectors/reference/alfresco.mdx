@@ -1,0 +1,52 @@
+---
+title: "Alfresco V1"
+description: "Connector Configuration Reference"
+permalink: "84"
+---
+
+Compatible with Fusion version: 4.1.0 through 5.12.0
+
+The Alfresco Connector is a crawler for the Alfresco server, which adheres to the
+[Content Management Interoperability Services](https://en.wikipedia.org/wiki/Content_Management_Interoperability_Services) (CMIS) standard.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is using the [Alfresco recipe](/fusion-connectors/6y4vwx/alfresco) with the REST V2 connector.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+This connector was developed for the
+[Alfresco Community 5.0d](http://sourceforge.net/projects/alfresco/files/Alfresco%205.0.d%20Community/) content repositories
+and was not tested on any other versions of Alfresco or any other CMIS server.
+
+See these topics for more details:
+
+* [Troubleshoot an Alfresco Data Source](/how-to/895/troubleshoot-an-alfresco-datasource)
+* [Alfresco Connector Configuration Reference](/fusion-connectors/84/alfresco)
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+### Security Trimming
+
+The Alfresco connector has a security trimming feature. You can activate security trimming using the **ENABLE SECURITY TRIMMING** checkbox in the UI.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-alfresco.mdx";
+
+<SchemaParamFields schema={schema}/>
+

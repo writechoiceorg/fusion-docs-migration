@@ -1,0 +1,130 @@
+---
+title: "Index Pipelines API"
+description: "Fusion Indexing APIs"
+permalink: "351"
+---
+
+The Index Pipelines API provides methods for managing a set of named index pipelines.
+Every pipeline is made up of one or more stages.
+Stages can be defined during the creation of a pipeline, or stages can be defined separately and included into one or more pipelines.
+For details of the REST API for index stages, see [Index Stages API](/fusion/5.9/349/index-stages-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+Document processing proceeds stage by stage in a linear fashion.
+The order of the stages in a pipeline is the order in which they were defined.
+At installation, Fusion includes several pre-configured pipelines.
+See [Index Pipelines](/fusion/5.9/162/index-pipelines) for details on these default pipelines.
+
+For more information about structuring documents for indexing, see [Importing Data with the REST API](/how-to/865/import-data-with-the-rest-api).
+
+## Examples
+
+<Note>
+The full set of fields for each stage type are not included in the following examples. See [Index Pipeline Stages Reference](/fusion/5.9/229/index) for more information about the fields available for each stage.
+</Note>
+
+*List the 'default' pipeline:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/index-pipelines/default
+
+```
+
+RESPONSE
+
+```json
+{
+  "id" : "default",
+  "stages" : [ {
+    "type" : "solr-index",
+    "id" : "solr-default",
+    "skip" : false
+  } ]
+}
+
+```
+
+*Create the pipeline in the "MyApp" app*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{
+    "id": "my-index-pipeline",
+    "stages": [
+        {
+            "id": "field_mapping",
+            "type": "field-mapping",
+            "reservedFieldsMappingAllowed": false
+        },
+        {
+            "id": "solr_dynamic_field_mapping",
+            "type": "solr-dynamic-field-name-mapping",
+            "advancedTextFieldsIndexing": true
+        },
+        {
+            "id": "solr_indexing",
+            "type": "solr-index",
+            "fieldsList": false
+        }
+    ]
+}' https://FUSION_HOST:FUSION_PORT/api/apps/MyApp/index-pipelines
+
+```
+
+RESPONSE
+
+```json
+{
+    "id": "my-index-pipeline",
+    "stages": [
+        {
+            "id": "field_mapping",
+            "translationMappings": [],
+            "retentionMappings": [],
+            "updateMappings": [],
+            "unmappedRule": {
+                "keep": true,
+                "delete": false,
+                "fieldToMoveValuesTo": "",
+                "fieldToCopyValuesTo": "",
+                "valueToAddToUnmappedFields": "",
+                "valueToSetOnUnmappedFields": ""
+            },
+            "reservedFieldsMappingAllowed": false,
+            "type": "field-mapping",
+            "skip": false,
+            "secretSourceStageId": "field_mapping"
+        },
+        {
+            "id": "solr_dynamic_field_mapping",
+            "duplicateSingleValuedFields": false,
+            "fieldsToExclude": [],
+            "advancedTextFieldsIndexing": true,
+            "maxTextLengthForAdvancedIndexing": 100,
+            "type": "solr-dynamic-field-name-mapping",
+            "skip": false,
+            "secretSourceStageId": "solr_dynamic_field_mapping"
+        },
+        {
+            "id": "solr_indexing",
+            "enforceSchema": true,
+            "fieldsList": false,
+            "dateFormats": [],
+            "params": [],
+            "bufferDocsForSolr": true,
+            "allowBlacklistedRequestParameters": false,
+            "type": "solr-index",
+            "skip": false,
+            "secretSourceStageId": "solr_indexing"
+        }
+    ],
+    "properties": {
+        "secretSourcePipelineId": "my-index-pipeline"
+    }
+}
+
+```

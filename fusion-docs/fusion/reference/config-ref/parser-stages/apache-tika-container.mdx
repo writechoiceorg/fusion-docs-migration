@@ -1,0 +1,22 @@
+---
+title: "Apache Tika Container parser stage"
+permalink: "0b2upm"
+---
+
+<Note>
+This feature is only available in Fusion 5.9.11 and later versions of Fusion 5.9.
+</Note>
+
+Apache Tika Container is a versatile parser that supports many types of unstructured document formats, such as HTML, PDF, Microsoft Office, OpenOffice, RTF, audio, video, images, and more. A complete list of supported formats is available at [Apache Tika](http://tika.apache.org/).
+
+See [Use Tika Asynchronous Parsing](/how-to/5bk663/use-tika-asynchronous-parsing) for detailed steps to set up asynchronous parsing.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/apache-tika-container-parser.mdx";
+
+<SchemaParamFields schema={schema}/>

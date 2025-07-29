@@ -1,0 +1,85 @@
+export const schema = {
+  "type": "object",
+  "title": "Landing Pages",
+  "description": "Configure landing pages (redirects) for certain search terms. This does not cause a HTTP 3xx redirect, but simply returns suggested URLs for redirection",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "queryParam": {
+      "type": "string",
+      "title": "Query Parameter for Matching",
+      "default": "q"
+    },
+    "matchCount": {
+      "type": "integer",
+      "title": "Maximum Matches",
+      "default": 1,
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "rules": {
+      "type": "array",
+      "title": "Landing Page Rules",
+      "items": {
+        "type": "object",
+        "required": [
+          "keyword",
+          "mode",
+          "url"
+        ],
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "title": "Keyword",
+            "description": "Search keywords to match on."
+          },
+          "mode": {
+            "type": "string",
+            "title": "Match Strategy",
+            "description": "How to match the keywords.",
+            "enum": [
+              "exact",
+              "phrase",
+              "regex",
+              "match"
+            ],
+            "default": "exact"
+          },
+          "url": {
+            "type": "string",
+            "title": "Redirect URL",
+            "description": "The URL to return for the redirect. For 'regex' match types, the URL can contain %s characters which will get populated by the regex capture groups. If your URL contains a literal %, you need to use two of them instead of one (%%)"
+          }
+        }
+      }
+    }
+  },
+  "category": "Results Relevancy",
+  "categoryPriority": 5
+}

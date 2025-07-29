@@ -1,0 +1,166 @@
+---
+title: "Fusion Server 4.2.1 Release Notes"
+permalink: "92"
+---
+
+**Release date:** 5 April 2019
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.5 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.12.v20180830 | Ignite 2.6.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+No new features were introduced in this release.
+
+## Improvements
+
+* The Users page (**System** > **Access Control** > **Users**) now displays the security realm to which each user is assigned.
+
+* SharePoint and SharePoint Online connector improvements:
+
+    + The SharePoint and SharePoint Online connectors now delete indexed documents after they are deleted from the SharePoint source.
+    + The SharePoint connector now retries document fetches after network errors.
+
+* Addressed an issue with fetching and indexing of Sharepoint list item attachments.
+* Addressed an issue with running the Sharepoint connector without an associated parser configuration.
+* Addressed an incremental crawl scenario for deleted sites.
+
+    + Confluence connector improvements:
+* Fixed an issue with the handling of Confluence 5.6 archive API endpoint.
+* Added security trimming support for the Confluence connector "confluence-administrators" group.
+* Fixed an issue with incremental ACL updates for changes with `_lw_confluence_anonymous` permission setting.
+
+* The HTML parser now parses documents whose `Mime-Type` value does not *exactly* match `text/html`, such as `text/html; charset=utf-8` and so on. This allows it to parse `.aspx` pages from SharePoint datasources, for example.
+
+* The Windows Share connector now retrieves document owner metadata.
+
+* For connectors that use the **Crawl database type**/`crawlDBType` parameter, the default value is now `on-disk` instead of `in-memory` in order to support larger crawls by default.
+
+* Addressed an issue with persisting proxy settings during Javascript evaluation in the Web connector.
+
+* Addressed an incremental update issue due to unnecessary serialization of the ID field in the MongoDB connector.
+
+* Updated the Zendesk connector to use `RequestEntityProcessing.BUFFERED` instead of `.CHUNKED` to avoid a documented [Jersey issue](https://github.com/eclipse-ee4j/jersey/issues/3629).
+* DevOps Center improvements:
+
+    + In the Log Viewer, exported data is now constrained by all selected filters in addition to the time range selector.
+    + The time range selector in the Log Viewer now behaves more consistently.
+    + Fixed some issues with filtering in the Hosts tab and the Log Viewer.
+    + In the Log Viewer, log messages whose level is DEBUG are now distinguished by an icon for consistency with other log levels.
+
+* The size of the `system_logs` collection was significantly reduced by changing the log level for `marking user.sessions meter` to `DEBUG`.
+
+* You can now use the query pipeline to set the status code for Fusion’s response.
+
+* [SQL service](/fusion-server/4.2/192/fusion-sql-query-and-analytics#key-features) improvements:
+
+    + Fusion’s SQL service now supports non-phrase predicates.
+    + Results can now be sorted by the score of the underlying Solr query.
+    + [Random sampling](/fusion-server/4.2/192/fusion-sql-query-and-analytics#sampling-and-statistics) is now supported.
+    + The service now provides more consistent performant results from unlimited selects.
+    + Fixed an issue in 4.2.0 which cause unlimited "group by" aggregations to use a bucket size limit of 1.
+
+* Fusion now captures the same metrics about the `connectors-rpc` services as it does about the `connectors-classic` service.
+* A variety of minor UI issues were fixed.
+
+## Other changes
+
+* FS (V2) connector saves Item metadata in Crawldb. recrawls work as expected (the new/delete/update items will be picked up) - On migrations, it is suggested to clear the datasource and start with a new crawl, but it is not required.
+
+* Now when you upload a `.war` file to the App Studio interface, the **View Published UI** button remains available, resolving a known issue in 4.2.0.
+
+* Logging out using Chrome version 73.0.3683.75 no longer causes an infinite loop; this resolves a known issue in 4.2.0.
+
+* You can now re-install a connector using the same ID but a different filename than the original.
+
+* Several bug fixes resolve issues with ACL metadata using the Confluence connector.
+
+* Better permissions checks when importing jobs and blobs.
+
+* When [adding support for business rules to migrated apps](/how-to/827/upgrade-fusion-server-3-1-x-to-4-2-y), it is no longer necessary to specify the `app.id`; it is inferred automatically from the current app context.
+
+* Exporting an app with `deep=false` now exports only the app definition without the linked objects.
+
+* Fixed an issue which sometimes prevented "chained" jobs from firing, that is, jobs that are triggered by the success or failure of another job.
+
+* Fixed an issue that prevented users from disabling the **Asynchronous Execution Config**/`asyncConfig` option in some pipeline stages.
+
+* In the Solr Query pipeline stage, configuring one or more `requestHandlers` now blocks usage of the `select` request handler. To configure usage of multiple request handlers *including* `select`, add `select` to your `requestHandlers`.
+
+* Fixed an issue which prevented the parsing of paths containing backslashes in `fusion.properties` on Windows.
+
+* Fixed an issue when using the default `init/systemd/install.sh` systemd service which cause all Fusion services to fail when one service failed. To avoid this issue, use `/opt/fusion/4.2.1/init/systemd/install-services.sh` instead; see the instructions at `fusion/4.2.1/packaging/init/systemd/README`.
+
+* Fixed an issue which caused intermittent Zendesk connector failures with a `ConnectionClosedException: Premature end of chunk coded message body: closing chunk expected` message.
+
+## Known issues
+
+* When under load, the Fusion proxy service can occasionally become stuck, causing user authentication to fail. This is the result of the proxy `InputStream` failing to close properly.
+
+    An upgrade to Fusion 4.2.4 is required to fix this issue. See [Upgrade Fusion](/how-to/710/upgrade-fusion-server-4-2-x-to-4-2-y).
+* The Zendesk connector will fail occasionally when fetching content, due to a known HTTP client library issue.
+
+* While indexing a SharePoint load test environment, some documents may be skipped due to an immense term error caused by a lengthy value in the `signature_s` field.
+
+* The Spark Driver may run on restricted API nodes despite its access being forbidden by setting the `DrunSparkDriver` field to `False`.
+
+* Jobs in the Query Workbench’s Recommender do not include associated Recommendation collections.
+
+* The Query Workbench’s Text Tagger is not working with the spell correction collection as expected.
+
+* Attempting to import the SharePoint connector object results in a validation error.
+
+* When using the Tika parser with "Add original document content (raw bytes)" enabled, the resulting Base64 string contains too many bytes. This causes distortion of the data.
+
+* The v2 connector reduces a multivalued field to a single value.
+
+* The Google Drive Connector is not permitting users with the appropriate permissions to access data.
+
+* While using the Google Drive Connector, duplicate document records are being produced for each user that has access to the folder and its items.
+
+* User access to group rules are not being appropriately restricted by the values in the `rules-<group name>` field.
+
+* When searching the DevOps center for messages by a specific logger class, a partial class name does not return results. The full class name must be used.
+
+    For example, searching for "JmxServiceInstanceMetricReporter" will not return results. Users must search the full class name, "apollo.metrics.JmxServiceInstanceMetricReporter".
+
+* Basic select SQL queries on `{collection}_signals`, `{collection}_query_rewrite`, `{collection}_query_rewrite_staging` fail unless an ORDER BY clause is included.
+
+* Spark jobs are not appearing in Job History until after the job is completed.
+
+* The `error.log` and `output.log` files are being written to the `var/api/work` path instead of `var/log/api`.
+
+* When building a new UI in Fusion App Studio, the `Last Published Date` field contains a date and time value, despite the UI being unpublished. This value does not change when the new UI is published.
+
+    This is only known to affect users of Windows 10.
+
+* If a connector is deleted while the `connectors-rpc` service is stopped, the `connectors-rpc` service will fail to start.
+
+* Setting the `Maximum Output Count` value does not stop the crawl process from continuing.
+
+* The Job History tab in the [Scheduler](/fusion-server/4.2/184/jobs-overview#the-scheduler) will occasionally list the start and end time as identical values despite having a duration greater than 0 seconds.
+
+* Recently created jobs are not immediately available in [the Scheduler](/fusion-server/4.2/184/jobs-overview#the-scheduler).
+
+* When Minimum Matching (`mm`) is applied to a synonym expansion, both parts of the synonym pair are required to produce query results.
+
+* The status indicator for services listed in the [Cluster dashboard](/fusion-server/4.2/130/the-dev-ops-center#cluster-dashboard) may not update properly.
+
+    This is only known to affect users of Windows 10 and Internet Explorer 11.
+
+* The number of collections displayed in the [Cluster dashboard](/fusion-server/4.2/130/the-dev-ops-center#cluster-dashboard) may not reflect the actual number of collections.
+
+    This is only known to affect users of Windows 10 and Internet Explorer 11.
+
+* In some cases, recently updated items in the [Service Logs](/fusion-server/4.2/130/the-dev-ops-center#the-log-viewer) table will not appear.
+
+* For Windows 10 users, the [Access Logs](/fusion-server/4.2/130/the-dev-ops-center#access-logs) section of the DevOps Center does not display all request types, including `GET`, `PUT`, etc. Additionally, values may be missing from some columns in the log table.
+
+* Non-administrator users are being granted the ability to delete index and query pipelines, despite not having the appropriate permissions.
+
+* While creating a new rule in Fusion UI, some options may no appear due to the width restrictions of the page.

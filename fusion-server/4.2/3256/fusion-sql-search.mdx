@@ -1,0 +1,81 @@
+---
+title: "Fusion SQL Search"
+permalink: "3256"
+---
+
+## Scoring
+
+The WHERE and ORDER BY clauses can be used to search and sort results using the underlying search engine. The
+**score** (lower case) keyword can be used to sort by the relevance score of a full text query.
+
+An example of a query that uses the **score** keyword is below:
+
+```sql
+select id, title, score from books where abstract = 'hello world' order by score desc
+```
+
+## Searching
+
+Search predicates are specified in the WHERE clause. Search predicates on text fields will perform full text searches.
+Search predicates on string fields will perform exact matches unless the LIKE expression is used.
+
+By default all **multi-term** predicates are sent to the search engine as phrase queries.
+In the example above 'hello world' is searched as a phrase query.
+
+To stop the auto-phrasing of multi-term predicates wrap parenthesis around the terms. For example:
+
+```sql
+select id, title, score from books where abstract = '(hello world)' order by score desc
+```
+
+In the example above the '(hello world)' search predicate will be sent to the search engine without phrasing and perform
+the query **hello OR world**
+
+When parenthesis are used the search expression is sent to Solr unchanged. This allows for richer search predicates such as
+proximity search.
+
+The example below performs a proximity search:
+
+```sql
+select id, title, score from books where abstract = '("hello world"~4)' order by score desc
+```
+
+Lucene/Solr wildcards can be sent to the search engine directly using this syntax:
+
+```sql
+select id, title from books where abstract = '(he?lo)'
+```
+
+The LIKE clause can be used to perform wildcard searches with either the Solr wildcard symbol * or the SQL wildcard symbol %.
+
+When using the traditional SQL % wildcard only leading and trailing wildcards are supported. Use Lucene/Solr wildcards
+as described above for more complex wildcards.
+
+The example below shows a LIKE query with a trailing % wildcard.
+
+```sql
+select id, title from books where abstract like 'worl%'
+```
+
+The following operators are supported for numeric and datetime predicates: \<, >, >=, \<=, =, !=.
+
+Both the IN and BETWEEN clauses can be used to specify predicates.
+
+Boolean predicates can be used and are translated to boolean search queries.
+
+The example below specifies a boolean query:
+
+```sql
+select id from products where prod_desc = 'bike' and price < 125 order by price asc
+```
+
+## Sorting
+
+Numeric, datetime and string fields can be sorted on using the ORDER BY clause. The sort is pushed down to the search
+engine for optimal performance. Multiple sorts can be specified using the standard SQL sytnax.
+
+The example below sorts on a numeric field:
+
+```sql
+select id, prod_name, price_f from products where prod_desc = 'bike' order by price_f desc
+```

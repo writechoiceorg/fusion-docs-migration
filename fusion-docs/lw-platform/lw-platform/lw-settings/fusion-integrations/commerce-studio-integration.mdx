@@ -1,0 +1,198 @@
+---
+title: "Commerce Studio integration with Fusion"
+description: "Lucidworks Platform"
+permalink: "zpqyc5"
+---
+
+This type of Fusion integration lets you connect self-hosted Fusion instances to Lucidworks Commerce Studio.
+
+If you want to migrate from Predictive Merchandiser to Commerce Studio, the information in this topic is used in coordination with the procedures described in [Migration guide from Predictive Merchandiser to Commerce Studio](/lw-platform/cs/bpsf27/migration-guide).
+
+You must satisfy the [prerequisites](#prerequisites) and complete all of the procedures in the order described in this topic to implement Lucidworks Commerce Studio:
+
+1. [Create a Commerce Studio integration with Fusion](#create-a-commerce-studio-integration-with-fusion)
+2. [Create Fusion user accounts required for Commerce Studio](#create-fusion-user-accounts-required-for-commerce-studio)
+3. [Create a Fusion security JWT realm for Commerce Studio](#create-a-fusion-security-jwt-realm-for-commerce-studio)
+4. [Create the lwp service account in the JWT realm](#create-the-lwp-service-account-in-the-jwt-realm)
+5. [Verify Commerce Studio integration with Fusion](#verify-commerce-studio-integration-with-fusion)
+6. [Create a Commerce Studio instance](#create-a-commerce-studio-instance)
+
+<Tip>
+
+This topic is specific to integrating Lucidworks Platform with Fusion for the use of Commerce Studio.
+
+* To configure a general integration for Lucidworks Platform with Fusion, follow the procedures in [Fusion integrations](/lw-platform/platform/04gi1q/fusion-integrations).
+* To configure an integration that uses the Lucidworks Configuration Promotion tool, follow the procedures in the [Configuration Promotion tool integration with Fusion](/lw-platform/platform/qjns2v/configuration-promotion-integration) topic.
+* To configure a self-hosted Fusion integration with Lucidworks AI, follow the procedures in [Lucidworks AI integrations](/lw-platform/platform/mdlec0/lucidworks-ai-integrations).
+
+</Tip>
+
+
+
+## Prerequisites
+
+To create an integration, you must have the following prerequisites in place:
+
+* Admin privileges to a self-hosted Fusion environment running Fusion 5.9.8 or later.
+* A Fusion application that contains usable data.
+* Workspace Owner permissions in a Lucidworks Platform environment.
+* Privileges to access and use Lucidworks Commerce Studio in a Lucidworks platform workspace.
+
+## 1. Create a Commerce Studio integration with Fusion
+
+Complete the following procedures to create an integration from Lucidworks Commerce Studio to Fusion.
+
+1. Sign into [Lucidworks Platform](https://platform.lucidworks.com) as a workspace owner.
+2. Navigate to **Settings > Fusion Integrations** and click **Connect New Fusion**.
+3. In the **Name** field, enter a unique name for the integration. For example, `Lucidworks Demo Dev`.
+4. In the **API URL** field, enter the URL of your Fusion instance. For example, `https://FUSION_INSTANCE.com`. Do not enter a path after `.com`.
+5. In the **Environment** field, select the Fusion instance environment or use the default of **Development**.
+6. Optional: Enter one or more descriptive **Tags** that differentiate multiple integrations.
+
+   <Frame>![Connect New Fusion integration](/assets/images/lw-platform/integrations/lw-platform-integrations-connect-new-fusion.png)</Frame>
+7. Do not enter values in any of the fields in the **GitHub** section. Values in these fields are only required to set up the [Configuration Promotion tool integration with Fusion](/lw-platform/platform/qjns2v/configuration-promotion-integration).
+8. Click **Add**. If the value in the **API URL** field is:
+
+   * Not valid, the integration is not created, and it is not displayed on the Fusion Integrations screen.
+   * Valid, the Instructions to Connect with Fusion screen displays:
+
+     <Frame>![Connect with Fusion](/assets/images/lw-platform/integrations/lw-platform-integrations-connect-jwt-values.png)</Frame>
+9. Copy both the **JWK Set URL** value and the **Issuer URL** value to a secure location. These values must be used to create the JWT realm.
+10. Click **Close**.
+11. Verify the new integration displays on the Fusion Integrations screen.
+
+<Note>
+To edit the integration, hold the pointer over the integration, click the pencil icon, enter the changes, and click **Save**. To delete the integration, hold the pointer over the integration and click the trash can icon.
+</Note>
+
+
+
+## 2. Create Fusion roles required for Commerce Studio
+
+1. Sign in to your Fusion instance as an admin and click the Fusion application to connect with Commerce Studio.
+2. Navigate to **System > Access Control > Roles** and click **Add Role**.
+3. In the **Name** field, enter `lwp_user`.
+4. In the **Permissions** field, enter:
+
+   ```
+   GET,PUT,DELETE,POST,HEAD:/query/experience-manager/**
+   GET,POST:/query/*
+   POST:/query/*/preview
+   GET:/suggestions/**
+   GET:/solr/*/terms
+   PUT,POST,GET:/apps/*/query-pipelines/**
+   GET:/apps/*/query-profiles/**
+   GET,PUT:/apps/*
+   GET:/solr/*/admin/luke
+   
+```
+
+   This role does not require any UI permissions, so you do not have to select any values in the **UI Permissions** field.
+5. In the **Description** field, enter role information. For example, "The lwp_user account is required to access and use Commerce Studio. It is a super user account, but does not include the ability to get, modify, or delete the `HEAD` section of the site."
+6. Click **Save**.
+7. Click **Add Role**.
+8. In the **Name** field, enter `lwp_service_account`.
+9. In the **Permissions** field, enter the following permissions. These permissions include all of the lwp_user account permissions plus the privileges to migrate Fusion Predictive Merchandiser rewrites, rules, templates and zones.
+
+   ```
+   GET,PUT,DELETE,POST,HEAD:/query/experience-manager/**
+   GET,POST:/query/*
+   POST:/query/*/preview
+   GET:/suggestions/**
+   GET:/solr/*/terms
+   PUT,POST,GET:/apps/*/query-pipelines/**
+   GET:/apps/*/query-profiles/**
+   GET,PUT:/apps/*
+   GET,DELETE,PATCH,PUT,POST,HEAD:/apps/*/query-rewrite/**
+   GET,HEAD:/templating/**
+   GET:/solr/*/admin/luke
+   
+```
+
+   This role does not require any UI permissions, so you do not have to select any values in the **UI Permissions** field.
+10. In the **Description** field, enter role information. For example, "The lwp_service_account contains all of the lwp_user permissions as well as the privileges to migrate Fusion Predictive Merchandiser components to Lucidworks Commerce Studio."
+11. Click **Save**.
+
+<Tip>
+**Important**
+
+The PUT,POST,GET:/apps/**/query-pipelines/*** permission reflects the requirement to assign all necessary query pipeline permissions to the `lwp_user` and `lwp_service_account` roles. An additional example is for [Lucidworks AI](/how-to/y6euxl/configure-a-lucidworks-ai-gateway-integration), where you need to assign `POST:/your-account-name/`.
+</Tip>
+
+
+
+## 3. Create a Fusion security JWT realm for Commerce Studio
+
+1. Sign in to your Fusion instance as an admin and click the application in which you created the `lwp_user` and `lwp_service_account` accounts to use with Commerce Studio.
+2. Navigate to **System > Access Control > Security Realms** and click **Add Security Realm**.
+3. In the **Name** field, enter a unique connection name. For example, **Lucidworks Commerce Studio JWT realm**.
+4. In the **Type** field, select **jwt**.
+5. Set the checkboxes in the following configuration.
+
+   * Select the **Enabled** checkbox.
+   * Do not select the **Ephemeral Users** checkbox.
+   * Select the **Auto-Create Users** checkbox.
+6. In the **Roles** field, select `lwp_user`.
+7. In the **JWT Issuer** field, paste the **Issuer URL** value generated in the [Create a Commerce Studio integration with Fusion](#create-a-commerce-studio-integration-with-fusion) procedure.
+8. In the **JWK Set URL** field, paste the **JWKS URL** value generated in the [Create a Commerce Studio integration with Fusion](#create-a-commerce-studio-integration-with-fusion) procedure.
+9. Do not enter values (default is blank) in any of the following fields:
+
+   * **Signing Key**
+   * **Groups Key**
+   * **Groups Mapping**
+   * **User ID Attribute**
+10. Click **Save**.
+
+<Note>
+Self-hosted Fusion clients can also view the integration `ID`, `Issuer URL`, `JWKS URL`, and other integration details in **Settings > Fusion Integrations** when the existing integration is selected. For general information, see [Lucidworks Platform integration with Fusion](/lw-platform/platform/04gi1q/fusion-integrations#verify-the-integration). Integrations for Managed Fusion clients are created and updated by Lucidworks.
+</Note>
+
+
+
+## 4. Create the lwp service account user in the JWT realm
+
+1. Sign in to your Fusion instance as an admin and click the application to be connected with Commerce Studio.
+2. Navigate to **System > Access Control > Users** and click **Add User**.
+3. In the **Realm** field, select the JWT realm you created in the [Create a Fusion security JWT realm for Commerce Studio](#create-a-fusion-security-jwt-realm-for-commerce-studio).
+4. In the **Username** field, enter `lwp-service-account`, then enter a unique **Password** and re-enter it in the **Confirm Password** field.
+5. In the **Roles** field, select the `lwp_service_account` role.
+6. In the **Timezone** field, select the appropriate timezone for the user account.
+7. Click **Create**.
+
+## 5. Verify Commerce Studio integration with Fusion
+
+When the Fusion security JWT realm is created, complete the following steps to verify the Fusion information is displayed.
+
+1. Sign into [Lucidworks Platform](https://platform.lucidworks.com) as a workspace owner.
+2. Navigate to **Settings > Fusion Integrations**.
+3. Hold the pointer over the integration and click the pencil icon.
+4. Verify the information is accurate.
+
+   <Note>
+   The information in the Instructions section must match the values in the **Additional URLs JWKS URL** and **Issuer URL** fields.
+   </Note>
+
+
+
+## 6. Create a Commerce Studio instance using the UI
+
+<Warning>
+**Caution**
+Do not create a Commerce Studio instance using the UI if you are migrating data from Predictive Merchandiser into that Commerce Studio instance. Instead, you must create the [instance using the API](/lw-platform/cs/bpsf27/migration-guide#create-a-commerce-studio-instance-using-the-api).
+</Warning>
+
+
+
+1. Sign in to [Lucidworks Platform](https://platform.lucidworks.com) as a workspace owner.
+2. Navigate to **Commerce Studio** and click **Create New**.
+3. In the **Name** field, enter a unique name for the Commerce Studio instance.
+4. In the **Region** field, select the geographic region for the Commerce Studio instance. This cannot be changed after the instance is created.
+5. In the **Fusion to Connect** field, select the Fusion integration instance that matches the **Name** field created in the [Create a Commerce Studio integration with Fusion](#create-a-commerce-studio-integration-with-fusion) procedure.
+6. Optional: In the **Signal Store** field, select the location where the Commerce Studio signals are stored. This value is only required if you want to use Lucidworks Analytics.
+7. In the **Fusion Application** field, enter Lucidworks Platform application that connects to your Fusion instance.
+8. Click **Next** to confirm settings, and then **Next** to create the instance.
+
+<Note>
+Data from the Fusion app is sent to Commerce Studio so you can create rules and refine the search experience. You can only connect one instance of Commerce Studio to a Fusion app. You cannot create multiple instances of Commerce Studio using the same Fusion app.
+</Note>
+

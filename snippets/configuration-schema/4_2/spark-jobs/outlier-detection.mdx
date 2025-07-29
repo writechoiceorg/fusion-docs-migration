@@ -1,0 +1,303 @@
+export const schema = {
+  "type": "object",
+  "title": "Outlier Detection",
+  "description": "Use this job when you want to find outliers from a set of documents and attach labels for each outlier group.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "uidField",
+    "outputCollection",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training Collection",
+      "description": "Solr Collection containing documents to be clustered",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Field to Vectorize",
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training data filter query",
+      "description": "Solr query to use when loading training data",
+      "default": "*:*",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to store model-labeled data to",
+      "minLength": 1
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modelId": {
+      "type": "string",
+      "title": "Model ID",
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "outlierGroupIdField": {
+      "type": "string",
+      "title": "Output Field Name for Outlier Group Id",
+      "description": "Output field name for unique outlier group id.",
+      "default": "outlier_group_id"
+    },
+    "outlierGroupLabelField": {
+      "type": "string",
+      "title": "Top Unique Terms Field Name",
+      "description": "Output field name for top frequent terms that are (mostly) unique for each outlier group as computed based on TF-IDF and group Id.",
+      "default": "outlier_group_label"
+    },
+    "outputOutliersOnly": {
+      "type": "boolean",
+      "title": "Only save outliers?",
+      "description": "If true, only outliers are saved in the output collection, otherwise, the whole dataset is saved.",
+      "default": false
+    },
+    "uidField": {
+      "type": "string",
+      "title": "ID Field Name",
+      "description": " Field containing the unique ID for each document.",
+      "default": "id",
+      "minLength": 1
+    },
+    "analyzerConfig": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "minLength": 1
+    },
+    "freqTermField": {
+      "type": "string",
+      "title": "Top Frequent Terms Field Name",
+      "description": "Output field name for top frequent terms in each cluster. These may overlap with other clusters.",
+      "default": "freq_terms"
+    },
+    "distToCenterField": {
+      "type": "string",
+      "title": "Output Field Name for doc distance to its cluster center",
+      "description": "Output field name for doc distance to its corresponding cluster center (measure how representative the doc is).",
+      "default": "dist_to_center"
+    },
+    "norm": {
+      "type": "integer",
+      "title": "Vector normalization",
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "default": 2,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "minDF": {
+      "type": "number",
+      "title": "Min Doc Support",
+      "description": "Min number of documents the term has to show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "default": 5
+    },
+    "maxDF": {
+      "type": "number",
+      "title": "Max Doc Support",
+      "description": "Max number of documents the term can show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "default": 0.75
+    },
+    "numKeywordsPerLabel": {
+      "type": "integer",
+      "title": "Number of Keywords for Each Cluster",
+      "description": "Number of Keywords needed for labeling each cluster.",
+      "default": 5
+    },
+    "outlierK": {
+      "type": "integer",
+      "title": "Number of outlier groups",
+      "description": "Number of clusters to help find outliers.",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outlierThreshold": {
+      "type": "number",
+      "title": "Outlier cutoff",
+      "description": "Identify as outlier group if less than this percent of total documents. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "default": 0.01,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "outlier_detection"
+      ],
+      "default": "outlier_detection",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed",
+        "outputOutliersOnly"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "uidField",
+        "outlierGroupIdField",
+        "outlierGroupLabelField",
+        "freqTermField",
+        "distToCenterField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "outlierK",
+        "outlierThreshold",
+        "maxDF",
+        "minDF",
+        "norm",
+        "numKeywordsPerLabel"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ]
+}

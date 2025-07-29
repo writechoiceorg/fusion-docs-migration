@@ -1,0 +1,17 @@
+---
+title: "Query-Document Vectors Distance Query Stage"
+permalink: "257"
+---
+
+Compute the distance between a query vector and each candidate document vector. It should be added after the [Solr Query stage](/fusion-server/4.2/265/solr-query-stage).
+
+This stage is used in the [default query pipeline](/fusion-ai/4.2/461/smart-answers) that enables [Smart Answers](/how-to/684/faq-solution-part-2#default-pipelines). See [Detailed Pipeline Setup](/fusion-ai/4.2/509/smart-answers-detailed-pipeline-setup) for configuration guidelines.
+
+This stage requires a [Fusion AI](/fusion-ai/4.2/428/fusion-ai) license.
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/qna-query-document-vectors-distance.mdx";
+
+<SchemaParamFields schema={schema}/>

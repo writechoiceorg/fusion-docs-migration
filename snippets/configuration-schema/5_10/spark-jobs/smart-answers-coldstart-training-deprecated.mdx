@@ -1,0 +1,373 @@
+export const schema = {
+  "type": "object",
+  "title": "Smart Answers Coldstart Training",
+  "description": "Trains Smart Answers model on a cold start (unsupervised) basis with with pre-trained or trained embeddings and deploys the trained model to the ML Model Service",
+  "required": [
+    "id",
+    "trainingCollection",
+    "trainingFormat",
+    "textColName",
+    "deployModelName",
+    "modelBase",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Training data path",
+      "description": "Solr collection or cloud storage path where training data is present.",
+      "minLength": 1
+    },
+    "trainingFormat": {
+      "type": "string",
+      "title": "Training data format",
+      "description": "The format of the training data - solr, parquet etc.",
+      "default": "solr",
+      "minLength": 1
+    },
+    "secretName": {
+      "type": "string",
+      "title": "Cloud storage secret name",
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "textColName": {
+      "type": "string",
+      "title": "Field which contains the content documents",
+      "description": "Field which contains the documents that will be used to learn about the vocabulary. If multiple fields, please separate them by comma, e.g. question,answer."
+    },
+    "deployModelName": {
+      "type": "string",
+      "title": "Model Deployment Name",
+      "description": "Name of the model to be used for deployment (must be a valid lowercased DNS subdomain with no underscores).",
+      "maxLength": 30,
+      "pattern": "^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*$"
+    },
+    "modelBase": {
+      "type": "string",
+      "title": "Model base",
+      "description": "Specify one of these custom embeddings: ['word_custom', 'bpe_custom'] or choose one of the included pre-trained embeddings / models.",
+      "enum": [
+        "word_custom",
+        "bpe_custom",
+        "word_en_300d_2M",
+        "bpe_en_300d_10K",
+        "bpe_en_300d_200K",
+        "bpe_ja_300d_100K",
+        "bpe_ko_300d_100K",
+        "bpe_zh_300d_50K",
+        "bpe_multi_300d_320K",
+        "distilbert_en",
+        "distilbert_multi",
+        "biobert_v1.1"
+      ],
+      "default": "word_en_300d_2M"
+    },
+    "testMode": {
+      "type": "boolean",
+      "title": "Test Mode",
+      "description": "If set to true, then the training will exit after the first iteration. Useful for ensuring that the end-to-end pipeline is working",
+      "default": false,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "modelReplicas": {
+      "type": "integer",
+      "title": "Model replicas",
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "default": 1
+    },
+    "w2vEpochs": {
+      "type": "integer",
+      "title": "Word2Vec training epochs",
+      "description": "Number of epochs to train custom Word2Vec embeddings",
+      "default": 15,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vVectorSize": {
+      "type": "integer",
+      "title": "Size of word vectors",
+      "description": "Word-vector dimensionality to represent text (suggested dimension ranges: 100~300)",
+      "default": 150,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "w2vWindowSize": {
+      "type": "integer",
+      "title": "Word2Vec window size",
+      "description": "The window size (context words from [-window, window]) for Word2Vec",
+      "default": 8,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingSampleFraction": {
+      "type": "number",
+      "title": "Training Data Sampling Fraction",
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1. Leave blank for no sampling",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "seed": {
+      "type": "integer",
+      "title": "Seed",
+      "description": "Random seed for sampling",
+      "default": 12345,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "minTokensNum": {
+      "type": "integer",
+      "title": "Minimum number of words in doc",
+      "description": "Drop document if the total words is lower than this value",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "maxTokensNum": {
+      "type": "integer",
+      "title": "Maximum number of words in doc",
+      "description": "Drop document if the total words is greater than this value",
+      "default": 5000,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "lowerCases": {
+      "type": "boolean",
+      "title": "Lower case all words",
+      "description": "Whether to lower case all words in training, i.e. whether to treat upper case and lower case words equally. Only utilized for custom embeddings or for the default model base: word_en_300d_2M.",
+      "default": true
+    },
+    "maxVocabSize": {
+      "type": "integer",
+      "title": "Maximum vocabulary size",
+      "description": "Maximum number of words in vocabulary, words will be trimmed if frequency is too low",
+      "default": 100000,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "exclusiveMinimum": false
+    },
+    "extraTrainingArgs": {
+      "type": "string",
+      "title": "Extra training args for Python scripts",
+      "description": "Add any additional arguments for the Python training scripts in this field",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "maxLen": {
+      "type": "integer",
+      "title": "Max Length",
+      "description": "Max length of question/answer by number of tokens"
+    },
+    "infBatch": {
+      "type": "integer",
+      "title": "Inference batch size",
+      "description": "The batch size used for encoding during the training",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "numClusters": {
+      "type": "integer",
+      "title": "Number of clusters",
+      "description": "DEPRECATED: please, consider using Milvus for fast dense vector similarity search. Number of clusters to be used for fast dense vector retrieval. Note no clustering will be applied if this is set to 0. If left blank, cluster count will be inferred by the job depending on the data",
+      "default": 0,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "topKClusters": {
+      "type": "integer",
+      "title": "Top k of clusters to return",
+      "description": "How many closest clusters the model can find for each query. At retrieval time, all answers in top k nearest clusters will be returned and reranked",
+      "default": 10,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "unidecode": {
+      "type": "boolean",
+      "title": "Apply unicode decoding",
+      "description": "Use Unidecode library to transform Unicode input into ASCII transliterations. Only utilized for custom embeddings or for the default model base: word_en_300d_2M",
+      "default": true
+    },
+    "globalPoolType": {
+      "type": "string",
+      "title": "Global Pool Type",
+      "description": "Determines how token vectors should be aggregated to obtain final content vector. Must be one of: [avg, max].",
+      "enum": [
+        "avg",
+        "max"
+      ],
+      "default": "avg",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-qna-coldstart"
+      ],
+      "default": "argo-qna-coldstart",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingFormat",
+        "textColName",
+        "deployModelName",
+        "modelReplicas",
+        "secretName",
+        "testMode"
+      ]
+    },
+    {
+      "label": "Data Preprocessing",
+      "properties": [
+        "trainingDataFilterQuery",
+        "trainingSampleFraction",
+        "seed",
+        "minTokensNum",
+        "maxTokensNum",
+        "lowerCases",
+        "unidecode",
+        "maxVocabSize"
+      ]
+    },
+    {
+      "label": "Custom Embeddings Initialization",
+      "properties": [
+        "w2vEpochs",
+        "w2vVectorSize",
+        "w2vWindowSize"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "maxLen",
+        "infBatch",
+        "numClusters",
+        "topKClusters",
+        "globalPoolType"
+      ]
+    }
+  ]
+}

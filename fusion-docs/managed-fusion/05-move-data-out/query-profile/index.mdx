@@ -1,0 +1,58 @@
+---
+title: "Query profiles"
+permalink: "qsrh89"
+---
+
+Query profiles let you consistently point your search application at a static endpoint, but give you the flexibility to change the actual query pipeline being used (and optionally, the collection and/or configuration parameters for the query pipeline).
+
+For example, an e-commerce site might want to create a query pipeline to support a month-long promotion. After the query pipeline is configured, it can be easily enabled by changing the query profile in use by the front-end application to use the new pipeline.
+
+To run a query through a query profile, use the REST API as described below. For CRUD operations, you can use either the REST API or the Managed Fusion UI.
+
+## Rules Simulator query profile
+
+<Note>
+**Important**
+
+Rules Simulator is only available for Managed Fusion organizations that do *not* have a valid Predictive Merchandiser or Experience Optimizer license.
+</Note>
+
+The [Rules Simulator](/fusion-ai/4.2/484/simulator) allows product owners to experiment with rules and other query rewrites in the `COLLECTION_NAME_query_rewrite_staging` collection before deploying them to the `COLLECTION_NAME_query_rewrite` collection.
+
+Each app has a `COLLECTION_NAME_rules_simulator` query profile, configured to use the `COLLECTION_NAME_query_rewrite_staging` collection for query rewrites instead of the `COLLECTION_NAME_query_rewrite` collection. This profile is created automatically whenever a new app is created.
+
+See [Configure the Rules Simulator Query Profile](/how-to/r93mff/configure-the-rules-simulator-query-profile) for more information about configuration.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Index and Query Profiles** focuses on how index and query profiles operate, and how to configure and manage them:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/index-and-query-profiles" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/index-and-query-profiles.jpeg" alt="Index and Query Profiles" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Query profiles in the REST API
+
+* [Query Profiles API](/managed-fusion/5.9/cym2qh/query-profiles-api) (`/query-profiles`)
+
+  Create, read, update, and delete query profiles.
+* [Query API](/managed-fusion/5.9/eqky5t/query-api) (`/query`)
+
+  Run a query through a query profile by specifying the profile ID and appending the request with a [Solr query string](/managed-fusion/5.9/b4lyep/solr-query-language-cheat-sheet), as in `/api/query/<id>?<solrQuery>`.
+
+## Query profiles in the UI
+
+To configure query profiles, click **Querying** > **Query Profiles**.

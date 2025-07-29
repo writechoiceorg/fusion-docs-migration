@@ -1,0 +1,60 @@
+---
+title: "REST Call"
+description: "Job configuration specifications"
+permalink: "3fbcc6"
+---
+
+A versatile job type that runs an arbitrary REST/HTTP/Solr command.
+
+To create a REST Call job, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** and in the Custom and Other Jobs section, select **REST Call**. You can enter parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+The parameters for this job are:
+
+* **ID.** The user-defined name for this job. This is the `id` field in the configuration file. Required field.
+* **Endpoint URI.** The name or location of the data this job searches. This is the `uri` field in the configuration file. Required field.
+* **Call method.** The operation submitted in the request. Values are GET, POST, PUT, or DELETE. This is the `method` field in the configuration file. Required field.
+* **Query parameters.** This section lets you enter `property name:property value` options submitted in the query. This is the `queryParams` field in the configuration file. Optional field.
+* **Request protocol headers.** This section lets you enter `property name:property value` protocol headers submitted in the query. This is the `headers` field in the configuration file. Optional field.
+* **Request entity.** The request string to submit for the query. This is the `entity` field in the configuration file. Optional field.
+
+## Example configuration
+
+This example configures this type of job to delete your old signals data:
+
+1. Navigate to **Collections** > **Jobs**.
+2. Click **Add** and select **REST Call**.
+
+   The REST Call job configuration panel appears.
+3. Enter an arbitrary ID for this job, such as "Delete-old-signals".
+4. Enter the following endpoint URI, substituting the name of your signals collection for `signalsCollectionName`:
+
+   ```
+   solr://signalsCollectionName/update
+   ```
+
+5. In the **Call Method** field, select "post".
+6. Under **Query Parameters**, enter the property name "wt" with the property value "json".
+7. In the **Request entity (as string)** field, enter the following:
+
+   ```
+   <root><delete><query>timestamp_tdt:[* TO NOW-2WEEKS]</query></delete><commit /></root>
+   ```
+
+   See [Working with Dates](https://solr.apache.org/guide/8_6/working-with-dates.html) for details about date formatting.
+
+   Your job configuration should look similar to this:
+
+   <Frame>![Signals delete job configuration](/assets/images/4.2/signals-delete-job.png)</Frame>
+
+<Tip>
+You can configure a schedule for this job at **System** > **Scheduler**.
+</Tip>
+
+
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/task-jobs/rest-call.mdx";
+
+<SchemaParamFields schema={schema}/>

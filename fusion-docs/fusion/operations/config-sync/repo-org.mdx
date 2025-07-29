@@ -1,0 +1,82 @@
+---
+title: "Repo organization"
+permalink: "a6m3du"
+---
+
+This topic explains what you’ll find in the GitHub repository used by ConfigSync.
+See also [Set up a GitHub repo for ConfigSync](/how-to/config-sync/y7nigg/set-up-a-git-hub-repo-for-config-sync).
+
+## Branch and Path
+
+If you need to share the same GitHub repo for different clusters or environments,
+you can use the `cfg.github.branch` setting to specify the branch in the GitHub repo where the config files are stored.
+
+Additionally (or alternatively) ConfigSync supports a `cfg.github.path` (referred to as `root` in the future)
+setting to specify the path in the GitHub repo where the config files are stored.
+By default, ConfigSync stores the config files in the root of the GitHub repo.
+
+## Apps and Object Types
+
+Under the `root` directory, there is a directory for each app, such as `app1`, `app2`.
+Under each app directory, there are directories for each object type, such as `query-pipelines`, `blobs`, etc.
+
+## System Objects
+
+ConfigSync uses `_lw_system` as the app name for system objects.
+This directory is always present in the repo and contains system objects like users, roles, solr configs, etc.
+
+## Reserved Files
+
+Additionally, ConfigSync has set of reserved files in the `root` directory:
+
+* `.lock` - A lock file to prevent concurrent updates
+* `.gitattributes` - Used to list LFS files
+* `.gitignore` - Used to ignore files that should not be stored in the repo
+
+<Tip>
+**Important**
+
+
+These files should not be modified or deleted.
+</Tip>
+
+## Example repo structure
+
+```
+|-- root
+|   |-- _lw_system
+|   |   |-- users
+|   |   |   |-- user1.json
+|   |   |   |-- user2.json
+|   |   |-- roles
+|   |   |   |-- role1.json
+|   |   |   |-- role2.json
+|   |   |-- solr-configs
+|   |   |   |-- config1
+|   |   |   |   |-- solrconfig.xml
+|   |   |   |   |-- managed-schema
+|   |-- app1
+|   |   |-- query-pipelines
+|   |   |   |-- pipeline1.json
+|   |   |   |-- pipeline2.json
+|   |   |-- blobs
+|   |   |   |-- blob1.json
+|   |   |   |-- blob2.json
+|   |-- app2
+|   |   |-- query-pipelines
+|   |   |   |-- pipeline3.json
+|   |   |   |-- pipeline4.json
+|   |   |-- blobs
+|   |   |   |-- blob3.json
+|   |   |   |-- blob4.json
+|-- .lock
+|-- .gitattributes
+|-- .gitignore
+
+```
+
+<Note>
+ConfigSync uses the Fusion links API to determine app association for
+Fusion objects. However, it does not track links in GitHub as it uses
+the directory structure to maintain app association for an object.
+</Note>

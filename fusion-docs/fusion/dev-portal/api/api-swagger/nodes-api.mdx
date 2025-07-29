@@ -1,0 +1,59 @@
+---
+title: "Nodes API"
+description: "Fusion Admin APIs"
+permalink: "345"
+---
+
+The Nodes API lets you check the status of each node in the search cluster.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+*Show each service:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/nodes/up
+
+```
+
+**RESPONSE**
+
+```json
+{
+  "history::v1" : [ "https://FUSION_HOST:8984/connectors/v1/history", "https://FUSION_HOST:FUSION_PORT/api/history" ],
+  "query-pipelines::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/query-pipelines", "https://FUSION_HOST:FUSION_PORT/api/query-pipelines" ],
+  "solrconfig::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/collections//solr-config" ],
+  "solrAdmin::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/solrAdmin", "https://FUSION_HOST:8984/connectors/v1/solrAdmin" ],
+  "stopwords::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/stopwords" ],
+  "collections::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/collections" ],
+  "index-stages::v1" : [ "https://FUSION_HOST:8984/connectors/v1/index-stages", "https://FUSION_HOST:FUSION_PORT/api/index-stages" ],
+  "nodes::v1" : [ "https://FUSION_HOST:8984/connectors/v1/nodes", "https://FUSION_HOST:FUSION_PORT/api/nodes" ],
+  "index-profiles::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/collections//index-profiles", "https://FUSION_HOST:8984/connectors/v1/collections//index-profiles" ],
+  "schema::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/collections//schema" ],
+  "solr::v1" : [ "https://FUSION_HOST:8984/connectors/v1/solr", "https://FUSION_HOST:FUSION_PORT/api/solr" ],
+  "query-stages::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/query-stages" ],
+  "blobs::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/blobs" ],
+  "connectors::v1" : [ "https://FUSION_HOST:8984/connectors/v1/connectors" ],
+  "recommend::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/recommend" ],
+  "configurations::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/configurations", "https://FUSION_HOST:8984/connectors/v1/configurations" ],
+  "system::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/system", "https://FUSION_HOST:8984/connectors/v1/system" ],
+  "index-pipelines::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:8984/connectors/v1/index-pipelines", "https://FUSION_HOST:8984/connectors/v1/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines", "https://FUSION_HOST:FUSION_PORT/api/index-pipelines" ],
+  "query-pipeline-templates::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/pipeline-templates/query" ],
+  "registration::v1" : [ "https://FUSION_HOST:8984/connectors/v1/registration", "https://FUSION_HOST:FUSION_PORT/api/registration" ],
+  "searchLogs::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/searchLogs" ],
+  "scheduler::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/scheduler" ],
+  "aggregator::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/aggregator" ],
+  "query-profiles::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/collections//query-profiles" ],
+  "usage::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/usage", "https://FUSION_HOST:8984/connectors/v1/usage" ],
+  "introspect::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/introspect", "https://FUSION_HOST:8984/connectors/v1/introspect" ],
+  "searchCluster::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/searchCluster", "https://FUSION_HOST:8984/connectors/v1/searchCluster" ],
+  "features::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/features" ],
+  "index-pipeline-templates::v1" : [ "https://FUSION_HOST:8984/connectors/v1/pipeline-templates/index", "https://FUSION_HOST:FUSION_PORT/api/pipeline-templates/index" ],
+  "synonyms::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/synonyms" ],
+  "reports::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/reports" ],
+  "signals::v1" : [ "https://FUSION_HOST:FUSION_PORT/api/signals" ]
+}
+```

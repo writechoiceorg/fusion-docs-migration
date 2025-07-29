@@ -1,0 +1,23 @@
+---
+title: "Visualizations"
+permalink: "3152"
+---
+
+The *chart tag library* is a collection of JSP tags for creating charts to visualize both search results (document result sets) and facets.
+
+## Usage
+
+You can visualize your data using the charts markup language. As an example, let us say you want to plot distinct segments of a search response facet as a chart, with each segment shown in proportion to size of that segment. For this you would add the [Chart Display](/fusion/5.9/3151/displaying-a-chart) tag to your page, passing in a reference to the `twigkit.model.Response` containing the facet you want to plot and specify the facet name and type of chart you want to render. For example:
+
+```xml
+<chart:display response="response" facet-name="current_products" title="Current Products" type="pie"></chart:display>
+```
+
+In some cases, you might want to specify more options for your chart, or provide multiple data series to plot, for example. You do that by opening the `chart:display` tag and providing one or more chart options or tags in the markup body:
+
+```xml
+<chart:display response="response" title="Current Products">
+    <series:facet name="current_products" type="column" title="Current Products"></series:facet>
+    <chart:tooltip header-format="<b>{point.x}</b><br/>" point-format="{series.name}: <b>{point.y}</b><br/>"></chart:tooltip>
+</chart:display>
+```

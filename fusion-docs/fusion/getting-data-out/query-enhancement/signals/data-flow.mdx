@@ -1,0 +1,34 @@
+---
+title: "Signals Data Flow"
+permalink: "467"
+---
+
+This diagram shows the flow of signals data from the search app through Fusion. The numbered steps are explained below.
+
+<Frame>![Signals data flow](/assets/images/4.0/diagrams/signals-flow.png)</Frame>
+
+1. The search app sends a query to a Fusion query pipeline.
+
+   The query request should include a user ID and session query parameter to identify the user.
+2. Optionally, the Fusion query pipeline queries the `COLLECTION_NAME_signals_aggr` collection to get boosts for the main query based on aggregated click data.
+3. The search app also sends a request signal to the Fusion [`/signals` endpoint](/fusion/5.9/549/signals-api).
+
+   The primary intent of a request signal is to capture the raw user query and contextual information about the user’s current activity in the app, such as the user agent and the page where they generated the query. The request signal does not contain any information about the results sent to Solr; it is created before a query is processed.
+4. Once Solr returns the response to Fusion, the SearchLogger component indexes the complete request/response data into the `COLLECTION_NAME_signals` collection as a response signal using the `_signals_ingest` pipeline. Therefore, the response signal captures all results from Fusion as it related to the original query.
+
+   <Note>
+   This is a departure from pre-4.0 versions of Fusion where query impressions were logged in a separate `COLLECTION_NAME_logs` collection. Query activity is no longer indexed into the `_logs` collection. All response signals use the `fusion_query_id` (see below) as the unique document ID in Solr.
+   </Note>
+
+
+5. When the user clicks a link in the search results, the search app sends a click event to the Fusion signals endpoint (which invokes the `_signals_ingest` pipeline behind the scenes).
+
+   The click signal *must* include a field named `fusion_query_id` in the `params` object of the raw click signal. The `fusion_query_id` field is returned in the query response (from step 1) in a response header named `x-fusion-query-id`. This allows Fusion to associate a click signal with the response signal generated in step 4. The `fusion_query_id` is also used by Fusion to associate click signals with [experiments](/fusion/5.9/460/experiments). For experiments to work, each click signal must contain the corresponding `fusion_query_id` that produced the document/item that was clicked.
+6. The `_signals_ingest` pipeline enriches signals before indexing into the `COLLECTION_NAME_signals` collection.
+
+   This enrichment includes field mapping, geolocation resolution, and updating the `has_clicks` flag to "true" on request signals when the first click signal is encountered for a given request using the [Update Related Document index stage](/fusion/5.9/231/update-related-document-stage).
+7. Fusion queries the `COLLECTION_NAME_signals` collection through a Fusion query pipeline to generate query analytics reports from raw signals.
+8. Behind the scenes, the [SQL aggregation](/fusion/5.9/8804/sql-aggregation-jobs) framework aggregates click signals to compute a weight for each query + `doc_id` + filters group.
+
+   The resulting metrics are saved to the `COLLECTION_NAME_signals_aggr` collection to generate boosts on queries to the main collection (step 2 above).
+9. Recommendations also use aggregated documents in the `COLLECTION_NAME_signals_aggr` collection to build a [collaborative filtering-based recommender model](/fusion/5.9/475/methods-for-recommendations-and-boosting).

@@ -1,0 +1,44 @@
+---
+title: "Download Blob"
+permalink: "390"
+---
+
+Fusion accepts large binary objects (blobs) and stores them in Solr. After a blob is uploaded to Fusion, you can download the blob to your local computer, modify it, and then upload it again to Fusion.
+
+Fusion accepts the following types of blobs:
+
+* Analytics catalog
+* Connector plugin
+* File
+* Index stage plugin
+* Managed Javascript (index)
+* Managed Javascript (query)
+* Open NLP model
+* Other
+* Query stage plugin
+* Spark NLP model
+
+For more information, see [Blob storage](/fusion/5.9/153/blob-storage).
+
+To download a blob, sign in to Fusion and click **System > Blobs**. In the left panel, click the existing blob you want to download. When the blob information displays, click **Download**. Then you can open the file on your computer and modify it.
+
+To upload the edited file, open the existing blob and click **Replace Blob** and select the edited file.
+
+The properties of a blob can vary based on the type, but most include these:
+
+* **id.** The unique identifier for the blob.
+* **path.** The URL or location where the blob is stored.
+* **dir.** The directory where the blob is located.
+* **filename.** The filename of the blob.
+* **contentType.** The type of content in the blog. Examples include application/zip, application/json, text/csv, text/plain, and application/java-archive.
+* **size.** The size of the blob.
+* **modifiedTime.** The last date and time the blob was modified in Unix epoch time in a `yyyy-mm-ddThh:mm:ssZ` format.
+* **version.** The version of the blob.
+* **metadata.** Additional data associated with the blob that varies based on the type of blob. Examples include drivers and resource type.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/task-jobs/download-blob.mdx";
+
+<SchemaParamFields schema={schema}/>

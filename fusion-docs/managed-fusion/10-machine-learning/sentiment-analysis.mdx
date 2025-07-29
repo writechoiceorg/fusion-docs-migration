@@ -1,0 +1,58 @@
+---
+title: "Sentiment analysis and prediction"
+permalink: "rn3h18"
+---
+
+One major part of understanding intent is understanding sentiment. Managed Fusion has done the heavy lifting by integrating state-of-the-art, pre-trained sentiment analysis models directly into the platform. Lucidworks makes these models readily available for search developers to embed sentiment scoring into the query and indexing pipelines as stages.
+
+## What are sentiment analysis and sentiment prediction?
+
+Sentiment analysis is the interpretation of queries or content to determine some of their subjective aspects, such as emotions, intentions, opinions, and so on, using machine learning. Sentiment analysis produces a sentiment model that Managed Fusion can use to perform sentiment prediction.
+
+Since stronger sentiments can be positive or negative while a weaker sentiment is more neutral, sentiment analysis uses the positive/negative polarity to measure a sentiment’s strength:
+
+```
+Strongly                Strongly
+Negative    Neutral     Positive
+  -2    -1     0     1     2
+```
+
+For example, a query on a customer support site can express negative emotions, as in "How can I fix this frustrating upgrade problem?" Similarly, a shopper may imply a positive or negative intention to purchase an item, or a positive or negative opinion of that item.
+
+## Intelligent applications with sentiment analysis and prediction
+
+When you assign sentiment values to incoming queries or to documents at indexing time, you can leverage that data to deliver more insight to your business applications. Understanding the intent and sentiment of customers or employees can help determine which information you deliver or how you treat subsequent interactions in the workflow. This kind of intelligence is valuable for e-commerce, call centers, social media, or surveys.
+
+## Pre-trained sentiment models
+
+Lucidworks provides two pre-trained sentiment models that you can deploy to get started:
+
+| sentiment-general:v1.0 | sentiment-reviews:v1.0 |
+| --- | --- |
+| A general-purpose model, trained on short sentences.<br/><br/>Suitable for short texts and for intent prediction.<br/><br/>See [Deploy The sentiment-general:v1.0 Model](/how-to/dtwf5k/deploy-the-sentiment-general-model) for instructions. | A model trained on a variety of customer reviews.<br/><br/>Optimized for longer texts. It also supports highlighting the tokens that provide stronger sentiment.<br/><br/>See [Deploy The sentiment-reviews:v1.0 Model](/how-to/qityrh/deploy-the-sentiment-reviews-model) for instructions. |
+
+<Note>
+These models support the English language only.
+</Note>
+
+
+
+## Model output
+
+Both of the pre-trained models output the following:
+
+* a **label**, `negative` or `positive`
+* a **score** from `-2` to `2`
+
+The sentiment-reviews:v1.0 model also optionally outputs tokens and their corresponding attention weights, that is, the weight that each token carries in the sentiment prediction. The total of all attention weights is always 1, that is, each value represents a percentage of the total weight. In the example below, "awesome" has the highest weight because it expresses the strongest sentiment compared to other tokens in the string:
+
+```
+// Input
+text = "That is awesome!"
+
+// Output
+sentiment_label = 'positive'
+sentiment_score = 1.998
+sentiment_attention_tokens = ['That', "'", 's', 'awesome', '!']
+sentiment_attention_weights = [0.154, 0.078, 0.069, 0.444, 0.255]
+```

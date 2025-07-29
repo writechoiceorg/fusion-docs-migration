@@ -1,0 +1,57 @@
+---
+title: "Boost"
+description: "Core Settings"
+permalink: "mcmjd1"
+---
+
+Boosting improves the visibility of items in search results. You can control how items are boosted based on their popularity or newness, plus how specific fields in your data affect boosting.
+
+<Frame>![Core Settings Boost screen](/assets/images/lw-platform/sites/sites-boost.png)</Frame>
+
+## Popularity Boost
+
+Increase search result ranking using signals obtained from users, such as how many users clicked on an item, added it to their cart, or purchased it.
+Using signals requires adding the [signals beacon](/lw-platform/platform/k649vy/signals-beacon) to a website or using the [Signals API](/lw-platform/analytics/uist05/signals-api) to send signals without the beacon.
+Adding signals gives you a deeper understanding of user behavior and is useful when deciding how to configure and rank your search results.
+
+Popularity Boost uses a discrete slider where you set the degree of how much you want the combined behavior of users to impact the search results.
+The discrete slider has five settings that range from no boost to full boost.
+
+<Frame>![Boost signals settings](/assets/images/lw-platform/sites/sites-boost-signals.png)</Frame>
+
+When you increase how much to boost with signals, you give more weight to those signals when ranking search results.
+More weight means items that users have interacted with more frequently appear higher.
+This can improve crowd-based relevance, show trending products, and increase conversion rates.
+
+There are, however, potential risks of setting the weight too high.
+For example, products with lower visibility may be pushed down even further.
+Giving a higher weight to signals can also decrease the impact of curated business rules if not balanced.
+
+A best practice is to start with moderate boosting, then evaluate the impact and adjust as needed.
+This protects important or promoted content you set using business rules or manual boosting.
+
+## Recency Boost
+
+You can increase search result ranking based on whether a document was recently added or modified.
+There are cases when you want a newer item or page to be prioritized above older content as the more recently updated items are often what users are interested in.
+
+<Frame>![Recency Boost settings](/assets/images/lw-platform/sites/sites-boost-fresh.png)</Frame>
+
+The Recency Boost slider is where you set the degree of how important it is to show the newest content higher in the search results.
+
+A best practice is to start with the moderate setting, then test and tune the weight as needed.
+If the slider is set too high, you run the risk of surfacing less relevant but recent content over older, more helpful items.
+If the slider is set too low, users looking for newer content might take longer to find it, causing frustration with outdated or irrelevant top results.
+
+## Attribute Priority
+
+You can decide if individual fields should be given priority for user queries.
+Search attributes can be included or excluded using the dropdown options.
+
+<Frame>![Search attributes](/assets/images/lw-platform/sites/sites-boost-saw.png)</Frame>
+
+To see how these fields affect search results, include or exclude the fields relevant to your data and run some queries to analyze their impact.
+The fields can also be arranged to assign their importance, so the field at the top of the list is given a greater significance than lower fields.
+Matches on the higher fields are boosted more than matches on the lower ones, and matches on excluded fields don’t affect boosting at all.
+This is useful when you want to prioritize queries that match the title of an item versus items that have similar words in their descriptions.
+For example, a query for "handles" would show door handles higher than a cleaning product whose description says it "handles tough stains."

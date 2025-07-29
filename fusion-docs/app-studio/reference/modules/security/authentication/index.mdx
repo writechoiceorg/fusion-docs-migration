@@ -1,0 +1,162 @@
+---
+title: "Authentication"
+permalink: "3162"
+---
+
+The Security Module provides authentication and authorization capabilities to the search application. It supports multiple authentication providers and will pass authentication credentials on to search engines capable of handling authorization (for example, the FAST Security Access Module), providing personalization and role based filtering. The Security Module can be extended and customized via a pluggable API.
+
+The Security module supports a number of authentication providers, including:
+
+* **Single sign-on** via Windows Integrated Authentication
+* **Container-managed** authentication
+* **Form-based** authentication
+* **Cookie-based** authentication
+* **Pass-through** authentication
+* **Custom authentication providers** via API
+
+## Authentication methods
+
+### OAuth
+
+Authentication against OAuth 2.0 services is possible using the individual authentication provider modules which simplify the configuration of OAuth parameters and deal with the differences that exist between common OAuth endpoints.
+
+A general OAuth provider can be used by including the `twigkit.security.provider.oauth` module. This requires a custom `spring-security.xml` file, but it is recommended to use one of the prepackaged modules we provide for these services.
+
+[Read more about OAuth authentication.](/fusion/5.9/3163/o-auth)
+
+### SAML
+
+We have a method of configuring SAML authentication with a simplified process. SAML is still a complex standard and so a lot of the relevant information from the previous SAML instructions is still included here.
+
+Appkit provides an extension for SAML based authentication. SAML is a recognized standard for authentication with many providers and implementations available.
+
+[Read more about SAML authentication.](/fusion/5.9/3165/saml-configuration)
+
+## Available security providers
+
+Appkit supports a range of security providers for authentication and authorization. Typically one of these providers is used in an application:
+
+### Active Directory
+
+While integration with Active Directory can be achieved using the LDAP setup, Spring Security provides a tailored security provider which makes configuring security using Active Directory easier.
+
+[Set Up Active Directory Authentication](/how-to/3042/set-up-active-directory-authentication-for-appkit)
+
+### Fusion Sessions API
+
+The Fusion security provider for Appkit allows authentication against Fusion using the Fusion Sessions API. With this provider configured, an application deployed within a Fusion defined 'realm' such as `native` can securely authenticate a user against Fusion.
+
+[Set Up Lucidworks Fusion Authentication](/how-to/3030/set-up-lucidworks-fusion-authentication)
+
+### HTTP Headers
+
+Appkit supports authentication via generic HTTP headers passed through from a component behind a secure firewall sitting in front of the Appkit application. If there is such an authentication component in the environment where you are using Appkit, you can configure the HTTP headers that the application will use to pick up the user’s details.
+
+[Set Up HTTP Headers Authentication](/how-to/3062/set-up-http-headers-authentication)
+
+### Kerberos
+
+The Kerberos security provider for Appkit allows authentication using Kerberos. With this provider configured, an application deployed within a Kerberos 'realm' can securely authenticate a user against a Kerberos 'Key Distribution Center'. This module is primarily intended to simplify the process of authenticating a user silently in a Windows environment by leveraging the built in support for integrated Windows authentication in Internet Explorer. However it should be possible to use this module to authenticate the user in any Kerberos compliant environment.
+
+[Set Up Kerberos Authentication](/how-to/2986/set-up-kerberos-authentication)
+
+### LDAP
+
+Appkit allows for authentication against a server using LDAP (Lightweight Directory Access Protocol). It assumes that your Appkit application is managed as a [Maven](https://maven.apache.org/) project with all project dependencies described in a [Maven POM file](https://maven.apache.org/pom.html).
+
+[Set Up LDAP Authentication](/how-to/2993/set-up-ldap-authentication)
+
+### Siteminder
+
+Appkit can integrate with a SiteMinder single-sign-on authentication provider. SiteMinder is typically installed in a web server placed in front of the application server that runs Appkit.
+
+[Set Up SiteMinder Authentication](/how-to/3061/set-up-site-minder-authentication)
+
+### Spring Security
+
+The Spring Security authentication provider for Appkit interfaces with both [Spring Security](http://projects.spring.io/spring-security/) 3 and 4. Projects that adopt Appkit version 3 must switch to using Spring Security 4.
+
+Authorized Spring principals become fully-qualified Appkit user profiles, along with any roles or groups that the Spring module provides. Spring Security integrates with a number of authentication protocols, including LDAP, Active Directory, Basic Authentication, Kerberos, JAAS, and others. For a full list, [see here.](http://docs.spring.io/spring-security/site/docs/3.1.1.RELEASE/reference/introduction.html)
+
+[Set Up Spring Authentication](/how-to/3070/set-up-spring-authentication)
+
+### Tomcat Container
+
+[Apache Tomcat](https://hub.docker.com/_/tomcat) is an open source Java servlet container. Tomcat implements Java enterprise specs, including the Java Servlet, JavaServer Pages JSP, and WebSockets APIs.
+
+[Set Up Tomcat Container Authentication](/how-to/2984/set-up-tomcat-container-authentication)
+
+### Windows
+
+Appkit can be used with [Integrated Windows Authentication](http://en.wikipedia.org/wiki/Integrated_Windows_Authentication) for [single sign on (SSO)](http://en.wikipedia.org/wiki/Single_sign-on) in your search application using Microsoft [Internet Information Services](http://www.iis.net/).
+
+[Set Up Windows Authentication](/how-to/3029/set-up-windows-authentication)
+
+## Configuration
+
+Primary configuration is done via the `security.conf` configuration file and other files in the `/conf/security/` folder. The Security Module however also supports mechanisms like Spring Security that might require its own configuration files (for example, spring-security.xml) and custom elements in `web.xml`.
+
+Define the security provider in `security.conf` using one of the following options:
+
+```yaml
+type: spring_security
+type: saml
+type: kerberos
+type: tomcat7
+type: generic
+type: siteminder
+type: passthrough
+type: oauth
+```
+
+### Spring security
+
+Spring Security is an industry standard security framework for Java. It is a popular option allowing the security to be configured initially via a simple XML file, and offers a lot of flexibility due to its integration with many different technologies, supporting a range of security standards. The [spring documentation](http://projects.spring.io/spring-security/) contains thorough guides to the use of Spring Security.
+
+By default Appkit applications are configured to use Spring Security with a simple hard-coded set of credentials in the provided `spring-security.xml` file, but you can see some other common configurations [defined here](/how-to/3070/set-up-spring-authentication). Further documentation on configuring Spring Security can be [found here](http://docs.spring.io/spring-security/site/docs/3.0.x/reference/ns-config.html).
+
+Appkit can be configured to use Spring Security for both authentication and role extraction.
+
+### Container managed security
+
+In this case the application server is responsible for authentication such as:
+
+* Internet Information Server and Integrated Windows Authentication
+* [Tomcat 7 Container Managed](/how-to/2984/set-up-tomcat-container-authentication)
+
+The application server can be configured to pick up the user’s credentials when the request is forwarded from a 'front-end' like IIS or Apache. In cases where authentication is done by the container it is still possible to do role extraction using Active Directory or LDAP for the user provider (see below).
+
+### Generic security
+
+The generic security option uses getRemoteUser() or the REMOTE_USER variable provided through the servlet API. This is for authentication only, but it can be combined with other methods for picking up the roles assigned to a user and submitting them to the search platform (see Active Directory and LDAP role extraction below).
+
+### Custom Providers
+
+You can add your own SecurityProvider which would be responsible for providing the user identity to Appkit. To do this, implement the `twigkit.security.SecurityProvider` interface and bind the class using Guice in your custom module.
+
+## Authorization, Role Extraction, and other features
+
+#### Active Directory and LDAP Role Extraction
+
+After the user’s identity has been established during the authentication stage, it is possible to carry out further authorization tasks such as role extraction or adding other metadata about the current user.
+
+#### User and Domain Mapping
+
+Appkit Security Module comes with pre-built filters to handle mapping between user names and domains. It is also possible to provide your own logic during this phase to deal with specific scenarios for determining a user’s credentials and details before rendering the page or passing them to the search platform.
+
+## Security lifecycle
+
+<Frame>![Security lifecycle](/assets/images/appkit/4.2/jumly-gsa-query-response-1.png)</Frame>
+
+**1. Authentication**  
+When the Security Module is installed, every request made to Appkit is filtered through the configured authentication provider. Credentials are added to the request via a ThreadLocal variable. Authentication providers can be container managed, single sign on or configured for form based authentication in Appkit.
+You can create your own authentication provider by implementing and binding the twigkit.security.SecurityProvider class.
+
+**2. Role Extraction**  
+Next step in the filter chain can handle role/group extraction for the authenticated user. This is frequently done via an Active Directory/LDAP lookup. The role extraction mechanisms will add the roles for the user to the User object.
+
+**3. Query**  
+When the Security Module is used queries should be created using the secure version of the Query tag. The secure query tag will provide a reference to the user that is logged in and pass the identity on to the search platform if necessary. The Security Module also provides a number of processors and utilities for adding filters to the query based on business rules or identity/role information.
+
+**4. Personalization**  
+The User and Role information is available in the user interface. Using the Security Conditional tag you can customize the view to the user that is logged in.

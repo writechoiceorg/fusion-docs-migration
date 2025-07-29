@@ -1,0 +1,27 @@
+---
+title: "Machine Learning Index Stage"
+permalink: "222"
+---
+
+The Fusion machine learning indexing stage uses a trained machine learning model to analyze a field or fields of a [PipelineDocument](/fusion-pipeline-javadocs/4.2/?com/lucidworks/apollo/common/pipeline/PipelineDocument.html) and stores the results of analysis in a new field of either the PipelineDocument or [Context](/fusion-pipeline-javadocs/4.2/?com/lucidworks/apollo/common/pipeline/Context.html) object.
+
+In order to use the Machine Learning Stage, you must train a machine learning model. There are two different ways to train a model:
+
+* Use a Fusion AI job that trains a model, like [Logistic Regression](/fusion-ai/4.2/558/logistic-regression-classifier-training-jobs) or [Random Forest](/fusion-ai/4.2/579/random-forest-classifier-training-jobs).
+* Train a model using [Spark’s MLlib API](https://spark.apache.org/docs/latest/mllib-guide.html) outside of Fusion, and upload this model into Fusion’s [blob store](/fusion-server/4.2/153/blob-storage). Complete details are available in [Machine Learning Models in Fusion](/fusion-ai/4.2/492/machine-learning-models-in-fusion).
+  TIP: When specifying field names, multiple field names are supported, in this format: `field1:weight,field2:weight,field3:weight`
+
+<Note>
+Although this stage is available without a Fusion AI license, it is only effective after running the Fusion AI jobs mentioned above.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/machine-learning.mdx";
+
+<SchemaParamFields schema={schema}/>

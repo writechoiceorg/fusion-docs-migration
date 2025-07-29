@@ -1,0 +1,69 @@
+---
+title: "Data models"
+permalink: "fq4sdx"
+---
+
+Data models simplify the process of getting started with Managed Fusion by providing pre-configured objects to reduce the effort spent on basic starting tasks. This helps keep documents consistent between datasources and intuitive to the object’s type.
+
+## Components
+
+Data models consist of the following:
+
+* **[Object type](#object-type)** - Describes the object type, or what a document in the index is. For example, an object may be a file, email, person, product, etc.
+* **[Index pipeline](#index-pipeline)** - Specifies the index pipeline that is indexing documents relevant to the data model.
+* **[Query pipeline](#query-pipeline)** - Specifies the query pipeline that is invoked when a query involves the data model.
+* **[Fields configuration](#fields-configuration)** - Creates a schema map that describes how the object schema should be translated into the Solr index. For example, the field name `first_name` can map to Solr fields `first_name_s` and `first_name_t`.
+
+### Object type
+
+The object type defines what a document is and what associated data is expected.
+
+Example
+
+When indexing employees for a company directory, certain fields are expected by a user. This includes the employees’s name, title, and contact information. An object type, `person`, is created for this purpose. The data model object is created to include this information in a clear, intuitive way:
+
+| Data Model Field | Solr Fields |
+| --- | --- |
+| `first_name` | `firstName_t`   `firstName_s` |
+| `last_name` | `lastName_t`   `lastName_s` |
+| `email` | `email_s` |
+| `job_title` | `jobTitle_t`   `lastName_s` |
+
+### Index pipeline
+
+When you add a connector in Managed Fusion, a default index pipeline is created that is used to map the documents' fields to the data model fields. The pipeline contains two pipeline stages, the [Data Model Mapping index stage](/managed-fusion/5.9/04pnyx/data-model-mapping-index-stage) and the [Call Data Model Pipeline index stage](/managed-fusion/5.9/y7hw9u/call-data-model-pipeline-index-stage). Once configured, this stage indexes the documents as various object types. Fields irrelevant to that object type are optionally discarded.
+
+### Query pipeline
+
+The query pipeline is applied by default whenever a user is searching documents of the object type. This enables query pipeline configurations specialized for the object type. For example, a query pipeline for the object type `person` could boost or filter results for current employees over previous employees.
+
+<Note>
+The query pipeline is optional for data models.
+</Note>
+
+### Fields configuration
+
+Data model fields allow you to map document fields to Solr fields in a way that respects the data model object type. The fields configuration allows this map to be intuitive to new users, offering a guided experience for configuring these options.
+
+## UI fields configuration
+
+| Field | Required | Description | Example |
+| --- | --- | --- | --- |
+| **Name of the Data Model** | ✅ | `string`   A user-friendly name for the data model. This typically describes the object type. | `person` |
+| **Index Pipeline** | ✅ | `string`   The name of the index pipeline used for the data model. | `companyDirectory-index-pipeline` |
+| **Query Pipeline** | ✅ | `string`   The name of the query pipeline used for the data model. | `companyDirectory-query-pipeline` |
+| **Field Name** | ✅ | `string` | `first_name` |
+| **Required** | ✘ | `boolean` | `true` |
+| ***Solr Fields* ↓** | | | |
+| **Solr Field Name** | ✅ | `string` | `firstName_t` |
+| **Is Query Field** | ✘ | `boolean` | `true` |
+| **Enable Phrase Match** | ✘ | `boolean` | `false` |
+| **Boost Value** | ✘ | `integer`   The amount of boost to give to the query. | `1` |
+| **Phrase Boost** | ✘ | `integer`   The amount of boost to give to the query, if it matches as an exact phrase. | `2` |
+
+## More information
+
+* [How to Configure a Data Model](/how-to/udwjfr/configure-a-data-model)
+* [Data Models API reference](/managed-fusion/5.9/7c6m5v/data-models-api)
+* [Data Model Mapping Index Stage reference](/managed-fusion/5.9/04pnyx/data-model-mapping-index-stage)
+* [Call Data Model Pipeline Index Stage reference](/managed-fusion/5.9/y7hw9u/call-data-model-pipeline-index-stage)

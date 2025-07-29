@@ -1,0 +1,113 @@
+---
+title: "Query Rewrite API"
+description: "Managed Fusion Query Rewrite APIs"
+permalink: "8ee4m8"
+---
+
+The Query Rewrite API manages documents used for [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) to improve relevancy using AI-generated data.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Query Rewrite Rules Configuration
+
+To access detailed information about configuring the rewrite functions and rules for the Query Rewrite API, see [Query Rewrite API Configurations](/managed-fusion/5.9/dyazfo/query-rewrite-api-configurations).
+
+### Examples
+
+#### View configuration options
+
+To see full configuration options using the Query Rewrite API:
+
+* **All rules.** `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/schema`
+* **Individual rules.** `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/schema/RULE_TYPE`
+
+  <Tip>
+  The `RULE_TYPE` values are found at the **…​/query-rewrite/schema** endpoint: `oneOf` > `0` > `properties` > `type` > `default`.
+  </Tip>
+
+```json
+{
+    "pinned_values": {
+        "type": "array",
+        "title": "Pinned Documents",
+        "description": "A list of one or more documents to boost and pin to specific positions in the results (1-based index). Note that pinning will only be applied to the first page of results.",
+        "minItems": 1,
+        "items": {
+            "type": "object",
+            "required": ["value", "position"],
+            "properties": {
+                "value": {
+                    "type": "string",
+                    "title": "Value",
+                    "description": "Value to boost"
+                },
+                "position": {
+                    "type": "integer",
+                    "title": "Position",
+                    "description": "Absolute position in the first page of results (1-based index)"
+                }
+            }
+        }}},
+```
+
+#### Create a blocklist rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPOST -H "Content-type:application/json" https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/instances -d
+
+'{
+  "id": "block_list_rule_1",
+  "name": "block_list_rule_1",
+  "type": "block_list",
+  "field_name": "id",
+  "field_values": ["6","17"],
+  "enabled": true,
+  "priority":11,
+  "search_terms":["life"],
+  "matching": "keywords"
+}'
+```
+
+#### Update specific fields in an existing rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/instances -d
+
+'{
+  "id": "block_list_rule_1",
+  "name": "block_list_rule_1",
+  "type": "block_list",
+  "field_name": "id",
+  "field_values": ["6","17"],
+  "enabled": false,
+  "priority":9,
+  "search_terms":["life"],
+  "matching": "keywords"
+}'
+```
+
+<Note>
+When making a PUT request to `query-rewrite/instances` include as a body JSON `{"create":[],"update":[],"delete":[],}` to avoid errors for missing properties.
+</Note>
+
+#### Publish rules in the staging area
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: application/json' https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/publish
+```
+
+#### Delete a published rule
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/instances -d
+
+'{
+  "delete": [ “block_list_rule_1" ]
+}'
+```
+
+#### Publish an operation
+
+```bash
+curl -u USERNAME:PASSWORD -XPUT -H "Content-type:application/json" https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/query-rewrite/publish
+```

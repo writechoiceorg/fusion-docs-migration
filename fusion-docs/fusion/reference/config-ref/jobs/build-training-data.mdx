@@ -1,0 +1,29 @@
+---
+title: "Build Training Data Jobs"
+permalink: "10912"
+---
+
+Use this job to build training data for query classification by joining signals data with catalog data.
+
+The output of this job can be used as input for the [Classification job](/fusion/5.9/8808/classification-jobs), which analyzes how documents are categorized and generates a model. That model can then be used to predict categories of new documents when they are indexed.
+
+The Build Training Data job can be configured in **Collections > Jobs** in your Fusion UI instance.
+
+Enter the following information:
+
+* Spark Job ID used by the API to reference the job.
+* Location where your signals are stored, the Spark-compatible format for the signals, and filters for the query.
+* Location where your content catalog is stored and the Spark-compatible format of the catalog data.
+* Location and Spark-compatible format of the job output.
+* Field names for the query string, the category and item from the catalog, the signals item ID, and the signals count field.
+* Style of the text analyzer you want to use for the job.
+* Top category proportion in relation to all the categories, and the minimum number of the query category pair counts.
+
+For detailed configuration steps, see [Classify New Queries](/how-to/8871/automatically-classify-new-queries). That process lets you predict the categories that are most likely to be returned successfully in a query.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/build-training-data.mdx";
+
+<SchemaParamFields schema={schema}/>

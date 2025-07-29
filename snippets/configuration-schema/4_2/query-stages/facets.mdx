@@ -1,0 +1,112 @@
+export const schema = {
+  "type": "object",
+  "title": "Field Facet",
+  "description": "Configure fields returned as facets by Solr. Facets indicate categories and aggregations of results according to values in the facet field(s). See https://cwiki.apache.org/confluence/display/solr/Faceting",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "fieldFacets": {
+      "type": "array",
+      "title": "Facet Fields",
+      "items": {
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The field whose values you want to facet on."
+          },
+          "prefix": {
+            "type": "string",
+            "title": "Prefix",
+            "description": "Prefix of terms to facet on."
+          },
+          "sort": {
+            "type": "string",
+            "title": "Sort",
+            "description": "Ordering of the faceting results.",
+            "enum": [
+              "count",
+              "index"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of facets to return."
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Offset into list of resulting facets."
+          },
+          "minCount": {
+            "type": "integer",
+            "title": "Minimum Count",
+            "description": "Lower threshold of term counts to be included.",
+            "default": 1
+          },
+          "missing": {
+            "type": "boolean",
+            "title": "Count Missing",
+            "description": "Optionally include a 'missing' facet bucket for documents without the selected field.",
+            "default": false
+          },
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "enum": [
+              "enum",
+              "fc",
+              "fcs"
+            ]
+          },
+          "enumCacheMinDf": {
+            "type": "integer",
+            "title": "Enum Cache Minimum DF",
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "threads": {
+            "type": "integer",
+            "title": "Number of Threads",
+            "minimum": 0,
+            "exclusiveMinimum": false
+          }
+        }
+      }
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 7,
+  "unsafe": false
+}

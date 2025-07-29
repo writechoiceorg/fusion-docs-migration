@@ -1,0 +1,56 @@
+---
+title: "query:suggestions"
+permalink: "1097"
+---
+
+## Description
+
+Query Suggestions
+
+## Usage
+
+as element:
+
+```xml
+<query:suggestions
+       completion-service="{string}"
+       [action="{string}"]
+       [service-url="{boolean}"]
+       [show="{number}"]
+       [title="{string}"]>
+</query:suggestions>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| completion-service | **string** | Which service or services (as a comma separated list) to use for as-you-type suggestions, as defined in the configuration files for services. |
+| action  *(optional)* | **string** | Search action path information, e.g. 'search/'. |
+| service-url  *(optional)* | **boolean** | URL of the web service. Default is '\{{context}}/twigkit/services/query-suggestion-service/. |
+| show  *(optional)* | **number** | The number of suggestions to show. |
+| title  *(optional)* | **string** | An optional title to display above the list |
+
+## Example
+
+#### Source
+
+```xml
+<search:box>
+    <query:suggestions completion-service="services.suggestions.static"></query:suggestions>
+</search:box>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope','$timeout','ResponseService', function($scope,$timeout,ResponseService) {
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/querySuggestions.png)</Frame>

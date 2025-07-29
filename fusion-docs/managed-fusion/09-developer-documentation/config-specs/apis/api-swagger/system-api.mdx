@@ -1,0 +1,219 @@
+---
+title: "System API"
+description: "Managed Fusion Admin APIs"
+permalink: "3ijw4z"
+---
+
+The System REST API allows you to monitor the system performance.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+### Metric names
+
+*Get metric names that start with 'mem.heap':*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system/metricNames?prefix=mem.heap
+```
+
+**RESPONSE**
+
+```json
+{
+  "gauges" : [ "mem.heap.committed", "mem.heap.init", "mem.heap.max", "mem.heap.usage", "mem.heap.used" ],
+  "counters" : [ ],
+  "histograms" : [ ],
+  "meters" : [ ],
+  "timers" : [ ]
+}
+```
+
+### Metrics
+
+*Find all metrics that match the regular expression pattern 'com.lucidworks.apollo.**pipeline.index.**', format the response so it is readable, and show the sample data, if any:*
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system/metrics?pattern=com.lucidworks.apollo.*pipeline.index.*&pretty=true&showSamples=true
+```
+
+**RESPONSE**
+
+```json
+{
+  "version" : "3.0.0",
+  "gauges" : { },
+  "counters" : { },
+  "histograms" : { },
+  "meters" : {
+    "com.lucidworks.apollo.pipeline.index.IndexPipelineCache.cacheHit" : {
+      "count" : 4775,
+      "m15_rate" : 0.03604340402401043,
+      "m1_rate" : 0.04985610410800882,
+      "m5_rate" : 0.04753263154077047,
+      "mean_rate" : 0.05028487069705915,
+      "units" : "events/second"
+    }
+  },
+  "timers" : {
+    "com.lucidworks.apollo.pipeline.index.IndexPipelineCache.deserialize" : {
+      "count" : 7,
+      "max" : 0.078783,
+      "mean" : 0.028265285714285715,
+      "min" : 9.800000000000001E-5,
+      "p50" : 1.94E-4,
+      "p75" : 0.06996100000000001,
+      "p95" : 0.078783,
+      "p98" : 0.078783,
+      "p99" : 0.078783,
+      "p999" : 0.078783,
+      "values" : [ 9.800000000000001E-5, 1.09E-4, 1.62E-4, 1.94E-4, 0.04855, 0.06996100000000001, 0.078783 ],
+      "stddev" : 0.03620774742010466,
+      "m15_rate" : 2.964393875E-314,
+      "m1_rate" : 2.128434034679706E-46,
+      "m5_rate" : 4.9195401948202935E-138,
+      "mean_rate" : 7.371603924510614E-5,
+      "duration_units" : "seconds",
+      "rate_units" : "calls/second"
+    },
+    "com.lucidworks.apollo.pipeline.index.IndexStageConfigCache.deserialize" : {
+      "count" : 7,
+      "max" : 0.002377,
+      "mean" : 4.6642857142857147E-4,
+      "min" : 8.7E-5,
+      "p50" : 1.16E-4,
+      "p75" : 3.46E-4,
+      "p95" : 0.002377,
+      "p98" : 0.002377,
+      "p99" : 0.002377,
+      "p999" : 0.002377,
+      "values" : [ 8.7E-5, 9.300000000000001E-5, 1.11E-4, 1.16E-4, 1.35E-4, 3.46E-4, 0.002377 ],
+      "stddev" : 8.47267737523163E-4,
+      "m15_rate" : 2.964393875E-314,
+      "m1_rate" : 2.1522151745137967E-46,
+      "m5_rate" : 5.086288568158318E-138,
+      "mean_rate" : 7.372680363461613E-5,
+      "duration_units" : "seconds",
+      "rate_units" : "calls/second"
+    },
+    "com.lucidworks.apollo.pipeline.index.IndexStageConfigStore.deserialize" : {
+      "count" : 6,
+      "max" : 0.0019760000000000003,
+      "mean" : 5.606666666666667E-4,
+      "min" : 1.0800000000000001E-4,
+      "p50" : 1.4250000000000002E-4,
+      "p75" : 0.00114875,
+      "p95" : 0.0019760000000000003,
+      "p98" : 0.0019760000000000003,
+      "p99" : 0.0019760000000000003,
+      "p999" : 0.0019760000000000003,
+      "values" : [ 1.0800000000000001E-4, 1.2200000000000001E-4, 1.35E-4, 1.5000000000000001E-4, 8.730000000000001E-4, 0.0019760000000000003 ],
+      "stddev" : 7.54704622131511E-4,
+      "m15_rate" : 2.964393875E-314,
+      "m1_rate" : 1.0220227879692082E-48,
+      "m5_rate" : 7.20591046931865E-140,
+      "mean_rate" : 6.318494243486903E-5,
+      "duration_units" : "seconds",
+      "rate_units" : "calls/second"
+    },
+    "com.lucidworks.apollo.pipeline.index.IndexStageConfigStore.getItem" : {
+      "count" : 6,
+      "max" : 0.003128,
+      "mean" : 0.002295,
+      "min" : 0.0017770000000000002,
+      "p50" : 0.0020715,
+      "p75" : 0.002774,
+      "p95" : 0.003128,
+      "p98" : 0.003128,
+      "p99" : 0.003128,
+      "p999" : 0.003128,
+      "values" : [ 0.0017770000000000002, 0.002066, 0.002066, 0.0020770000000000003, 0.0026560000000000004, 0.003128 ],
+      "stddev" : 4.989869737778733E-4,
+      "m15_rate" : 2.964393875E-314,
+      "m1_rate" : 1.0220227879692082E-48,
+      "m5_rate" : 7.20591046931865E-140,
+      "mean_rate" : 6.318494244418448E-5,
+      "duration_units" : "seconds",
+      "rate_units" : "calls/second"
+    }
+  }
+}
+```
+
+The above output has been truncated for space to remove metrics with no data or with very long value lists.
+
+### Threads
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system/threads
+```
+
+**RESPONSE** (truncated to a single thread)
+
+```json
+[ {
+  "id" : 2,
+  "native" : false,
+  "name" : "Reference Handler",
+  "locks" : {
+    "waiting" : {
+      "identity" : "0x7257d934",
+      "class" : "java.lang.ref.Reference$Lock"
+    },
+    "locking" : {
+      "identity" : "0x7257d934",
+      "class" : "java.lang.ref.Reference$Lock"
+    }
+  },
+  "state" : "WAITING",
+  "suspended" : false,
+  "stackTrace" : [ {
+    "methodName" : "wait",
+    "fileName" : "Object.java",
+    "lineNumber" : -2,
+    "className" : "java.lang.Object",
+    "nativeMethod" : true
+  }, {
+    "methodName" : "wait",
+    "fileName" : "Object.java",
+    "lineNumber" : 503,
+    "className" : "java.lang.Object",
+    "nativeMethod" : false
+  }, {
+    "methodName" : "run",
+    "fileName" : "Reference.java",
+    "lineNumber" : 133,
+    "className" : "java.lang.ref.Reference$ReferenceHandler",
+    "nativeMethod" : false
+  } ]
+} ]
+```
+
+### Buffers
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD -X PUT https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system/buffers
+```
+
+### Ping
+
+**REQUEST**
+
+```sh
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/system/ping
+```
+
+**RESPONSE**
+
+```
+pong
+```

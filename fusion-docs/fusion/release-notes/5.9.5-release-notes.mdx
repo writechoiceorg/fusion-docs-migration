@@ -1,0 +1,144 @@
+---
+title: "Fusion 5.9.5"
+permalink: "5wtdd9"
+---
+
+Released on November 4, 2024, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) includes the new Neural Hybrid Search capability, as well as upgrades to Solr, Kubernetes, Zookeeper, and some bug fixes.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30
+* **Microsoft Azure Kubernetes Service (AKS):** 1.28, 1.29, 1.30
+* **Amazon Elastic Kubernetes Service (EKS):** 1.28, 1.29, 1.30
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.28, 1.29, 1.30. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.5  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Warning>
+**Caution**
+
+Looking to upgrade?
+
+Upgrading to Fusion 5.9.5 has special considerations, due to changes introduced with Solr 9.6.1 and Lucene 9.10.0. Refer to the [Fusion 5.9 Upgrades topic](/how-to/upgrade-fusion-5/j13rzy/fusion-5-upgrade-from-5-9-x#59x-595) for specific details and potential mitigation strategies.
+</Warning>
+
+## New Features
+
+### Neural Hybrid Search
+
+Fusion 5.9.5 introduces [Neural Hybrid Search](/fusion/5.9/hao5f4/neural-hybrid-search), a capability that combines lexical and semantic vector search. This feature includes:
+
+* A new index pipeline to vectorize fields with [Lucidworks AI](/lw-platform/ai/lukosg/lucidworks-ai). See [Configure the LWAI Vectorize pipeline](/how-to/he3kp5/configure-the-lwai-vectorize-pipeline).
+* A new query pipeline to set up Neural Hybrid Search with Lucidworks AI. See [Configure the LWAI Neural Hybrid Search pipeline](/how-to/tvrvlw/configure-the-lwai-neural-hybrid-search-pipeline).
+* Query and index stages for vectorizing text using Lucidworks AI. See [LWAI Vectorize Query stage](/fusion/5.9/owi8af/lwai-vectorize-query) and [LWAI Vectorize Field stage](/fusion/5.9/t16i6m/lwai-vectorize-field).
+* Query and index stages for vectorizing text with Seldon. See [Seldon Vectorize Query stage](/fusion/5.9/33ccfb/seldon-vectorize-query-stage) and [Seldon Vectorize Field stage](/fusion/5.9/wpkxmb/seldon-vectorize-field-stage).
+* A new query stage for hybrid search that works with Lucidworks AI or Seldon. See [Hybrid Query stage](/fusion/5.9/fgbib5/hybrid-query-stage).
+* A new service, `lwai-gateway`, provides a secure, authenticated connection between Fusion and your Lucidworks AI-hosted models.
+  See [Lucidworks AI Gateway](/lw-platform/ai/41gdb7/lucidworks-ai-gateway) for details.
+* Solr config changes to support dense vector dynamic fields.
+* A custom Solr plugin containing a new `vectorSimilarity` QParser that will not be available in Apache Solr until 9.7.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Neural Hybrid Search** focuses on how neural hybrid search combines lexical and semantic search to improve the relevance and accuracy of results:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/neural-hybrid-search-2" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/neural-hybrid-search.png" alt="Neural Hybrid Search" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+#### Configure use case for embedding
+
+In the LWAI Vectorize Field stage, you can specify the use case for your embedding model.
+
+To learn how to configure your embedding use case, see the following demonstration:
+
+#### Fine tune lexical and semantic settings
+
+The Hybrid Query stage is highly customizable. You can lower the **Min Return Vector Similarity** threshold for vector results to include more semantic results. For example, a lower threshold would return "From Dusk Till Dawn" when querying `night` against a movie dataset. A higher threshold prioritizes high scoring results and in this case only returns movie names with `night` in the title.
+
+To learn how to configure the Hybrid Query stage, see the following demonstration:
+
+#### Vector dimension size
+
+There is no limitation on vector dimension sizes. If you’re setting up vector search and Neural Hybrid Search with an embedding model with large dimensions, simply configure your managed-schema to support the appropriate dimension. See [Configure Neural Hybrid Search](/how-to/jk43nv/configure-neural-hybrid-search#modify-solr-managed-schema).
+
+## Improvements
+
+* Fusion now supports Kubernetes 1.30 for GKE. Refer to Kubernetes documentation at [Kubernetes v1.30](https://kubernetes.io/blog/2024/04/17/kubernetes-v1-30-release/) for more information.
+
+* Solr has been upgraded to 9.6.1.
+
+* Zookeeper has been upgraded to 3.9.1.
+
+* The default value for `kafka.logRetentionBytes` is increased to 5 GB. This improvement helps prevent failed datasource jobs due to full disk space. Refer to [Troubleshoot failed datasource jobs](/how-to/vgyk10/troubleshoot-failed-datasource-jobs).
+
+* There is a new AI category in the **Add a new pipeline stage** dropdown for Query and Index Pipelines. This category contains the new stages for Neural Hybrid Search, as well as existing machine learning and AI stages.
+
+    <Frame>![AI subgroup](/assets/images/5.9/5.9.5/ai-subgroup-stages.png)</Frame>
+
+* The Fusion migration script is updated to align with changes from the Solr upgrade. The migration script:
+
+    + Removes the unused configuration, `<circuitBreaker>`, from `solrconfig.xml`. Solr no longer supports this configuration.
+    + Removes the query response writer of class `solr.XSLTResponseWriter`.
+    + Comments out processors of type `solr.StatelessScriptUpdateProcessorFactory`.
+    + Removes `<bool name="preferLocalShards"/>` element from request handler.
+    + Changes cache class attribute of elements `"filterCache"`, `"cache"`, `"documentCache"`, `"queryResultCache"` to `solr.search.CaffeineCache`.
+    + Removes `keepShortTerm` attribute from filter of class `solr.NGramFilterFactory`.
+
+* Added the parameter `job-expiration-duration-seconds` for remote connectors that lets you configure the timeout value. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors#job-expiration-duration-5-9-5-only).
+
+* Added additional diagnostics between the `connectors-backend` and `fusion-indexing` services.
+
+* Added more detail to the messages that appear in the Fusion UI when a connector job fails.
+
+* Added the `reset` action parameter to the `subscriptions/{id}/refresh?action=some-action` POST API endpoint. Calling `reset` will clear the subscription indexing topic from pending documents. See [Indexing APIs](/fusion/5.9/gq9miz/indexing-ap-is).
+
+## Bug fixes
+
+* Fixed an issue that prevented successful configuration of new Kerberos security realms for authentication of external applications.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#deprecations).
+
+With the release of Solr supported embeddings and Solr Semantic Vector Search, Lucidworks is deprecating Milvus. The following Milvus query stages are deprecated and will be removed in a future release:
+
+* Milvus Ensemble Query Stage
+* Milvus Query Stage
+* Milvus Response Update Query Stage
+
+Use [Seldon](/fusion/5.9/33ccfb/seldon-vectorize-query-stage) or [Lucidworks AI](/fusion/5.9/owi8af/lwai-vectorize-query) vector query stages instead.
+
+For more information, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals).

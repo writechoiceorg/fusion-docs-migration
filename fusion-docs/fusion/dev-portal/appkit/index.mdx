@@ -1,0 +1,121 @@
+---
+title: "Fusion App Studio"
+permalink: "963"
+---
+
+## App Studio
+
+App Studio is a collection of software and resources that helps you [build](/fusion/5.9/3140/building-from-source) modern, user-friendly apps to search and visualize your Fusion data. This includes:
+
+<Card title="Looking to get started?">
+[Download](/fusion/5.9/992/app-studio-enterprise-downloads)
+</Card>
+
+* [**Appkit**](#appkit) - The framework that drives App Studio Enterprise.
+* [**App Studio Enterprise**](#app-studio-enterprise) - The standalone web application which you connect to your Fusion collection.
+
+App Studio requires a running instance of [Fusion](/fusion/5.9/6764/fusion), or access to one of our [supported datasources](/fusion/5.9/3196/search-platforms), with one or more collections of indexed data.
+
+### Appkit
+
+The Appkit framework provides a library of search application components encapsulated as simple building blocks that combine to create complex applications for search and information retrieval.
+
+See the [reference docs](/fusion/5.9/999/app-studio-reference-guides) for more information about the Appkit framework.
+
+#### Modules
+
+Appkit’s suite of search components is modular, which means you are able to get a working solution into place quickly using tried-and-tested components.
+
+[Read more about modules.](/fusion/5.9/3142/modules)
+
+#### Tags
+
+The App Studio markup language defines a set of HTML-like elements, or *tags*, for defining search queries to the backend and visualizing the search results and facets, handling all the complexities of connecting to Fusion.
+
+For example, adding a radial progress bar is as simple including the following tag:
+
+```xml
+<progress:radial
+    percentage="56">
+</progress:radial>
+```
+
+This results in the following:
+
+<Frame>![Radial progress bar tag](/assets/images/appkit/tag-progress-radial.png)</Frame>
+
+Over 150 tags are provided in the Appkit framework.
+
+[Read more about tags.](/fusion/5.9/1134/tags)
+
+#### Services
+
+App Studio exposes a number of frontend JavaScript services which encapsulate reusable processes. These services are based on the AngularJS framework. There are also backend Java web services that perform the same functions as many of the frontend services, including platform search endpoints, platform series endpoint, query suggestion/typeahead services, csv/excel export, and facet search.
+
+[Read more about services.](/fusion/5.9/1219/services)
+
+#### Search Platforms
+
+Appkit integrates with a number of search engines, data warehouses and web service endpoints, even surfacing information from multiple sources simultaneously. The platform abstraction covers both search and storage sides, meaning that Appkit will implement for each platform the necessary protocols to save or index content for any platform. A number of platform adapters are available out-of-the-box with Appkit, and [adding new ones](/fusion/5.9/3109/developing-platforms) is a simple exercise.
+
+[Read more about search platforms.](/fusion/5.9/3196/search-platforms)
+
+#### Concepts
+
+* [Appkit Concepts](/fusion/5.9/3115/appkit-concepts)
+* [Appkit Configuration](/fusion/5.9/3093/configuration)
+* [Extending Appkit](/fusion/5.9/3113/extending-appkit)
+
+#### Reference
+
+* [App Studio Versions FAQ](/fusion/5.9/1028/app-studio-versions)
+* [Accessing Data](/fusion/5.9/3128/accessing-data)
+* [App Deployment](/fusion/5.9/1205/deployment)
+* [FAQ](/fusion/5.9/1028/app-studio-versions)
+
+#### How-to
+
+* [Upgrade Appkit in Existing Apps](/how-to/791/upgrade-appkit-in-existing-apps)
+
+### App Studio Enterprise
+
+App Studio Enterprise is an Appkit based web application that connects your Fusion instance, or other [datasources](/fusion/5.9/3196/search-platforms), to the [Appkit](#appkit) design framework. It comes preloaded with the Appkit framework library and a starter search app template. This allows you to develop and preview your search application using your data before deploying it to a production environment.
+
+Getting started only takes a few minutes and is as simple as [downloading App Studio Enterprise](/fusion/5.9/992/app-studio-enterprise-downloads), configuring the application to use your Fusion instance, and launching. See the README file included in the download for full instructions.
+
+<Frame>![App Studio Enterprise Example App](/assets/images/app-studio/4.2/as-enterprise-example.png)</Frame>
+
+#### Concepts
+
+* [App Studio Enterprise Concepts](/fusion/5.9/994/app-studio-enterprise)
+* [App Studio Enterprise Downloads](/fusion/5.9/992/app-studio-enterprise-downloads)
+* [Getting Started with App Studio Enterprise](/fusion/5.9/993/get-started-with-ase)
+
+#### Reference
+
+* [App Studio Versions FAQ](/fusion/5.9/1028/app-studio-versions)
+* [FAQ](/fusion/5.9/1028/app-studio-versions)
+
+#### How-to
+
+* [Building from Source](/fusion/5.9/3140/building-from-source)
+* [Deploy App Studio Enterprise](/how-to/605/deploy-app-studio)
+
+## Versions FAQ
+
+### How are these products versioned?
+
+* **Appkit** is versioned according to updates to the code base.
+* **App Studio Enterprise** versions are loosely tied to the version of the Appkit framework it includes. An update from **4.8.0** to **4.9.0** may not include any changes to App Studio Enterprise.
+
+### What about compatibility?
+
+* Any version of **Appkit** can be used with Fusion 4.x. However, only Appkit 4.6.0+ can be used with Fusion 5.y.
+* **App Studio Enterprise** can be used with any version of Fusion or Appkit.
+
+### Can these products be updated independently?
+
+* **Appkit** can be [updated](/how-to/791/upgrade-appkit-in-existing-apps) independently, assuming there are no version [compatibility](#what-about-compatibility) issues.
+* **App Studio Enterprise** is released when a new version of Appkit is released. As a result, App Studio Enterprise itself does not need to be updated. To move to the latest code base, simply update the Appkit version within the project.
+
+See the [FAQ section](/fusion/5.9/1028/app-studio-versions) for more frequently asked questions.

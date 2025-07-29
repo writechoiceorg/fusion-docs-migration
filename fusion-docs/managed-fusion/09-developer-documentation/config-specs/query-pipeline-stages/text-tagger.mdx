@@ -1,0 +1,43 @@
+---
+title: "Text Tagger"
+description: "Query pipeline stage configuration specifications"
+permalink: "74ygo4"
+---
+
+This stage uses the SolrTextTagger handler to identify known entities in the query by searching the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/n8oj99/collections#auxiliary-collections). See [Manage Collections in the Managed Fusion UI](/how-to/ekv6jt/manage-collections-in-the-managed-fusion-ui) for more information.
+
+<Note>
+For Managed Fusion 5.x.x organizations that do *not* have a Predictive Merchandiser license, the Solr Text Tagger handler also searches the `COLLECTION_NAME_query_rewrite_staging` collection in the case of the Managed Fusion query rewriting [Simulator](/fusion-ai/4.2/484/simulator)).
+</Note>
+
+The purpose of the search is to perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) using matches from the following items:
+
+* [Spelling corrections](/managed-fusion/5.9/231w02/misspelling-detection)
+* [Phrase boosts](/managed-fusion/5.9/olq4c4/phrase-detection)
+* [Head/Tail Analysis (Underperforming query improvements)](/managed-fusion/5.9/a024os/underperforming-queries)
+* [Synonym expansions](/managed-fusion/5.9/a2jy7t/synonym-detection-jobs)
+
+When the query rewrite entails boosting, the boosting is applied later in the pipeline, during the [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage).
+
+The below diagram shows the process flow for the Text Tagger Stage:
+
+<Frame>![Text Tagger Stage Process](/assets/images/5.4/stage-text-tagger-flow.png)</Frame>
+
+<Danger>
+The underlying SolrTextTagger currently only supports *single-shard collections*. Managed Fusion users should ensure their `COLLECTION_NAME_query_rewrite` collection, or whatever collection the Text Tagger stage is configured to use, is single-sharded before enabling this stage.
+</Danger>
+
+<Note>
+Although this stage is available without a Managed Fusion license, it is only effective after running Managed Fusion jobs or creating Managed Fusion rules. See [Query Rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) for details.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/text-tagger.mdx";
+
+<SchemaParamFields schema={schema}/>

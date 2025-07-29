@@ -1,0 +1,180 @@
+{
+  "type": "object",
+  "title": "Send PagerDuty Message",
+  "description": "Send a PagerDuty Message using the Fusion Messaging Service.  This can be used for things like alerting and more.",
+  "required": [
+    "eventType",
+    "incidentDescription"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "storeInContext": {
+      "type": "boolean",
+      "title": "Add to Pipeline Context",
+      "description": "Put the generated Message later in the pipeline.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "responseKey": {
+      "type": "string",
+      "title": "Message Response Context Key",
+      "description": "The name of the key to store the MessageResponse under in the Pipeline Context.",
+      "default": "messageResponse",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "errorKey": {
+      "type": "string",
+      "title": "Message Response Failure Key",
+      "description": "The name of the key to store a boolean if sending a message failed.  If set, you can check the MessageResponse errorCode and other attributes for the reason.",
+      "default": "messageResponseFailure",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "eventType": {
+      "type": "string",
+      "title": "Event Type",
+      "description": "Select the Pager Duty Event Type.",
+      "enum": [
+        "trigger",
+        "acknowledge",
+        "resolve"
+      ],
+      "default": "trigger"
+    },
+    "incidentDescription": {
+      "type": "string",
+      "title": "Description",
+      "description": "A short description of the problem that led to this trigger. This field (or a truncated version) will be used when generating phone calls, SMS messages and alert emails. It will also appear on the incidents tables in the PagerDuty UI. The maximum length is 1024 characters.",
+      "default": "Sample Description",
+      "maxLength": 1024,
+      "minLength": 1
+    },
+    "incidentKey": {
+      "type": "string",
+      "title": "Incident Key",
+      "description": "Identifies the incident to which this trigger event should be applied. If there's no open (i.e. unresolved) incident with this key, a new one will be created. If there's already an open incident with a matching key, this event will be appended to that incident's log.",
+      "default": "Incident <doc.id>",
+      "minLength": 1
+    },
+    "client": {
+      "type": "string",
+      "title": "Client",
+      "description": "The name of the monitoring client that is triggering this event.",
+      "default": "Fusion",
+      "minLength": 1
+    },
+    "clientURL": {
+      "type": "string",
+      "title": "Client URL",
+      "description": "The URL of the monitoring client that is triggering this event.",
+      "default": "fusion-monitoring.yourdomain.com",
+      "minLength": 1
+    },
+    "incidentDetails": {
+      "type": "array",
+      "title": "Incident Details",
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value"
+          }
+        }
+      }
+    },
+    "incidentContextLinks": {
+      "type": "array",
+      "title": "Incident Context Links",
+      "items": {
+        "type": "object",
+        "required": [
+          "href"
+        ],
+        "properties": {
+          "href": {
+            "type": "string",
+            "title": "Target Link",
+            "description": "URL to open when clicked on the link."
+          },
+          "text": {
+            "type": "string",
+            "title": "Text",
+            "description": "Arbitrary text explaining the URL."
+          }
+        }
+      }
+    },
+    "incidentContextImages": {
+      "type": "array",
+      "title": "Incident Context Images",
+      "items": {
+        "type": "object",
+        "required": [
+          "src",
+          "href"
+        ],
+        "properties": {
+          "src": {
+            "type": "string",
+            "title": "Source",
+            "description": "HTML 'src' tag for the image. Should be always secure connection (https://)."
+          },
+          "href": {
+            "type": "string",
+            "title": "Target Link",
+            "description": "URL to open when clicked on the image."
+          },
+          "alt": {
+            "type": "string",
+            "title": "Alternate Text",
+            "description": "HTML 'alt' tag for the image."
+          }
+        }
+      }
+    }
+  },
+  "category": "Troubleshooting",
+  "categoryPriority": 3,
+  "unsafe": false
+}

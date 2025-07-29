@@ -1,0 +1,75 @@
+---
+title: "Themes and Styling"
+permalink: "3085"
+---
+
+Appkit is designed so that themes can be used to apply a different look and feel to an application. These encompass all visual aspects of a search user interface and currently there is one main *classic* theme which every project starts out with.
+
+Themes can be controlled via the dependencies specified in the maven `pom.xml` file and will be available to select when a new project is generated through Launchpad.
+
+## Styling
+
+Each of the themes uses a main Less file in `src/main/webapp/styles` named `themeName-settings.less`. This provides a basis for modifying the parameters of a theme at a high level such as the color scheme. If you are not familiar with Less or want to customize the UI by applying some standard CSS styling, this can be done in the `custom.css` file in the same location.
+
+## When to use Less and when to use CSS
+
+In some cases, it is easier to customize particular components of the UI through the Less settings, rather than `custom.css`. In our themes and styling, Appkit defines a number of Less “mixins” which are re-usable code snippets that can be invoked using some number of parameters. The Less code is never exposed to the web client directly, but rather is compiled into CSS code at runtime (or even at compile time). When compiled, a single line of a `.less` file can result in multiple lines of CSS.
+
+This means that in order to customize the default styling of a theme, you can:
+
+* Modify a few lines in the `classic-settings.less` file
+* Override the compiled CSS settings in the custom.css file.
+
+This is best explained with an example. Consider a Less file with this “makeRed” re-usable code mixin:
+
+```js
+.makeRed () {
+    color: red;
+}
+```
+
+You can apply this mixin later by invoking it through a CSS rule; for example:
+
+```css
+p {
+    makeRed();
+    border: 1px black;
+}
+```
+
+which would output this in the compiled CSS file
+
+```css
+p {
+    color: red;
+    border: 1px black;
+}
+```
+
+Looking at a particular Appkit example, consider for example, the way in which we specify the “title” field styling in the `classic-settings.less` file:
+
+```css
+.tk-stl-title { .field-title(); } /* @field-value-color, @field-label-color */
+```
+
+Here, we use a `.field-title` mixin, which is defined in the classic theme. The comment at the end of the line lists the arguments that can be specified in this particular mixin. When compiled, the output CSS includes these rules:
+
+```css
+.tk-stl-title .label {
+  color: #000000;
+}
+.tk-stl-title .value {
+  font-weight: bold;
+  margin: 0 0 2px 0;
+  font-size: 1.23em;
+  line-height: 1.1667em;
+  color: #52cc95;
+}
+.tk-stl-title .value a {
+  color: #52cc95;
+}
+```
+
+To override the field title styling (.tk-stl-title), you could either change that one line in the Less file or include rules in `custom.css` overriding one or more of the compiled CSS rules, above.
+
+So to conclude, it makes sense to override the Less settings when you are customising a part of the UI that has a well-defined mixin to match. For ad-hoc customization, it might be easiest to use `custom.css` directly.

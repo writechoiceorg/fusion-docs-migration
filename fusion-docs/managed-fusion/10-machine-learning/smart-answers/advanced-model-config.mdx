@@ -1,0 +1,150 @@
+---
+title: "Advanced Model Training Configuration for Smart Answers"
+permalink: "rz29tu"
+---
+
+This topic provides tips for training your [Smart Answers](/managed-fusion/5.9/mwqude/smart-answers) deep learning model.
+
+## Model Base
+
+There are several types of model bases that can be used for training and fine-tuning:
+
+* **word_en_300d_2M** are general pre-trained word embeddings. It is a good default choice to start with for English language.
+* **bpe_\{language}_\{dim_size}_\{vocab_size}** are general pre-trained [BPE](https://nlp.h-its.org/bpemb) embeddings that are available for different languages, including CJK languages and multilingual. Also useful in scenarios when vocabulary is very big or when the data might have a lot of misspellings.
+* **word_custom** or **bpe_custom** specifies that custom embeddings should be trained on users data via Word2Vec algorithm. It might be useful when your domain has a very unusual specific vocabulary.
+* **transformer** based models such as **distilbert_\{language}** and **biobert**. Much bigger and expensive models that might provide even better quality for FAQ, Chatbot and virtual Assistance use-cases. Also useful when the training data is limited.
+
+If **word** or **bpe** based models are used, one or more RNN layers are added on top of the embeddings to be trained to capture contextual and semantic information. It is configurable in the **RNN Encoder Parameters** section. If you wish to use embeddings initialized on your data, refer to the **Custom Embeddings Initialization** to configure Word2Vec algorithm.
+
+Transformer-based models already have specified fixed model architecture which is fine-tuned during the training procedure.
+
+<Tip>
+Dimension size of vectors for Transformer-based models is 768. For RNN-based models it is 2 times the number units of the last layer. To find the dimension size: download the model, expand the zip, open the log and search for `Encoder output dim size:` line. You might need this information when creating collections in Milvus.
+</Tip>
+
+
+<Note>
+We recommend to use Transformer-based models only if you can allocate GPU for the training job as these models are very computationally expensive.
+</Note>
+
+
+
+At the end, Attention mechanism to aggregate output into final single vector for all models.
+
+## Auto hyperparameter tuning
+
+By default, training module tries to select the most optimal parameter values (for those left as blank) based on the training data statistics. Auto-tune can extend it by automatically finding even better training configuration through hyper-parameter search.
+
+If **Perform auto hyperparameter tuning** is enabled, multiple models will be trained across several stages. On each stage the most impactful parameters are tuned to find the best configuration. All other parameters are used with default values or those specified on UI.
+
+Although this is a resource-intensive operation, it can be useful to identify better RNN-based configuration. Transformer-based models are not used during auto hyperparameter tuning as they have a fixed architecture. They usually perform better on Q&A tasks yet they are much more expensive on both training and inference time.
+
+## Input/Output parameters
+
+Here you can specify the input data that should be used for training with possibility to filter or sample it.
+
+<Note>
+You can also configure this job to read from or write to cloud storage. See [Configure An Argo-Based Job to Access GCS](/how-to/8864/configure-an-argo-based-job-to-access-gcs) and [Configure An Argo-Based Job to Access S3](/how-to/8870/configure-an-argo-based-job-to-access-s-3).
+</Note>
+
+
+
+If you have additional text data that can be used for **custom embeddings initialization** or to learn and capture bigger vocabulary when **word_en_300d_2M** is used, please provide it in the **Texts Data Path** field.
+
+**Model Replicas** parameter allows to specify how many replicas of the model should be deployed. Auto-balancing mechanism is used to distribute queries between model replicas, so more replicas might provide faster indexing as well as higher QPS.
+
+If you use aggregated signals data for training or have weights for each training pair, you can also specify **Weight Field**. It will be used for sampling positive answers for a particular query if there are more than one possible. It is useful for eCommerce use-cases when for one unique query there might be a lot of different paired products.
+
+<Note>
+**Weight Field** will not be used if **Use Labelling Resolution** is set on. These parameters are mutually exclusive.
+</Note>
+
+
+
+## Data pre-processing parameters
+
+**Labeling Resolution** allows to find missing query/response pairs in the training data which helps in the training. When set on, a graph of all pairs connections is built. Then connected components are obtained to match missing query/response pairs. For example if there are three existing pairs: `q1-a1`, `q2-a1` and `q2-a2`. Then Labelling Resolution will match `q1-a2` as additional pair through `q2-a1` connection.
+This is useful in Q&A use-cases when there are not a lot of answers per unique question, otherwise too big connected components will be found. If you have data when for one query there might be a lot of different responses, like in eCommerce, it is better to leave it off.
+
+<Note>
+If **Use Labelling Resolution** is set on, **Weight Field** is ignored. These parameters are mutually exclusive.
+</Note>
+
+
+
+The **Maximum vocabulary size**, **Lower case all words** and **Apply unidecode decoding** parameters impact the vocabulary size if `word_en_300d_2M`, `word_custom` or `bpe_custom` model bases are used. Otherwise these parameters are ignored and model specific pre-processing is used. Default values should work in most cases, given enough RAM and time to train.
+
+<Note>
+If you want to train custom embeddings for languages like CJK, disable **Apply unidecode decoding**.
+</Note>
+
+
+
+If you see an out-of-memory error, try reducing the vocabulary size and/or the training batch size. The **Minimum number of words** and **Maximum number of words** parameters can help trim problematic documents.
+
+## Custom embeddings initialization parameters
+
+If **word_custom** or **bpe_custom** model bases are chosen, then custom embeddings will be trained on the provided data.
+
+If you want to use addition dataset to train custom embeddings, please specify **Texts Data Path** and **Text Fields** in the **Input/Output parameters**.
+
+Additionally, commonly-used Word2vec training parameters are **Word2Vec Training Epochs**, **Size of Word Vectors** and **Word2Vec Window Size**. Default values should work in most cases.
+
+<Tip>
+Smaller word vectors size makes models smaller and more robust to overfitting. However, dimensions smaller than 100 may impact the quality.
+</Tip>
+
+
+
+## Evaluation parameters
+
+**Validation Sample Size** controls how much *unique* queries should be hold-out and used for validation. It is a fraction if the value below 1.0 or specific number of queries if it is integer value higher than 1.
+
+During evaluation, all responses/answers are used. They form an index which is queried by unique validation queries. **Eval ANN Index** parameter controls should it be ANN index or brute-force search with auto value by default. If you notice that evaluation takes a lot of time, try to enable ANN index or reduce the number of evaluation queries.
+
+Generally, this evaluation setup is similar to how it will work in index and query pipelines, so the evaluation results should provide good approximation of the quality. To evaluate the configured pipelines on the test data, please use [Evaluate a Smart Answers Query Pipeline job](/how-to/653/evaluate-a-smart-answers-query-pipeline).
+
+A list of evaluation metrics is provided to monitor the training process and measure the quality of the final model:
+
+* Mean Average Precision (MAP)
+* Mean Reciprocal Rank (MRR)
+* Recall
+
+You can choose from the list in the **Metrics list** parameter. It uses all metrics by default.
+
+You can also specify measuring the ranking position for each metric. For example, if you specify **Metrics@k list** as `[1,3]`, with **Metrics list** `[“map”,”mrr”,”recall”]`, then the metrics `map@1`, `map@3`, `mrr@1`, `mrr@3`, `recall@1`, and `recall@3` will be logged for each training epoch and final model.
+
+You can choose a particular metric at a particular `k` (controlled by the **Monitoring metric** parameter) to help decide when to stop training. Specifically, when there is no increase in the Monitoring metric value for a particular number of epochs (controlled by the **Patience during monitoring** parameter), then training stops.
+
+<Note>
+During the training we evaluate the result using similar cold-start model (weighted average of word vectors) as a baseline. Look for the *Cold-start encoder validation evaluation* section of the logs, it is printed before first training epoch.
+</Note>
+
+
+
+## General Encoder parameters
+
+Note that the following parameters are common across all model bases including RNN and Transformer architectures.
+
+* **Fine-tune Token Embeddings** will allow to fine-tune embeddings (word vectors) layer to be updated during the training alongside with all other layers. It is disabled by default as it is usually one of the biggest layer in the network and updating it might lead to overfitting. It is useful to enable if your data have a lot of specific or misspelled words.
+* **Max Length** controls the maximum context window that model can process. Texts longer than this value will be trimmed. The default value is the max value between three times the STD of question lengths and two times the STD of answer lengths.
+
+  The longer the context the longer and harder it takes for model to process. This parameter is especially important for Transformer-based models as it affects training and inference time. Note that the maximum supported length for Transformer models is 512 tokens, so you can specify any value up to that.
+* **Global Pool Type** specifies how token vectors should be aggregated to obtain final content vector. The default mechanism is self-attention which provides the best quality in most cases.
+* **Number of clusters** and **Top K of clusters to return** are deprecated since 5.3 and will be removed in the following releases. There is no practical need to use them after Milvus vectors similarity search integration.
+
+## RNN Encoder parameters
+
+We use [RNN-based deep learning](https://en.wikipedia.org/wiki/Recurrent_neural_network) architecture for `word` and `bpe` model bases, with the flexibility to choose between `LSTM` and `GRU` layers with more than one layer. We don’t recommend using more than three layers. The layers and layer sizes are controlled by the **RNN function list** and **RNN function units list** parameters.
+
+**Dropout ratio** parameters provides regularization effect and is applied between embeddings layer and the first RNN layer.
+
+## Training parameters
+
+These parameters controls the training procedure. Most of them are left blank so the robust default values can be determined by the training module based on the dataset statistics.
+
+The learning rate scheduler has 3 stages. Firstly, it linearly increases the LR from **Minimum Learning Rate** value to **Base Learning Rate** value over **Number of Warm-Up epochs**. Then it stays consistent for **Number of Flat epochs**. And at the last stage Cosine Annealing is used for the remain number of epochs.
+
+**Use Mixed Precision** parameter can enable mixed precision during the training for Transformer-based models if modern GPU are used (Turing and later). It helps to get more VRAM so bigger batch size can be used. As well as provides some performance boost in training time.
+
+**Cross-Batch Memory** parameters allow to re-use encoded representations from the previous batches during loss computation, so loss function can process more positive and negative examples for the model update. It works well with Transformer-based models that consumes more VRAM and can be used with only with limited batch size. This is not necessary when the training batch size is large. When configured, this number needs to be greater than or equal to the training batch size.

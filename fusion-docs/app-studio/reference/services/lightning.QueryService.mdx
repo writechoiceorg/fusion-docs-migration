@@ -1,0 +1,212 @@
+---
+title: "QueryService"
+permalink: "1207"
+---
+
+## Description
+
+Twigkit service for queries
+
+## Methods
+
+### clearQueries()
+
+Will remove all the queries from the factory.
+
+#### Example
+
+```js
+QueryService.clearQueries();
+```
+### convertHttpParamsToQuery(httpParams)
+
+Converts http params to query value..
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| httpParams | object | The httpParams of the query. |
+
+#### Example
+
+```js
+QueryService.convertHttpParamsToQuery(value);
+```
+### convertHttpParamsToUrl(httpParams)
+
+Converts http params into a URL.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| httpParams | object | A query object as http params |
+
+#### Example
+
+```js
+QueryService.convertHttpParamsToUrl(query, true);
+```
+### convertQueryToHttpParams(query, excludeHiddenFilters)
+
+Converts an object based query to HTTP Params.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | object | Query to convert |
+| excludeHiddenFilters *(optional)* | boolean | Whether to include hidden filters in the params. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| object | Returns the query object as http params. |
+
+#### Example
+
+```js
+QueryService.convertQueryToHttpParams(query);
+```
+### convertQueryToUrl(query, includeHiddenFilters)
+
+Converts query object into a URL, encoding necessary values correctly and optionally removing hidden filters
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | object | The query object. |
+| includeHiddenFilters | boolean | Whether to include hidden filters in the URL |
+
+#### Example
+
+```js
+QueryService.convertQueryToUrl(query, true);
+```
+### convertSortObjectToParam()
+
+Will convert sort object into an parameter.
+
+#### Example
+
+```js
+QueryService.convertSortObjectToParam(obj);
+```
+### convertSortParamToObject()
+
+Will convert sort parameter into an object.
+
+#### Example
+
+```js
+QueryService.convertSortParamToObject(param);
+```
+### getQuery(name)
+
+Gets the value of the query from the factory. If no query is found, the factory will return null.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | Name of the query to retrieve. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| object | Returns the query object, if no query object exists it will return null. |
+
+#### Example
+
+```js
+QueryService.getQuery(name);
+```
+### getQueryAsHttpParams(name, excludeHiddenFilters)
+
+Gets the value of the query from the factory. If no query is found, the factory will return null.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | Name of the query to retrieve. |
+| excludeHiddenFilters *(optional)* | boolean | Whether to include hidden filters in the params. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| object | Returns the query object, if no query object exists it will return null. |
+
+#### Example
+
+```js
+QueryService.getQueryAsHttpParams(name);
+```
+### queryContainsFilterForField(query, fieldName, filter)
+
+Will identify if the query contains the filter.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | object | The query object. |
+| fieldName | string | The name of the field |
+| filter | object | The filter object |
+
+#### Example
+
+```js
+QueryService.queryContainsFilterForField(query, fieldName, filter);
+```
+### removeFiltersForField(query, fieldName)
+
+Will remove any filters relating to the field name
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | object | The query object. |
+| fieldName | string | The name of the field |
+
+#### Example
+
+```js
+QueryService.removeFiltersForField(query, fieldName);
+```
+### setQuery(name, value)
+
+Adds the query value to the factory.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | Name to store the query under. |
+| value | object | The value of the query. |
+
+#### Example
+
+```js
+QueryService.setQuery(name,value);
+```
+
+## Events
+
+### query_name_updated
+
+When the query is set or changed Lightning will broadcast this message where name is the name of your query `query_name_updated`
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope

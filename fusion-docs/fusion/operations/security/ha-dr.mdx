@@ -1,0 +1,166 @@
+---
+title: "High Availability and Disaster Recovery"
+permalink: "tdkc10"
+---
+
+## High availability
+
+High system availability is sustained by sufficient levels of redundancy in the processing stack. Factors to consider when determining system availability include:
+
+* Redundant resource costs
+* System performance
+* System synchronization methods and the level of synchronization each method provides
+* Computational costs
+* Network latency
+
+Redundancy levels available are:
+
+* **Data Redundancy.** Create multiple copies of the data on a single storage device to increase the probability of at least one copy being available at all times.
+* **Storage Redundancy.** Distribute the data across multiple physical storage devices to ensure data is available if one of the physical storage devices is not accessible.
+* **Process/Pod Redundancy.** Create multiple copies of each service/pod to reduce the risk of a service becoming unavailable if an individual copy fails for some reason.
+* **Process/Pod Distribution.** Distribute duplicate pods across different nodes in a cluster to protect against the loss of service due to a failed node in the cluster.
+* **Node Redundancy.** Create multiple nodes in the cluster within a single Availability Zone to protect against the loss of any single node. For this option:
+
+  + The level of node over-provisioning is a function of both the probability of a node failing, and the average time required to provision and return a new node to service after a failure.
+  + Sufficient redundancy means that if one node fails, the remaining nodes have sufficient computing capacity to manage the load while a new node is provisioned.
+* **Availability Zone Redundancy.** Distribute resources across multiple zones to allow the system to tolerate the loss of an entire zone without compromising the availability of the system as a whole. While this is an option, Lucidworks does not use this because it does not consider this best practice.
+* **Cluster Redundancy.** - Create multiple copies at the cluster level within a single data center to ensure that there is no loss of service even if an entire cluster is lost.
+* **Data Center Redundancy.** Distribute clusters across multiple data centers in a region. If availability to a specific data center is lost, the system is still available in other data centers.
+* **Region Redundancy.** Distribute clusters across multiple regions, for example, east and west. If a major outage occurs and availability to a specific region is lost, the system is still available in the other regions.
+
+## Query runtime options
+
+The following options describe Fusion configurations.
+
+<Tip>
+**Important**
+
+
+The options are listed in order, from the least highly-available and lower disaster-prepared state, to the optimal highly-available and highest disaster-prepared state.
+</Tip>
+
+* **Single cluster located in on-premise client hardware.** This provides the lowest level of availability and disaster recovery if an outage or data corruption occurs.
+* **Single clusted deployed in the cloud.** This provides the lowest cloud-based level of availability and disaster recovery if an outage or data corruption occurs.
+* **Active-Passive disaster recovery.** Redundant clusters exist, but only one is running at a given time.
+* **Green-Blue-Active-Passive disaster recovery.** Redundant clusters exist, but only one is available to service user requests.
+* **Active-Active disaster recovery.** Redundant clusters exist that contain identical live infrastructure and all clusters are actively servicing user requests. For more information about the configurate to synchronize indexes between data clusters, see [Active - Active](#active-active).
+* **Green-Blue Active-Active disaster recovery.** Redundant clusters exist that contain duplicate Kubernetes-deployed environments and all clusters are actively servicing user requests.
+* **Fully Active-Active Traffic Shaped disaster recovery.** - Redundant clusters exist and all clusters are actively servicing user requests, with traffic directed to a specific cluster according to geography or user affinity.
+
+## Fusion High Availability architecture types
+
+Architecture types depend on the number of nodes in a cluster.
+
+| Nodes in cluster | Services on node |
+| --- | --- |
+| All services on 3+ nodes | * All services run on each node. |
+| All services on 2+1 nodes | * All services run on each node.<br/>● Requires an additional node to run only Zookeeper. |
+| Deploy services separately on 10 nodes | * 3 nodes for only search services (admin-ui, api, Zookeeper)<br/>● 2 nodes for only Solr service (search engine)<br/>● 2 nodes for signals services (Spark master and worker)<br/>● 2 nodes for connectors services |
+
+## Fusion Disaster Recovery deployment architecture types
+
+Disaster Recovery uses independent Fusion clusters on both data centers.
+
+The key tasks are to synchronize:
+
+* data center configurations
+* the actual data (indexes)
+
+### Strategy to sync data center configuration
+
+Extract configurations from lower environment and move to higher environment. During this process we ensure configurations apply to high environments for both data centers.
+
+### Setups to sync indexes between data centers
+
+#### Active - Active
+
+1. **Hot - Hot**: The data centers connect to a common node for good network bandwidth.
+
+   1. Fusion clusters are on both data centers without Solr.
+   2. Deploy Solr service on the common node.
+   3. Both Fusion clusters connect to Solr node to GET/PUT catalog or signals records.
+   4. Solr index has its own backup and restore procedure.
+
+2. **Hot - Warm:** There is no common data node between the data centers.
+
+   1. Deploy Fusion full stack clusters on both data centers.
+   2. Use Fusion connectors or PBL job to transfer catalog and signals from one datacenter to another.
+   3. Solr index is already replicated on both data centers.
+   4. During data transfer, it is possible that data is not fully synchronized.
+
+#### Active - Passive
+
+1. **Hot - Cold**
+
+   1. Fusion has 1-2 nodes on the secondary datacenter.
+   2. Configurations are periodically copied over to the secondary data center.
+   3. Connectors job is set up to copy indexes.
+   4. Could also take periodic Solr Active cluster backups and cache them temporarily so the most recent backup is always available to restore into the Cold cluster when it starts.
+
+## Data transfer options
+
+### Fusion SolrIndex connector
+
+For the [Fusion “SolrIndex” Connector](/fusion-connectors/19/solr-index-connector):
+
+* Pros include:
+
+  + Easy to configure.
+  + Batch transfer, but can be as fast as streaming using scheduling and monitoring options.
+  + Configurable to filter out documents.
+* Cons include:
+
+  + Not applicable if the data transfer rate requirement is too high.
+  + Only to transfer less than 100 million documents.
+
+### Fusion Parallel Bulk Loader (PBL) job
+
+For the [Fusion Parallel Bulk Loader (PBL) job](/fusion/5.9/452/parallel-bulk-loader-pbl):
+
+* Pros include:
+
+  + Easy to configure Fusion Spark job.
+  + Blazing fast batch transfer with scheduling and monitoring options available.
+  + Configurable to filter out documents.
+* Cons include:
+
+  + None, because this option does not need to run Spark services.
+
+### Solr streaming expressions
+
+Here is an example of Solr streaming expressions:
+
+```
+daemon(id="uniqueId",
+    runInterval="5000",
+    terminate="false",
+    commit(Target,
+ batchSize=5000,
+ update(Target,
+     batchSize=500,
+     topic(
+  Source-Checkpoint-Coll,
+  Source,
+                zkHost="localhost:9983/solr",
+                q="*:*",
+                fq="mimeType_s:application/pdf",
+    fl="id,*",
+                sort="id asc",
+                qt="/export"
+      )
+         )
+     )
+)
+```
+
+* Pros include:
+
+  + Keeps track of what has been read to date and only sends what is new.
+  + Open source and easy to configure.
+  + Does not depend on shard or replica count, and will tolerate differences on either end of the transaction.
+  + Tolerates source-side outages and picks up where it left off.
+* Cons include:
+
+  + Can only send stored fields.
+  + Not parallelizable like Spark jobs.
+  + Does not tolerate destination-side outages. When the target is not available, data transfers can drop because the source-side high-water-mark may move before the target-side failure is detected.

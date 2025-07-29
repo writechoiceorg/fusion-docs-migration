@@ -1,0 +1,136 @@
+export const schema = {
+  "type": "object",
+  "title": "LWAI Vectorize Query",
+  "description": "Generate a vector based on the input.   Uses a Lucidworks AI embedding model to encode the input to a vector representation. Will be skipped if the input is blank or wildcard (* or *:*).",
+  "required": [
+    "accountName",
+    "modelType",
+    "queryInput",
+    "outputContextVariable"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "legacy": {
+      "type": "boolean",
+      "title": "Legacy",
+      "description": "True if this stage only supports legacy mode",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "accountName": {
+      "type": "string",
+      "title": "Account Name",
+      "description": "Lucidworks AI account name.  This entry should match the account name set in the LWAI Gateway.",
+      "hints": [
+        "enumUrl:/api/query-stages/lwai-accounts"
+      ]
+    },
+    "modelType": {
+      "type": "string",
+      "title": "Model",
+      "description": "Lucidworks AI model to use for encoding.",
+      "hints": [
+        "enumUrl:/api/query-stages/lwai-model?account=${accountName}&useCase=embedding"
+      ]
+    },
+    "queryInput": {
+      "type": "string",
+      "title": "Query Input",
+      "description": "The query itself is retrieved from here.",
+      "default": "<request.params.q>",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputContextVariable": {
+      "type": "string",
+      "title": "Output Context Variable",
+      "description": "The context variable into which the vector will be placed.",
+      "default": "vector"
+    },
+    "useCaseConfig": {
+      "type": "array",
+      "title": "Use Case Configuration",
+      "default": [
+        {
+          "key": "dataType",
+          "value": "query"
+        }
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelConfig": {
+      "type": "array",
+      "title": "Model Configuration",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "failOnError": {
+      "type": "boolean",
+      "title": "Fail on Error",
+      "description": "Flag to indicate if this stage should throw an exception if an error occurs while generating an encoding.",
+      "default": false
+    }
+  },
+  "category": "AI",
+  "categoryPriority": 10,
+  "unsafe": false
+}

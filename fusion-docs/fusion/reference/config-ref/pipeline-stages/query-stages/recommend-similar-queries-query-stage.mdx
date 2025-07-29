@@ -1,0 +1,60 @@
+---
+title: "Recommend Similar Queries Stage"
+permalink: "8801"
+---
+
+This stage provides query-to-query recommendations.
+
+The stage works in the following way:
+
+1. Perform an exact match of the incoming query to queries stored in the similar queries collection. Return results if a match is found.
+2. If **Match non-exact matches** is enabled, the pipeline attempts a normal query and returns the results.
+3. If Enable POS tagging is checked, the stage will perform POS tagging on the incoming query and use only the noun parts for the non-exact match.
+
+<Note>
+The spaCy model for part-of-speech (POS) tagging no longer ships with fusion. It needs to be deployed as a Seldon container using the [Create Seldon Model deployment job](/fusion/5.9/564/create-seldon-core-model-deployment).
+</Note>
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/recommend-similar-queries.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,81 @@
+---
+title: "Fusion"
+permalink: "6764"
+---
+
+Lucidworks Fusion 5 lets customers easily deploy AI-powered data discovery and search applications in a modern, containerized, cloud-native architecture. Data scientists interact with those applications by:
+
+* Leveraging existing machine learning models and workflows
+* Using popular tools (Python ML, TensorFlow, scikit-learn, and spaCy) to quickly create and deploy new models
+
+Fusion combines the Apache Solr open source search engine with the distributed power of Apache Spark for artificial intelligence. Highly scalable, Fusion indexes and stores data for real-time discovery.
+
+* Index billions of records of any type, from any data source
+* Process thousands of queries per second from thousands of concurrent users
+* Conduct full-text search using standard SQL capabilities and powerful analytics
+
+To learn about the latest Fusion features and changes, see the [Fusion release notes](/fusion/5.9/97/release-notes).
+
+## Key concepts
+
+Fusion’s ecosystem allows you to manage and access your data in an intuitive fashion.
+
+### Apache Solr
+
+Solr is the fast open source search platform built on Apache Lucene™ that provides scalable indexing and search, as well as faceting, hit highlighting, and advanced analysis/tokenization capabilities. Solr and Lucene are managed by the [Apache Software Foundation](http://www.apache.org/).
+
+For more information, see the [Solr Reference Guide](/fusion/5.9/10902/solr-reference-guide) for your Fusion release.
+
+### Apache Spark
+
+[Apache Spark](http://spark.apache.org/) is an open source cluster-computing framework that serves as a fast and general execution engine for large-scale data processing jobs that can be decomposed into stepwise tasks, which are distributed across a cluster of networked computers.
+
+Spark improves on previous MapReduce implementations by using resilient distributed datasets (RDDs), a distributed memory abstraction that lets programmers perform in-memory computations on large clusters in a fault-tolerant manner.
+
+See [Spark Operations](/fusion/5.9/189/spark-operations) for more information.
+
+### Connectors
+
+Connectors are the out-of-the-box components for pulling your data into Fusion. Lucidworks provides a wide variety of connectors, each specialized for a particular data type. When you add a [datasource](/fusion-connectors/31/datasources) to a [collection](/fusion/5.9/8831/collections), you specify the connector to use for ingesting data.
+
+Connectors are distributed separately from Fusion. For complete information, see [Fusion Connectors](/fusion-connectors/2/fusion-connectors).
+
+Fusion offers dozens of connectors so you can access your data from a large variety of sources.
+
+To learn more about Fusion connectors, see [connectors concepts](/fusion/5.9/164/connectors-overview) or the [connectors section](/fusion-connectors/2/fusion-connectors).
+
+### Pipelines
+
+Pipelines dictate how data flows through Fusion and becomes accessible by a search application. Fusion has two types of pipelines: index pipelines and query pipelines.
+
+[Index pipelines](/fusion/5.9/155/data-ingestion-and-indexing-overview) ingest data, indexes it, and stores it in a format that is optimized for searching.
+
+[Query pipelines](/fusion/5.9/173/query-pipelines) filter, transform, and augment Solr queries and responses to return all and only the most relevant search results.
+
+## How-to information
+
+Want to start right away? See [get started](/how-to/880/get-started-with-fusion-server) for detailed instructions.
+
+Interested in using Fusion 5 with Kubernetes? See [Kubernetes concepts](/fusion/5.9/3209/kubernetes-deployment-architecture) and [How to Deploy Fusion on Azure Kubernetes Service](/how-to/604/deploy-fusion-5-on-azure-kubernetes-service-aks). We also have guides for deploying Fusion on [Amazon Elastic Kubernetes Service](/how-to/803/deploy-fusion-5-on-amazon-elastic-kubernetes-service-eks) and [Google Kubernetes Engine](/how-to/696/deploy-fusion-5-on-google-kubernetes-engine-gke).
+
+Looking to upgrade your Fusion instance? See [Fusion 5 Upgrades](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades).
+
+## Important reference information
+
+Our reference section includes information on [Fusion’s API](/fusion/5.9/424/fusion-rest-ap-is), [index pipelines stages](/fusion/5.9/229/index-pipeline-stages), [query pipelines stages](/fusion/5.9/278/query-pipeline-stages), [connections](/fusion-connectors/63/configuration-reference), and more.
+
+See [Reference](/fusion/5.9/196/reference) for complete reference information.
+
+## LucidAcademy
+
+Lucidworks offers free training to help you get started with Fusion. Visit the [LucidAcademy](https://academy.lucidworks.com) and select classes such as **Working With Data** and **Query Fine-Tuning** to learn how Fusion ingests, indexes, and queries data.
+
+## Key Improvements over Fusion 4
+
+Fusion 5 offers the following upgrade benefits over Fusion 4:
+
+* [Predictive Merchandiser](/fusion/5.9/591/predictive-merchandiser): AI-powered visual tool including abilities to pin, boost, bury, or block products, rewrite and fix misspellings, and interpret synonyms.
+* Advanced [Machine Learning](/fusion/5.9/495/machine-learning) models and jobs.
+* [Semantic Vector Search](/fusion/5.9/80xtou/semantic-vector-search) to improve product discovery by influencing recall, relevancy, and precision.
+* [Signals](/fusion/5.9/469/signals) for automatic self-tuning relevancy.
+* Goes beyond search for personalized content discovery: Browse pages, Recommendations, Chatbots, AB Testing, Analytics, and more.

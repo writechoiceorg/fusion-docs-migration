@@ -1,0 +1,34 @@
+---
+title: "Call Data Model Pipeline"
+description: "Index pipeline stage configuration specifications"
+permalink: "y7hw9u"
+---
+
+Data models simplify the process of getting started with Managed Fusion by providing pre-configured objects to reduce the effort spent on basic starting tasks. This helps keep documents consistent between datasources and intuitive to the object’s type.
+
+The Call Data Model Pipeline index stage is used to create a link between your document type (person, email, file, etc.) and your documents.
+
+<Note>
+**Important**
+
+This index stage must be placed *after* the **[Data Model Mapping index stage](/managed-fusion/5.9/04pnyx/data-model-mapping-index-stage)**.
+</Note>
+
+## More information
+
+* [How to Configure a Data Model](/how-to/udwjfr/configure-a-data-model)
+* [Data Models](/managed-fusion/5.9/fq4sdx/data-models)
+* [Data Models API reference](/managed-fusion/5.9/7c6m5v/data-models-api)
+* [Data Model Mapping Index Stage reference](/managed-fusion/5.9/04pnyx/data-model-mapping-index-stage)
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/call-data-model-pipeline.mdx";
+
+<SchemaParamFields schema={schema}/>
+

@@ -1,0 +1,17 @@
+---
+title: "Fallback Parser Stage"
+permalink: "378"
+---
+
+The Fallback parser stage is useful for processing data that Fusion does not have a specified parsing process for. Fallback does not technically parse data, since it does not know what to do with it, it simply copies the raw bytes into a Solr document. If your Fusion parser stage configuration encounters data it does not know how to parse, such as someone’s proprietary data file format, it will copy it as-is, whereas if it encounters recognizable data in more common file types, such as PDFs, Fusion will parse the text and metadata using Tika.
+
+The Fallback parser acts as the final stage that attempts to parse any documents that haven’t been parsed already. More commonly, the parser selects a stage specifically built to handle the data and runs that stage.
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/fallback.mdx";
+
+<SchemaParamFields schema={schema}/>

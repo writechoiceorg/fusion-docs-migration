@@ -1,0 +1,115 @@
+---
+title: "System Administration"
+permalink: "129"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+The Fusion UI provides information for system administration and lets you configure system components.
+
+The REST API provides equivalent functionality. See [System Admin APIs](/fusion-server/4.2/347/system-admin-ap-is).
+
+## DevOps Center
+
+The DevOps Center is a
+suite of tools
+for monitoring, troubleshooting, and incident investigation. It consists of
+a set of dashboards and
+an interactive log viewer, providing views into this Fusion cluster’s hosts and services using metrics and events.
+
+See [The DevOps Center](/fusion-server/4.2/130/the-dev-ops-center).
+
+## Object Explorer
+
+Object Explorer lets you easily find and manage Fusion objects within a specific app and across multiple apps in an entire Fusion deployment.
+
+See [Object Explorer](/fusion-server/4.2/121/object-explorer).
+
+## Log Viewer
+
+Fusion includes some dashboards to view and analyze events in Fusion logs. You can also customize existing dashboards or create new ones.
+To access these dashboards, click **System > Log Viewer**. See [Dashboards](/fusion-server/4.2/139/dashboards).
+
+## Access Control
+
+Fusion provides application security by restricting access to known users. Users are assigned named sets of permissions which provide access to a specific function called roles. A Security Realm encapsulates a user database together with specific authentication and authorization mechanisms.
+
+The Access Control panel allows you to view and edit [users](/fusion-server/4.2/125/users), [roles](/fusion-server/4.2/126/roles), and [security realms](/fusion-server/4.2/127/security-realms).
+
+## Blobs
+
+Fusion accepts large binary objects (blobs) for upload, and stores them in Solr. Blob uploads are used to install models, lookup lists, JDBC drivers, connectors, and more. In addition to the Blob Store API, the Fusion UI provides an interface to the blob store in the Fusion workspace.
+
+See [Blob Storage](/fusion-server/4.2/153/blob-storage).
+
+## Import Fusion Objects
+
+You can use the Fusion UI and the Objects API to migrate collections and related objects, including your searchable data, configuration data, pipelines, aggregations, and other objects on which your collections depend. You can also migrate entire apps.
+
+See [Migrate Fusion Objects](/how-to/836/migrate-fusion-objects).
+
+### Messaging Services
+
+The Messaging Services menu lets you configure system notifications, log messages, and alerts to external applications. Several messaging services are available.
+
+See [Messaging Services](/fusion-server/4.2/135/messaging-and-alerting).
+
+## Scheduler
+
+A job is a runnable Fusion object that performs a specific activity. Datasource jobs, Spark jobs, and tasks are all types of jobs.
+
+The Scheduler provides an interface for scheduling jobs.
+
+See [Jobs and Schedules](/fusion-server/4.2/184/jobs-overview#the-scheduler).
+
+### Solr Clusters
+
+The Solr Clusters menu provides controls for both reporting on and configuring Solr servers. When using Fusion with an existing Solr cluster, this provides a single point of access for both systems.
+
+## Solr Config
+
+Solr uses several XML configuration files to specify the contents and behavoir of a Solr collection. Fusion provides a set of default configurations, but depending on your application needs, it may be necessary to edit these configuration files.
+
+This Solr Config panel displays the set of Solr configuration XML files that you can edit. This is an advanced feature, for experienced Solr users. See the [Solr wiki](https://cwiki.apache.org/confluence/display/solr/Configuring+solrconfig.xml) for more information on configuring Solr.
+
+## System
+
+To access the system dashboard, click <InlineImage src="/assets/images/4.0/icons/workspace-menu-system.png"/> **System** > **System**.
+You need to be logged in as `admin` to access the full feature set.
+
+### System Overview
+
+The System Overview tab shows an overview of the collections and their states in the cluster.
+Click a specific collection to view the core name, collection name, Solr memory, system memory, and swap space usage.
+
+### API Insight
+
+The API Insight tab shows the available REST API endpoints in the system.
+
+### Configurations
+
+The Configurations tab provides read access to all of the global property settings of the system. The UI allows you to filter the list of configuration items by terms and choose the node of the cluster to examine.
+If you need to change any configuration item, you should use the [Configurations API](/fusion-server/4.2/342/configurations-api).
+
+### History
+
+The History tab shows the start and stop times of all services.
+
+### Heartbeat Data
+
+The Heartbeat Data tab shows you the information that would be sent to Lucidworks as part of the [System Usage Monitor](/fusion-server/4.2/128/system-usage-monitor),
+an optional program to report information about your system. You can enable or disable sending the data in this screen, by checking the box next to **Report Heartbeat**.
+
+### Metrics
+
+The Metrics tab provides access to the metrics indexed in the `system_metrics` collection, if enabled.
+
+<Note>
+In Fusion 4.2 and later, this metrics collection implementation is deprecated in favor of the `system_monitor` collection and the [DevOps Center](/fusion-server/4.2/130/the-dev-ops-center).
+</Note>
+
+For details, see [System Metrics](/fusion-server/4.2/198/system-metrics).
+
+### Threads
+
+The Threads tab shows the details of each active thread in the system. This is the same information returned by the threads endpoint of the [System API](/fusion-server/4.2/344/system-api).

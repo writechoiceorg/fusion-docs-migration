@@ -1,0 +1,39 @@
+---
+title: "Indexing APIs"
+permalink: "gq9miz"
+---
+
+The Indexing APIs are a group of APIs that can help you manage the way your Fusion instance ingests and processes documents and signals.
+You can use them to manage your [index pipelines](/fusion/5.9/351/index-pipelines-api), [index profiles](/fusion/5.9/348/index-profiles-api), and [index stages](/fusion/5.9/349/index-stages-api).
+
+For more information, [view the API specification.](?open-api=true)
+
+<Note>
+This group also contains APIs for [parsers](/fusion/5.9/308/parsers-api), but these endpoints are [deprecated in Fusion 5.9.11](/fusion/5.9/z72wlm/fusion-5-9-11#deprecations) and will be removed at a later date.
+Use the [Async Parsing API](/fusion/5.9/mwbgkx/async-parsing-api) instead.
+</Note>
+
+Fusion indexes data into collections in Solr.
+Indexing optimizes the data for search, after which it can be [queried](/fusion/5.9/3215/query-data-flow).
+[Index stages](/fusion/5.9/8799/index-pipeline-stages) process data according to their function.
+To see all available index pipeline stages, refer to [Index pipeline stages reference](/fusion/5.9/229/index-pipeline-stages-reference).
+[Index pipelines](/fusion/5.9/162/index-pipelines) are groupings of one or more index stages, and the order of stages affects how the data is indexed.
+[Index profiles](/fusion/5.9/160/index-profiles) are mappings of index pipelines, parsers, and collections. They’re useful for sharing index pipelines across multiple collections.
+
+Use these endpoints to perform the following indexing operations:
+
+* Create, modify, and delete index profiles.
+* Send documents directly to an index profile for indexing.
+* View the available index pipeline stages and their configuration parameters.
+* View, install, and manage custom index stages developed with the Index Stage SDK.
+
+<Tip>
+**LeadingPractice**
+
+Lucidworks recommends using the [Index Profiles API](/fusion/5.9/348/index-profiles-api) to push one or more JSON records to an index pipeline.
+Include a transaction code on each record.
+In the index pipeline, add fields to support troubleshooting such as Solr indexed timestamp, batch ID or hash of content record.
+This lets you query Fusion to compare against expected values to determine if there are missing documents.
+
+</Tip>
+

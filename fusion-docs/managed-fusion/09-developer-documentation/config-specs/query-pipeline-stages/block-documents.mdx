@@ -1,0 +1,36 @@
+---
+title: "Block Documents"
+description: "Query pipeline stage configuration specifications"
+permalink: "8prd3n"
+---
+
+The Block Documents query pipeline stage removes documents from the result
+based on a Block Documents rule which consists of the following elements:
+
+* `field`. The document field to filter on.
+* `keywords`. The words, phrases, or regex used as the filter.
+* `mode`. Filtering logic applied to keywords, one of:
+
+  + `exact`. exact matching on any item in the keywords list.
+  + `phrase`. phrase matching on the items in the keywords list.
+  + `regex`. treat items in the keywords list as a regex.
+  + `match`. requires a match for every item in the keyword list, but does not require phrase matching.
+* `blocks`. A list of document IDs for documents which are always removed from the query result.
+
+The block documents rule is used to craft a Solr query.
+The `keywords` are added to the `q` Solr query parameter, by default.
+The configuration property `queryParam` can be used to specify a different Solr query parameter
+to use as the keywords filter.
+The rest of the rule is processed into the `fq` Solr query parameter.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/block-documents.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "title": "Response Pairwise Swap",
+  "description": "Swap pairs of search results to mitigate ranking bias",
+  "required": [
+    "positionsToSwap"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "positionsToSwap": {
+      "type": "string",
+      "title": "Positions To Swap",
+      "description": "Pair of positions to swap, comma delimited",
+      "default": "1,2"
+    }
+  },
+  "category": "Responses",
+  "categoryPriority": 4,
+  "unsafe": false
+}

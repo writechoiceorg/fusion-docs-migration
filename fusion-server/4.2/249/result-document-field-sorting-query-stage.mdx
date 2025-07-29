@@ -1,0 +1,19 @@
+---
+title: "Result Document Field Sorting Query Stage"
+permalink: "249"
+---
+
+Re-order results returned from Solr by the value in a document field.
+
+This stage is used in the [default query pipeline](/fusion-ai/4.2/461/smart-answers) that enables [Smart Answers](/how-to/684/faq-solution-part-2#default-pipelines). See [Detailed Pipeline Setup](/fusion-ai/4.2/509/smart-answers-detailed-pipeline-setup) for configuration guidelines.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/qna-result-document-field-sorting.mdx";
+
+<SchemaParamFields schema={schema}/>

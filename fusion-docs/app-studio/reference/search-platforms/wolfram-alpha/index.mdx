@@ -1,0 +1,84 @@
+---
+title: "Wolfram|Alpha"
+permalink: "3208"
+---
+
+The Wolfram|Alpha platform adds support to Appkit for the [Wolfram|Alpha](http://www.wolframalpha.com/) computational knowledge engine.
+
+## Setup
+
+To add Wolfram|Alpha connectors to a Maven project, you must add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.wolframalpha</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+## Usage
+
+Assuming you have added the correct dependencies to your project (see above), the Wolfram Alpha platform configuration can be accessed by pointing to it in the search:platform tag. In this case the platform is placed in a variable named `platform` using the `var` attribute, and points to a platform configuration in ../conf/platforms/wa/wa.conf:
+
+```xml
+<search:platform var="platform" conf="platforms.wa"></search:platform>
+```
+
+### platforms/solr/solr.conf
+
+In this example platform configuration, we set some general settings for the platform:
+
+```yaml
+name: twigkit.search.wolframalpha.WolframAlpha
+appId: ABCD-EFGH
+```
+
+### Required attributes
+
+- `appId (java.lang.String)`
+    Application ID API key.
+
+### Optional attributes
+
+- `async (java.lang.Boolean)`
+    Whether to request data in 'asynchronous' mode or not. In asynchronous mode, only the definitions of existing properties are returned in the first response, with links to further information or computations.  
+    Default: `false`
+
+### Attributes shared across platforms
+
+- `host (java.lang.String)`
+    The URI of the platform. Must be specified using the full URI (for example, `http://localhost:1234`; `localhost:1234` will not work).
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified.
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.

@@ -1,0 +1,18 @@
+---
+title: "Parameterized Boosting"
+description: "Query pipeline stage configuration specifications"
+permalink: "a02wny"
+---
+
+The Parameterized Boosting query pipeline stage reads the `boostValues` (in `List<DocumentResult>` format) from the context variable (added by a [Rollup Aggregation stage](/managed-fusion/5.9/mz3o72/rollup-aggregation) or a [JavaScript stage](/managed-fusion/5.9/56khq2/java-script-stage)), and adds boosts to the main query using `bq` or `boost` based on the stage configuration. The weights for the boost values can also be scaled.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/parameterized-boosting.mdx";
+
+<SchemaParamFields schema={schema}/>

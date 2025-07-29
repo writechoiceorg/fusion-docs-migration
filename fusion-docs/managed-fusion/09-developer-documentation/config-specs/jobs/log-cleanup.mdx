@@ -1,0 +1,23 @@
+---
+title: "Log Cleanup"
+description: "Job configuration specifications"
+permalink: "vgwq8m"
+---
+
+Log cleanup jobs are run against your system logs collection to delete log messages that were created prior to the number of days specified in the `Delete logs older than "n" days` field.
+
+To create a log cleanup job, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** and in the Custom and Other Jobs section, select **Log Cleanup**. You can enter parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Parameters
+
+* **ID.** The unique ID for this job in the API. This is the `id` field in the configuration file. Required field.
+* **Logs Collection.** The collection that contains the documents that are deleted when the job is run. The allowed value is **system_logs**. This is the `collection` field in the configuration file. Required field.
+* **Delete logs older than "n" days.** The number of days to retain system log messages. When this job is run, it deletes all system log messages older than the number of days entered in this field. This is the `days` field in the configuration file. Optional field.
+* **Query to match docs to delete.** The query syntax to identify the documents to be deleted. The default value of `-logger_class_s:"com.lucidworks.cloud.gateway.audit"` excludes audit log entries to preserve audit information such as login and logout events. This is the `query` field in the configuration file. Optional field.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/task-jobs/log-cleanup.mdx";
+
+<SchemaParamFields schema={schema}/>

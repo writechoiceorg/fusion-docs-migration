@@ -1,0 +1,27 @@
+---
+title: "trusted"
+permalink: "1025"
+---
+
+## Description
+
+Returns a trusted url. This is required if trying to use an angular expression in the media idea src attribute.
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ trusted_expression | trusted }}
+```
+
+### In JavaScript
+
+```js
+$filter('trusted')(url)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| url | string | The url to return. |

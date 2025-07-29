@@ -1,0 +1,18 @@
+---
+title: "Image Formatting and Transcoding"
+permalink: "3187"
+---
+
+The Image tag displays images from a given field in a result. It will automatically resize, and cache the image for performance.
+
+## Usage
+
+This example shows how to display an image from a field:
+
+```xml
+<media:image field-name="image" field-prefix="http://foo.com" validate="true" width="150"></media:image>
+```
+
+In this case, the image URL is retrieved from a field named `image`. Before rendering, the image URL is prefixed with http://foo.com and its existence is validated. It is then resized to 150 pixels wide.
+
+To see all related attributes, see the [media:image](/fusion/5.9/1076/media-image) tag documentation.

@@ -1,0 +1,78 @@
+---
+title: "ResponseService"
+permalink: "1210"
+---
+
+## Description
+
+Twigkit service for setting and getting responses.
+
+## Methods
+
+### clearResponses()
+
+Removes all responses from the factory.
+
+#### Example
+
+```js
+ResponseService.clearResponses();
+```
+### createResponseFromResults(results)
+
+Creates a response object from the set of results you provide
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| results | array | The list of results to add to this response. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| Object | Returns a newly created response object with the results provided. |
+
+#### Example
+
+```js
+ResponseService.createResponseFromResults(results);
+```
+### getResponse(name, keys)
+
+Gets response from the factory.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The name of the response to retrieve |
+| keys *(optional)* | string | A comma separated list of keys you would like returned. If null whole response will be returned. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| Object | Returns the response object from the factory, if it doesn't exist it will return `null` |
+
+#### Example
+
+```js
+ResponseService.getResponse(name);
+```
+### setResponse(name, value)
+
+Adds response to response factory for retrieval using the getResponse method. Broadcasts an event of 'responsename_updated' with the new response value.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| name | string | The name of the response |
+| value | Object | The response object to add to the factory. |
+
+#### Example
+
+```js
+ResponseService.setResponse(name, value);```

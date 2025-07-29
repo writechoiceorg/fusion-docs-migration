@@ -1,0 +1,73 @@
+---
+title: "Asynchronous Tika Parsing"
+permalink: "lo9hdj"
+---
+
+In synchronous Tika parsing, parsing and indexing are performed concurrently. This can result in slow indexing for a large number of documents, as the parser and indexer must share resources.
+
+Asynchronous Tika parsing, on the other hand, performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents.
+
+<Danger>
+**FAQ**
+
+How does the configuration differ from synchronous Tika parsing?
+
+* In Fusion 5.9.10 and earlier, asynchronous parsing does not use a Fusion parser stage. Instead, the configuration is made in the datasource and index pipeline.
+* In Fusion 5.9.11 and later, asynchronous parsing uses the [Apache Tika Container parser stage](/fusion/5.9/0b2upm/apache-tika-container-parser-stage) in addition to configuration in the datasource and index pipeine. The parser ID set in the connector datasource configuration is used, allowing you to use any parser stage configuration except deprecated Tika stages.
+</Danger>
+
+
+
+By default, the asynchronous parsing service is deployed with a single instance, or pod. Depending on the number of documents and their size, you may consider scaling up or down the service. It is also possible to configure:
+
+* **Cron expression:** The cron expression that controls when the task is be executed.
+* **Number of datasources:** The number of datasources to select per task.
+* **Number of documents:** The number of documents to select per datasource per task.
+* **Task execution timeout:** The maximum amount of time that a task is allowed to run before it is terminated.
+
+<Tip>
+**Important**
+
+
+* In Fusion 5.9.10 and earlier, *your parser configuration is ignored* when using asynchronous parsing.
+
+    The asynchronous parsing service performs Tika parsing using Apache Tika Server. Other parsers, such as HTML and JSON, are not supported by the asynchronous parsing service.
+
+    Although your datasource is linked to a parser configuration, this link is ignored when asynchronous parsing is used.
+* In Fusion 5.9.11 and later, *your parser configuration is used* when using asynchronous parsing.
+
+    Asynchronous parsing service performs Tika parsing using [Apache Tika Container](/fusion/5.9/0b2upm/apache-tika-container-parser-stage). Other parsers, such as HTML and JSON, are now supported by the asynchronous parsing service.
+
+    Your datasource is linked to a parser configuration. This link is used when asynchronous parsing is used.
+</Tip>
+
+## Requirements
+
+Asynchronous parsing works for V2 connectors only, which use the Java SDK framework. It is enabled in the datasource configuration by toggling the **Advanced** view and turning on the **Async Parsing** option. Learn more about [V1 and V2 connectors](/managed-fusion/5.9/eojzz3/v-1-and-v-2-connectors).
+
+Additionally, the index pipeline must include a [Solr Partial Update Indexer](/fusion/5.9/233/solr-partial-update-indexer-stage) stage. This stage replaces the Solr indexer stage, which should be removed or turned off. This is required because the connector plugin and the asynchronous parsing services generate one document each, one from the fetching process and another from the parsing process, respectively. Both documents need to be merged into a single document. The Solr Partial Update Indexer merges both documents, while the Solr indexer stage overrides documents.
+
+For more information on asynchronous parsing setup, see [Use Tika Asynchronous Parsing](/how-to/5bk663/migrate-to-tika-asynchronous-parsing).
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Asynchronous Parsing Service** focuses on how to use asynchronous parsing to index your data more efficiently:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/asynchronous-parsing-service" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/async-parsing.jpg" alt="Asynchronous Parsing Service" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+

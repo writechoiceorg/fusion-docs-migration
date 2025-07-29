@@ -1,0 +1,195 @@
+---
+title: "Visual Editor"
+permalink: "l6f36o"
+---
+
+When you sign in to Lucidworks Platform, select the workspace, click **Commerce Studio**, and select the ecommerce configuration instance to manage. The Visual Editor screen is the default display. For example:
+
+<Frame>![Home - Visual Editor](/assets/images/lw-platform/commerce-studio/lw-cs-home-visual-editor.png)</Frame>
+
+## Build Visual Editor components
+
+Build the components of Visual Editor in the following order:
+
+* [Create a page](/lw-platform/cs/t968bf/pages) that reflects your website’s search experience.
+* [Create rules](/lw-platform/cs/ravw5k/ranking-rules) for the selected page.
+* [Add query rewrite functions](/lw-platform/cs/5zeagj/rewrite) such as synonyms and misspelling corrections.
+
+## Visual Editor features
+
+The Visual Editor lets you perform the following features:
+
+* Select the [page format](/lw-platform/cs/t968bf/pages) for the configuration you want to view and test.
+* Use the [search](#search) section to enter information to search, link to edit the page, test and preview results before you publish to your production site, publish the configuration to production, and view factors that impact result ranking.
+* View and manage your rules and the corresponding results in the [actions](#actions), [search results](#search-results), [changes](#changes), and [published rules](#published-rules) sections.
+
+### Search
+
+<Frame>![Search](/assets/images/lw-platform/commerce-studio/lw-cs-search-home.png)</Frame>
+
+The Search section of the Visual Editor screen lets you:
+
+* Enter text and search your site based on the [rules](/lw-platform/cs/ravw5k/ranking-rules) and [query rewrite](/lw-platform/cs/5zeagj/rewrite) configuration.
+* Click <Frame>![Edit Page](/assets/images/lw-platform/commerce-studio/lw-cs-search-edit-page.png)</Frame> **Edit page** to modify the [page configuration](/lw-platform/cs/t968bf/pages).
+* Click [Preview Live](/lw-platform/cs/93f8tp/live-site-simulator) to test various terms and phrases for the [rules](/lw-platform/cs/ravw5k/ranking-rules) and [query rewrite](/lw-platform/cs/5zeagj/rewrite) configuration so you can refine the results returned before you publish the campaign for your customers.
+* Click **Publish** to activate the campaign on your production customer site.
+* Click **Ranking Factors** to view criteria such as sorting, relevance, and query processing that impact the results.
+
+### Actions
+
+The Actions section of the Visual Editor screen lets you set actions for rules.
+
+You can only apply one action per rule.
+
+<Note>
+Commerce Studio alerts you if you create multiple rules with conflicting actions.
+For example, a conflict occurs if you create rules that boost, block, and bury the same item.
+</Note>
+
+
+
+| Type | Description |
+| --- | --- |
+| Add Banner | Returns an image outside of the search results that can be displayed in the frontend. |
+| Block Items | Blocks the associated values from appearing in the search results. |
+| Boost Attributes | Boosts products with specific attributes in a search. Boosts can be one of the following:  * Additive, which adds a factor to the base score of the document * Multiplicative, which multiplies the base score of the document by a specified factor |
+| Boost Items | Boosts products with a large multiplicative boost so the products appear at the top of the results. Larger boosts can override this action. |
+| Bury Items | Buries products with the selected values. This action minimizes certain products without blocking them. |
+| Rerank Items in Group | Changes the ranking within a group of items. You can pin items so they display in a specific order. This feature requires the item to have product variants and is configured in the Visual Editor. Assign a number to each variant to determine the display order. Assigning the number '1' makes that variant the default version shown in search results. |
+| Filter Items | Applies [filter queries](https://solr.apache.org/guide/common-query-parameters.html) (`fq`) to the query and changes the results so a pre-selected set of content displays. |
+| Set JSON Blob | Returns a JSON blob to your frontend when a condition is met. The JSON blob displays outside of the search results. |
+| Pin Items | Puts a product in a specified order within the search results. You also have the option to use [Query Elevation Component](#qec). |
+| Redirect | Displays a message that the frontend can use to redirect a user to a specific URL. You can use this action to send users to dedicated landing pages or campaigns. If you have queries that return zero results, you may opt to create a dedicated page to redirect those queries. |
+| Set Response Value | Sends an arbitrary value to the frontend or pipeline to trigger another action. This action can be combined with other actions within the same rule. For example, an ecommerce website may use the response value action to display an advertisement. |
+| Set Facets | Customizes the facets (categories of groups) returned in the query response. For example, if your site sells clothing, you may set a number of facets as different colors (black, blue, red, yellow, and so on) so the customer can select a specific color for items they want to view. |
+| Set Params | Sets a [parameter name and value](https://solr.apache.org/guide/solr/latest/query-guide/common-query-parameters.html) to a search query. For example, the sort order for the results, or a filter that affects results. |
+
+<Note>
+Query Elevation Component (QEC) applies the rule action to the top results regardless of the product’s (document’s) score.
+Enabling QEC does not boost the document’s score. QEC only supports elevation through the `id` field.
+Your Solr cluster must be configured to enable QEC. Contact your Lucidworks representative for more information.
+</Note>
+
+
+
+### Search Results
+
+The Search Results section of the Visual Editor screen displays information about individual items and lets you perform the following actions.
+
+#### Add or edit facets
+
+Use the **Facets** button to add, modify, or delete facets for the search. The calculated Facets display with the results.
+
+To create a facet, complete the following steps:
+
+1. Click the **Facets Field > Add Facets**.
+2. In the **Facet Field**, enter the field name and a **Facet Type** of a single **Field** or enter a **Range** that adds the range to the lower boundary.
+3. Click **Advanced** to specify what the facet displays such as single or multiple selection, sort order, what is included in the response and what is boosted, buried, or suppressed. You can also set multiple response values.
+
+#### View and modify item
+
+An example of an individual item result is:
+
+<Frame>![Item result](/assets/images/lw-platform/commerce-studio/lw-cs-item-result.png)</Frame>
+
+* **Item rank.** The number of the rank displays, as well as an indicator if the rule that returned that item is unpublished. The example is ranked #1 and the rule that returned it is published. If the rule is unpublished, the text "Unpublished" displays next to the ranking number.
+* **Add.** Click **Add** and then boost, pin, bury, block, enter a number of rank, rerank the item in the group, or delete that item. You can also hold the pointer over the item, then click the **Drag** icon and drag the item to reorder its rank.
+* **Metrics.** Metrics display if [Inline analytics](#inline-analytics) are configured for the card.
+* **Add Rule.** Select the checkbox in one or more items to enable the **+ Add Rule** option to boost, bury, and block the selected items. For more information, see [Create a rule in Visual Editor](/lw-platform/cs/ravw5k/ranking-rules#visual).
+
+#### Results List
+
+The Results List section lets you change the [item card display](#change-item-card-display) and [apply tags](apply-tags).
+
+##### Change Item Card Display
+
+To view the settings or change what displays on each result item card, click **Results List** and select **Change Item Card Display**.
+
+<Frame>![Results List](/assets/images/lw-platform/commerce-studio/lw-cs-results-list.png)</Frame>
+
+On the Item Card Settings screen, the format of the card displays based on the configuration. If you change the fields or metrics values, the format displays the changes.
+
+<Frame>![Item Card Settings](/assets/images/lw-platform/commerce-studio/lw-cs-item-card-settings.png)</Frame>
+
+##### Fields
+
+The fields defined in the example include the product image and name.
+
+To add a new field such as `price`, click **Add Field** and then enter information in the:
+
+* **Field Name.** The name of the field, such as `price_s`.
+* **Field Style.** The style of the field, such as price. The options are `price` to display money amounts, `url` to display the URL where the item is located, or `generic` to display text.
+* **Field Display Name.** The title of the field on the card. For example, the Field Display Name for the `product_title_s` field is `Product Name`. If you add the `price_s` field, the Field Display Name can be any text such as `Price`.
+
+In the default image field, you can select the **Show Variants** checkbox to enter an alternative to the specified field. If the checkbox is selected, you can enter an alternate product image or color as the variant.
+
+* Example 1:
+
+  <Frame>![Show Variants Image](/assets/images/lw-platform/commerce-studio/lw-cs-item-card-show-variants-image.png)</Frame>
+
+  + **Variant Field Name.** The dataset field name for the product image. For example, `image_s`.
+  + **Variant Field Type.** For a product image, the value is **image**.
+  + **Variant SKU ID.** The unique identifier for the product. The product image is associated with this ID. For example, the SKU varies based on long-sleeved T-shirt versus a short-sleeved T-shirt.
+* Example 2:
+
+  <Frame>![Show Variants Color](/assets/images/lw-platform/commerce-studio/lw-cs-item-card-show-variants-color.png)</Frame>
+
+  + **Variant Field Name.** The dataset field name for the color of product. For example, `color_s`.
+  + **Variant Field Type.** For product color, the value is **color**.
+  + **Variant SKU ID.** The unique identifier for the product based on color. For example, the SKU varies if the T-shirt is red as opposed to blue.
+
+##### Inline Analytics
+
+In Commerce Studio, metrics from Analytics Studio can be displayed directly on product cards. This integration enables you to make data-driven decisions when curating your search results.
+
+For instance, RPV (revenue per visitor) can highlight products generating significant revenue but lacking sufficient visibility in search results. Such insights help identify opportunities to boost underperforming high-profit items, ensuring they are prioritized appropriately to maximize revenue potential.
+
+To view key metrics captured by Analytics Studio for each item returned in the results, complete the following fields:
+
+1. Click **Inline Analytics** to configure the metrics on each item card such as the amount of time calculated in the metrics, the signal document field that stores metrics, and types of metrics (ATC, RPV, and CVR). If this is not selected, metrics do not display on the items.
+
+<Frame>![Show Variants](/assets/images/lw-platform/commerce-studio/lw-cs-item-card-inline-analytics.png)</Frame>
+
+2. Select a value in the **Metrics Duration** field. For example, `Last 30 Days`. This determines the amount of time calculated in the metrics. The duration displays on the item above the corresponding metrics.
+3. In the **Document ID Field**, enter the field to be used as the document ID when retrieving metrics from the Signals Store. The default is `id`.
+4. In the **Add Up to 3 Metrics** field, you can select any or all of the metrics to display for the item (and the amount of time selected in the **Metrics Duration** field).
+
+   * **ATC.** Add to cart is also referred to as cart add rate. The cart add rate measures the percentage of clicks that result in an item being added to the shopping cart. This metric highlights the effectiveness of product pages and user readiness to purchase.
+   * **Purchases.** Displays the number of purchases related to this item.
+   * **Revenue.** Displays the revenue related to this item.
+   * **RPV.** Revenue per visit displays the average revenue received per visit for the item for the time period specified in the **Metrics Duration** field. This metric allows users to assess the effectiveness of driving revenue through individual customer visits, aiding in optimizing user engagement and marketing efforts.
+   * **CVR.** Conversion rate is also referred to as search conversion rate. The search conversion rate measures the percentage of searches that result in a completed purchase. This metric represents the final step in the user journey from query to conversion, offering a clear indicator of overall search effectiveness and customer satisfaction. For example, a conversion rate of 5% means that 5 out of every 100 searches lead to a purchase.
+
+     <Note>
+     For more information, see [Analytics Studio and Commerce Studio](/lw-platform/analytics/kvidem/analytics-studio-and-commerce-studio) and [Metrics](/lw-platform/analytics/xcd2n5/metrics).
+     </Note>
+
+
+
+##### Apply tags
+
+To apply rules by tag to this section, click **Results List** and select **Apply Tags**. On the Apply Tags screen, tags entered on rules created in Ranking Rules display. You can select the tags you want to apply to the section and click **Apply**.
+
+<Frame>![Apply tags](/assets/images/lw-platform/commerce-studio/lw-cs-apply-tags.png)</Frame>
+
+### Changes
+
+This section displays the latest rule changes that affected the results displayed in the Visual Editor. The `Condition`, `Action`, `Precedence`, `Target` and `Last edited on` fields display for each rule change.
+
+You can click the pencil icon to edit the rule using the [Rule Wizard](/lw-platform/cs/ravw5k/ranking-rules#wizard), or click the trash can to delete that rule.
+
+For more information about rules, see [Ranking Rules](/lw-platform/cs/ravw5k/ranking-rules).
+
+### Published Rules
+
+This section displays the published rules for the results in Visual Editor.
+
+Select the checkbox of one or more rules and the number of published rules displays above the items. Click **Published Rules** and the rules associated with the selected items display. The `Condition`, `Action`, `Precedence`, `Target` and `Last edited on` fields display for each rule.
+
+The actions you can perform include:
+
+* **Unpublish the rule.** Select the checkbox for the rule and click the down arrow to unpublish the rule.
+* **Delete the rule.** Select the checkbox of one or more rules and click the trash can to delete those rules. You can also select the checkbox for an individual rule, then hold the pointer over the rule, and click the trash can for that individual rule to delete it.
+* **Edit the rule.** Hold the pointer over an individual rule and click the pencil icon to edit the rule using the [Rule Wizard](/lw-platform/cs/ravw5k/ranking-rules#wizard).
+
+For more information about rules, see [Ranking Rules](/lw-platform/cs/ravw5k/ranking-rules).

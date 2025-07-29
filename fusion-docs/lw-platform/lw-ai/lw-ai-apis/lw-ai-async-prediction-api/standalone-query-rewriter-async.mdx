@@ -1,0 +1,122 @@
+---
+title: "Standalone query rewriter use case"
+description: "Lucidworks AI Async Prediction API"
+permalink: "87yn4g"
+---
+
+View API specification
+
+The Standalone query rewriter use case of the [Lucidworks AI Async Prediction API](/lw-platform/ai/55ug0f/async-prediction-api) rewrites the text in reference to the context based on the `memoryUuid`.
+
+This use case can be used to rewrite the context from a previous response into a standalone query.
+
+The Standalone query rewriter use case contains two requests:
+
+* POST request - submits a prediction task for a specific `useCase` and `modelId`. The API responds with the following information:
+
+  + `predictionId`. A unique UUID for the submitted prediction task that can be used later to retrieve the results.
+  + `status`. The current state of the prediction task.
+* GET request - uses the `predictionId` you submit from a previously-submitted POST request and returns the results associated with that previous request.
+
+<Note>
+
+To view the full configuration specification for an API, click the **View API specification** button.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+Alternatively, [click here to open the API spec](?open-api=true).
+
+</Note>
+
+
+
+## Prerequisites
+
+To use this API, you need:
+
+* The unique `APPLICATION_ID` for your Lucidworks AI application. For more information, see [credentials to use APIs](/lw-platform/platform/oqzogo/apis-and-credentials#credentials).
+* A bearer token generated with a scope value of `machinelearning.predict`. For more information, see [Authentication API](/lw-platform/ai/oa96k5/authentication-api).
+* The `USE_CASE` and `MODEL_ID` fields in the `/async-prediction` for the POST request. The path is `/ai/async-prediction/USE_CASE/MODEL_ID`. A list of supported modes is returned in the [Lucidworks AI Use Case API](/lw-platform/ai/0stpyb/use-case-api). For more information about supported models, see [Generative AI models](/lw-platform/ai/r7ai90/generative-ai#generative-ai-models).
+
+## Common POST request parameters and fields
+
+Some parameters in the `/ai/async-prediction/USE_CASE/MODEL_ID` POST request are common to all of the generative AI (GenAI) use cases, such as the `modelConfig` parameter.
+Also referred to as hyperparameters, these fields set certain controls on the response.
+Refer to the [API spec](?open-api=true) for more information.
+
+## Unique values for the standalone query rewriter use case
+
+Some parameter values available in the `standalone query rewriter` use case are unique to this use case, including values for the `useCaseConfig` parameter.
+Refer to the [API spec](?open-api=true) for more information.
+
+### Example POST request
+
+This example does not include `modelConfig` parameters, but you can submit requests that include parameters described in [Common POST request parameters and fields](#common-post-request-parameters-and-fields).
+
+```bash
+curl --request POST \
+  --url https://APPLICATION_ID.applications.lucidworks.com/ai/async-prediction/standalone-query-rewriter/MODEL_ID \
+  --header 'Authorization: Bearer ACCESS_TOKEN' \
+  --header 'Content-type: application/json' \
+  --data '{
+  "batch": [
+    {
+      "text": "Is it a framework?"
+      },
+  ],
+    "useCaseConfig": {
+      "memoryUuid": "27a887fe-3d7c-4ef0-9597-e2dfc054c20e"
+    }
+}'
+
+```
+
+The following is an example of a successful response:
+
+```json
+{
+	"predictionId": "fd110486-f168-47c0-a419-1518a4840589",
+	"status": "SUBMITTED"
+}
+
+```
+
+The following is an example of an error response:
+
+```json
+{
+	"predictionId": "fd110486-f168-47c0-a419-1518a4840589",
+	"status": "ERROR",
+	"message": "System prompt exceeded the maximum number of allowed input tokens: 81 vs -1091798"
+}
+
+```
+
+### Example GET request
+
+```bash
+curl --request GET
+--url https://APPLICATION_ID.applications.lucidworks.com/ai/async-prediction/PREDICTION_ID
+--header 'Authorization: Bearer Auth '
+
+```
+
+The following is an example response:
+
+```json
+{
+  "predictionId": "fd110486-f168-47c0-a419-1518a4840589",
+  "status": "READY",
+  "predictions": [
+    {
+      "response": "Is RAG a framework?",
+      "tokensUsed": {
+       "promptTokens": 245,
+       "completionTokens": 6,
+       "totalTokens": 251
+       },
+    }
+  ]
+}
+
+```

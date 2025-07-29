@@ -1,0 +1,39 @@
+---
+title: "Custom Rules API"
+description: "Managed Fusion Query APIs"
+permalink: "gdkfpz"
+---
+
+The Custom Rules API allows you to create, read, update, and delete [custom rules](/managed-fusion/5.9/03vd0y/business-rules#custom-rule-actions).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Example
+
+The following example will create a new custom rule type in the myFusionApp app. The new custom rule type will use a pipeline with an ID of **custom-rule-pipeline** and will have two custom text fields for **Manufacturer** and **Type**.
+
+This assumes a pipeline called custom-rule-pipeline already exists. If that is not the case, you can add `/{id}` to the URL and use `PUT` instead of `POST` to update an existing custom rule type. See [Create Custom Rule Actions with the API](/how-to/vjau3o/create-custom-rules-api.asciidoc) for more information on creating custom rule types.
+
+```sh
+curl -u USERNAME:PASSWORD -XPOST -H "Content-type:application/json" \
+https://FUSION_HOST:6764/api/apps/{app-name}/custom-rule-types -d '{
+  "id":"{custom-rule-type}",
+  "pipeline_id":"{query-pipeline}",
+  "display_type":"My Custom Rule",
+  "schema": {
+    "type" : "object",
+    "properties" : {
+      "custom_param1" : {
+        "type" : "string",
+        "title" : "Manufacturer",
+        "description" : "The manufacturer of the product this rule action applies to."
+      },
+      "custom_param2" : {
+        "type": "string",
+        "title": "Type",
+        "description": "The type of product this rule action applies to."
+      }
+    }
+  }
+}'
+```

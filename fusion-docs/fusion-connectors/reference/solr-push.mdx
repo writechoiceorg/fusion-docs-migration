@@ -1,0 +1,29 @@
+---
+title: "Solr Push Endpoint V2"
+description: "Connector Configuration Reference"
+permalink: "65"
+---
+
+Compatible with Fusion version: 4.2.0 through 5.1.5
+
+The Solr Push Endpoint accepts documents and pushes them to Solr using the Fusion index pipelines.
+You might use this, for example, if you are indexing Solr XML documents from a content management system that natively integrates with Solr, for example using SolrJ.
+
+The Solr Push Endpoint requires you to define a port that is not already in use by another process. You can then send the documents to Fusion at that port.
+
+For a more general purpose method of pushing documents into Fusion, see
+[Importing Data with the REST API](/how-to/865/import-data-with-the-rest-api).
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character.
+When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-push.mdx";
+
+<SchemaParamFields schema={schema}/>

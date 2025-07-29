@@ -1,0 +1,25 @@
+---
+title: "ScrollToService"
+permalink: "1214"
+---
+
+## Description
+
+Appkit service providing functions for scrolling to the top or a particular element ID on the page.
+
+## Methods
+
+### scrollToElement(id)
+
+Scrolls to a specific element based on ID (if no element id is provided it will scroll to the top of the page).
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id *(optional)* | string | The ID of the element to scroll to (if the ID is not defined then this function will scroll the user to the top of the page). |
+
+#### Example
+
+```js
+ScrollToService.scrollToElement('foo');```

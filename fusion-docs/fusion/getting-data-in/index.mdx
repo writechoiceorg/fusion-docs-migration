@@ -1,0 +1,34 @@
+---
+title: "Getting Data In"
+permalink: "3218"
+---
+
+There are many methods for getting data into Fusion, depending on the type of data:
+
+* Your searchable content, [signals](/fusion/5.9/469/signals), and logs are all ingested by [indexing them](/fusion/5.9/155/indexing-your-data) in Solr.
+* [connectors](/fusion-connectors/2/fusion-connectors), [machine learning models](/fusion/5.9/492/machine-learning-models-in-fusion), [JDBC drivers](/how-to/916/upload-a-jdbc-driver-to-fusion-server), [analytics catalogs](/fusion/5.9/329/catalog-api), and [Banana dashboards](/fusion/5.9/139/dashboards) can be uploaded to the blob store.
+* The [Parallel Bulk Loader (PBL)](/fusion/5.9/452/parallel-bulk-loader-pbl-overview) can perform distributed reads on any data source that implements the SparkSQL (2.2.1 or later) Data Sources API.
+* Though signals are normally indexed, you can also [import them](/fusion/5.9/3220/importing-signals).
+* In some cases, you might find that it’s best to use other ingestion methods, such as
+  [Hive](/how-to/735/import-data-with-hive), [Pig](/how-to/761/import-data-with-pig), or pushing data to a [REST API](/how-to/865/import-data-with-the-rest-api) endpoint.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Ingesting Data** focuses on understanding connectors and how to configure datasources, parsers, and index pipelines:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/ingesting-data" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/ingesting-data.png" alt="Ingesting Data" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+

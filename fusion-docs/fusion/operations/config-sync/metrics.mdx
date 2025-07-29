@@ -1,0 +1,13 @@
+---
+title: "ConfigSync metrics"
+permalink: "c7r9h8"
+---
+
+Metrics endpoint is available at `/actuator/prometheus` on the ConfigSync service.
+
+The following metrics are exposed by the ConfigSync service:
+
+* `resource_update_errors_total` (`counter`) - The total number of errors encountered while updating resources.
+* `out_of_sync` (`gauge`) - The number of resources that are out of sync. Only in `sub` mode.
+* `sync_seconds` (`summary`) - The time taken to sync resources.
+* `sync_seconds_max` (`gauge`) - The maximum time taken to sync resources.

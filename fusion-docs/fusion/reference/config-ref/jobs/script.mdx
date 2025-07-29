@@ -1,0 +1,32 @@
+---
+title: "Script Jobs"
+permalink: "386"
+---
+
+This job lets you run a custom Scala script in Fusion.
+
+To create a Script job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Custom and Others Jobs section, select **Script**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Scala script.** The Scala script to be executed in Fusion as a Spark job. This is the `script` field in the configuration file.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use for Spark configuration. This is the `sparkConfig` field in the configuration file.
+* **Spark shell options.** This section lets you enter `parameter name:parameter value` options to send to the Spark shell when the job is run. This is the `shellOptions` field in the configuration file.
+* **Interpreter params.** This section lets you enter `parameter name:parameter value` options to bind the `key:value` pairs to the Scala interpreter. This is the `interpreterParams` field in the configuration file.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/script.mdx";
+
+<SchemaParamFields schema={schema}/>

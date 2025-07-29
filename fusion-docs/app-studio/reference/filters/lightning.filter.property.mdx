@@ -1,0 +1,29 @@
+---
+title: "property"
+permalink: "1020"
+---
+
+## Description
+
+Get value from an array based on the value of a property.
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ property_expression | property:value:returnProperty }}
+```
+
+### In JavaScript
+
+```js
+$filter('property')(property, value, returnProperty)
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| property | string | The name of the property to filter on. |
+| value | string | The value of the property to filter on. |
+| returnProperty | string | The property to return. |

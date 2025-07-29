@@ -1,0 +1,66 @@
+---
+title: "Hybrid Query Stage"
+permalink: "fgbib5"
+---
+
+The Hybrid Query stage performs hybrid lexical-semantic search that combines BM25-type lexical search with KNN dense vector search via Solr.
+
+<Tip>
+**Important**
+
+
+This stage is deprecated. Use [Neural Hybrid Query Stage (5.9.10 and later)](/fusion/5.9/mb500k/neural-hybrid-query-stage) instead.
+</Tip>
+
+Not sure which hybrid query stage is right for you? Read about the
+[differences between the hybrid query stages](/fusion/5.9/fhx9nk/differences-between-hybrid-query-stages).
+
+<Note>
+This feature is only available in Fusion 5.9.5 and later versions of Fusion 5.9.
+</Note>
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/hybrid-query.mdx";
+
+<SchemaParamFields schema={schema}/>

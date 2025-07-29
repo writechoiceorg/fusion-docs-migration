@@ -1,0 +1,27 @@
+---
+title: "Resolve Multivalued Fields"
+description: "Index pipeline stage configuration specifications"
+permalink: "yi8wp7"
+---
+
+The Resolve Multivalued Fields stage (previously called the Multi-Value Resolver stage) allows you to choose one value from a set of one or more field values using a set of pre-defined rules, based on either field name or field type.
+For each field name or field type rule, a strategy is defined. There are 6 available strategies:
+
+* DEFAULT: leave all values intact. This may cause problems if a field or dynamic field rule is not defined as multi-valued in the schema.
+* PICK_FIRST: choose the first value and discard all others.
+* PICK_LAST: choose the last value and discard all others.
+* PICK_BY_CREATOR: based on the name of the "creator" metatdata, choose the name of 'creator' as defined in the creatorStrategy property for the field name. Only the last matching value will be retained.
+* CONCATENATE_UNIQUE: choose to concatenate unique string values with a single space separator.
+* PICK_MIN: choose the minimum value and discard all others. If the values are non-numeric, then all non-numeric values will be discarded.
+* PICK_MAX: choose the maximum value and discard all others. If the values are non-numeric, then all non-numeric values will be discarded.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/resolve-multivalued-fields.mdx";
+
+<SchemaParamFields schema={schema}/>

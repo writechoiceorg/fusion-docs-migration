@@ -1,0 +1,35 @@
+---
+title: "Drupal 7.x V1"
+description: "Connector Configuration Reference"
+permalink: "43"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Drupal connector requires **Drupal’s Services 7.x3.11 Module REST API**. Refer to this page to install the necessary packages: [www.drupal.org/node/783236](https://www.drupal.org/node/783236)
+
+<Warning>
+**Caution**
+
+This connector is no longer functional in Fusion 5.9 and later. This incompatibility arises due to changes implemented in the data source version or related APIs.
+
+Although the V1 connector might still be visible within the Fusion UI, it cannot be used effectively. To ensure uninterrupted operation, we strongly recommend switching to a valid V2 alternate connector.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+</Warning>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-drupal.mdx";
+
+<SchemaParamFields schema={schema}/>

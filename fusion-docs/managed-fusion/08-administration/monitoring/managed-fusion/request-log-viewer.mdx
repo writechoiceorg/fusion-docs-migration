@@ -1,0 +1,109 @@
+---
+title: "Request Log Viewer"
+description: "Grafana dashboard"
+permalink: "t8cvq2"
+---
+
+The Request Log Viewer dashboard provides details on HTTP method and CRUD operation requests sent to Managed Fusion.
+
+<Frame>![Request Log Viewer](/assets/images/managed-fusion/request-log-viewer01.png)</Frame>
+
+<Note>
+Managed Fusion Admin UI events are included in the Request Log Viewer dashboard.
+</Note>
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Grafana for Managed Fusion** focuses on the best practices for utilizing the Grafana dashboard:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/grafana-for-managed-fusion" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/grafana-for-managed-fusion.jpeg" alt="Grafana for Managed Fusion" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Filter tools
+
+Use the top level controls to apply labels, search, and filter the data by time range in each panel.
+
+Labels are similar to facets or filters. Adding a label defines the stream of logs. Adding or removing a label affects the label options available to other parameters.
+
+Use the **Search** control to find log data that matches the query keyword. Search is case insensitive. The query `error` matches `error`, `Error`, `ERROR`, and other variants of the keyword.
+
+Set the time range controls to focus your data stream on a specific time range. For example, you can view data from the last 15 minutes or you can view a 12-hour time range from last week. For more information, see [Set dashboard time range](https://grafana.com/docs/grafana/latest/dashboards/use-dashboards/#set-dashboard-time-range).
+
+For more information about the components used in the Fusion Log Viewer dashboard, see the Grafana documentation on [Dashboards](https://grafana.com/docs/grafana/latest/dashboards/) and [Panels and visualizations](https://grafana.com/docs/grafana/latest/panels-visualizations/).
+
+## Panels
+
+### Log Levels
+
+The panels in the **Log Levels** section display data about the following HTTP methods and CRUD operations:
+
+* **GET.** Retrieve a resource.
+* **POST.** Create a resource.
+* **PUT.** Replace a resource.
+* **UPDATE.** Update a resource.
+* **DELETE.** Delete a resource.
+
+<Note>
+In the Request Log viewer, the **UPDATE** and **DELETE** operations share a panel.
+</Note>
+
+### Log Viewer
+
+The log viewer panel displays the log stream, filtered according to your label configurations. Click a log entry to view more information.
+
+### Log Rate
+
+The log rate panel displays the number of logs created by the selected components during the specified time range. This panel can help you identify the most active components and when a component creates an unusually high number of logs, which may indicate an error.
+
+## Example workflow
+
+This example illustrates basic monitoring of HTTP methods and CRUD operations to learn more about recent changes to an application’s query pipelines.
+
+<Frame>![Request log viewer example](/assets/images/managed-fusion/request-log-viewer-example01.png)</Frame>
+
+### Remove some logs from the stream
+
+The log stream includes details from all requests. To focus your log stream on API calls to the query pipeline service, add the query term `/query-pipelines/`. This filters the logs to show requests containing that string.
+
+<Frame>![Request log viewer example](/assets/images/managed-fusion/request-log-viewer-example02.png)</Frame>
+
+### Apply an HTTP(s) label
+
+The current stream includes all methods and operations, including GET. To focus the log stream on changes to query pipelines, apply the **HTTP(s)** label `PUT`.
+
+<Frame>![Request log viewer example](/assets/images/managed-fusion/request-log-viewer-example03.png)</Frame>
+
+The remaining logs show changes were made to the query pipeline **Example**. The logs that include the string `_lw_tmp` indicate changes were made. The logs without the `_lw_tmp` indicate the changes were saved, overwriting the existing **Example** query pipeline configuration.
+
+One log shows references an unknown query pipeline, **Example_2**. Based on your analysis, you suspect this was a temporary addition, so you need to verify it was removed.
+
+<Frame>![Request log viewer example](/assets/images/managed-fusion/request-log-viewer-example04.png)</Frame>
+
+### Apply a different HTTP(s) label
+
+To verify that the temporary query pipeline was removed, change the **HTTP(s)** label from `PUT` to `DELETE`.
+
+<Frame>![Request log viewer example](/assets/images/managed-fusion/request-log-viewer-example05.png)</Frame>
+
+The log stream shows that a DELETE operation successfully deleted the temporary query pipeline, **Example_2**.
+
+## Explore further
+
+<Frame>![Example workflow querying](/assets/images/managed-fusion/fusion-log-querying03.png)</Frame>
+
+The **Explore** tab gives additional insights for your logs data stream with Grafana Loki. To view the **Log Viewer** panel’s log stream in Grafana Loki, click **logs** to access the dropdown menu and select **Explore**.
+
+For more information on these tools, see [Grafana Loki for log exploration](/managed-fusion/5.9/lxm4ct/grafana-loki-for-log-exploration).

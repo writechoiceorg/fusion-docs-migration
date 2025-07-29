@@ -1,0 +1,73 @@
+---
+title: "search:sort"
+permalink: "1122"
+---
+
+## Description
+
+The sort directive for selecting how the data on the page should be
+sorted. The sort tag should be wrapped in a
+[Layout Controls Tag](/app-studio/4.2/1062/layout-controls).
+
+## Usage
+
+as element:
+
+```xml
+<search:sort
+       response="{string}"
+       fields="{string}"
+       [default-label="{string}"]
+       [title="{string}"]
+       [default-order="{string}"]
+       [mode="{string}"]>
+</search:sort>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response |
+| fields | **string** | Fields to provide sorting on (comma-separated). |
+| default-label  *(optional)* | **string** | Label to display for the 'default' sort option when no specific sorts are applied. Usually implies sorting on score or relevance. Default: 'relevance' |
+| title  *(optional)* | **string** | Add a title to display. Default: 'Sort by' |
+| default-order  *(optional)* | **string** | Attribute to set the default sort order of Sort Fields (asc or desc). Default: 'asc' |
+| mode  *(optional)* | **string** | The mode in which the sorting should work, be default click. click: Selecting a sort will sort in the default order, when clicking on a selected sort this sort will be removed, to change the order use the ascending and descending options at the bottom of the dropdown. toggle: Selecting a sort will sort in the default order, when clicking on the selected sort again it will reverse the order. |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block md="1-1">
+        <h5 id="example_source_click-mode">Click Mode</h5>
+        <layout:controls>
+            <search:sort response="response" fields="IncidentNum=Incident Number,Foo=Bar"></search:sort>
+        </layout:controls>
+    </layout:block>
+    <layout:grid>
+        <layout:block md="1-1">
+            <h5 id="example_source_toggle-mode">Toggle Mode</h5>
+            <layout:controls>
+                <search:sort response="response" fields="IncidentNum=Incident Number,Foo=Bar" mode="toggle" class="left"></search:sort>
+            </layout:controls>
+        </layout:block>
+    </layout:grid>
+```
+
+```js
+angular.module('lightning').controller('ExampleController', ['$scope', 'ResponseService', function($scope, ResponseService) {
+    var response = {};
+    ResponseService.setResponse('response', response);
+}]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchSort.png)</Frame>

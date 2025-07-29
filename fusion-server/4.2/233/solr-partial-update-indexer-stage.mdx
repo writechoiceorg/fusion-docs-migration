@@ -1,0 +1,126 @@
+---
+title: "Solr Partial Update Indexer Stage"
+permalink: "233"
+---
+
+The Solr Partial Update Indexer Stage updates of one or more fields of an existing Solr document in a collection managed by Fusion.
+It provides an alternative to the Solr Indexer stage.
+
+When a data feed consists of an ongoing flow of messages about known documents in a collection,
+such as item price, inventory counts, or weather conditions at a location, this stage
+provides fast indexing throughput and can be configured to enforce data atomicity to guarantee
+that the index always reflects the most recent update.
+
+This stage is configured with a set of update directives based on Solr’s
+[atomic updates](https://cwiki.apache.org/confluence/display/solr/Updating+Parts+of+Documents).
+At run time, it creates a Solr update by applying these directive to the data from a Fusion PipelineDocument object
+and then submits this update to Solr’s update handler.
+
+<Note>
+Solr’s atomic update functionality requires that the schema for a collection is configured
+so that all fields have the attribute stored="true",
+excepting fields which are  destinations which must be configured as stored="false".
+</Note>
+
+## Example Stage Specification
+
+*Configuration for a Partial Updater Stage in JSON:*
+
+```json
+{ "type" : "solr-partial-update-index",
+  "enforceSchema" : false,
+  "solrDocIdFieldName" : "id",
+  "solrDocIdFieldValue" : "<doc.id>",
+  "updatedFields" : [
+    { "updateType" : "set", "fieldName" : "statusValue", "values" : "<doc.statusValue>" },
+    { "updateType" : "set", "fieldName" : "lastCommunicationTime", "values" : "<doc.lastCommunicationTime>" }
+  ],
+  "concurrencyControlEnabled" : true,
+  "skip" : false,
+  "label" : "solr-partial-update-index",
+  }
+```
+
+The expression \<doc.X> will evaluate to the contents of the current PipelineDocument’s field named "X".
+
+## Types of Update Operations
+
+The set of update operations are based on operations supported by Solr. They are:
+
+* 'add' - add a new value or values to an existing Solr document field, or add a new field and value(s).
+* 'set' - change the value or values in an existing Solr document field.
+* 'remove' - remove all occurrences of the value or values from an existing Solr document field.
+* 'removeregex' - remove all occurrences of the values which match the regex or list of regexes from an existing Solr document field.
+* 'increment' - increment the numeric value of existing Solr document field by a specific amount.
+* 'decrement' - decrement the numeric value of existing Solr document field by a specific amount.
+
+In addition, this stage introduces experimental "Positional" operations which can be used to add, set or remove exactly one element
+of a field which takes a list of values (i.e, a multi-valued field).
+
+* 'positionalUpdates' - used to add or set the value at specific position.
+* 'positionalRemoves' - used to delete an element at a specific position.
+
+When a collection contains two or more multi-value fields which are maintained in parallel
+so that taken together, they act like a table stored column by column,
+a positional update operation updates several data cells across one row of the table.
+To maintain this kind of column-oriented table, the positional delete directive
+must specify all the fields in the document which logically comprise the table.
+
+## Document Identifier Field
+
+A Fusion collection is a Solr collection managed by Fusion.
+Underlyingly, a Solr document is a list of named, typed fields.
+The Solr [unique key field](https://wiki.apache.org/solr/UniqueKey) stores a string which is the unique identifier for that document.
+There is at most one UniqueKey field per document, which is defined in the Solr schema.
+The UniqueKey field value is required.
+For collections created via Fusion, the UniqueKey field is named "id".
+Other document fields may also store string values which can be used as a unique identifier.
+
+Solr uses the UniqueKey field to find the document to be updated.
+If the data feed information contains a document identifier which is different
+than the identifier value stored in the UniqueKey field,
+then this stage must do a Solr lookup to find the UniqueKey value.
+
+## Optimistic Concurrency
+
+Solr’s [Optimistic Concurrency](http://yonik.com/solr/optimistic-concurrency/)
+is a mechanism which checks whether or not a document has changed
+between the point at which an update request was submitted and the point at which the request is processed.
+Solr documents have an internal field named "_version_" which is updated whenever there is any change made
+to any of the other fields in that document.
+When optimistic concurrency control is on, update requests will be discarded if the current version
+of the document has changed since that request was made.
+This guarantees that the document will always reflect the most recent update.
+However, this require an additional Solr lookup to get the current document version number,
+which is submitted as part of the update request.
+
+## Performance Considerations
+
+In order to send a single update request to Solr, without preliminary lookup requests:
+
+* The document identifier field should match the Solr collection’s UniqueKey identifier field.
+* Optimistic Concurrency should be turned off.
+* Positional updates are experimental and potentially expensive, since all the values for all fields
+  being updated must be fetched into memory in order to perform positional operations.
+
+## Solr Date Formats
+
+```
+"yyyy-MM-dd'T'HH:mm:ss'Z'", // Solr format without milliseconds
+"yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", // standard Solr format, with literal "Z" at the end
+"yyyy-MM-dd'T'HH:mm:ss.SS'Z'", // standard Solr format, with literal "Z" at the end
+"yyyy-MM-dd'T'HH:mm:ss.S'Z'" // standard Solr format, with literal "Z" at the end
+```
+
+See https://cwiki.apache.org/confluence/display/solr/Working+with+Dates
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/index-stages/solr-partial-update-indexer.mdx";
+
+<SchemaParamFields schema={schema}/>

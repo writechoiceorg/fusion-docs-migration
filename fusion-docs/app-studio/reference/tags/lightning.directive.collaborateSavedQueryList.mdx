@@ -1,0 +1,80 @@
+---
+title: "collaborate:saved-query-list"
+permalink: "1073"
+---
+
+## Description
+
+The saved query list directive to render a list of saved queries
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:saved-query-list
+       user="{object}"
+       [title="{string}"]
+       [allow-saving="{string}"]
+       [date-format="{string}"]>
+</collaborate:saved-query-list>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| user | **object** | Display saved queries by the given user (type: twigkit.social.model.Profile). |
+| title  *(optional)* | **string** | If set, title will be used displayed above bookmarks |
+| allow-saving  *(optional)* | **string** | If set to false the save search input will not be shown |
+| date-format  *(optional)* | **string** | Format to use for the saved query created date. Default: `dd/MM/yyyy h:mma`. See #/api/lightning.filter:dateFormat[date format filter] for valid formats. |
+
+## Events
+
+### savedQueryAdded
+
+When a query is saved this event broadcast with the name of the query
+being saved, the URL being used and the topic if used.
+
+```js
+angular.module('twigkitLightApp')
+.controller('MainCtrl', ['$scope', function ($scope) {
+     $scope.$on('savedQueryAdded',function(query){
+          alert('Query - ' + query.name + ' have been saved.');
+     });
+}]);
+```
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope
+
+### savedQueryDeleted
+
+When a query is deleted this event is broadcast so that any custom
+alerts or functions can be run afterwards like the example below.
+
+```js
+angular.module('twigkitLightApp')
+.controller('MainCtrl', ['$scope', function ($scope) {
+     $scope.$on('savedQueryDeleted',function(){
+         alert('Query has been deleted.');
+     });
+}]);
+```
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope

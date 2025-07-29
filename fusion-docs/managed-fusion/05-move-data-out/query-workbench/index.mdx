@@ -1,0 +1,32 @@
+---
+title: "Query Workbench"
+permalink: "yggpzg"
+---
+
+The Query Workbench is where you edit query pipeline stages, results parameters, and more, then preview the impacts of the changes in real time before saving them. Relevancy tools such as boosting and blocking can be accessed and altered through the Query Workbench. The Query Workbench streamlines the process of querying indexed results and fine-tuning query pipelines to surface the results that best satisfy the end user’s needs.
+
+See the [Query language cheat sheet](/managed-fusion/5.9/b4lyep/solr-query-language-cheat-sheet) for help constructing queries.
+
+<Frame>![Query Workbench](/assets/images/5.6/query-workbench-56.png)</Frame>
+
+With this sandbox paradigm, you can experiment with query pipelines without consequence because Managed Fusion uses a copy of a pipeline to simulate the new results, and it is not permanently modified in the collection until you click **Save**.
+
+## Query pipelines and pipeline stages
+
+[Query pipelines](/managed-fusion/5.9/8qf1w6/query-pipelines) work by processing search requests and returning an ordered list of matching documents. Each pipeline consists of a series of query stages that can be added, ordered, and configured using the Query Workbench.
+
+Select any stage in the pipeline to open its configuration panel:
+
+<Frame>![Stage configuration panel](/assets/images/5.6/query-workbench-stage-config-56.png)</Frame>
+
+## Boosting and blocking
+
+As you search your data and inspect the results, you can manipulate the rankings of individual documents. Boosting a document raises its ranking, while blocking a document removes it from search results.
+
+Boosting and blocking affects the results for specific queries. For example, when you search for "citizen" and boost the document for "Citizen Kane", your end users will see that title boosted to the top when they also search for "citizen", but not necessarily when they search for "kane".
+
+The Query Workbench provides convenient buttons for instantly blocking or boosting the documents that you see in the preview panel. Clicking **Boost** automatically adds the [Boost Documents stage](/managed-fusion/5.9/ucape1/boost-documents-stage) to your query pipeline, with a boost rule that matches your query and the document you clicked. Likewise, clicking **Block** adds and configures the [Block Documents stage](/managed-fusion/5.9/8prd3n/block-documents-stage).
+
+## Compare mode
+
+Compare mode allows you to compare search results using two different query pipelines, or compare search results from the original query pipeline and the copy being modified in the Query Workbench. On the right is the working pipeline, which you can edit. On the left is one of your saved pipelines.

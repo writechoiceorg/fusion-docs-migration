@@ -1,0 +1,578 @@
+export const schema = {
+  "type": "object",
+  "title": "Data Augmentation (deprecated)",
+  "description": "Use this job to perform Text Augmentation. Deprecated as of Fusion 5.12 and will be removed in a future release.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "trainingFormat",
+    "outputCollection",
+    "outputFormat",
+    "includeOriginalData",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Input path",
+      "description": "Solr collection or cloud storage path where training data is present.",
+      "minLength": 1
+    },
+    "trainingFormat": {
+      "type": "string",
+      "title": "Input format",
+      "description": "The format of the training data - solr, parquet etc.",
+      "minLength": 1
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Training Data Filter Query",
+      "description": "Solr or SQL query to filter training data. Use solr query when solr collection is specified in Training Path. Use SQL query when cloud storage location is specified. The table name for SQL is `spark_input`",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ]
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random Seed",
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "default": 12345,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingSampleFraction": {
+      "type": "number",
+      "title": "Training Data Sampling Fraction",
+      "description": "Choose a fraction of the data for training.",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "batchSize": {
+      "type": "string",
+      "title": "Batch Size",
+      "description": "If writing to solr, this field defines the batch size for documents to be pushed to solr.",
+      "default": "15000",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output path",
+      "description": "Output collection to store generated augmented data.",
+      "minLength": 1
+    },
+    "outputFormat": {
+      "type": "string",
+      "title": "Output Format",
+      "description": "The format of the output data - solr, parquet etc.",
+      "minLength": 1
+    },
+    "partitionFields": {
+      "type": "string",
+      "title": "Partition fields",
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "secretName": {
+      "type": "string",
+      "title": "Cloud storage secret name",
+      "description": "Name of the secret used to access cloud storage as defined in the K8s namespace",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1
+    },
+    "backTranslations": {
+      "type": "array",
+      "title": "Back Translation",
+      "description": "Augment data via translation to a different language and then translating back to original language. Chain of languages can be used for translation. Works at sentence level for medium-long length text. GPU recommended and will be used when available.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fieldname",
+          "inputLanguage"
+        ],
+        "properties": {
+          "fieldname": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "Name of the input field to augment.",
+            "minLength": 1
+          },
+          "inputLanguage": {
+            "type": "string",
+            "title": "Input data Language",
+            "description": "Language of input data.",
+            "enum": [
+              "English",
+              "French",
+              "German",
+              "Italian",
+              "Spanish",
+              "Dutch",
+              "Polish",
+              "Hebrew",
+              "Ukrainian",
+              "Chinese",
+              "Japanese",
+              "Korean"
+            ],
+            "minLength": 1
+          },
+          "intermediateLanguage": {
+            "type": "string",
+            "title": "Intermediate Language",
+            "description": "Specify languages in order to be used in back translation separated by comma. Only use languages present in input data language dropdown. Bigger chains will take more time to augment. ",
+            "default": "German",
+            "pattern": "((?:English|German|French|Italian|Spanish|Dutch|Polish|Ukrainian|Hebrew|Chinese|Japanese|Korean)*(\\s)*(,)*(\\s)*){0,12}"
+          },
+          "batchSize": {
+            "type": "integer",
+            "title": "Batch Size",
+            "description": "Number of input data samples to back-translate at a time. Important if Use GPU is checked to avoid memory overflow.",
+            "default": 256,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "beamSize": {
+            "type": "integer",
+            "title": "Beam Size",
+            "description": "Number of beams to evaluate during translation. Use higher number if translation is poor. Higher number will increase execution time and memory use.",
+            "default": 1,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "minSentenceLength": {
+            "type": "integer",
+            "title": "Min translation length (tokens)",
+            "description": "Do not back translate sentences shorter than specified length in tokens. If the value is more than max translation length, then max translation length will be used.",
+            "default": 40,
+            "hints": [
+              "advanced"
+            ],
+            "maximum": 510,
+            "exclusiveMaximum": false,
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "maxSentenceLength": {
+            "type": "integer",
+            "title": "Max translation length (tokens)",
+            "description": "Do not back translate sentences longer than specified length in tokens. If the value is less than min translation length, hen min translation length will be used.",
+            "default": 240,
+            "hints": [
+              "advanced"
+            ],
+            "maximum": 510,
+            "exclusiveMaximum": false,
+            "minimum": 0,
+            "exclusiveMinimum": false
+          }
+        }
+      }
+    },
+    "keyStrokeMisspellings": {
+      "type": "array",
+      "title": "Keystroke Misspellings",
+      "description": "Augment data via insertion, substitution, swapping and deletion of characters based on keyboard layout. Useful for short text.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fieldname",
+          "inputLanguage"
+        ],
+        "properties": {
+          "fieldname": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "Name of the input field to augment.",
+            "minLength": 1
+          },
+          "inputLanguage": {
+            "type": "string",
+            "title": "Input data Language",
+            "description": "Language of input data.",
+            "enum": [
+              "English",
+              "French",
+              "German",
+              "Italian",
+              "Spanish",
+              "Dutch",
+              "Polish",
+              "Hebrew",
+              "Ukrainian"
+            ],
+            "minLength": 1
+          },
+          "minCharAugment": {
+            "type": "integer",
+            "title": "Minimum Chars to Augment",
+            "description": "Minimum number of characters to augment in each word. If the value is more than Maximum Chars to Augment, then Maximum Chars to Augment will be used.",
+            "default": 1,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "maxCharAugment": {
+            "type": "integer",
+            "title": "Maximum Chars to Augment",
+            "description": "Maximum number of characters to augment in each word. If the value is more than Minimum Chars to Augment, then Minimum Chars to Augment will be used.",
+            "default": 2,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "minWordsToAugment": {
+            "type": "integer",
+            "title": "Min words to Augment",
+            "description": "Minimum number of words to be augmented in input text. It should be less than maximum words to augment otherwise max value will be used. Suggested value is 2.",
+            "default": 2,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "maxWordsToAugment": {
+            "type": "integer",
+            "title": "Max words to Augment",
+            "description": "Maximum number of words to be augmented in input text.It should be less than minimum words to augment otherwise min value will be auto-adjusted. Suggested value is 10.",
+            "default": 10,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "wordPercentageToAugment": {
+            "type": "number",
+            "title": "Percentage words to Augment",
+            "description": "Percentage of words in input text to augment. If specified this will be used instead if minimum/maximum number of words to augment value.",
+            "default": 0.2,
+            "hints": [
+              "advanced"
+            ],
+            "maximum": 1,
+            "exclusiveMaximum": false
+          },
+          "keywordsBlobName": {
+            "type": "string",
+            "title": "Keystroke Mapping",
+            "description": "Keystroke Mapping for required language in JSON format from blob store.",
+            "hints": [
+              "advanced"
+            ],
+            "reference": "blob",
+            "blobType": "file:spark"
+          }
+        }
+      }
+    },
+    "synonymSubstitutions": {
+      "type": "array",
+      "title": "Synonym Substitution",
+      "description": "Augment data via substituting words using synonyms from wordnet or user supplied dictionary. Useful for short, medium and long text. Faster and less resource intensive than back translation.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fieldname",
+          "inputLanguage"
+        ],
+        "properties": {
+          "fieldname": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "Name of the input field to augment.",
+            "minLength": 1
+          },
+          "inputLanguage": {
+            "type": "string",
+            "title": "Input data Language",
+            "description": "Language of input data.",
+            "enum": [
+              "English",
+              "French",
+              "German",
+              "Italian",
+              "Spanish",
+              "Dutch",
+              "Polish",
+              "Hebrew",
+              "Chinese",
+              "Japanese"
+            ],
+            "minLength": 1
+          },
+          "minWordsToAugment": {
+            "type": "integer",
+            "title": "Min words to Augment",
+            "description": "Minimum number of words to be augmented in input text. It should be less than maximum words to augment otherwise max value will be used. Suggested value is 2.",
+            "default": 2,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "maxWordsToAugment": {
+            "type": "integer",
+            "title": "Max words to Augment",
+            "description": "Maximum number of words to be augmented in input text.It should be less than minimum words to augment otherwise min value will be auto-adjusted. Suggested value is 10.",
+            "default": 10,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "wordPercentageToAugment": {
+            "type": "number",
+            "title": "Percentage of words to Augment",
+            "description": "Percentage of words in input text to augment. If specified this will be used instead if minimum/maximum number of words to augment value.",
+            "default": 0.2,
+            "hints": [
+              "advanced"
+            ],
+            "maximum": 1,
+            "exclusiveMaximum": false
+          },
+          "stopwordsBlobName": {
+            "type": "string",
+            "title": "Synonym Dictionary Name",
+            "description": "Wordnet format dictionary to use from blob store",
+            "hints": [
+              "advanced"
+            ],
+            "reference": "blob",
+            "blobType": "file:spark"
+          }
+        }
+      }
+    },
+    "splitWords": {
+      "type": "array",
+      "title": "Split Words",
+      "description": "Augment data via splitting some words. Useful for short, medium and long text.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fieldname",
+          "inputLanguage"
+        ],
+        "properties": {
+          "fieldname": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "Name of the input field to augment.",
+            "minLength": 1
+          },
+          "inputLanguage": {
+            "type": "string",
+            "title": "Input data Language",
+            "description": "Language of input data.",
+            "enum": [
+              "English",
+              "French",
+              "German",
+              "Italian",
+              "Spanish",
+              "Dutch",
+              "Polish"
+            ],
+            "minLength": 1
+          },
+          "minWordLength": {
+            "type": "integer",
+            "title": "Minimum Word Length",
+            "description": "Do not augment words less than this length (in characters). If the value is more than maximum word length, then maximum word length will be used.",
+            "default": 4,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "minWordsToAugment": {
+            "type": "integer",
+            "title": "Min words to Augment",
+            "description": "Minimum number of words to be augmented in input text. It should be less than maximum words to augment otherwise max value will be used. Suggested value is 2.",
+            "default": 2,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "maxWordsToAugment": {
+            "type": "integer",
+            "title": "Max words to Augment",
+            "description": "Maximum number of words to be augmented in input text.It should be less than minimum words to augment otherwise min value will be auto-adjusted. Suggested value is 10.",
+            "default": 10,
+            "hints": [
+              "advanced"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "wordPercentageToAugment": {
+            "type": "number",
+            "title": "Percentage of words to Augment",
+            "description": "Percentage of words in input text to augment. If specified this will be used instead if minimum/maximum number of words to augment value.",
+            "default": 0.2,
+            "hints": [
+              "advanced"
+            ],
+            "maximum": 1,
+            "exclusiveMaximum": false
+          }
+        }
+      }
+    },
+    "includeOriginalData": {
+      "type": "boolean",
+      "title": "Include original data",
+      "description": "When checked original data will be included in the augmented dataset",
+      "default": true
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-data-augmentation"
+      ],
+      "default": "argo-data-augmentation",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "trainingFormat",
+        "trainingDataFilterQuery",
+        "trainingSampleFraction",
+        "randomSeed",
+        "batchSize",
+        "outputCollection",
+        "outputFormat",
+        "partitionFields",
+        "secretName",
+        "includeOriginalData"
+      ]
+    },
+    {
+      "label": "Augmentation Parameters",
+      "properties": [
+        "backTranslations",
+        "keyStrokeMisspellings",
+        "synonymSubstitutions",
+        "splitWords"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+---
+title: "Querying"
+permalink: "168"
+---
+
+## Querying
+
+### Query Pipelines
+
+Query pipelines process search requests before sending them to Fusion Server’s Solr core. A query pipeline can perform transformations on a search request in order to customize the search results that Solr returns. See [Query Pipeline Configuration](/fusion-server/4.2/173/query-pipelines).
+
+### Search Applications
+
+Search applications are the front-end interfaces that you build on top of Fusion. Your application makes calls to Fusion’s REST API in order to retrieve search results or perform other actions. Certain features, like autocomplete and synonyms, require some configuration on the Fusion back end. See [Application Development](/fusion-server/4.2/177/search-applications-overview).
+
+### Query Language
+
+Whenever you are getting data out of Fusion Server, you may find it handy to consult the [Query Language Cheat Sheet](/fusion-server/4.2/394/solr-query-language-cheat-sheet).
+
+If you are using Fusion AI with Fusion Server, you can generate and retrieve additional data for analysis or to enhance the end-user experience. For example, Fusion AI can produce sophisticated recommendations to guide end users to the best available results, including results that do not exactly match the original user-submitted query. It can also perform machine learning functions that automatically improve search results based on the past activities of users. See the [Fusion AI documentation](/fusion-ai/4.2/428/fusion-ai).

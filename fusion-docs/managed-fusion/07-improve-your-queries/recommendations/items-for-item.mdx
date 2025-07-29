@@ -1,0 +1,31 @@
+---
+title: "Items-for-item"
+description: "Recommendations"
+permalink: "ft2bqg"
+---
+
+Items-for-item recommendations present items that are similar to a specified item. For example, when the user is viewing a BMX bicycle, Managed Fusion can recommend other BMX bicycles. Similarity can be based on different criteria, such as click patterns, people who bought this also bought that, percentage match of document tags, and so on.
+
+## Collaborative items-for-item recommendations
+
+If you have enabled signals and recommendations for a collection, then the default `COLLECTION_NAME_bpr_item_recs`, a [BPR Recommender](/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs) job is already created and configured to produce items-for-item recommendations (as well as [items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user)).
+
+This is the recommended job type, and produces better results with a short runtime. [Download the `APPName_item_item_rec_pipelines_bpr.json`](/assets/attachments/pipelines/APPName_item_item_rec_pipelines_bpr.json) file and [import it](/how-to/o0svh6/migrate-managed-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output. See [Fetch Items-for-Item Recommendations (Collaborative/BPR Method)](/how-to/ztbm89/fetch-items-for-item-recommendations-collaborative-bpr-method) for details.
+
+BPR collaborative recommendations dataflow
+
+<Frame>![BPR dataflow](/assets/images/5.2/bpr-dataflow-diagram.png)</Frame>
+
+<Tip>
+If you want to use different parameters for items-for-item recommendations and [items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations), simply create separate jobs for each, where one job configuration includes an output collection for items-for-item recommendations only and the other includes an output collection for items-for-user recommendations only.
+</Tip>
+
+## Content-based items-for-item recommendations
+
+The [Content-Based Recommender](/managed-fusion/5.9/g02utf/content-based-recommender-jobs-experimental) job computes item similarities based on their content, such as product descriptions. This is a useful option when you do not have enough signals for accurate results using the collaborative method described above. [Download the `APPName_item_item_rec_pipelines_content.json`](/assets/attachments/pipelines/APPName_item_item_rec_pipelines_content.json) file and [import it](/how-to/o0svh6/migrate-managed-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output.
+
+Content-based recommendations dataflow
+
+<Frame>![Content-based recommendations dataflow](/assets/images/5.2/content-rec-dataflow-diagram.png)</Frame>
+
+Once you have run the recommender job, see [Fetch Content-Based-Items-for-Item Recommendations](/how-to/66x84g/fetch-items-for-item-recommendations-content-based-method).

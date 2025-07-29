@@ -1,0 +1,281 @@
+---
+title: "Fusion 5.9.12"
+permalink: "lt4m82"
+---
+
+Originally released on April 16, 2025 and re-released on May 14, 2025, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) provides support for chunking in Lucidworks AI, model hosting with Ray, and important security upgrades and bug fixes.
+
+<Note>
+If you downloaded or installed Fusion 5.9.12 **before May 14, 2025** and are encountering issues, you should pull the images again and re-install Fusion 5.9.12 to pick up the latest bug fixes.
+This ensures you benefit from critical stability, security, and compatibility improvements included in the re-released version.
+If you are using self-hosted Fusion and installed 5.9.12 prior to the re-release, see the [self-hosted reinstallation instructions below](#self-hosted-reinstall).
+
+When requesting help from the Lucidworks support team about this release, be sure to specify whether you are running the original Fusion 5.9.12 release or the re-release, so we can provide accurate guidance and faster resolution.
+</Note>
+
+Upgrading to the latest version of Fusion 5.9 offers several key benefits:
+
+* **Access to latest features:** Stay current with the latest features and functionality to ensure compatibility and optimal performance.
+* **Simplified process:** Fusion 5.9.5 and later use an in-place upgrade strategy, making upgrades easier than ever.
+* **Extended support:** Upgrading keeps you up-to-date with the latest supported Kubernetes versions, as outlined in the [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle) policy.
+
+<Tip>
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+</Tip>
+
+## Reinstall 5.9.12 for self-hosted Fusion
+
+If you are a self-hosted Fusion client and installed 5.9.12 in your environment before the re-release, the standard image pull policy may prevent pulling the re-release version. With the original release, the worker nodes cache the images, and the new version won’t be pulled because they weren’t retagged with a newer version string.
+
+### Instructions
+
+1. Verify the job-launcher pod is using the correct image by comparing its sha256 digest to the expected value of `fusion/lucidworks/job-launcher@sha256:02624cfbc3eb536e4a29353b7bfe0846380a09f98ae3c78da859793686782092`.
+
+    1. Run the following command:
+
+      ```sh
+      kubectl get pod job-launcher-pod -n ns-name -o jsonpath='{.status.containerStatuses[0].imageID}'
+      ```
+      
+    2. If the digest output is different in any way, the image is not from the re-release.
+2. Check the `imagePullPolicy` of your Deployments:
+
+    ```
+    kubectl get deployment -n ns-name -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{range .spec.template.spec.containers[*]}{.name}={.imagePullPolicy}{" "}{end}{"\n"}{end}'
+    ```
+
+    1. If the policy is set to `IfNotPresent`, patch it to `Always`:
+
+      ```
+      kubectl patch deployments -n ns-name --type=json -p='[{"op":"replace","path":"/spec/template/spec/containers/0/imagePullPolicy","value":"Always"}]'
+      ```
+      
+    2. Restart the Deployments and StatefulSets to apply the changes:
+
+      ```
+      kubectl rollout restart deployment,statefulset -n ns-name
+      ```
+      
+    3. (Optional) Check the `imagePullPolicy` for StatefulSets specifically to ensure they are set correctly:
+
+      ```
+      kubectl get sts -n ns-name -o=jsonpath='{range .items[*]}{.metadata.name}{"\t"}{range .spec.template.spec.containers[*]}{.name}={.imagePullPolicy}{" "}{end}{"\n"}{end}'
+      ```
+
+3. After the rollout, confirm again that the job-launcher pod is using the correct image:
+
+    ```
+    kubectl get pod job-launcher-pod -n ns-name -o jsonpath='{.status.containerStatuses[0].imageID}'
+    ```
+
+    1. If the result matches the expected digest of `sha256:02624cfbc3eb536e4a29353b7bfe0846380a09f98ae3c78da859793686782092` then the pod is running the latest re-release version.
+
+## Key highlights
+
+### Improved relevance in large documents with chunking
+
+Fusion 5.9.12 introduces document chunking, a major advancement for search and generative AI quality and performance. Chunking breaks large documents into smaller, meaningful segments—called chunks—that are stored and indexed using Solr’s block join capabilities. Each chunk captures either lexical content (for keyword-based search) or semantic vectors (for neural search), enabling Fusion to retrieve the most relevant part of a document, rather than treating the document as a single block.
+
+This improves:
+
+* **Search relevance**: Users get results that point to the most relevant sections within large documents, not just documents that match overall.
+* **Neural search precision**: Vector chunks improve hybrid scoring by aligning semantic relevance with specific lexical content.
+* **Scalability and maintainability**: Updates or deletions are applied at the chunk level, ensuring consistency and avoiding stale or orphaned content.
+* **Faceted search and UX**: Results can be grouped and ranked more accurately, especially in use cases where dense documents contain multiple topics.
+
+Document chunking is particularly valuable in knowledge management and technical content domains, where retrieving the right paragraph can be more important than retrieving the right document.
+
+* A new [LWAI Chunker index pipeline stage](/fusion/5.9/dm5m4e/lwai-chunker-index-stage) uses one of the available chunking strategies (chunkers) for the specified LW AI model to provide optimized storage and retrieval. The chunkers asynchronously split the provided text in various ways such as by sentence, new line, semantics, and regular expression (regex) syntax.
+* A new [Chunking Neural Hybrid Query pipeline stage](/fusion/5.9/4klbo6/chunking-neural-hybrid-query-stage) now detects chunked documents and retrieves the most relevant lexical and vector segments for hybrid search.
+* Updates and deletions now ensure consistent chunk synchronization to prevent orphaned data.
+* This feature includes a new [Lucidworks AI Async Chunking API](/lw-platform/ai/fpqd94/async-chunking-api).
+
+Click **Get Started** below to see how to enable chunking in Fusion:
+
+<Note>
+Contact your Lucidworks account manager to confirm that your license includes this feature.
+</Note>
+
+### Model hosting with Ray
+
+Fusion 5.9.12 introduces support for model hosting with Ray, replacing the previous Seldon-based approach. Ray offers a more scalable and efficient architecture for serving machine learning models, with native support for distributed inference, autoscaling, and streamlined deployment. This transition simplifies Fusion’s AI infrastructure, enhances performance, and aligns with modern MLOps practices to make deploying and managing models faster, more reliable, and easier to monitor.
+
+For more information, see [Develop and deploy a machine learning model with Ray](/how-to/yniv8h/develop-and-deploy-a-machine-learning-model-with-ray).
+Istio is only required for using Ray if you require in-cluster TLS.
+For more information, see [Install Istio in self-hosted Fusion](/how-to/06dhnt/install-istio-in-self-hosted-fusion).
+
+* The Seldon vectorize stages have been renamed to [Ray/Seldon Vectorize Field](/fusion/5.9/wpkxmb/seldon-vectorize-field-stage) and [Ray/Seldon Vectorize Query](/fusion/5.9/33ccfb/seldon-vectorize-query-stage).
+* There are two new jobs for deploying models with Ray:
+
+  + [Create Ray Deployment](/fusion/5.9/2v5s11/create-ray-model-deployment).
+  + [Delete Ray Deployment](/fusion/5.9/xncjrc/delete-ray-model-deployment-job).
+
+<Tip>
+If you previously deployed a model with Seldon, you can deploy the same model with Ray.
+Just follow the instructions in [Develop and deploy a machine learning model with Ray](/how-to/yniv8h/develop-and-deploy-a-machine-learning-model-with-ray), and deploy the model with a different name to avoid conflicts.
+When you have verified that the model is working after deployment with Ray, you can delete the Seldon model using the [Delete Seldon Core Model Deployment job](/fusion/5.9/584/delete-seldon-core-model-deployment-job).
+</Tip>
+
+### AI and machine learning features
+
+Fusion’s machine learning services now run on Python 3.10 and Java 11, bringing improved performance, security, and compatibility with the latest libraries.
+These upgrades enhance model execution speed, memory efficiency, and long-term support, ensuring Fusion’s machine learning capabilities remain optimized for your evolving AI workloads.
+No configuration changes are required to take advantage of these improvements.
+
+### Improved prefiltering support for Neural Hybrid Search (NHS)
+
+Fusion 5.9.12 introduces a more robust prefiltering strategy for Neural Hybrid Search, including support for chunked document queries.
+Prefiltering is a technique that can improve performance and accuracy by filtering documents before applying the algorithm, reducing the number of documents that need to be processed.
+
+You can enable prefiltering in any NHS query pipeline stage; see the configuration reference topics for details:
+
+* [Chunking Neural Hybrid Query](/fusion/5.9/4klbo6/chunking-neural-hybrid-query-stage)
+* [Neural Hybrid Query](/fusion/5.9/mb500k/neural-hybrid-query-stage)
+
+## Bug fixes
+
+* Fixed a Helm chart rendering issue that blocked ArgoCD deployments with TLS flags enabled.
+
+  In previous releases, using TLS flags during deployment caused Helm chart rendering to fail in ArgoCD due to the use of the unsupported `lookup` function. Fusion 5.9.12 resolves this issue by modifying the chart templates for compatibility with ArgoCD, restoring support for TLS-enabled deployments in GitOps workflows.
+
+* Fixed incorrect image repository for Solr in Helm charts.
+
+  In Fusion 5.9.11, the Helm chart specified an internal Lucidworks Artifactory repository for the Solr image.
+  This has been corrected in 5.9.12 so the Solr image repository is either empty or points to `lucidworks/fusion-solr`, aligning with other components and simplifying deployment for external environments.
+* Added support for configuring the Spark version used by Fusion.
+
+  Fusion 5.9.12 now lets you switch from the default Spark 3.4.1 version(introduced in Fusion 5.9.10) to the earlier Spark 3.2.2 version used in Fusion 5.9.9.
+  This flexibility helps maintain compatibility with legacy Python (3.7.3) and Scala environments, especially for apps that depend on specific Spark runtime behaviors.
+
+  When Spark 3.4.1 is enabled, custom Python jobs require Python 3.10.
+  To enable Spark 3.2.2 instead, change the `fusion-spark` image in the configmap of the `job-launcher`, like this:
+
+    ```
+      driver:
+        container:
+          image: example.com/dir/fusion-spark-3.2.2
+      executor:
+        container:
+          image: example.com/dir/fusion-spark-3.2.2
+    ```
+  
+    <Note>
+    The Spark 3.4.1 runtime is incompatible with Azure Blob Storage when accessed via the deprecated `wasbs://` protocol due to a Jetty version conflict; run Spark 3.2.2 instead if your jobs rely on `wasbs://`.
+    In the long term, we recommend migrating to the `abfs://` protocol for Azure Blob Storage access, which is fully supported in Spark 3.4.1.
+    </Note>
+
+* Fixed incorrect `started-by` values for datasource jobs in the job history.
+
+  In previous versions, datasource jobs started from the Fusion UI were incorrectly shown as started by `default-subject` instead of the actual user.
+  Fusion now correctly records and displays the initiating user in the job history, restoring accurate audit information for datasource operations.
+* Fixed a schema loading issue that prevented older apps from working with the Schema API.
+
+  Fusion now correctly handles both `managed-schema` and `managed-schema.xml` files when reading Solr config sets, ensuring backward compatibility with apps created before the move to template-based config sets.
+  This prevents Schema API failures caused by unhandled exceptions during schema file lookup.
+* Scheduled jobs now correctly trigger dependent jobs.
+
+  In Fusion 5.9.12, we fixed an issue that prevented scheduled jobs from triggering other jobs based on their success or failure status.
+  This includes jobs configured to run “on_success_or_failure” or using the “Start + Interval” option.
+  With this fix, dependent jobs now execute as expected, restoring reliable job chaining and scheduling workflows.
+* Fixed an issue that prevented updates to existing scheduled job triggers in the Schedulers view.
+
+  This bug was caused by inconsistencies in how the API returned UTC timestamps, particularly for times after 12:00 UTC. The Admin UI now correctly detects changes and allows updates to trigger times without requiring the entry to be deleted and recreated.
+* Fixed multiple scheduling issues in the `job-config` service to improve reliability and user experience.
+
+  This release includes several important fixes to ensure that scheduled jobs function correctly across upgrades and user actions:
+
+  + Improved leader election recovery: Ensures the scheduler service recovers if all `job-config` pods lose connection to ZooKeeper.
+  + Corrected permission checks: Prevents scheduling failures caused by mismatches between user and service account permissions.
+  + Fixed job history display for system jobs: Resolved an issue where delete-old-system-logs and delete-old-job-history jobs did not appear in the UI after upgrade, despite existing in the backend.
+  + Restored schedule creation in certain apps: Fixed a bug where clicking Save when adding a schedule in the Run dialog appeared to succeed but failed to persist the schedule in specific app states.
+* Fixed a simulation failure in the Index Workbench when configuring new datasources.
+
+  Fusion 5.9.12 resolves an issue where Index Workbench failed to simulate results after configuring a new datasource, displaying the error “Failed to simulate results from a working pipeline.”
+  This fix restores full functionality to the Index Workbench, allowing you to preview and configure indexing workflows in one place without switching between multiple views.
+* Fixed a bug that caused aborted jobs to appear twice in the job history.
+
+  Previously, when you manually aborted a job, it was recorded twice in the job history.
+  This duplication has been resolved, and each aborted job now appears only once in the history log.
+* Fixed an issue that prevented segment-based rule filtering from working correctly in Commerce Studio. Fusion now honors the `lw.rules.target_segment` parameter, ensuring only matching rules are triggered and improving rule targeting and safety.
+* This release eliminates extra warning messages in the API Gateway related to undetermined service ports. Previously, the gateway logged repeated warnings about missing `primary-port-name` labels, even though this did not impact functionality. This fix reduces unnecessary log noise and improves the clarity of your logs.
+
+## Known issues
+
+* Jobs for Web V2 connectors may fail to start after an earlier failure.
+
+  A bug in the connectors-backend service can prevent jobs from running if a previous crawl attempt was interrupted—for example, if the connector pod was scaled down mid-job.
+  A subsequent crawl attempt may fail with the error `The state should never be null`, even after clearing the datasource configuration.
+
+  This issue is fixed in Fusion 5.9.13.
+
+* The `fusion-spark-3.2.2` image included in Fusion 5.9.12 contains a Fabric8 token refresh bug.
+
+  This issue affects Spark jobs running in Kubernetes environments that rely on token-based authentication.
+  Due to an outdated Fabric8 client library, the image fails to refresh Kubernetes tokens correctly, which can cause authentication errors in long-running or distributed Spark jobs.
+
+  This issue is fixed in Fusion 5.9.13.
+
+* The `job-config` service may report a `DOWN` status at `/actuator/health` even when it is fully operational.
+
+  This issue can occur after a prolonged ZooKeeper outage when TLS is enabled.
+  Despite the service being healthy and showing `UP` status on readiness and liveness checks, the `/job-config/actuator/health` endpoint may still report `DOWN`, potentially triggering false alarms or unnecessary restarts.
+
+  This issue is fixed in Fusion 5.9.13.
+
+* When upgrading to Fusion 5.9.12, add the following to your `values.yaml` file to avoid a known issue that prevents the `kuberay-operator` pod from launching successfully:
+
+```
+kuberay-operator:
+  crd:
+    create: true
+```
+
+* Web connector may fail to index due to corrupted job state
+
+  Fusion 5.9.12 may fail to index with the Webv2 connector (v2.0.1) due to a corrupted job state in the `connectors-backend` service.
+
+  Affected jobs log the error `The state should never be null`, and common remediation steps like deleting the datasource or reinstalling the connector plugin may not resolve the issue.
+  The issue is fixed in Fusion 5.9.13.
+
+* Saving new datasource schedules may fail silently.
+
+  In some Fusion 5.9.12 environments, clicking **Save** when adding a schedule from the datasource “Run” dialog does not persist the schedule or show an error message, particularly in apps created before the upgrade.
+  As a workaround, use a new app or manually verify that the job configuration was saved.
+  This issue is fixed in Fusion 5.9.13.
+
+## Removals
+
+For full details on removals, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#removals).
+
+* The Tika Server Parser is removed in this release.
+
+  Use the [Tika Asynchronous Parser](/fusion/5.9/lo9hdj/asynchronous-tika-parsing) instead. Asynchronous Tika parsing performs parsing in the background. This allows Fusion to continue indexing documents while the parser is processing others, resulting in improved indexing performance for large numbers of documents.
+* MLeap is removed from the `ml-model` service. MLeap was deprecated in Fusion 5.2.0 and was no longer used by Fusion.
+
+## Platform support and component versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.29, 1.30, 1.31
+* **Microsoft Azure Kubernetes Service (AKS):** 1.29, 1.30, 1.31
+* **Amazon Elastic Kubernetes Service (EKS):** 1.29, 1.30, 1.31
+
+Support is also offered for Rancher Kubernetes Engine (RKE and RKE2) and OpenShift 4 versions that are based on Kubernetes 1.29, 1.30, 1.31. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.12  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.4.1 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller |
+| **Ray** | ray[serve] 2.42.1 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

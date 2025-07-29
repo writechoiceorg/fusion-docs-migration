@@ -1,0 +1,61 @@
+---
+title: "Fusion 5.9.1"
+permalink: "ht2sax"
+---
+
+Released on September 5, 2023, this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) includes corrections to remote connectors, the JDBC V2 connector, and LDAP ACL documents.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.25 and 1.26
+* **Microsoft Azure Kubernetes Service (AKS):** 1.25 and 1.26
+* **Amazon Elastic Kubernetes Service (EKS):** 1.25 and 1.26
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.25 and 1.26. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.1  *(based on Solr 9.1.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## Bug Fixes
+
+### Fusion Connectors
+
+* Fixed an issue to make gRPC max outbound message size configurable to prevent remote connectors from failing on large field sizes.
+
+* Fixed an issue where a restart was required when the remote JDBC V2 connector timed out and did not restart correctly.
+
+* Fixed an issue where the JDBC V2 connector failed to index data.
+
+* Fixed an issue where the Connectors SDK delete-by-query that contains a NOT-EQUAL phrase did not delete the appropriate documents.
+
+* Fixed an issue where the outbound access control list (ACL) object contained a reference to itself in the `outbound_ss` field by default. The plug-in that creates the ACL should enter that reference explicitly only when required.
+
+* Fixed an issue where the connectors-backend service did not add the following fields by default to the LDAP ACL documents: `_lw_data_source_type_s`, `_lw_batch_id_s`, `_lw_data_source_collection_s`, and `_lw_block_start_time_l`. These fields are required by the LDAP plug-in to keep the list of ACL objects up-to-date.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

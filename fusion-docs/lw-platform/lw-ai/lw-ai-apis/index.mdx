@@ -1,0 +1,34 @@
+---
+title: "Lucidworks AI APIs"
+permalink: "zty8jx"
+---
+
+Lucidworks AI offers several APIs for managing and automating your AI implementation.
+You can use them to [train and manage models](/lw-platform/ai/e63rmi/models-api), run [synchronous](/lw-platform/ai/8bx4m9/prediction-api) and [asynchronous predictions](/lw-platform/ai/55ug0f/async-prediction-api), preview and debug [pass-through prompts](/lw-platform/ai/m0x9s2/prompting-preview-api) and [embedding model tokens](/lw-platform/ai/mpgw6g/tokenization-api), and [chunk text](/lw-platform/ai/fpqd94/async-chunking-api).
+Lucidworks AI APIs let you control and customize your AI orchestration to suit your business needs by enabling developer teams to build out bespoke integrations and implementations.
+
+## Authenticate with the APIs
+
+Lucidworks AI APIs require you to authenticate using [Java Web tokens (JWT) tokens](https://jwt.io/).
+Generate these tokens using the [Authentication API](/lw-platform/ai/oa96k5/authentication-api), then include them in the request header.
+
+## Use the APIs
+
+You can use the Lucidworks AI APIs in addition to, or instead of, the Lucidworks Platform UI, but some actions are only supported with the APIs.
+For example, you can use the [custom model training user interface](/lw-platform/ai/6bb9s5/custom-model-training-user-interface) or the [Models API](/lw-platform/ai/e63rmi/models-api) to train and deploy custom models, but running predictions and chunking text require you to use the APIs.
+
+Some APIs are used in conjunction with other APIs.
+For example, use the [Use Case API](/lw-platform/ai/0stpyb/use-case-api) and [Tokenization API](/lw-platform/ai/mpgw6g/tokenization-api) to generate values for the [Prediction API](/lw-platform/ai/8bx4m9/prediction-api).
+
+## API specifications
+
+Each API topic on the Lucidworks docs site contains a link to the API specification.
+Click **View API Specification** to open a modal that contains all related endpoints, parameters, and values.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+You can use the API specifications to generate requests that you can copy and paste into your command line tool or code editor.
+Enter required fields, then click the **Copy** button to copy to your clipboard.
+You can also switch languages by selecting from the list.
+
+<Frame>![lw ai use api spec](/assets/images/lw-platform/lw-ai/lw-ai-use-api-spec.png)</Frame>

@@ -1,0 +1,79 @@
+---
+title: "Outlier Detection Jobs"
+permalink: "578"
+---
+
+Outlier detection jobs are run against your data collections, and also perform the following actions:
+
+* Identify information that significantly differs from other data in the collection
+* Attach labels to designate each outlier group
+
+To create an Outlier Detection job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Clustering and Outlier Analysis Jobs section, select **Outlier Detection**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes these parameters:
+
+  + **Training collection.** The Solr collection that contains documents that will be clustered. The job will be run against this information. This is the `trainingCollection` field in the configuration file. Required field.
+  + **Output collection.** The Solr collection where the job output is stored. The job will write the output to this collection. This is the `outputCollection` field in the configuration file. Required field.
+  + **Data format.** The format that contains training data. The format must be compatible with Spark and options include `solr`, `parquet`, and `orc`. This is the `dataFormat` field in the configuration file. Required field.
+* **Only save outliers?** If this checkbox is selected (set to `true`), only outliers are saved in the job’s output collection. If not selected (set to `false`), the entire dataset is saved in the job’s output collection. This is the `outputOutliersOnly` field in the configuration file. Optional field.
+* **Field Parameters.** This section includes these parameters:
+
+  + **Field to vectorize.** The Solr field that contains text training data. To combine data from multiple fields with different weights, enter `field1:weight1`,`field2:weight2`, etc. This is the `fieldToVectorize` field in the configuration file. Required field.
+  + **ID field name.** The unique ID for each document. This is the `uidField` field in the configuration file. Required field.
+  + **Output field name for outlier group ID.** The field that contains the ID for the outlier group. This is the `outlierGroupIdField` field in the configuration file. Optional field.
+  + **Top unique terms field name.** The field where the job output stores the top frequent terms that, for the most part, are unique for each outlier group. The information is computed based on term frequency-inverse document frequency (TF-IDF) and group ID. This is the `outlierGroupLabelField` field in the configuration file. Optional field.
+  + **Top frequent terms field name.** The field where the job output stores top frequent terms in each cluster. Terms may overlap with other clusters. This is the `freqTermField` field in the configuration file. Optional field.
+  + **Output field name for doc distance to its corresponding cluster center.** The field that contains the document’s distance from the center of its cluster. This is based on the arithmetic mean of all of the documents in the cluster. This denotes how representative the document is in the cluster. This is the `distToCenterField` field in the configuration file. Optional field.
+* **Model Tuning Parameters.** This section includes these parameters:
+
+  + **Max doc support.** The maximum number of documents that can contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `maxDF` field in the configuration file. Optional field.
+  + **Min doc support.** The minimum number of documents that must contain the term. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `minDF` field in the configuration file. Optional field.
+  + **Number of keywords for each cluster.** The number of keywords required to label each cluster. This is the `numKeywordsPerLabel` field in the configuration file. Optional field.
+* **Featurization Parameters.** This section includes the following parameter:
+
+  + **Lucene analyzer schema.** This is the JSON-encoded Lucene text analyzer schema used for tokenization. This is the `analyzerConfig` field in the configuration file. Optional field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** The Spark configuration settings include the following:
+
+  + **Spark SQL filter query.** This field contains the Spark SQL query that filters your input data. For example, `SELECT * from spark_input` registers the input data as `spark_input`. This is the `sparkSQL` field in the configuration file.
+  + **Data output format.** The format for the job output. The format must be compatible with Spark and options include `solr` and `parquet`. This is the `dataOutputFormat` field in the configuration file.
+  + **Partition fields.** If the job output is written to non-Solr sources, this field contains a comma-delimited list of column names that partition the dataframe before the external output is written. This is the `partitionCols` field in the configuration file.
+* **Input/Output Parameters.** This advanced option adds these parameters:
+
+  + **Training data filter query.** If Solr is used, this field contains the Solr query executed to load training data. This is the `trainingDataFilterQuery` field in the configuration file.
+* **Read Options.** This section lets you enter `parameter name:parameter value` options to use when reading input from Solr or other sources. This is the `readOptions` field in the configuration file.
+* **Write Options.** This section lets you enter `parameter name:parameter value` options to use when writing output to Solr or other sources. This is the `writeOptions` field in the configuration file.
+* **Dataframe config options.** This section includes these parameters:
+
+  + **Property name:property value.** Each entry defines an additional Spark dataframe loading configuration option. This is the `trainingDataFrameConfigOptions` field in the configuration file.
+  + **Training data sampling fraction.** This is the fractional amount of the training data the job will use. This is the `trainingDataSamplingFraction` field in the configuration file.
+  + **Random seed.** This value is used in any deterministic pseudorandom number generation to group documents into clusters based on similarities in their content. This is the `randomSeed` field in the configuration file.
+* **Field Parameters.** The advanced option adds this parameter:
+
+  + **Fields to load.** This field contains a comma-delimited list of Solr fields to load. If blank, the job selects the required fields to load at runtime. This is the `sourceFields` field in the configuration file.
+* **Model Tuning Parameters.** The advanced option adds these parameters:
+
+  + **Number of outlier groups.** The number of clusters to help find outliers. This is the `outlierK` field in the configuration file.
+  + **Outlier cutoff.** The fraction out of the total documents to designate as an outlier group. Values that are `<1.0` indicate a percentage, `1.0` is 100 percent, and `>1.0` indicates the exact number. This is the `outlierThreshold` field in the configuration file.
+  + **Vector normalization.** The p-norm value used to normalize vectors. A value of `-1` turns off normalization. This is the `norm` field in the configuration file.
+* **Miscellaneous Parameters.** This section includes this parameter:
+
+  + **Model ID.** The unique identifier for the model to be trained. If no value is entered, the `Spark Job ID` is used. This is the `modelId` field in the configuration file.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/outlier-detection.mdx";
+
+<SchemaParamFields schema={schema}/>

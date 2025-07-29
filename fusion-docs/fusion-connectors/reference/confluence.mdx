@@ -1,0 +1,80 @@
+---
+title: "Confluence V1"
+description: "Connector Configuration Reference"
+permalink: "56"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+Retrieve data from the Atlassian Confluence Wiki CMS. You can configure this datasource to crawl pages, spaces, blog posts, comments, and attachments.
+
+<Tip>
+**Important**
+
+The Atlassian v1 API used for this connector will be **removed by Atlassian on December 2, 2024**. At that time, this connector will no longer function. Instead, use the [Confluence recipe](/fusion-connectors/8sbhj5/confluence) with the REST V2 connector, which works with the Atlassian v2 API.
+</Tip>
+
+
+
+The Fusion Confluence connector supports Confluence Server versions 5.5 and later and Confluence Cloud.
+
+## Confluence Connector’s security trimming
+
+**Why do some field names have different numbers?**
+
+After crawling some test Confluence content, the Solr index has ACL fields such as `acl_users_0_s` and `acl_groups_0_ss`, but the field names can have different numbers. For example, some documents have `acl_users_1_s` or `acl_users_6_s`.
+
+This is due to the strange way that Confluence handles user and group viewing permissions. Each of these fields represents an **ancestor** of the item’s security. If a user does not match EACH level of permissions, the user cannot see the document and the doc will be filtered out.
+
+You will see three fields that are used during security trimming:
+
+* `ancestorCount_i` stores the number of ancestors this item has
+* `acl_users_i_s` stores the users allowed to see this item at ancestor number `i`
+* `acl_groups_i_s` stores the groups allowed to see this item at ancestor number `i`
+
+Users/groups that want to see a document in Confluence are processed ancestor-by-ancestor linearly.
+
+During security trimming, you will give the filter a `queryUser` and we return the Confluence documents this user can access.
+
+The Confluence security trimming algorithm does the following:
+
+1. Calculate the maximum `ancestorCount_i` of all documents in the index (`max(ancestorCount_i)`).
+2. Query Confluence for the Confluence Security Groups that `queryUser` is part of.
+3. Then `for i from [0 to max(ancestorCount_i)]`, append an AND clause for the security filter to match against each ancestor level for the `acl_users_i_s` and `acl_groups_1_s` fields:
+
+```yaml
+    (acl_users_i_s:_lw_confluence_anonymous_ OR acl_users_i_s:queryUser OR acl_group_i_s:group1 OR acl_group_i_s:group2 ... )
+
+```
+
+**For example:**
+
+```yaml
+queryUser = ndipiazza
+groupsUserIsIn = EngGroup, NorthAmericaGroup
+max(ancestorCount_i) = 3
+
+```
+
+Then the filter would be:
+
+```yaml
+(acl_users_0_s:lw_confluence_anonymous OR acl_users_0_s:ndipiazza OR acl_group_0_s:EngGroup OR acl_group_0_s:NorthAmericaGroup) AND(acl_users_1_s:lw_confluence_anonymous OR acl_users_1_s:ndipiazza OR acl_group_1_s:EngGroup OR acl_group_1_s:NorthAmericaGroup) AND(acl_users_2_s:lw_confluence_anonymous OR acl_users_2_s:ndipiazza OR acl_group_2_s:EngGroup OR acl_group_2_s:NorthAmericaGroup)
+
+```
+
+As you see, because these are AND’d together, if the user does not match EACH level of permissions, the user cannot see the document and the doc will be filtered out.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-confluence.mdx";
+
+<SchemaParamFields schema={schema}/>
+

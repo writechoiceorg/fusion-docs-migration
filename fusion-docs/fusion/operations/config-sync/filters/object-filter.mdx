@@ -1,0 +1,58 @@
+---
+title: "Object filters"
+permalink: "ztfcnr"
+---
+
+You can configure which objects to synchronize using the `objects` config setting in the `fusion-config-sync` section of the Helm chart.
+
+## Enabled/disabled objects
+
+Each object type can be disabled for synchronization using the `cfg.sub.objects.<TYPE-KEY>.enabled` setting.
+
+For instance, to disable synchronization of the `users` object type, use the following configuration:
+
+```yaml
+cfg:
+  sub:
+    objects:
+      users:
+        enabled: false
+```
+
+By default, all object types are enabled for synchronization.
+
+## Name filters
+
+Each object type can have a name filter regex (`cfg.sub.objects.<TYPE-KEY>.name-filter` setting) that filters out objects by their name.
+The global name filter regex for all object types is `cfg.sub.objects.name-filter` setting.
+
+For instance, to exclude all objects with names starting with `test` for the `users` object type, use the following configuration:
+
+```yaml
+cfg:
+  sub:
+    objects:
+      users:
+        name-filter: "^test.*"
+```
+
+## Prop filters
+
+Each object type can have a prop filter list (`cfg.pub.objects.<TYPE-KEY>.prop-filter` setting) that filters out object properties.
+
+<Note>
+[Subscriber mode](/fusion/5.9/t51vvb/subscriber-mode) does not support prop filters.
+</Note>
+
+The prop filter list is a comma-separated list of property JSON Pointer paths.
+Read more about JSON Pointer syntax [here](https://tools.ietf.org/html/rfc6901).
+The global prop filter list for all object types is `cfg.pub.objects.prop-filter` setting.
+For instance, to exclude the `password` property for the `users` object type, use the following configuration:
+
+```yaml
+cfg:
+  pub:
+    objects:
+      users:
+        prop-filter: "/password"
+```

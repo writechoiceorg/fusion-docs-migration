@@ -1,0 +1,94 @@
+---
+title: "Fusion 5.8.1"
+permalink: "608v1q"
+---
+
+**Release date:** June 8, 2023
+
+**Component versions:**
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.8.1  *(based on Solr 9.1.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Kubernetes** | GKE, AKS, EKS 1.24  Rancher (RKE) and OpenShift 4 compatible with Kubernetes 1.24  OpenStack and customized Kubernetes installs not supported.  See [Kubernetes support](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support) for end of support dates. |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+<Warning>
+Rosette Entity Extractor (REX) or Rosette Base Linguistics (RBL) for the [Babel Street (formerly Basistech) language module](/how-to/10912/use-advanced-linguistics-with-babel-street) or are not compatible with Solr 9 included in this version of Fusion. If you rely on the Babel Street language module, do not upgrade until this compatibility issue is resolved.
+</Warning>
+
+## Bug Fixes
+
+Fusion 5.8.1 fixes a bug in the Fusion 5.8.0 Helm chart that prevented horizontal pod autoscaling from working.
+
+If you are not using horizontal pod autoscaling, you do not need to upgrade to Fusion 5.8.1. This release does not make any other changes to your deployment.
+
+To use horizontal pod autoscaling in Fusion 5.8.1, follow these steps:
+
+1. Add the metrics server to your Fusion 5.8.1 deployment.
+2. Ensure the following changes are made your custom values YAML file for horizontal pod autoscaling:
+
+    1. Add service limits to the `resources` object of a service. For example:
+
+        ```yaml
+        query-pipeline:
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+        ```
+
+        <Note>
+        Resource limits vary depending on your deployment. Use values specific to your needs.
+        </Note>
+
+        <Warning>
+        Do not use horizontal scaling with Argo.
+
+        Horizontal scaling is not available with the Argo workflow controller. Do not apply horizontal autoscaling, or any other type of horizontal scaling, to the Argo service.
+
+        Applying horizontal autoscaling to Argo can cause unexpected behavior, such as pods being unnecessarily terminated, jobs failing to launch, or models failing to deploy.
+        </Warning>
+
+    2. Use the new keys and values to support autoscaling. For example, the key `targetAverageUtilization` is now `target`, which requires the keys `type` and `averageUtilization`:
+
+        ```yaml
+          autoscaling:
+            enabled: true
+            minReplicas: 1
+            maxReplicas: 5
+            metrics:
+              - type: Resource
+                resource:
+                  name: cpu
+                  target:
+                    type: Utilization
+                    averageUtilization: 10
+        ```
+
+<Tip>
+To verify that horizontal pod autoscaling is running, use the `k get HorizontalPodAutoscaler` command. The output should resemble the following:
+
+```
+NAME                REFERENCE                      TARGETS   MINPODS   MAXPODS   REPLICAS   AGE
+
+f5-query-pipeline   Deployment/f5-query-pipeline   1%/10%    1         5         1          84m
+```
+</Tip>
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

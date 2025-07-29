@@ -1,0 +1,47 @@
+---
+title: "Active Directory Security Trimming Stage"
+permalink: "296"
+---
+
+An Active Directory Security Trimming query pipeline stage retrieves an Active Directory user’s security identifiers to build a security filter. This restricts the documents in the query result to only those documents for which a user has access permissions. Security trimming is commonly used in business to authenticate between administrative users and normal users, or to limit the site access of website users according to a login/password.
+
+This stage supports [asynchronous processing](/fusion-server/4.2/169/query-pipeline-stages#async).
+
+## Example Stage Setup
+
+*Active Directory Security Trimming query stage setup:*
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"ADSecurity", "type": "active-directory-security-trimming", "server":"ldap://hostname:port","bindName":"ADuser@example.com","bindPassword":"login1"}' http://localhost:8764/api/query-stages/instances
+```
+
+**Output**
+
+```json
+{
+  "type" : "active-directory-security-trimming",
+  "id" : "ADSecurity",
+  "server" : "ldap://hostname:port",
+  "bindName" : "ADuser@example.com",
+  "bindPassword" : "login1",
+  "enableCache" : true,
+  "cacheSize" : 1000,
+  "expirationTime" : 3600,
+  "skip" : false,
+  "label" : "active-directory-security-trimming",
+  "type" : "active-directory-security-trimming"
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/active-directory-security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,121 @@
+{
+  "type": "object",
+  "title": "Update Related Document",
+  "description": "This stage performs an atomic update on an existing document that is related to a document currently being processed in the pipeline. For instance, you can use this stage to set the 'has_clicks' flag on a request signal when the first click signal is indexed.",
+  "required": [
+    "fieldsToUpdate"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "javascript",
+        "advanced"
+      ]
+    },
+    "realTimeGetQuery": {
+      "type": "string",
+      "title": "Find Related Document (RTG)",
+      "description": "Solr query to lookup the related document to update using a real-time get request; the query should uniquely identify the document to be updated.",
+      "hints": [
+        "lengthy"
+      ]
+    },
+    "lookupQuery": {
+      "type": "string",
+      "title": "Find Related Document (Query)",
+      "description": "Solr query to lookup the related document to update; only the first document returned in the results will be used.",
+      "hints": [
+        "lengthy"
+      ]
+    },
+    "lookupSort": {
+      "type": "string",
+      "title": "Sort Order",
+      "description": "Sort order to select the top document returned for the lookup query results; not used when doing a real-time get."
+    },
+    "applyLookupCriteria": {
+      "type": "string",
+      "title": "Only lookup related docs when",
+      "description": "Optional criteria to determine if this stage should try to find related documents to update for a given input document"
+    },
+    "fieldsToUpdate": {
+      "type": "array",
+      "title": "Fields to Update",
+      "description": "One or more fields to set on the document; the value can be pulled from the main document or simply a constant provided by this config",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection",
+      "description": "Fusion collection to lookup the related document to update; if not set, then the collection is pulled from the index pipeline context",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "idField": {
+      "type": "string",
+      "title": "ID Field",
+      "description": "Name of the unique key field for the related document to lookup",
+      "default": "id",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "commitWithinOverride": {
+      "type": "integer",
+      "title": "Commit Within Override",
+      "description": "Number of millis to commit the atomic update; if not provided, then the default commitWithin setting for the collection will be used",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "secsToCacheRecentlyUpdatedDocs": {
+      "type": "integer",
+      "title": "Seconds to Cache Recent Updates",
+      "description": "Number of seconds to cache recently updated docs to avoid a lookup / redundant update; keep this under a few minutes to avoid missing updates. Set to -1 to disable this behavior.",
+      "hints": [
+        "advanced"
+      ]
+    }
+  },
+  "category": "Indexing",
+  "categoryPriority": 4,
+  "unsafe": false
+}

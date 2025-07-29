@@ -1,0 +1,141 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Deploys a Seldon Core Model into the Fusion cluster",
+  "properties": {
+    "columnNames": {
+      "default": "[output1, output2]",
+      "description": "A list of column names that the model generates which the ML Service will return after inference.",
+      "title": "Output column names for model",
+      "type": "string"
+    },
+    "deployModelName": {
+      "description": "The model name of the Seldon Core deployment to deploy",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z][\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Model name",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "modelDockerImage": {
+      "description": "Name of the model's docker image",
+      "title": "Image name",
+      "type": "string"
+    },
+    "modelDockerRepo": {
+      "description": "Defines the Docker repository where the model image is located.",
+      "title": "Docker repository",
+      "type": "string"
+    },
+    "modelDockerSecret": {
+      "description": "Defines the Kubernetes secret to be used with the Docker repository",
+      "title": "Kubernetes secret name for model repo",
+      "type": "string"
+    },
+    "modelReplicas": {
+      "default": 1,
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "title": "Model replicas",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "type": {
+      "default": "argo-deploy-model",
+      "enum": [
+        "argo-deploy-model"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "deployModelName",
+    "modelDockerRepo",
+    "modelDockerImage",
+    "type"
+  ],
+  "title": "Create Seldon Core Model Deployment",
+  "type": "object"
+}

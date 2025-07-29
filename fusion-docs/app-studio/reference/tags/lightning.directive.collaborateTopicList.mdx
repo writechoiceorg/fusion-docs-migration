@@ -1,0 +1,30 @@
+---
+title: "collaborate:topic-list"
+permalink: "1177"
+---
+
+## Description
+
+The topic list directive is used to render a list of topics specific to your organization. To customize the topic list, enter your custom html code with the following commands:
+
+```xml
+<collaborate:topic-list>
+     <li ng-repeat="topic in $parent.topics">YOUR CUSTOM CODE HERE</li>
+</collaborate:topic-list>
+```
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:topic-list
+       [title="{string}"]
+       [delete-label="{string}"]
+       [show="{number}"]>
+</collaborate:topic-list>
+```
+
+## Directive information
+
+This directive creates new scope.

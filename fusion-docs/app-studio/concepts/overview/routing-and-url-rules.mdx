@@ -1,0 +1,56 @@
+---
+title: "Routing and URL Rules"
+permalink: "3116"
+---
+
+This page explains the general URL patterns used in the application to map URI paths to JSP pages and resources within an Appkit application.
+
+The URL routing is handled by the [Tuckey URL rewrite filter](http://tuckey.org/urlrewrite/), and configured using this file: `src/main/webapp/WEB-INF/url-rules.xml`
+
+This filter allows particular URLs to be served by specific JSPs, without forwarding or redirecting the user, thus the URL will remain the same in their browser. It provides a flexible way to define rules for mapping URLs in the application using [regex](http://en.wikipedia.org/wiki/Regular_expression).
+
+By default everything under the application context is passed through the filter, however most Appkit applications define a pattern which are passed straight through unmodified (essentially by-passing the filter):
+
+```xml
+<rule>
+    <name>Ignore file, non-jsp and non-query requests</name>
+    <condition type="request-uri" next="or">^/twigkit/.*</condition>
+    <from>.*</from>
+    <to last="true">$0</to>
+</rule>
+
+```
+
+The remaining requests for URLs not matching the patterns to be ignored (shown above) will be processed through rules designed for the bulk of user requests such as search queries. A typical configuration for an Appkit application is shown below:
+
+```xml
+<rule>
+    <from>^/login/</from>
+    <to last="true">/login.jsp</to>
+</rule>
+
+<rule>
+    <from>^/login</from>
+    <to last="true">/login.jsp</to>
+</rule>
+
+<rule match-type="wildcard">
+    <name>Ignore files on URL path.</name>
+    <from>/**.*</from>
+    <to last="true">/$0</to>
+</rule>
+
+<rule match-type="wildcard">
+    <name>HTML 5 URL Rewrite</name>
+    <from>/**</from>
+    <to last="true">/index.jsp</to>
+</rule>
+```
+
+The first two rules routes all requests for '/login' or '/login/' to the login page. This will typically be the user’s entry point to the application, though if security is enabled and the user is unauthenticated, any other page name given will direct the user to the login page by default.
+
+The third rule matches all requests that have a period in the path (for example, 'mypage.html') and breaks the request.
+
+The fourth rule will route all remaining requests to the index.jsp page, whereby the angular code will interpret the URL via the angular routing mechanism, and point to the correct view.
+
+Each of these rules can be modified to support different patterns, depending on the requirements of the application. By default all GET request parameters, such as Appkit’s *q* parameter representing the search query (**?q=my+search+terms**), will be passed straight through to the page that the request is routed to. Before modifying these rules, we recommend that you read the [URL rewrite filter documentation](https://cdn.rawgit.com/paultuckey/urlrewritefilter/master/src/doc/manual/4.0/index.html), and specifically the section about [the `urlrewrite.xml` configuration file](https://cdn.rawgit.com/paultuckey/urlrewritefilter/master/src/doc/manual/4.0/index.html#configuration), before modifying these rules.

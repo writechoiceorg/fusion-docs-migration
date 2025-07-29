@@ -1,0 +1,88 @@
+---
+title: "Graph Security Trimming Stage"
+permalink: "zdzlfu"
+---
+
+The Graph Security Trimming stage restricts query results according to the user ID as an alternative to [Security Trimming Stage](/fusion/5.9/272/security-trimming-stage). Whereas the Security Trimming stage has one Solr filter query per data source, Graph Security Trimming uses a single filter query for all data sources.
+
+## Stage setup
+
+When using this stage with [SharePoint Optimized V2](/fusion-connectors/3qqudu/share-point-optimized-v-2) or [LDAP ACLs V2](/fusion-connectors/4selgx/ldap-ac-ls-v-2) connectors, configure the following settings:
+
+| Field | Value |
+| --- | --- |
+| **ACL solr collection** | `contentCollection` |
+| **User ID source** | `query_param` or `header` |
+| **User ID key** | The key that contains the User ID |
+| **Join method** | `topLevelDV` |
+| **Join Field** | `_lw_acl_ss` |
+
+<Tip>
+Refer to [Configure Security Trimming for SharePoint Optimized V2](/how-to/hjbv7z/configure-security-trimming-for-share-point-optimized-v-2) and [Migrate to Graph Security Trimming in Fusion 5.8 or later](/how-to/s66hyj/migrate-to-graph-security-trimming-in-fusion-5-8-or-later) for more information.
+</Tip>
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Configuring Graph Security Trimming** focuses on how to set up security trimming:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/configuring-graph-security-trimming" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/graph-security-trimming.jpg" alt="Configuring Graph Security Trimming" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Query pipeline stage condition examples
+
+Stages can be triggered conditionally when a script in the **Condition** field evaluates to true.
+Some examples are shown below.
+
+Run this stage only for mobile clients:
+
+```js
+params.deviceType === "mobile"
+```
+
+Run this stage when debugging is enabled:
+
+```js
+params.debug === "true"
+```
+
+Run this stage when the query includes a specific term:
+
+```js
+params.q && params.q.includes("sale")
+```
+
+Run this stage when multiple conditions are met:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter "fusion-user-name" is present and has the value "SuperUser".
+The second condition checks that the request parameter "isFusionPluginQuery" is not present.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/graph-security-trimming.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,63 @@
+---
+title: "layout:include"
+permalink: "1173"
+---
+
+## Description
+
+The include directives allows you to include a template on the page.
+
+## Usage
+
+as element:
+
+```xml
+<layout:include
+       file="{string}">
+</layout:include>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| file | **string** | The location of the file of the template |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_static-file-path">Static File Path</h3>
+<layout:include file="css/user-defined-template.tmp.html" user="{{user}}" file-path="{{filePath}}"></layout:include>
+<hr />
+<h3 id="example_dynamic-file-path">Dynamic File Path</h3>
+<layout:include file="{{filePath}}" user="{{user}}" file-path="{{filePath}}"></layout:include>
+<hr />
+<h3 id="example_dynamic-2-part-file-path">Dynamic 2 Part File Path</h3>
+<layout:include file="{{partFilePath1 + partFilePath2}}" user="foo" file-path="{{filePath}}"></layout:include>
+<hr />
+<h3 id="example_dynamic-file-path-+-static-file-path">Dynamic File Path + Static File Path</h3>
+<layout:include file="{{partFilePath1 + 'tmp.html'}}" user="foo" file-path="{{filePath}}"></layout:include>
+<hr />
+<h3 id="example_multi-level">Multi-level</h3>
+<layout:include file="css/level1.tpl.html" leveltype="Parent" child="css/level2.tpl.html"></layout:include>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+            $scope.user = 'Developer';
+            $scope.filePath = 'css/user-defined-template.tmp.html';
+            $scope.partFilePath1 = 'css/user-defined-template.';
+            $scope.partFilePath2 = 'tmp.html';
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/layoutInclude.png)</Frame>

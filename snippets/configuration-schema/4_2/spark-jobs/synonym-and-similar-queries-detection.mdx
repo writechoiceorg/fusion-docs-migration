@@ -1,0 +1,277 @@
+export const schema = {
+  "type": "object",
+  "title": "Synonym and Similar Queries Detection",
+  "description": "Use this job to generate synonym and similar query pairs.",
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "countField",
+    "docIdField",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 128,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "trainingCollection": {
+      "type": "string",
+      "title": "Input Collection",
+      "description": "Collection containing queries, document id and event counts. Can be either signal aggregation collection or raw signals collection.",
+      "minLength": 1
+    },
+    "fieldToVectorize": {
+      "type": "string",
+      "title": "Query Field Name",
+      "description": "Field containing queries. Change to query_s to use aggregation collection",
+      "default": "query",
+      "minLength": 1
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data format",
+      "description": "Spark-compatible format which training data comes in (like 'solr', 'hdfs', 'file', 'parquet' etc)",
+      "enum": [
+        "solr",
+        "hdfs",
+        "file",
+        "parquet"
+      ],
+      "default": "solr",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFrameConfigOptions": {
+      "type": "object",
+      "title": "Dataframe Config Options",
+      "description": "Additional spark dataframe loading configuration options",
+      "properties": {},
+      "additionalProperties": {
+        "type": "string"
+      },
+      "hints": [
+        "advanced"
+      ]
+    },
+    "trainingDataFilterQuery": {
+      "type": "string",
+      "title": "Data filter query",
+      "description": "Solr query to additionally filter the input collection.",
+      "default": "*:*",
+      "hints": [
+        "dummy"
+      ],
+      "minLength": 3
+    },
+    "trainingDataSamplingFraction": {
+      "type": "number",
+      "title": "Training data sampling fraction",
+      "description": "Fraction of the training data to use",
+      "default": 1,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "exclusiveMaximum": false
+    },
+    "randomSeed": {
+      "type": "integer",
+      "title": "Random seed",
+      "description": "For any deterministic pseudorandom number generation",
+      "default": 1234,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Collection to store synonym and similar query pairs.",
+      "hints": [
+        "dummy"
+      ]
+    },
+    "overwriteOutput": {
+      "type": "boolean",
+      "title": "Overwrite Output",
+      "description": "Overwrite output collection",
+      "default": true,
+      "hints": [
+        "hidden",
+        "advanced"
+      ]
+    },
+    "sourceFields": {
+      "type": "string",
+      "title": "Fields to Load",
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "misspellingCollection": {
+      "type": "string",
+      "title": "Misspelling Job Result Collection",
+      "description": "Solr collection containing reviewed result of Token and phrase spell correction job. Defaults to the query_rewrite_staging collection for the app."
+    },
+    "misspellingsFilterQuery": {
+      "type": "string",
+      "title": "Misspelling Job Result Filter Query",
+      "description": "Solr query to additionally filter the misspelling results. Defaults to reading all approved spell corrections.",
+      "default": "type:spell"
+    },
+    "keyPhraseCollection": {
+      "type": "string",
+      "title": "Phrase Extraction Job Result Collection",
+      "description": "Solr collection containing reviewed result of Phrase extraction job. Defaults to the query_rewrite_staging collection for the app."
+    },
+    "keyPhraseFilterQuery": {
+      "type": "string",
+      "title": "Phrase Extraction Job Result Filter Query",
+      "description": "Solr query to additionally filter the phrase extraction results. Defaults to reading all approved phrases.",
+      "default": "type:phrase"
+    },
+    "countField": {
+      "type": "string",
+      "title": "Event Count Field Name",
+      "description": "Solr field containing number of events (e.g., number of clicks). Change to aggr_count_i to use aggregated signals",
+      "default": "count_i"
+    },
+    "docIdField": {
+      "type": "string",
+      "title": "Document id Field Name",
+      "description": "Solr field containing document id that user clicked. Change to doc_id_s for aggregation collection",
+      "default": "doc_id"
+    },
+    "overlapThreshold": {
+      "type": "number",
+      "title": "Query Similarity Threshold",
+      "description": "The threshold above which query pairs are consider similar. We can get more synonym pairs if increase this value but quality may get reduced.",
+      "default": 0.5,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "similarityThreshold": {
+      "type": "number",
+      "title": "Synonym Similarity Threshold",
+      "description": "The threshold above which synonym pairs are consider similar. We can get more synonym pairs if increase this value but quality may get reduced.",
+      "default": 0.01,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "minQueryCount": {
+      "type": "integer",
+      "title": "Query Clicks Threshold",
+      "description": "The min number of clicked documents needed for comparing queries.",
+      "default": 5,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "keywordsBlobName": {
+      "type": "string",
+      "title": "Keywords Blob Store",
+      "description": "Name of the keywords blob resource. Typically, this should be a csv file uploaded to blob store in a specific format. Check documentation for more details on format and uploading to blob store.",
+      "reference": "blob",
+      "blobType": "file:spark"
+    },
+    "analyzerConfigQuery": {
+      "type": "string",
+      "title": "Lucene Analyzer Schema",
+      "description": "LuceneTextAnalyzer schema for tokenizing queries (JSON-encoded)",
+      "default": "{ \"analyzers\": [ { \"name\": \"LetterTokLowerStem\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"letter\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"KStem\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"LetterTokLowerStem\" } ]}",
+      "hints": [
+        "lengthy",
+        "advanced",
+        "code/json"
+      ],
+      "minLength": 1
+    },
+    "stopwordsList": {
+      "type": "array",
+      "title": "List of stopwords",
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "reference": "blob",
+        "blobType": "file:spark"
+      }
+    },
+    "enableAutoPublish": {
+      "type": "boolean",
+      "title": "Enable auto-publishing",
+      "description": "If true, automatically publishes rewrites for rules. Default is false to allow for initial human-aided reviewing",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "synonymDetection"
+      ],
+      "default": "synonymDetection",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false,
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "countField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "overlapThreshold"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfigQuery"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "keywordsBlobName"
+      ]
+    }
+  ]
+}

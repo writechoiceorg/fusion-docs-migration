@@ -1,0 +1,38 @@
+---
+title: "Data Models API"
+description: "Fusion Admin APIs"
+permalink: "8824"
+---
+
+Manages data models.
+
+Data models simplify the process of getting started with Fusion by providing pre-configured objects to reduce the effort spent on basic starting tasks. This helps keep documents consistent between datasources and intuitive to the object’s type.
+
+For more information, [view the API specification.](?open-api=true)
+
+## UI fields configuration
+
+| Field | Required | Description | Example |
+| --- | --- | --- | --- |
+| **Name of the Data Model** | ✅ | `string`   A user-friendly name for the data model. This typically describes the object type. | `person` |
+| **Index Pipeline** | ✅ | `string`   The name of the index pipeline used for the data model. | `companyDirectory-index-pipeline` |
+| **Query Pipeline** | ✅ | `string`   The name of the query pipeline used for the data model. | `companyDirectory-query-pipeline` |
+| **Field Name** | ✅ | `string` | `first_name` |
+| **Required** | ✘ | `boolean` | `true` |
+| ***Solr Fields* ↓** | | | |
+| **Solr Field Name** | ✅ | `string` | `firstName_t` |
+| **Is Query Field** | ✘ | `boolean` | `true` |
+| **Enable Phrase Match** | ✘ | `boolean` | `false` |
+| **Boost Value** | ✘ | `integer`   The amount of boost to give to the query. | `1` |
+| **Phrase Boost** | ✘ | `integer`   The amount of boost to give to the query, if it matches as an exact phrase. | `2` |
+
+<Tip>
+The value you put in **Name of the Data Model** is automatically converted to lowercase for the `id` field in the backend. Use lowercase syntax for API calls. For a list of data models and their `id` values, visit `https://FUSION_HOST:FUSION_PORT/api/data-models`.
+</Tip>
+
+## More information
+
+* [How to Configure a Data Model](/how-to/8868/configure-a-data-model)
+* [Data Models](/fusion/5.9/8829/data-models)
+* [Data Model Mapping Index Stage reference](/fusion/5.9/8840/data-model-mapping-index-stage)
+* [Call Data Model Pipeline Index Stage reference](/fusion/5.9/8841/call-data-model-pipeline-index-stage)

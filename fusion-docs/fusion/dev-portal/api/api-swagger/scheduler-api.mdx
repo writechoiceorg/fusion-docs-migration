@@ -1,0 +1,218 @@
+---
+title: "Scheduler API"
+description: "Fusion Admin APIs"
+permalink: "330"
+---
+
+Use the Scheduler API to define a schedule for system activities and manage the jobs that result from the schedule.
+
+<Note>
+This API is deprecated in favor of the [Jobs API](/fusion/5.9/327/jobs-api).
+</Note>
+
+For more information, [view the API specification.](?open-api=true)
+
+All of the Fusion services are available for scheduling, as are any Solr activities and any other HTTP-based URI.
+
+See [Jobs and Schedules](/fusion/5.9/184/jobs-and-scheduling) for more information about all of the options available for scheduling, and instructions for configuring scheduler jobs using the Fusion UI.
+
+## Schedule Definition Properties
+
+| Parameter | Description |
+| --- | --- |
+| id  *Required* | The ID of the schedule. This is required when creating a schedule with a POST request. |
+| creatorType  *Optional* | The type of user that created the schedule. If you have resources creating schedules programmatically, you could define a type that helps distinguish those schedules from others created by people. |
+| creatorId  *Optional* | An ID for the user that created the schedule. |
+| startTime  *Optional* | A time when the schedule should be started. If this is not set, it will be set to the date/time when the schedule was created. |
+| endTime  *Optional* | A time when the schedule should be terminated, i.e., when it will not run any more in the future. If not set, the schedule will run until it is disabled (i.e., "active" is set to false) or deleted. |
+| repeatUnit  *Optional* | A unit of time that when combined with the interval property defines how often the schedule will run. Allowed values are: <br/>● "millisecond" or "ms"<br/>● "second" or "sec"<br/>● "minute" or "min"<br/>● "hour" or "hr"<br/>● "day"<br/>● "week"<br/>● "month"  These time units are not case sensitive. |
+| interval  *Optional* | An integer that when combined with the repeatUnit property defines how often the schedule will run. If this is not set, or set to a number lower than '1' (i.e., '0'), the schedule will only be run once. |
+| active  *Optional* | If **true**, the schedule will be executed according to the defined interval. If **false**, the schedule will be disabled and will not run at the defined time. |
+| callParams  *Required* | The callParams define the API call to execute at the defined time intervals. It allows several properties: <br/>● **uri.** a fully-qualified service URI. This can be an HTTP call, a Solr request, or a Fusion service call. Supported URI schemas are:  + `http://` or `https://`   + `solr://{collection}/…​`  A SolrCloud request.   + `service://{serviceName}/{path}`  A load-balanced Fusion service request.<br/>● **method.** The method to use, as in GET, POST, PUT, or DELETE.<br/>● **queryParams.** Query parameters to be passed with the request. For Solr calls, this could be parameters such as "q", "fq", "commit", etc.<br/>● **headers.** Any additional protocol headers, such as "Content-type".<br/>● **entity.** An optional payload to be sent with the request. |
+
+## Examples
+
+*Run a crawl of the datasource "LocalDocs2" every day:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d '{"id":"1", "creatorType":"human", "creatorId":"admin1", "repeatUnit":"DAY", "interval":1, "active":true, "callParams":{"uri":"service://connectors/jobs/LocalDocs2", "method":"POST"}}' https://FUSION_HOST:FUSION_PORT/api/scheduler/schedules
+
+```
+
+RESPONSE
+
+```json
+{
+  "id" : "1",
+  "trigger" : "1_1400007488512_-9223372036854775808",
+  "schedule" : {
+    "id" : "1",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T18:58:08.512Z",
+    "startTime" : "2014-05-13T18:58:08.512Z",
+    "endTime" : null,
+    "repeatUnit" : "DAY",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "service://connectors/jobs/LocalDocs2",
+      "method" : "POST",
+      "queryParams" : { },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}
+
+```
+
+*Issue a commit to the SolrCloud collection "demo" every hour:*
+
+REQUEST
+
+```bash
+curl-u USERNAME:PASSWORD -X POST -H 'Content-Type: application/json' -d '{"id":"2", "creatorType":"human", "creatorId":"admin1", "repeatUnit":"HOUR", "interval":1, "active":true, "callParams":{"uri":"solr://demo/update", "method":"GET", "queryParams":{"stream.body":"<commit/>"}}}' https://FUSION_HOST:FUSION_PORT/api/scheduler/schedules
+
+```
+
+RESPONSE
+
+```json
+{
+  "id" : "2",
+  "trigger" : "2_1400011854443_-9223372036854775807",
+  "schedule" : {
+    "id" : "2",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T20:10:54.443Z",
+    "startTime" : "2014-05-13T20:10:54.443Z",
+    "endTime" : null,
+    "repeatUnit" : "HOUR",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "solr://demo/update",
+      "method" : "GET",
+      "queryParams" : {
+        "stream.body" : "<commit/>"
+      },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}
+
+```
+
+*Set schedule "2" to inactive:*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: application/json' -d '{"creatorType":"human", "creatorId":"admin1", "repeatUnit":"HOUR", "interval":1, "active":false, "callParams":{"uri":"solr://demo/update", "method":"GET", "queryParams":{"stream.body":"<commit/>"}}}' https://FUSION_HOST:FUSION_PORT/api/scheduler/schedules/2
+
+```
+
+There will be no response if the PUT request was successful.
+
+*List all scheduled jobs:*
+
+REQUEST
+
+```bash
+ curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/scheduler/jobs
+
+```
+
+RESPONSE
+
+```json
+[ {
+  "id" : "2",
+  "trigger" : "2_1400011854443_-9223372036854775807",
+  "schedule" : {
+    "id" : "2",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T20:10:54.443Z",
+    "startTime" : "2014-05-13T20:10:54.443Z",
+    "endTime" : null,
+    "repeatUnit" : "HOUR",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "solr://demo/update",
+      "method" : "GET",
+      "queryParams" : {
+        "stream.body" : "<commit/>"
+      },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+}, {
+  "id" : "1",
+  "trigger" : "1_1400007488512_-9223372036854775808",
+  "schedule" : {
+    "id" : "1",
+    "creatorType" : "human",
+    "creatorId" : "admin1",
+    "createTime" : "2014-05-13T18:58:08.512Z",
+    "startTime" : "2014-05-13T18:58:08.512Z",
+    "endTime" : null,
+    "repeatUnit" : "DAY",
+    "interval" : 1,
+    "active" : true,
+    "callParams" : {
+      "uri" : "service://connectors/jobs/LocalDocs2",
+      "method" : "POST",
+      "queryParams" : { },
+      "headers" : { },
+      "entity" : null
+    }
+  }
+} ]
+
+```
+
+*List the history of job ID '1':*
+
+REQUEST
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/history/scheduler/items/1
+
+```
+
+RESPONSE
+
+```json
+{
+ "events" : [ {
+ "start" : "2014-05-16T15:34:49.008Z",
+ "end" : "2014-05-16T15:34:49.435Z",
+ "source" : "scheduler",
+ "type" : "execute",
+ "status" : "ok",
+ "details" : {
+ "status" : 200,
+ "entity" : "{\n \"id\" : \"TwitterSearch\",\n \"dataSourceId\" : \"TwitterSearch\",\n \"state\" : \"RUNNING\",\n \"message\" : null,\n \"startTime\" : 1400254489000,\n \"endTime\" : -1,\n \"finished\" : false,\n \"counters\" : { },\n \"exception\" : null,\n \"running\" : true\n}"
+ },
+ "error" : null
+ }, {
+ "start" : "2014-05-16T15:38:32.536Z",
+ "end" : "2014-05-16T15:38:32.559Z",
+ "source" : "scheduler",
+ "type" : "execute",
+ "status" : "ok",
+ "details" : {
+ "status" : 200,
+ "entity" : "{\n \"id\" : \"TwitterSearch\",\n \"dataSourceId\" : \"TwitterSearch\",\n \"state\" : \"RUNNING\",\n \"message\" : null,\n \"startTime\" : 1400254712000,\n \"endTime\" : -1,\n \"finished\" : false,\n \"counters\" : { },\n \"exception\" : null,\n \"running\" : true\n}"
+ } ]
+}
+
+```

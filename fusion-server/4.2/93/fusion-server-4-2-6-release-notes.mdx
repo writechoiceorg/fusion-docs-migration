@@ -1,0 +1,52 @@
+---
+title: "Fusion Server 4.2.6 Release Notes"
+permalink: "93"
+---
+
+**Release date:** 31 March 2020
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.7.2 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.19.v20190610 | Ignite 2.6.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+* Support is added for individually selecting rules to publish in the Fusion UI:
+
+  <Frame>![Individually publish rules in the Fusion UI](/assets/images/5.1/release-notes/publish-indiv-rules.png)</Frame>
+
+## Improvements
+
+* The GitHub connector no longer accepts username and password as authentication methods. Instead, GitHub oAuth token Authentication is used to perform GitHub requests. See the [GitHub oAuth authentication page](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line#creating-a-token) for more information.
+
+* The Jira connector is updated to use the latest available authentication methods.
+
+* The Google Drive connector allows debug logging to view HTTP traffic securely.
+
+* The Blob Store gives a more informative error message when an uploaded file has invalid schema or fields.
+
+* Various UI improvements.
+
+## Bug fixes
+
+* Reduced the likelihood of the [Active Directory Connector for ACLs](/fusion-connectors/11/active-directory-connector-for-acls) failing during crawls.
+
+* Fixed a bug that lowered performance on large query plans.
+
+* Fixed a bug with the Alfresco connector that caused old and new versions of a document to be indexed during a recrawl. Now, only the latest document is indexed.
+
+* Fixed a bug with the Alfresco connector that caused a moved document to be indexed at the previous *and* current location. Now, only the document in the current location is indexed.
+
+* Fixed a bug with the Alfresco connector that prevented the `acls_ss` field from updating unless **Force Recrawl** was selected.
+
+* Fixed a bug with the FTP connector that sometimes prevented files with non-English filenames from being indexed.
+
+* Fixed a bug with the [Scala script job](/fusion-server/4.2/386/script-jobs) that sometimes resulted in job failures when indentation was used.
+
+* Fixed a bug with V2 connectors that sometimes resulted in jobs completing before all documents were indexed.
+
+* Fixed a bug with V2 connectors that sometimes caused crawls to stall and fail due to an Out of Memory (OOM) error.

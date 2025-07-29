@@ -1,0 +1,101 @@
+---
+title: "Google Cloud Storage (GCS) V2"
+description: "Connector Configuration Reference"
+permalink: "3243"
+---
+
+Latest version: v2.1.0
+
+Compatible with Fusion version: 5.2.0 and later
+
+The Fusion Google Cloud Storage (GCS) V2 connector enables indexing datasets from GCS buckets into Fusion 5. The connector leverages the Google Cloud API for authentication and fetching content and metadata.
+
+GCS connector can index:
+
+* CSV
+* JSON
+* PDF
+* Word docs
+* Other rich text formats
+
+## Features
+
+1. Service account authentication
+2. Full crawl of storage buckets and objects
+3. Recrawl buckets and objects
+4. Remove deleted objects
+5. Update objects
+6. Cascade deletion of objects in deleted buckets
+7. Document parsing support
+8. Bucket and object filtering
+
+### Authentication:
+
+The GCS connector supports [JSON key authentication](https://cloud.google.com/iam/docs/creating-managing-service-account-keys). The full JSON key content must be copied and pasted into the service account JSON key box.
+
+### Full crawl
+
+GCS crawls all available buckets in a project. In order to crawl all available buckets, the account used in the configuration needs the correct permissions enabled.
+
+#### Crawl specific buckets
+
+If the account used has limited permissions, or if a user wants to only crawl specific buckets, use the `Specify buckets to crawl` setting. First add the name of the buckets you would like to crawl, then download bucket objects and metadata.
+
+### Recrawl
+
+The GCS connector picks up content changes (added/updated/deleted) to keep the Solr index up to date.
+
+## Remote connectors
+
+V2 connectors support [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.7.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+Below is an example configuration showing how to specify the file system to index under the `connector-plugins` entry in your `values.yaml` file:
+
+```yaml
+additionalVolumes:
+- name: fusion-data1-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data1-pvc
+- name: fusion-data2-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data2-pvc
+additionalVolumeMounts:
+- name: fusion-data1-pvc
+    mountPath: "/connector/data1"
+- name: fusion-data2-pvc
+    mountPath: "/connector/data2"
+
+```
+
+You may also need to specify the user that is authorized to access the file system, as in this example:
+
+```yaml
+securityContext:
+    fsGroup: 1002100000
+    runAsUser: 1002100000
+
+```
+
+## Configuration
+
+| Name | Title | Description |
+| --- | --- | --- |
+| `authenticationProperties` | Authentication settings | Connect to the bucket store using a service account. The service account requires the following permissions: storage.buckets.list to crawl all the available buckets; storage.objects.list and storage.objects.get to access to the objects in the buckets. |
+| `applicationProperties` | Limit documents | Bucket and Object filtering options. |
+| `jsonKey` | Service account Json key | Json key contents from authorized service account. |
+| `buckets` | Bucket list | Add the bucket names to crawl. Leave blank to crawl all the available buckets. |
+| `includedFileExtensions` | Included file extensions | Set of file extensions to be fetched. If specified all non-matching files will be skipped. |
+| `excludedFileExtensions` | Excluded file extensions | A set of all file extensions to be skipped from the fetch. |
+| `inclusiveRegexes` | Inclusive regexes | Regular expressions for bucket or object name patterns to include. This will limit this datasource to only items that match the regular expression. |
+| `exclusiveRegexes` | Exclusive regexes | Regular expressions for bucket or object name patterns to exclude. This will limit this datasource to only items that do not match the regular expression. |
+| `maxSizeBytes` | Maximum File Size | Used for excluding objects when the objects size is larger than the configured value. |
+| `minSizeBytes` | Minimum File Size | Used for excluding objects when the objects size is smaller than the configured value. |
+| `bucketPrefix` | Bucket prefix | Filter results to buckets whose names begin with this prefix. Useful only when 'Bucket List' property is empty. |
+| `blobsPrefix` | Object prefix | Filter results to objects whose names begin with this prefix. |
+| `pageSize` | Buckets and Objects page size | Maximum number of buckets or objects returned per page. |
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-lucidworks-gcs.mdx";
+
+<SchemaParamFields schema={schema}/>
+

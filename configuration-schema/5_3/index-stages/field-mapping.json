@@ -1,0 +1,232 @@
+{
+  "type": "object",
+  "title": "Field Mapping",
+  "description": "Keep, delete, add, set, copy, or move fields on a document",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "reservedFieldsMappingAllowed": {
+      "type": "boolean",
+      "title": "Allow System Fields Mapping?",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "retentionMappings": {
+      "type": "array",
+      "title": "Field Retention",
+      "description": "Define here which fields should be kept or deleted",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The name of the field to operate on.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation",
+            "description": "The type of operation to perform: keep (default) or delete",
+            "enum": [
+              "keep",
+              "delete"
+            ],
+            "default": "keep",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    "updateMappings": {
+      "type": "array",
+      "title": "Field Value Updates",
+      "description": "Define here values that should be added to or set on a field. When a value is added, any values previously on the field will be retained. When a value is set, any values previously on the field will be overridden.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "value"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The name of the field to operate on.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "The value to add to or set on the field.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation",
+            "description": "The type of operation to perform: add (default) or set.",
+            "enum": [
+              "add",
+              "set"
+            ],
+            "default": "add",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    "translationMappings": {
+      "type": "array",
+      "title": "Field Translations",
+      "description": "Define here fields that should be moved or copied to another field. When a field is moved, the values from the source field are moved over to the target field and the source field is removed. When a field is copied, the values from the source field are copied over to the target field and the source field is retained.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source Field",
+            "description": "The name of the field to operate on.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "target": {
+            "type": "string",
+            "title": "Target Field",
+            "description": "The name of the target field.",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation",
+            "description": "The type of operation to perform: copy (default) or move.",
+            "enum": [
+              "copy",
+              "move"
+            ],
+            "default": "copy",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    },
+    "unmappedRule": {
+      "type": "object",
+      "title": "Unmapped Fields",
+      "description": "Define here how fields not mapped by the above rules should be handled. By default, any remaining fields will be kept on the document.",
+      "properties": {
+        "keep": {
+          "type": "boolean",
+          "title": "Keep",
+          "description": "Keep all unmapped fields",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "delete": {
+          "type": "boolean",
+          "title": "Delete",
+          "description": "Delete all unmapped fields",
+          "default": false,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "fieldToMoveValuesTo": {
+          "type": "string",
+          "title": "Move",
+          "description": "Move all unmapped field values to this field",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "fieldToCopyValuesTo": {
+          "type": "string",
+          "title": "Copy",
+          "description": "Copy all unmapped field values to this field",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "valueToAddToUnmappedFields": {
+          "type": "string",
+          "title": "Add",
+          "description": "Add this value to all unmapped fields",
+          "hints": [
+            "advanced"
+          ]
+        },
+        "valueToSetOnUnmappedFields": {
+          "type": "string",
+          "title": "Set",
+          "description": "Set this value on all unmapped fields",
+          "hints": [
+            "advanced"
+          ]
+        }
+      }
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 7,
+  "unsafe": false
+}

@@ -1,0 +1,75 @@
+---
+title: "ConfigSync"
+permalink: "j47yes"
+---
+
+ConfigSync keeps your Fusion configuration settings consistent and up-to-date across different environments by automatically synchronizing configuration data between your Git repository and your Fusion cluster.
+It follows [GitOps](https://about.gitlab.com/topics/gitops/) principles by using Git as the single source of truth for configuration management.
+
+<Note>
+TLS must be disabled in order to use ConfigSync.
+</Note>
+
+## Features
+
+ConfigSync supports these features:
+
+* Configuration storage
+
+  + Git Repository: Stores the configuration files.
+  + Fusion Cluster: Applies the configuration files to the Fusion cluster.
+  + Kubernetes Secret: Stores the Fusion secrets.
+* Synchronization mechanisms
+
+  + Polling:
+
+    - Periodically pulls the latest changes from the Git repository and applies them to the Fusion cluster.
+    - Periodically pulls the latest changes from some solr collections (blobs, rules) and pushes them to the Git repository.
+  + Event-driven:
+
+    - Listens for changes in the Fusion cluster and pushes them to the Git repository.
+    - Listens for changes in the Kubernetes secret and syncs them with the Fusion cluster.
+* Synchronization modes
+
+  + [Publisher mode](/fusion/5.9/b1rtue/publisher-mode): Monitors Fusion for changes and pushes them to a Git repository.
+  + [Subscriber mode](/fusion/5.9/t51vvb/subscriber-mode): Polls a Git repository for changes and applies them to Fusion.
+  + [Pub/Sub mode](/fusion/5.9/r0xnd3/pub-sub-mode): Combines the features of both Publisher and Subscriber modes.
+* [Secret management](docs/secrets-management.md)
+
+  + Supports storing Fusion secrets in a Kubernetes secret and syncing them with the Git repository.
+  + Watches for changes in the Kubernetes secret and syncs them with the Fusion cluster.
+* [Version control](docs/commits-management.md)
+
+  + Maintains the `latest-synced-commit` to track the last applied commit.
+  + Supports locking the configuration to a specific commit using `locked-commit`.
+* Restoring configuration
+
+  + Allows rollback to a previous state.
+  + Supports restoring the configurations to a specific commit, branch or date.
+* Metrics
+
+  + Exposes metrics such as `resource_update_errors_total`, `out_of_sync`, `sync_seconds`, and `sync_seconds_max` at the `/actuator/prometheus `endpoint.
+
+## Setup
+
+See [ConfigSync deployment](/fusion/5.9/5gj79e/config-sync-deployment) to set up ConfigSync on your Fusion cluster.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **ConfigSync** focuses on how to synchronize your Fusion configuration with a GitHub repository:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/configsync-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/configsync-course.jpg" alt="ConfigSync" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>

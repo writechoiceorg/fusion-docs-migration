@@ -1,0 +1,58 @@
+---
+title: "Detect Language"
+description: "Index pipeline stage configuration specifications"
+permalink: "o704ak"
+---
+
+The Detect Language index stage (called the Language Detection stage in versions earlier than 3.0) operates over one or more fields in the Pipeline Document.
+The contents of each field are analyzed using the
+[Language Detection Library for Java](https://github.com/optimaize/language-detector),
+which is an open source project hosted on GitHub.
+The analyzer returns the ID of the language which best matches the contents of that field, if any.
+These IDs can be returned as an annotation on the Pipeline Document context, or as annotation on each field analyzed.
+
+The language identification algorithm breaks the text in each source field into ngrams and compares them to sets of ngrams compiled from all the different language versions of the Wikipedia.
+This library will only produce reasonable results for document fields which are comparable in length, vocabulary, and style to the known texts compiled from the Wikipedia.
+Caveats are discussed below.
+
+If a positive language identification is made, that information is added to the Pipeline Document
+according to the choice of configuration property "Output Type".
+If the language annotation is added to the PipelineDocument context object, the name of the context key string is
+specified by configuration property "Output Key".
+For Output Type configuration property "Document", per-field language annotations are added to the document
+using a parallel naming convention where the name of the language identification field starts with the name of the analyzed field and
+has an additional suffix string, default value "_lang".
+For example, if a document contains fields named "plot_summary_txt" and "user_reviews_txt" to be analyzed,
+if the software can detect the language, it will add fields "plot_summary_txt_lang" and "user_reviews_txt_lang".
+
+There is also an option to allow detection of multiple languages. This can be achieved by setting "Return all detected languages and their confidence scores." to true.
+In this case, the detected languages will be either set as document fields in a form of "Field Name_Document Postfix.Language:Confidence",
+or as a field with name "Output Key" in the Context having a dictionary of following form "`{ "language":"probability" }`" as a value.
+Example Document fields could look like this: "plot_summary_txt_lang.pl_: [0.99]", "plot_summary_txt_lang.en_: [0.99]"
+when languages pl and en would be detected.
+
+## Languages
+
+The Language Detection Library for Java has build-in profiles for [many languages](https://github.com/optimaize/language-detector/blob/master/README.md#70-built-in-language-profiles). If there is a set of Wikipedia entries written in a language, it is likely that the Language Detection Library can identify texts written in this language.
+
+## Caveats
+
+This library should produce reasonable results on document fields which are comparable in length, vocabulary, and style to the known texts compiled from the Wikipedia.
+
+The documentation lists the following [challenges](https://github.com/optimaize/language-detector/blob/master/README.md#challenges):
+
+* This software does not work as well when the input text to analyze is short, or unclean. For example tweets.
+* When a text is written in multiple languages, the default algorithm of this software is not appropriate. You can try to split the text (by sentence or paragraph) and detect the individual parts. Running the language guesser on the whole text will just tell you the language that is most dominant, in the best case.
+* This software cannot handle it well when the input text is in none of the expected (and supported) languages.
+* Detection of unwanted languages (for example the stage might detect some language that is not even used in the input data because of some language similarities). By default, the stage uses a full array of available languages for detection ([List here](https://github.com/optimaize/language-detector)). If one wants to only use selected languages, this can be configured
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/detect-language.mdx";
+
+<SchemaParamFields schema={schema}/>

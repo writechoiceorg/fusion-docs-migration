@@ -1,0 +1,96 @@
+---
+title: "GPU Support for Deep Learning Training"
+permalink: "dmyrqm"
+---
+
+In Fusion 5.3 and later, jobs that involve training deep learning-based models automatically use GPU resources for training if deployed on a GPU-enabled node. Your cloud provider likely has a custom set of nodeSelectors and tolerations required to map these jobs to their GPU compute. The following section provides an example using Smart Answers and GKE.
+
+### Training Smart Answers on GPU with GKE
+
+To use GPU resources within GKE for Smart Answers training, create a GPU resource within your cluster.
+
+Create a new nodepool with a pre-emptible GPU node that will spin down when not in use. Give the nodepool a label of `node_pool:gpu`. By default, GKE will also add a taint of `nvidia.com/gpu:present=NoSchedule`. Consider that fact when updating your Helm chart values.
+
+Additionally, add a specific resource limit of `nvidia.com/gpu: 1 `. (This value is specific to GKE.) Create another standard nodepool without GPU resources with a label of `node_pool:deploy` for the eventual Seldon Core deployment.
+
+In your custom values YAML file, add:
+
+```yaml
+question-answering:
+  nodeSelector:
+    default:
+      cloud.google.com/gke-nodepool: gpu-nodepool
+    supervised:
+      seldon:
+        cloud.google.com/gke-nodepool: cpu-nodepool
+    coldstart:
+      seldon:
+        cloud.google.com/gke-nodepool: cpu-nodepool
+  tolerations:
+    default:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+    supervised:
+      seldon: []
+    coldstart:
+      seldon: []
+  resources:
+    supervised:
+      train:
+        requests:
+          nvidia.com/gpu: 1
+        limits:
+          nvidia.com/gpu: 1
+    coldstart:
+      train:
+        requests:
+          nvidia.com/gpu: 1
+        limits:
+          nvidia.com/gpu: 1
+```
+
+<Note>
+This setup deploys all workflow steps onto the GPU node *except* for the Seldon Core deployment. As the deployment will live on after the workflow has completed, assigning the Seldon Core deployment to the GPU node it would prevent GKE from spinning the GPU node down. This increases operating expense.
+</Note>
+
+
+
+### Setting up Milvus on GPU with GKE
+
+Setting up Milvus on GPU first requires the creation of a GPU resource.
+
+At the end of the `ml-model-service` section of your custom values YAML file, add a section for Milvus as shown below:
+
+```yaml
+ml-model-service:
+# ml-model-service yaml settings:
+# ...
+# followed by the Milvus settings:
+  milvus:
+    gpu:
+      enabled: true
+    image:
+      repository: milvusdb/milvus
+      tag: 0.10.2-gpu-d081520-8a2393
+      pullPolicy: "IfNotPresent"
+      resources:
+        requests:
+          nvidia.com/gpu: 1
+        limits:
+          nvidia.com/gpu: 1
+    nodeSelector:
+      cloud.google.com/gke-nodepool: gpu-nodepool
+    tolerations:
+      - key: "nvidia.com/gpu"
+        operator: "Equal"
+        value: "present"
+        effect: "NoSchedule"
+```
+
+The example above assumes the name of the GPU nodepool is `gpu-nodepool`.
+
+<Note>
+The taints/tolerations and resource keys shown below are for a GKE setup. These values may vary depending on your cloud provider.
+</Note>

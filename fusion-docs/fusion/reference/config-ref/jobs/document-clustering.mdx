@@ -1,0 +1,256 @@
+---
+title: "Document Clustering Jobs"
+permalink: "582"
+---
+
+The Document Clustering job uses an unsupervised machine learning algorithm to group documents into clusters based on similarities in their content. You can enable more efficient document exploration by using these clusters as facets, high-level summaries or themes, or to recommend other documents from the same cluster. The job can automatically group similar documents in all kinds of content, such as clinical trials, legal documents, book reviews, blogs, scientific papers, and products.
+
+<table class="tableblock frame-all grid-all stretch">
+  <tbody>
+    <tr>
+      <td class="tableblock halign-right valign-top"><strong>Input</strong></td>
+      <td class="tableblock halign-left valign-top">
+        Searchable content (your primary collection)
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-right valign-top"><strong>Output</strong></td>
+      <td class="tableblock halign-left valign-top">
+        <p>The job adds the following fields to the content documents:</p>
+        <table class="tableblock frame-all grid-all stretch">
+          <tbody>
+            <tr>
+              <td class="tableblock halign-left valign-top"><code>cluster_id</code></td>
+              <td class="tableblock halign-left valign-top">
+                The IDs associated with each cluster so that we can easily identify the clusters by number.
+                A negative number means the document is an outlier or extremely long.
+              </td>
+            </tr>
+            <tr>
+              <td class="tableblock halign-left valign-top"><code>cluster_label</code>, <code>cluster_label_txt</code></td>
+              <td class="tableblock halign-left valign-top">
+                Unique keywords assigned to each cluster so that there are no overlapping keywords between clusters.
+                <ul>
+                  <li>The cluster label <code>long_doc</code> is applied to very lengthy documents.</li>
+                  <li>The cluster label <code>short_doc</code> is applied to very short documents.</li>
+                  <li>Outliers are grouped with cluster labels like <code>outlier_group0</code>, <code>outlier_group1</code>, and so on.</li>
+                </ul>
+              </td>
+            </tr>
+            <tr>
+              <td class="tableblock halign-left valign-top"><code>dist_to_center</code></td>
+              <td class="tableblock halign-left valign-top">
+                The document’s distance from its corresponding cluster center. The shorter the distance, the closer the document is to the center of the cluster.
+              </td>
+            </tr>
+            <tr>
+              <td class="tableblock halign-left valign-top"><code>freq_terms</code>, <code>freq_terms_txt</code></td>
+              <td class="tableblock halign-left valign-top">
+                The most frequent words in the cluster.
+              </td>
+            </tr>
+            <tr>
+              <td class="tableblock halign-left valign-top"><code>clustering_model_id</code></td>
+              <td class="tableblock halign-left valign-top">
+                The ID of the Document Clustering job that attached these fields.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+The Document Clustering job is an end-to-end job that includes the following:
+
+* Document preprocessing
+* Separating out extremely lengthy documents and outliers (de-noise)
+* Automatic selection of the number of clusters
+* Extracting cluster keyword labels
+
+You can choose between multiple clustering and featurization methods to find the best combination of methods.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Configuring Fusion’s Document Clustering Job** focuses on how to configure parameters for the Document Clustering Job in the Fusion UI:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/configuring-fusions-document-clustering-job" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/configurig-document-clustering.jpg" alt="Configuring Fusion’s Document Clustering Job" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Document Clustering** focuses on document clustering methods and job configuration:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/document-clustering" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/document-clustering.jpeg" alt="Document Clustering" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## Cluster labels and frequent terms
+
+Cluster labels are the terms that best represent the documents in a given cluster. They are typically words that can be found in the documents closest to the cluster centroid, so the `dist_to_center` field can be used to sort documents by similarity to the `cluster_label` field.
+
+Frequent terms are the terms that appear most frequently in documents in a given cluster. Different clusters may have overlapping frequent terms. Some of the frequent terms may also appear in the cluster label.
+
+## Configuration tips
+
+The minimum required fields to configure are straightforward:
+
+* **Training Collection**
+* **Output Collection**
+* **Field to Vectorize**
+
+When you first create a new Document Clustering job, set the **Training Collection** to point to a special collection that contains a sample set of documents. Set the **Output Collection** to a new, empty collection.
+That way, you can test the job quickly over a smaller input collection and you can clear the output collection after each test.
+
+<Tip>
+When you create your sample collection and your test output collection, uncheck **Enable Signals** to prevent secondary collections from being created.
+</Tip>
+
+
+
+When you are satisfied with the results of the job, set *both* the **Training Collection** and the **Output Collection** to your primary collection. It may take some time for the job to run over your entire primary collection. At the end, the new clustering fields are added to your existing searchable content.
+
+The sections below discuss additional ways to tune your configuration for the best results.
+
+### Use stopwords
+
+The quality of your cluster labels depends on the quality of your [stopwords](/fusion/5.9/181/stopwords-files). Fusion comes with a very basic stopword list, but there may be other words in your corpus that you want to remove. If you see terms in your cluster labels that your do not want, add them to your stopwords and then re-run the job.
+
+### Scale your Spark resources
+
+Make sure that you have enough resources in Spark to run the job, especially if you have many documents or your documents are long. If Spark doesn’t have enough memory, you may see out-of-memory errors in the Job History tab.
+
+If there are obstacles to scalability, you can index a subset of the text from each document then run the job on this downsized version of the documents. The algorithm does not need all of the text to generate meaningful clusters. Stopword removal also decreases the document size significantly.
+
+### Select the clustering method
+
+The job provides these clustering methods:
+
+* Hierarchical Bisecting Kmeans (“hierarchical”)
+
+  The default choice is “hierarchical,” which is a mixed method between Kmeans and hierarchical clustering. It can tackle the problem of uneven cluster sizes produced by standard Kmeans, and is more robust regarding initialization. In addition, it runs much faster than the standard hierarchical-clustering method, and has fewer problems dealing with overlapping topic documents.
+* Standard Kmeans (“kmeans”)
+
+  For use cases such as novel and review clustering, several words can express similar meanings. In that case, Kmeans can perform well in combination with the Word2Vec featurization method described below. This method is also helpful when you have a corpus with a large vocabulary. Kmeans also works well when clusters are "convex", meaning that they are regularly shaped.
+
+There are two ways to configure the number of clusters:
+
+* Setting **Number Of Clusters** speeds up the processing time, but finding the best single value can be difficult unless you know exactly how many clusters are in the dataset.
+* Setting **Minimum Possible Number Of Clusters** and **Maximum Possible Number Of Clusters**) allows Fusion to test up to 20 different values within the configured range to find the best number of clusters for your dataset based on metrics like how far each datapoint is from its associated cluster center. This optimizes the algorithm to detect true groups of similar documents and thus create better-quality clusters.
+
+  For example, if `kMin=2` and `kMax=100`, then the job searches through 2, 7, 12, …, 100 with a step size of 5. A large `kMax` can increase the running time. The algorithm incurs a penalty if k is unnecessarily large. You can use the parameter `kDiscount` to reduce this penalty and use a larger k-chosen. However, if `kMax` is small (for example, 10 or less), then not using a discount (`kDiscount=1`) is recommended.
+
+### Select the featurization method
+
+The job provides two text-vectorization methods:
+
+* TFIDF
+
+  You can trim out noisy terms for TFIDF by specifying the **Min Doc Support** and **Max Doc Support** parameters (minimum and maximum number of documents that contain the term).
+
+  If you are using the hierarchical clustering method, then you should apply the TFIDF featurization method; it can provide better-detailed clusters for use cases like clustering email or product descriptions.
+* Word2Vec
+
+  Word2Vec can reduce dimensions and extract contextual information by putting co-occurring words in the same subspace. However, it can also lose some detailed information by abstraction. If you assign **Word2Vec Dimension** an integer greater than 0, then Fusion chooses the Word2Vec method over TFIDF.
+
+  If you are using the standard kmeans clustering method, then you should enable the Word2Vec featurization method.
+
+  For a large corpus dataset with a big vocabulary, Word2Vec is preferred to help deal with the dimensionality.
+
+### Configure de-noise parameters
+
+The job provides three layers of protection from the impact of noisy documents:
+
+* In the `analyzerConfig` parameter, you can specify stopword deletion, stemming, short token treatment, and regular expressions. The `analyzerConfig` is used in the featurization step.
+* You can add an optional phase to separate out documents that are extremely long or short (as measured by the number of tokens). Extremely short or long documents can contaminate the clustering process. Documents with a length between **Length Threshold for Short Doc** and **Length Threshold for Long Doc** are kept for clustering.
+* The job performs outlier detection using the Kmeans method. Fusion groups documents into **Number of Outlier Groups**, then trims out clusters with a size less than **Outlier Cutoff** as outliers.
+
+  Outliers are documents that are too distant from the nearest centroid or nearest neighbors. These distant outliers are grouped into outlier clusters and labeled as `outlier_group0`, `outlier_group1` …​ `outlier_groupN`, where N is the value of **Number of Outlier Groups**.
+
+### Configure cluster labelling
+
+The configuration parameter **Number Of Keywords For Each Cluster** determines the number of keywords to pick to describe each cluster. Test different values until you find that the cluster labels give an accurate depiction of the data contained within a given cluster.
+
+### Evaluating and tuning the results
+
+When the job has finished:
+
+1. Navigate to the output collection.
+2. Open the Query Workbench.
+3. Click **Add a Field Facet** and select `cluster_label`.
+
+   The `cluster_label` field contains the five terms that best define the center of each cluster.
+4. Click **Add a Field Facet** again and select `freq_terms`.
+
+   The `freq_terms` field contains the five terms that appear most often in each cluster.
+   In many cases, the frequent terms in a cluster are also among those that best define it.
+
+   <Tip>
+   The `dist_to_center` field can be used to sort documents by similarity to their cluster labels.
+   </Tip>
+
+
+5. Explore the facets to determine whether the clusters are useful.
+
+   * Be sure to examine the `long_doc` cluster and any `outlier_group<n>` clusters. If no outliers are detected, consider increasing `outlierK` or `outlierThreshold`.
+   * If you see terms that you do not want in your cluster labels, add them to your stopwords.
+   * To tune the granularity of your clusters, adjust the values of **Min Possible Number of Clusters** and **Max Possible Number of Clusters**. Increasing these values will break up some of the bigger groups into smaller ones. Decreasing the values can consolidate smaller groups into larger ones. Experiment until you find the level of granularity that produces the most meaningful clusters.
+   * If the clusters are very uneven, such as when most documents are in one large cluster:
+
+     + Try increasing the outlier cutoff (some outlier groups are being labeled as clusters).
+     + Try increasing k (you have many clusters combined into one).
+   * If you have many outlier groups, but only a few docs per outlier group, try increasing the outlier cutoff to avoid saturating your number of outlier groups before all outliers have been removed.
+   * If the corpus is large and the clustering job is taking too long:
+
+     + Use Kmeans and Word2Vec (Kmeans does not usually do well with TF*IDF).
+     + Use an exact k value (**Number Of Clusters**) instead of a range (**Min Possible Number of Clusters** and **Max Possible Number of Clusters**).
+   * If the clustering job completes successfully according to logs, but is not writing data to Solr, check the schema specs on output fields. Solr strings have a maximum length that Spark strings do not. Use text type if your outputs are very long.
+
+     <Note>
+     this problem will only appear if reading from and writing to different collections.
+     </Note>
+
+
+6. Re-run the job and examine the facets again to see whether the results are more useful.
+
+### Back up your primary collection
+
+Before running this job over your primary collection, make sure you have a backup of the original content. This can come in handy if you change your mind about the results and want to overwrite the document clustering fields.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/document-clustering.mdx";
+
+<SchemaParamFields schema={schema}/>

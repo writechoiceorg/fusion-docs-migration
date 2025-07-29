@@ -1,0 +1,52 @@
+---
+title: "Developing Services and Servlets"
+permalink: "3108"
+---
+
+You can develop services and servlets:
+
+* Services encapsulate reusable processes that can be injected into providers such as Servlets. For example, different implementations of Query Suggestions are implement the `twigkit.service.AppkitService` interface and can be injected into the servlet responsible for returning the list of suggestions.
+* Besides using standard JSP to generate output; Servlets are common way of doing custom HTTP responses with Java. You can deploy standard Java Servlets in Appkit application but in addition to that Appkit provides a convenient framework for developing and deploying servlets for search based applications.
+
+## Services
+
+Services can be instantiated programmatically or using the Appkit configuration framework, making them available to other processes or programmatically via the `ConfiguredServiceProvider` class. To declare a service via the configuration framework, you must add a configuration file named `src/main/resources/META-INF/services/TwigKitService` that contains the fully-qualified Java class name of your services, one per line. See the screenshot for an example.
+
+<Frame>![Services configuration](/assets/images/appkit/4.2/extending-1.png)</Frame>
+
+<Note>
+For legacy reasons, the service file must be named `TwigKitService`, with a capital "K".
+</Note>
+
+Below is a sample signature for a Query Suggestion Service:
+
+```java
+public class StaticQuerySuggestionService extends Parameters implements QuerySuggestionService, TwigKitService {
+    public List<QuerySuggestion> suggest(final Query query) {
+        // Do whatever here to generate a List of QuerySuggestions for the Query supplied!
+    }
+}
+```
+
+## Servlets and custom output formats
+
+An instance of an AppkitServlet is automatically discovered and deployed by the Appkit application on startup, as long as your class is annotated with the path you would like it published at, implements or extends a `AppkitServlet`, and is declared via the Appkit configuration framework. To declare a servlet via the configuration framework, you must add a configuration file named `src/main/resources/META-INF/services/TwigKitServlet` that contains the fully-qualified Java class name of your servlets, one per line. See the screenshot for an example.
+
+<Frame>![Services configuration](/assets/images/appkit/4.2/extending-1.png)</Frame>
+
+<Note>
+For legacy reasons, the service file must be named `TwigKitServlet`, with a capital "K".
+</Note>
+
+Below is an example of a `TwigKitServlet`.
+
+```java
+@ServletPath(path = "/custom/excel/{platform}")
+public class SomeServlet extends TwigKitServlet {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp, Query query, Config conf) throws ServletException, IOException {
+        // Query instances and Appkit configurations are automatically provided to your method!
+    }
+}
+```
+
+This means that the process of changing stateless HTTP requests to queries is handled for you, and the Servlet is automatically declared and published, in this case to respond at this URL: `/twigkit/services/custom/excel/`. Using the ServletPath annotation will guarantee that the HTTP Request/Response is correctly filtered by Appkit for example, for security and URL mapping.

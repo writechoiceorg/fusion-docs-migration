@@ -1,0 +1,159 @@
+---
+title: "XML Transformation Index Stage"
+permalink: "245"
+---
+
+The XML Transformation stage (previously called the XML Transform Stage) allows you to process an XML document into one or more Solr documents
+and to specify mappings between elements and document fields.
+A common use case for an XML Transformation stage in a pipeline is when the XML document
+is a container-like document which contains a set of inner elements, each of which should be
+treated as a separate document.
+A parent ID field can be used to relate these multiple documents back to the containing document.
+
+## Pipeline Configuration
+
+The default XML processing provided by the Apache Tika Parser index stage extracts all text from
+an XML into a single document field called `content`.
+This not only flattens the document contents, it loses all information about the containing
+elements in the document.
+To process XML documents using an XML Transformation stage, the index pipeline must have as its
+initial processing stage an Apache Tika Parser index stage which is configured to pass the
+document through to the XML Transformation stage *as raw XML*, via the following configuration:
+
+* UI checkbox "Add original document content" **unchecked** / REST API property "addOriginalContent" set to **false**
+* UI checkbox "Return parsed content as XML or HTML" **checked** / REST API property "keepOriginalStructure" set to **true**
+* UI checkbox "Return original XML and HTML instead of Tika XML output" **checked** / REST API property "returnXml" set to **true**
+
+With this configuration, the Tika parser stage decodes the raw input stream of bytes into a string containing the entire XML document
+which is returned in the PipelineDocument field `body`.
+
+The pipeline must have a Field Mapping stage after the XML Transformation stage, before the Solr Indexer stage. The Field Mapping stage is used to remove the following fields from the document:
+
+* *raw-content*
+* Content-Type
+* Content-Length
+* parsing
+* parsing_time
+
+## XML Transforms
+
+The XML Transformation stage uses a Solr
+[XPathRecordReader](http://lucene.apache.org/solr/6_1_0/solr-dataimporthandler/org/apache/solr/handler/dataimport/XPathRecordReader.html)
+which is a streaming XML parser that supports *only a limited subset of XPath selectors*.
+It provides exact matching on element attributes and it can only extract the element text, not attribute values.
+
+Examples of allowed XPath specifications where "a", "b", "c" are any element tags, likewise "attrName" is any attribute name:
+
+```
+/a/b/c
+/a/b/c[@attrName='someValue']
+/a/b/c[@attrName=]/d
+/a/b/c/@attrName
+//b//...
+```
+
+<Note>
+When specifying the list of `mappings`, for each mapping, the specification for the `xpath` attribute must include the full path, i.e., the `xpath` attribute will include the `rootXPath`. See the example configuration below.
+</Note>
+
+## Example Stage Specification
+
+*Definition of an XML-Transformation stage that extracts elements from a MEDLINE/Pubmed article abstract:*
+
+```json
+{ "type" : "xml-transform",
+  "id" : "n0j2a9k9",
+  "rootXPath" : "/MedlineCitationSet/MedlineCitation",
+  "bodyField" : "body",
+  "mappings" : [ {
+      "xpath" : "/MedlineCitationSet/MedlineCitation/Article/ArticleTitle",
+      "field" : "article-title_txt",
+      "multivalue" : false
+  }, {
+      "xpath" : "/MedlineCitationSet/MedlineCitation/Article/Abstract/AbstractText",
+      "field" : "article-abstract_txt",
+      "multivalue" : true
+  }, {
+      "xpath" : "/MedlineCitationSet/MedlineCitation/MeshHeadingList/MeshHeading/DescriptorName",
+      "field" : "mesh-heading_txt",
+      "multivalue" : true
+  }, {
+      "xpath" : "/MedlineCitationSet/MedlineCitation/PMID",
+      "field" : "pmid_txt",
+      "multivalue" : false
+  } ],
+  "keepParent" : false,
+  "skip" : false,
+  "label" : "medline_xml_transform",
+}
+```
+
+*Template for a minimal index pipeline that includes an XML-Transformation stage. Replace the XPath and field names in the XML-Transformation stage according to your data.*
+
+```json
+{
+    "id" : "xml-pipeline-default",
+    "stages" : [ {
+    "type" : "tika-parser",
+    "includeImages" : false,
+    "flattenCompound" : false,
+    "addFailedDocs" : false,
+    "addOriginalContent" : false,
+    "contentField" : "_raw_content_",
+    "returnXml" : true,
+    "keepOriginalStructure" : true,
+    "extractHtmlLinks" : false,
+    "extractOtherLinks" : false,
+    "csvParsing" : false,
+    "skip" : false,
+    "label" : "tika",
+    "sourceField" : "_raw_content_"
+    }, {
+    "type" : "xml-transformation",
+    "rootXPath" : "/ROOTS/ROOT",
+    "bodyField" : "body",
+    "mappings" : [ {
+        "xpath" : "/ROOTS/ROOT/element",
+        "field" : "element-field_t",
+        "multivalue" : false
+    } ],
+    "keepParent" : false,
+    "skip" : false,
+    "label" : "xml"
+    }, {
+    "type" : "field-mapping",
+    "mappings" : [ {
+        "source" : "parsing",
+        "operation" : "delete"
+    }, {
+        "source" : "parsing_time",
+        "operation" : "delete"
+    }, {
+        "source" : "Content-Type",
+        "operation" : "delete"
+    }, {
+        "source" : "Content-Length",
+        "operation" : "delete"
+    } ],
+    "skip" : false,
+    "label" : "field mapping"
+    }, {
+    "type" : "solr-index",
+    "enforceSchema" : true,
+    "bufferDocsForSolr" : false,
+    "skip" : false,
+    "label" : "solr-index"
+    } ]
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/xml-transformation.mdx";
+
+<SchemaParamFields schema={schema}/>

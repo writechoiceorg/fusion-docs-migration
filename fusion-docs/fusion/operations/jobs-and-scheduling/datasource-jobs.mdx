@@ -1,0 +1,22 @@
+---
+title: "Datasource Jobs"
+permalink: "186"
+---
+
+A datasource job specifies the origin of the data imported and indexed into Fusion. Datasources include databases, files, and data obtained from websites or applications.
+
+Sources of data can be uploaded to Fusion in **System > Blobs**.
+
+In addition, you can create and configure the datasource job using the following methods:
+
+* The [Index Workbench](/fusion/5.9/158/index-workbench). Click **Indexing > Index Workbench > Configure Datasource**. You can upload a particular ZIP file or select a datasource type which includes supported Fusion connectors. The list is divided datasources already installed and datasources not yet installed. When you select an uninstalled connector from the list, the system installs the connector.
+* [Datasources](/fusion-connectors/31/datasources). Click **Indexing** > **Datasources**. If you click **Add**, you can select from a list of supported Fusion connectors. The list is divided into connectors already installed and connectors not yet installed. When you select an uninstalled connector from the list, the system installs the connector.
+* The [Connector Datasources API](/fusion/5.9/353/connector-datasources-api). You can also use these endpoints to manage the crawl database and view connector schema.
+
+Running the datasource job obtains and indexes the data in Fusion based on configuration parameters including the ability to:
+
+* Generate diagnostic logs
+* Limit document crawl levels or the number of documents obtained and indexed
+* Exclude or include files based on file extension, text or patterns in the document, and authentication methods
+* Set recrawl rules
+* Enter links where you want the crawl to begin

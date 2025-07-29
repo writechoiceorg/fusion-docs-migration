@@ -1,0 +1,67 @@
+---
+title: "Response Processors"
+permalink: "3185"
+---
+
+The articles in this section describe response processors.
+
+[**Field Processors**](/fusion/5.9/3182/field-processors)
+
+Field response processors include ones to perform these operations:
+
+* Capitalize the display value of the given field names.
+* Add Highlighting to Fields.
+* Tag a document with classifications based on field values.
+* Format a date object, replacing the original date value with another.
+* Parse dates out of field values.
+* Set the value of a field that is missing a value, based on the value of a different field.
+* Parse the String value of the specified fields into an Object representation.
+* Create a multivalued field from a single field value by using a separator.
+* Extract the hostname from URLs and place it in a field named 'site'.
+* Process fully qualified URLs in field values and markup, and add anchor tags for active links in the display values.
+* Statically add metadata to documents that match a given regular expression.
+* Replace field values (actual, display, or both) that are HTML or URL encoded with decoded values.
+* Replace field values (actual, display, or both) that match a given regular expression with a different value.
+* Make Twitter users and hashtags clickable in the display value.
+* Duplicate a field, creating two separate instances.
+* Create a new field by joining multiple existing fields using a pattern expression.
+* Localize the values of a field using a specified bundle.
+
+[**Filter Processors**](/fusion/5.9/3184/filter-processors)
+
+Filter response processors include ones to perform these operations:
+
+* Capitalize the display value of the given filter.
+* Parse dates out of facet filter values.
+* Sort facet filters by count.
+* Sort facet filters by actual value.
+* Replace display values in FacetFilters for specified or all Facets.
+* Retrieve other filter values for the same facet, despite there being one or more filters for that facet already applied.
+* Remove facet filters that match a regular expression pattern from a facet.
+* Replace filter values (actual, display, or both) that match a given regular expression with a different value.
+* (Since 4.2.0) Dynamically format the display value of a date range facet according to the size of the range.
+
+[**Facet Processors**](/fusion/5.9/3186/facet-processors)
+
+Facet response processors include ones to perform these operations:
+
+* Duplicate a facet.
+* Create facets.
+* Fill in date filters for a facet.
+* Parse and formatting filter values from one Date format to another.
+* Create a pseudo date facet.
+* Set or changing Parameters for a facet.
+* Sort facets based on various properties and parameters.
+* Process facet filter values formatted as paths to represent them as hierarchical trees.
+* Remove facets from a Response.
+* Create pseudo facets based on values in a given field or fields.
+* Process hierarchical facets so that only one level is rendered at a time.
+* Define a pseudo facet from a list of facets in the response.
+
+[**General Response Processors**](/fusion/5.9/3183/general-response-processors)
+
+General response processors include ones to perform these operations:
+
+* Perform a left join on fields.
+* Log response metadata and attributes to log4j.
+* Group results by a given Field value.

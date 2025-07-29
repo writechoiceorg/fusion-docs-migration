@@ -1,0 +1,58 @@
+---
+title: "Access control"
+permalink: "24whk5"
+---
+
+## User Authentication and Authorization
+
+Managed Fusion provides application security by restricting access to known [users](/managed-fusion/5.9/1abcqy/users)
+via a two-stage process consisting of:
+
+* **Authentication.** users must sign on using a username and password.
+* **Authorization.** each username is associated with one or more permissions which specify the Managed Fusion UI components and REST API requests that user has access to.
+  [Permissions](/managed-fusion/5.9/ro1m7q/permissions) can be restricted to specific endpoints and path parameters.
+  [Roles](/managed-fusion/5.9/ydvorx/roles) are named sets of permissions which provide access to a specific function.
+
+The access control component runs in the same process as the Managed Fusion UI.
+It referred to as the "auth proxy" because it handles authentication and authorization for all requests to the Managed Fusion REST API services.
+
+All requests to Managed Fusion must be authenticated, as described in section [User Access Request Params](/how-to/623/user-access-request-parameters).
+
+## User Account Administration
+
+A Managed Fusion [Security Realm](/managed-fusion/5.9/sq6b80/security-realms) encapsulates a user database together with specific authentication and authorization mechanisms.
+This information is stored in [ZooKeeper](http://zookeeper.apache.org/) so that is it always available to all Managed Fusion components across the deployment.
+
+Managed Fusion’s native security realm manages both authentication and authorization directly.
+All user information is stored in ZooKeeper: usernames, hashes of passwords, roles, and permissions.
+Passwords are hashed using [bcrypt](https://en.wikipedia.org/wiki/Bcrypt).
+Authentication compares a hash of the entered login password with the stored password hash.
+The native realm is the home of the Managed Fusion admin user and is the default realm type.
+
+Managed Fusion can be configured to use the host domain’s security mechanism for user administration.
+The following configurations are possible:
+
+* **LDAP.** Managed Fusion stores a local user record in ZooKeeper.
+  Authentication is performed by the LDAP server.
+  LDAP group membership can be used to assign Managed Fusion permissions.
+* **Kerberos.** Managed Fusion stores a local user record in ZooKeeper.
+  [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is used for authentication via Kerberos.
+* **Kerberos authentication and LDAP authorization.** Managed Fusion stores a local user record in ZooKeeper.
+  [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) is used for authentication via Kerberos.
+  LDAP group membership can be used to assign Managed Fusion permissions.
+* **SAML.** Managed Fusion stores a local user record in ZooKeeper. The SAML 2.0 protocol is used to provide web-browser single sign-on.
+* **JWT.** JSON Web token.
+
+## Video tutorial
+
+<iframe width="843" height="632" src="https://www.youtube.com/embed/w5LtUm3mflo" title="Fusion Learners - Configuring Permissions and Security Realms" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+## More information
+
+These additional topics explain how to configure the supported authentication methods:
+
+* [Configure Fusion for JWT](/fusion/5.9/cvrcam/configure-fusion-for-jwt)
+* Configure Managed Fusion for Kerberos in [Unix](/how-to/vp57wz/configure-managed-fusion-for-kerberos-in-unix) and [Windows](/how-to/cfugam/configure-managed-fusion-for-kerberos-in-windows)
+* [Configure Managed Fusion for LDAP](/how-to/j73e7i/configure-managed-fusion-for-ldap)
+* [Configure Managed Fusion for SAML](/how-to/o2vz4v/configure-managed-fusion-for-saml)
+* [Configure Managed Fusion for SSO](/how-to/cam88f/configure-managed-fusion-for-sso)

@@ -1,0 +1,122 @@
+---
+title: "Fusion 5.9.0"
+permalink: "kpv8sh"
+---
+
+Released on June 29, 2023, this [long-term release](/policies/7shln5/lucidworks-version-support-lifecycle#long-term-release-support-policy) includes the new Consumption Dashboard feature, adding Tika Asynchronous Parsing support for remote V2 connectors, and new version requirements for the LDAP ALCs V2 connector and the SharePoint Optimized V2 connector.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.25 and 1.26
+* **Microsoft Azure Kubernetes Service (AKS):** 1.25 and 1.26
+* **Amazon Elastic Kubernetes Service (EKS):** 1.25 and 1.26
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.25 and 1.26. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.0  *(based on Solr 9.1.1)* |
+| **ZooKeeper** | 3.7.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+
+<Warning>
+**Caution**
+
+Upgrades from Fusion 5.8.0
+
+Fusion 5.8.1 fixed an issue with the Fusion 5.8.0 Helm chart that prevented horizontal pod autoscaling.
+
+If you are upgrading from Fusion 5.8.0 to any later version and use horizontal pod autoscaling, you must complete the procedure detailed in the [Fusion 5.8.1 release notes](/fusion/5.9/608v1q/fusion-5-8-1#autoscaling).
+</Warning>
+
+## New Features
+
+* The new [Consumption Dashboard](/fusion/5.9/0m5ml4/consumption-dashboard) tracks your request and document usage against the allotted consumption in your Fusion license. To access the dashboard, log into Fusion and go to **Analytics > Consumption**.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **The Consumption Dashboard** focuses on the purpose and function of this dashboard as well as how to navigate it using the Fusion Admin UI:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/the-consumption-dashboard" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/consumption-dashboard.png" alt="The Consumption Dashboard" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Improvements
+
+### Fusion
+
+* Fusion now supports Kubernetes 1.25 and 1.26. This applies to GKE, AKS, and EKS. It also applies to Rancher (RKE) and OpenShift 4 versions that are compatible with Kubernetes 1.25 and 1.26. Refer to Kubernetes documentation for versions [1.25](https://kubernetes.io/blog/2022/08/04/upcoming-changes-in-kubernetes-1-25/) and [1.26](https://kubernetes.io/blog/2022/11/18/upcoming-changes-in-kubernetes-1-26/) to decide which version to use for your deployment.
+
+* Added a new Admin button to the Rules Editor screen. Click on it to log out of Fusion.
+
+* Improved Spark Solr’s performance to ingest and transport data, as well as setting the most efficient sort for data export.
+
+### Fusion Connectors
+
+* Remote V2 connectors now support Tika Asynchronous Parsing. You can [enable Tika Asynchronous Parsing](/how-to/5bk663/use-tika-asynchronous-parsing) on [remote V2 connectors](/fusion-connectors/8xhsoc/remote-v-2-connectors) to separate document crawling from document parsing, which is useful for large sets of complex documents.
+
+* Updated the connectors-sdk library version to Java 11.
+
+* Updated Fusion to prevent automatically updating V2 connector plug-ins. Intentional updates allow you to verify related functions and operations.
+
+* Updated Fusion to specify pod resources for connector plug-in type to ensure optimal capability and performance.
+
+## Other changes
+
+### Babel Street (formerly Basistech) Compatibility
+
+* Fusion 5.9.0 and later can reference a new Solr 9.0/9.1 image that comes bundled with Babel Street JAR files.
+
+### Fusion Connectors
+
+* Fusion 5.9.0 introduces new version requirements for the LDAP ACLs V2 and SharePoint Optimized V2 connectors. The [LDAP ACLs V2 connector](/fusion-connectors/4selgx/ldap-ac-ls-v-2) must use version 1.5.0 or later, and the [SharePoint Optimized V2 connector](/fusion-connectors/3qqudu/share-point-optimized-v-2) must use version 1.6.0 or later.
+
+## Bug Fixes
+
+### Fusion
+
+* Fixed an issue where the parsing endpoint in the indexing service did not parse a DOC file or other Microsoft Word documents. The Apache POI was updated with the `log4j` API.
+
+### Fusion Connectors
+
+* Fixed an issue where clearing the `crawldb` for the Access Control List (ACL) datasource also deletes the ACLs.
+
+* Fixed an issue where the Box.com V2 connector did not start successfully when a Fusion branch was deployed.
+
+## Known issues
+
+* New Kerberos security realms cannot be configured successfully in this version of Fusion.

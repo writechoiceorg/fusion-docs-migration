@@ -1,0 +1,139 @@
+---
+title: "Solr"
+permalink: "3206"
+---
+
+The Solr search adapter brokers all communication with the [Solr search engine](http://lucene.apache.org/solr/). To work with SolrCloud deployments, read about our [SolrCloud](/fusion/5.9/3204/solr-cloud) search adapter.
+
+## Setup
+
+To add Solr search connectors to a Maven project, you must add this dependency to your project’s `pom.xml` file:
+
+```xml
+<dependency>
+    <groupId>twigkit</groupId>
+    <artifactId>twigkit.solr.runtime</artifactId>
+    <version>${project.parent.version}</version>
+</dependency>
+```
+
+## Usage
+
+Assuming you have added the correct dependencies to your project (see above), the Solr platform configuration can be accessed by pointing to it in the search:platform tag. In this case the platform is placed in a variable named `platform` using the `var` attribute, and points to a platform configuration in ../conf/platforms/solr/solr.conf:
+
+```xml
+<search:platform var="platform" conf="platforms.solr"></search:platform>
+```
+
+### platforms/solr/solr.conf
+
+In this example platform configuration, we set some general settings for the platform:
+
+```yaml
+name: twigkit.search.solr.Solr
+resultIDField: id
+defaultQuery: *:*
+url: http://100.200.300.400:8983/solr/myCollection
+defaultFacets: age,weight
+```
+
+### Required attributes
+
+- `url (java.lang.String)`
+    The URL of the Solr Server. Must be specified using the full URL (for example, `http://localhost:8983/solr/collection` - `localhost:8983` will not work). If a value for `url` is found in the configuration, this will take precedence over other parameters found for `protocol`, `host`, `port`, and `collection`.
+
+`protocol (java.lang.String)`
+The protocol used to send requests to the Solr Server, for example, `https` in `https://localhost:8983/solr/collection`.  
+Default: `http`
+
+- `host (java.lang.String)`
+    The domain name of the Solr server, for example, `localhost` in `http://localhost:8983/solr/collection`.
+
+    <Note>
+    Use of `host` as the URI of the Solr Server is deprecated.
+    </Note>
+
+- `port (java.lang.String)`
+    The port used to access the Solr Server, for example, `8983` in `https://localhost:8983/solr/collection`.  
+Default: 8983
+
+- `collection (java.lang.String)`
+    The Solr collection being accessed, for example, `collection` in `https://localhost:8983/solr/collection`.
+
+As mentioned above for the `host` attribute, if a non-empty value for `url` is found in the configuration, this will take precedence over other attributes found for `protocol`, `host`, `port`, and `collection`. If no `url` attribute is found, and a value for `host` is found that begins with `http`, `https`, `file` or `/` then this will be taken as the full URL. Finally, if the latter condition is also not met, the URL will be built from attributes `protocol`, `host`, `port`, and `collection` if present.
+
+### Optional attributes
+
+- `requestHandler (java.lang.String)`
+    Name of the Request Handler to use. Use this to specify an alternate Request Handler to use for example, the '/dismax' request handler. Note you can override this by specifying a 'custom' attribute on the query.
+
+- `requestMethod (java.lang.String)`
+    Which HTTP request method to use (GET or POST).
+
+- `strategy (java.lang.String)`
+    Whether to cluster multiple hosts (value should be either combine, or round-robin). To enable sharding, set strategy to combine.
+
+- `groupField (java.lang.String)`
+    Setting this enables Solr Result Grouping or Field Collapsing on the given field.
+    This will create a Result for each Group returned. Matching documents for the group will be available as related results.
+
+- `timeOut (java.lang.Integer)`
+    Time out for platform query requests (in milliseconds).  
+    Default: 5000
+
+- `ignoreAppliedFilters (java.lang.Boolean)`
+    If this is set to false, facet filters that have already been applied to the Query are added to the list of filters for the facet.  
+    Default: true
+
+- `backwardsCompatible (java.lang.Boolean)`
+    For Solr 1.x (for example, 1.4) set backwardsCompatible to true.  
+    Default: false
+
+- `highlight (java.lang.Boolean)`
+    Whether to enable hit highlighting (hl parameter) in Solr.  
+    Default: true
+
+### Attributes shared across platforms
+
+- `name (java.lang.String)`
+    The display name of this Platform instance. Used for identifying different platforms in the user interface.
+
+- `aliases (java.lang.String)`
+    Manage mappings from field names to aliases (use a comma-separated list). All references to the field (via this platform) in results, facets, filters, and query strings are mapped. For example, to refer to a field in the index named `firstnamelastname` as `name` and `countryofresidence` as `country`, use these mappings: `aliases="firstnamelastname=name,countryofresidence=country"`
+
+- `defaultQuery (java.lang.String)`
+    Default query to use when none is specified. For Solr use `:` to bring back all items (for example, for 'zero term search').
+
+- `defaultFacets (java.lang.String)`
+    Default facets to request when none are specified. This is a comma separated list.
+
+- `spellCheck (java.lang.Boolean)`
+    Spellcheck the Query term if supported by the Platform.  
+    Default: `true`
+
+- `expandQuery (java.lang.Boolean)`
+    Apply advanced linguistics such as stemming or lemmatization if supported by the Platform.  
+    Default: `true`
+
+- `autoCorrect (java.lang.Boolean)`
+    Whether to auto-correct and resubmit futile queries (queries with zero results).  
+    Default: `true`
+
+- `fileTypeField (java.lang.String)`
+    Set which field contains information about file type (mime type).
+
+- `resultIDField (java.lang.String)`
+    Set which field represents the unique identifier for a given result. Should correspond to the \<uniqueKey> element in the Solr schema.xml.
+
+- `pageLimit (java.lang.Long)`
+    A limitation to which page the platform will offset.
+
+## Hit highlighting
+
+Hit highlighting is enabled by default, and assumes that the uniques uniqueKey field in the Solr `schema.xml` file is named id. If your uniqueKey is set to a different field highlighting will not work unless you set the resultIDfield key in the Appkit configuration to the right field.
+
+```
+resultIDField = yourUniqueKey
+```
+
+Appkit expects that Solr’s default highlighting tags of `<em></em>` are used. Ensure that this has not been set to something different using `hl.simple.pre` and `hl.simple.post` settings in the Solr or request handler configurations.

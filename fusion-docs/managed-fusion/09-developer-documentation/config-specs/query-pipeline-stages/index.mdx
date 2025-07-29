@@ -1,0 +1,65 @@
+---
+title: "Query Pipeline Stages"
+description: "Configuration specifications"
+permalink: "vtzxh4"
+---
+
+A query pipeline is made up of a series of query stages that process incoming search queries.
+
+A pipeline stage definition associates a unique ID with a set of properties.
+These definitions are registered with the Managed Fusion API service and stored in ZooKeeper for re-use across pipelines and search applications.
+
+Managed Fusion includes a number of specialized query stages as well as a JavaScript stage that allows advanced processing via a JavaScript program.
+
+The detailed configuration article about each Managed Fusion query pipeline stage is provided in this section.
+
+To configure a query pipeline stage, sign in to Managed Fusion and click **Querying > Query Workbench**. Then click **Add a Stage** and select the stage you want to configure. The stages are displayed under these categories:
+
+* **Set Up.** This section displays options that let you configure stages such as Facets, Graph Security Trimming, and Query Fields.
+* **Results Relevancy.** This section displays options that let you configure stages such as Block Documents, Boost Documents, Recommend Items for Item, and Recommend Items for User.
+* **Fetch Data.** This section displays options that let you configure stages such as Apply Rules, JDBC Lookup, and REST Query.
+* **Responses.** This section displays options that let you configure stages such as QnA Result Document Field Sorting, Response Diagnostics, and Response Document Exclusion.
+* **Troubleshooting.** This section displays the option that lets you configure the Logging stage.
+* **Advanced.** This section displays options that let you configure stages such as Additional Query Parameters, Managed JavaScript, and QnA Filter Stop Words.
+* **Custom.** This section displays options that let you configure stages such as Custom Graph Security Trimming and JavaScript.
+* **AI.** This section displays options that let you configure stages such as Hybrid Query, LWAI Prediction, and Machine Learning.
+* **Other.** This section displays options that let you configure stages such as Experiment Stage, Return Query Parameters, and Text Tagger.
+
+For information about how to configure stages in a query pipeline, see [Query Workbench](/managed-fusion/5.9/ukxc4p/query-workbench).
+
+For conceptual information, see [Query pipeline stages](/managed-fusion/5.9/ch321e/query-pipelines).
+
+## Global pipeline stage properties
+
+**Required**
+    * **type:** The type of the pipeline stage. This must be one of the defined Managed Fusion pipeline stage types, such as `index-logging`. If the Managed Fusion UI is used to define the stage, this property is filled in automatically.
+
+**Optional**
+    * **label:** A string field with a maximum length of 255 characters. The label is displayed on the Managed Fusion UI.
+    * **skip:** A boolean value. If true, pipeline processing bypasses this stage. The default is false.
+    * **condition:** A JavaScript expression that evaluates to true (1) or false (0). If this condition evaluates to false, this stage is skipped. The default is true.
+
+## Pipeline Condition Expression
+
+The JavaScript expression specified in the condition property of a pipeline stage has access the pipeline objects.
+
+### Index Pipeline Stage Condition Example
+
+An index PipelineDocument has two available variables: `doc` and `ctx`.
+
+To check whether pipeline document contains a named field:
+
+```js
+doc.hasField("acl_ss")
+```
+
+### Query pipeline stage Condition Example
+
+To process a query based the query request object:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+!request.hasParam("isFusionPluginQuery")
+```
+
+The first condition checks that the request parameter `fusion-user-name` is present and has the value `SuperUser`. The second condition checks that the request parameter `isFusionPluginQuery` is not present.

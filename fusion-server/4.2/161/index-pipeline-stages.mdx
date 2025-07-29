@@ -1,0 +1,79 @@
+---
+title: "Index Pipeline Stages"
+permalink: "161"
+---
+
+An Index Pipeline takes content and transforms it into a document suitable for indexing by Solr via a series of modular operations called stages.
+The objects sent from stage to stage are PipelineDocument objects.
+Fusion provides many specialized index stages as well as a [JavaScript Index stage](/fusion-server/4.2/243/java-script-index-stage) that allows for custom processing via a JavaScript program. The general outline of theExtract/Transform/Load processing performed by an index pipeline is:
+
+* Raw content is parsed into one or more PipelineDocument objects.
+* Any number of intermediate stages operate on the document fields directly, or, in the case of specialized NLP tools, add annotations to a document.
+* Finally, the PipelineDocument is sent to Solr for indexing.
+
+A pipeline stage definition associates a unique ID with a set of properties.
+Pipeline definitions are stored in ZooKeeper for reuse across pipelines and search applications.
+The Fusion UI provides stage-specific panels used to define and configure each pipeline stage.
+Alternatively, JSON can be used to specify the sequence of pipeline stages and registered via the Fusion REST API.
+Some stages require additional resources, e.g., text files that contain lists of names, synonyms, places, or binary files which NLP language models.
+These resources can be uploaded via the Fusion UI or the REST API.
+
+## Additional Resources
+
+Available index pipeline stages are listed below:
+
+## Document transformation
+
+* [XML Transformation](/fusion-server/4.2/245/xml-transformation-index-stage)
+
+## Document filtering and enrichment
+
+* [Detect Language](/fusion-server/4.2/210/detect-language-index-stage)
+* [Exclude Documents](/fusion-server/4.2/216/exclude-documents-index-stage)
+* [Format Signals](/fusion-server/4.2/225/format-signals-index-stage)
+* [Include Documents](/fusion-server/4.2/244/include-documents-index-stage)
+* [JDBC Lookup](/fusion-server/4.2/215/jdbc-index-stage)
+* [REST Query](/fusion-server/4.2/240/rest-query-index-stage)
+
+## Field transformation
+
+* [Date Parsing](/fusion-server/4.2/241/date-parsing-index-stage)
+* [Field Mapping](/fusion-server/4.2/224/field-mapping-index-stage)
+* [Filter Short Fields](/fusion-server/4.2/232/filter-short-fields-index-stage)
+* [Find and Replace](/fusion-server/4.2/213/find-and-replace-index-stage)
+* [GeoIP Lookup](/fusion-server/4.2/211/geo-ip-lookup-stage)
+* [Regex Field Extraction](/fusion-server/4.2/238/regex-field-extraction-index-stage)
+* [Regex Field Filter](/fusion-server/4.2/209/regex-field-filter-index-stage)
+* [Regex Field Replacement](/fusion-server/4.2/219/regex-field-replacement-index-stage)
+* [Resolve Multivalued Fields](/fusion-server/4.2/236/resolve-multivalued-fields-index-stage)
+* [Solr Dynamic Field Name Mapping](/fusion-server/4.2/223/solr-dynamic-field-name-mapping)
+
+## Natural language processing
+
+* [Detect Sentences](/fusion-server/4.2/230/detect-sentences-index-stage)
+* [Gazetteer Lookup Extraction](/fusion-server/4.2/220/gazetteer-lookup-extraction-index-stage)
+* [OpenNLP NER Extraction](/fusion-server/4.2/221/open-nlp-ner-extraction-index-stage)
+* [Tag Part-of-Speech](/fusion-server/4.2/228/tag-part-of-speech-index-stage)
+
+## Indexing
+
+* [Solr Indexer](/fusion-server/4.2/227/solr-indexer-stage)
+* [Solr Partial Update Indexer](/fusion-server/4.2/233/solr-partial-update-indexer-stage)
+* [Update Related Document](/fusion-server/4.2/231/update-related-document-stage)
+
+## Troubleshooting
+
+* [Logging](/fusion-server/4.2/242/logging-index-stage)
+* [Send PagerDuty Message](/fusion-server/4.2/206/send-pager-duty-message-index-stage)
+* [Send SMTP Email](/fusion-server/4.2/218/send-smtp-email-index-stage)
+* [Send Slack Message](/fusion-server/4.2/237/send-slack-message-index-stage)
+* [Write Log Message](/fusion-server/4.2/208/write-log-message-index-stage)
+
+## Advanced
+
+* [Call Pipeline](/fusion-server/4.2/214/call-pipeline-index-stage)
+* [Exclusion Filter](/fusion-server/4.2/226/exclusion-filter-index-stage)
+* [Javascript](/fusion-server/4.2/243/java-script-index-stage)
+* [Machine Learning](/fusion-server/4.2/222/machine-learning-index-stage)
+* [Managed Javascript](/fusion-server/4.2/217/managed-java-script-index-stage)
+* [Set Property](/fusion-server/4.2/239/set-property-index-stage)

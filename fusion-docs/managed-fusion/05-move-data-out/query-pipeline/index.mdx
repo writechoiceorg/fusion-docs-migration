@@ -1,0 +1,84 @@
+---
+title: "Query pipelines"
+permalink: "8qf1w6"
+---
+
+A Query Pipeline transforms a set of inputs into a Solr query request and it can execute requests and manipulate the Solr response as well, via a set of modularized operations called [Query Stages](/managed-fusion/5.9/vtzxh4/query-pipeline-stages). The objects sent from stage to stage are Request objects and Response objects.
+
+Managed Fusion stores pipeline names and definitions, allowing a pipeline to be reused across applications. Pipeline definitions can be modified, so that as an application evolves, the pipelines used by that application can evolve accordingly. During application development, the Managed Fusion UI can be used to develop and debug a Query Pipeline.
+
+The available stage types allow setting specific parameters for the query, such as the number of results to return or the query parser to use. You can also define facets and recommendations to be returned with the results. If Access Control Lists (ACLs) are in use, you can apply a security-trimming stage to apply user access restrictions to the results.
+
+For details about the available REST APIs, see [Query Pipelines API](/managed-fusion/5.9/hd4an7/query-pipelines-api) and [Query Stages API](/managed-fusion/5.9/g5jma3/query-stages-api).
+
+## Search mode
+
+When creating a query pipeline, you can select a search mode for the pipeline to use.
+
+* `dsl` ([Domain Specific Language](/fusion/5.9/8833/domain-specific-language-dsl)) uses expressive search queries and responses via a structured, modern JSON format.
+* `legacy` primarily uses Solr parameters. See the [Solr Query Language cheat sheet](/fusion/5.9/199/solr-query-language-cheat-sheet).
+* `all` uses both DSL and legacy search modes. This is the default value.
+
+<Note>
+The default value of `all` works well for most use cases.
+</Note>
+
+## Default query pipelines
+
+Managed Fusion creates a default query pipeline when you create an app. The query pipeline has the same name as the app.
+
+The default query pipeline has the following pre-configured stages:
+
+* [Text Tagger](/managed-fusion/5.9/74ygo4/text-tagger-stage)
+
+  This stage uses the SolrTextTagger handler to identify known entities in the query by searching the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/n8oj99/collections#auxiliary-collections). See [Manage Collections in the Managed Fusion UI](/how-to/ekv6jt/manage-collections-in-the-managed-fusion-ui) for more information.
+
+<Note>
+For Managed Fusion 5.x.x organizations that do *not* have a Predictive Merchandiser license, the Solr Text Tagger handler also searches the `COLLECTION_NAME_query_rewrite_staging` collection in the case of the Managed Fusion query rewriting [Simulator](/fusion-ai/4.2/484/simulator)).
+</Note>
+
+* [Boost with Signals](/managed-fusion/5.9/ihes2t/boost-with-signals-stage)
+
+  The Boost with Signals query pipeline stage uses [aggregated signals](/managed-fusion/5.9/itm6oz/aggregations) to selectively boost items in the set of search results.
+* [Query Fields](/managed-fusion/5.9/iv9chb/query-fields-stage)
+
+  The Query Fields query pipeline stage defines common Solr query parameters for the [edismax query parser](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser). If using a less-than sign (`<`) with DisMax, it must be escaped using a backslash.
+  An alternative to this stage is the
+  [Additional Query Parameters stage](/managed-fusion/5.9/8eo8x3/additional-query-parameters-stage).
+* [Field Facet](/managed-fusion/5.9/jqbnij/field-facet-stage)
+
+  The Field Facet query pipeline stage is used to add a
+  [Solr Field Facet query](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Field-ValueFacetingParameters)
+  to the search query pipeline.
+* [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage)
+
+  This stage looks up rules that have been deployed to the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/tw7rlx/query-rewriting#collections) and matches them against the query. Matching rules that perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) are applied at this stage, while matching rules that perform [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) are applied by the [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage) stage later in the pipeline.
+
+<Note>
+To trigger a rule that contains a tag, specify the tagname in the request URL of the user search app. See [Easily define triggers in tags](/managed-fusion/5.9/oitb8y/general-configurations#tags) for more information.
+</Note>
+
+* A [Solr Query](/managed-fusion/5.9/y1y2ol/solr-query-stage)
+
+  The Solr Query stage transforms the Managed Fusion query pipeline
+  [Request](/fusion-pipeline-javadocs/5.9/com/lucidworks/apollo/pipeline/query/request)
+  object into a Solr query and sends it to Solr.
+* [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage)
+
+  Most rules operate on the request, but some [rule types](/managed-fusion/5.9/tw7rlx/query-rewriting#types), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+## Custom query pipelines
+
+Using the [Query Workbench](/managed-fusion/5.9/ukxc4p/query-workbench) or the [REST API](/managed-fusion/5.9/hd4an7/query-pipelines-api), you can develop custom pipelines to suit any search application. Start with any of Managed Fusion’s built-in query pipelines, then add, remove, and re-order the [pipeline stages](/managed-fusion/5.9/vtzxh4/query-pipeline-stages) as needed to produce the appropriate query results.
+
+## Asynchronous query pipeline processing
+
+Query pipeline processing performance can be improved by enabling asynchronous processing for certain stages that make requests to secondary collections, external databases, and so on. The following stages support asynchronous processing:
+
+* [Active Directory Security Trimming](/managed-fusion/5.9/pu7wfp/active-directory-security-trimming-stage)
+* [Apply Rules](/managed-fusion/5.9/yx85m4/apply-rules-stage)
+* [JDBC Lookup](/managed-fusion/5.9/a8d5qj/jdbc-lookup-stage)
+* [Security Trimming](/managed-fusion/5.9/hnw5gy/security-trimming-stage)
+* [Solr Subquery](/managed-fusion/5.9/0cmi4z/solr-subquery-stage)
+
+This feature uses the fork-and-join model, where any of the stages above can create a fork on the pipeline. The parallel processes are joined again using the [Merge Async Results stage](/managed-fusion/5.9/xh02h2/merge-async-results-stage) at a later point in the pipeline.

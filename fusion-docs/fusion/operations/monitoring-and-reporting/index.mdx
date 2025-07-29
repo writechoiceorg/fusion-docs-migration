@@ -1,0 +1,14 @@
+---
+title: "Monitoring"
+permalink: "132"
+---
+
+Fusion has functions built in for observability and monitoring with Fusion’s tools or third-party monitoring tools.
+
+Fusion system metrics are logged and available in the UI, in log files, and through the REST API. You can use the following third-party tools to process and display metrics:
+
+* Prometheus is a solution that is installed during the Fusion installation. Prometheus records metrics, stores them in a time series datastore, and then uses queries to return data for visualizationa and alerts. For more information, see the [Prometheus documentation](https://prometheus.io/docs).
+* Grafana is a tool installed during the Fusion installation. Grafana provides visualizations of multiple datasources and connects to Prometheus, which lets you access your Fusion data when you create or edit the Grafana dashboards. Fusion provides pre-configured Grafana dashboards, but you can also create custom dashboards to analyze metrics further. For more information, see the [Grafana documentation](https://grafana.com/docs).
+* Loki is an optional, additional tool that stores, aggregates, and queries logs. You can filter logs based on keywords from specific Fusion namespaces, services, and other elements. For more information, see the [Grafana’s Loki documentation](https://grafana.com/docs/loki).
+
+For more information about configuring these tools, see [Configure Grafana, Prometheus, Promtail, and Loki in Fusion](/how-to/jpemcg/configure-grafana-prometheus-promtail-loki-in-fusion).

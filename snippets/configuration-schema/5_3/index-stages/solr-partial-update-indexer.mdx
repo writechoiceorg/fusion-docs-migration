@@ -1,0 +1,233 @@
+export const schema = {
+  "type": "object",
+  "title": "Solr Partial Update Indexer",
+  "description": "This stage indexes partial (atomic) updates to Solr documents",
+  "required": [
+    "solrDocIdFieldValue"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "enforceSchema": {
+      "type": "boolean",
+      "title": "Map to Solr Schema",
+      "default": true
+    },
+    "concurrencyControlEnabled": {
+      "type": "boolean",
+      "title": "Enable Concurrency Control",
+      "description": "Select to enable Optimistic Concurrency Control in Solr, guaranteeing that the document update will not be overridden by another Partial Update to the same document. If disabled, in the case of an edit collision, the last committed update to the document will win.",
+      "default": true
+    },
+    "rejectUpdatesIfDocNotPresent": {
+      "type": "boolean",
+      "title": "Reject Update if Solr Document is not Present",
+      "description": "Whether to reject the update attempt if the document with given id is not present in Solr. This is not typical situation since the updates usually are performed on existing documents, however you may disable this to attempt update even if the document is not present. If the concurrency control is disabled, enabling this flag will force set the _version_ field to 1, or to 0 otherwise.",
+      "default": true
+    },
+    "updateAllDocFields": {
+      "type": "boolean",
+      "title": "Process All Pipeline Doc Fields",
+      "description": "If this option is set, the Partial Update Stage will process pipeline document fields even if they are not set by Updates and Deletions instructions here. In this case those fields will be included into the partial update document and will be processed by Solr according to atomic update rules, i.e. non-map field value(s) will be treated as a 'set' update for the field, and Map field values will be processed as an atomic update defined in the Map. The Map structure should comply to Solr atomic update rules. Note that the Partial Update stage does NOT validate consistency of fields that are not Updates or Deletions configured here, it just sends them to Solr 'as is'. Requires at least one entry in updateFields.",
+      "default": false
+    },
+    "solrDocIdFieldName": {
+      "type": "string",
+      "title": "Solr Document ID Field Name",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "solrDocIdFieldValue": {
+      "type": "string",
+      "title": "Solr Document ID Field Value",
+      "default": "<doc.id>"
+    },
+    "dateFormats": {
+      "type": "array",
+      "title": "Additional Date Formats",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "string"
+      }
+    },
+    "params": {
+      "type": "array",
+      "title": "Additional Update Request Parameters",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "updatedFields": {
+      "type": "array",
+      "title": "Updates",
+      "description": "Fields to update (set, add or remove field values) in the Solr Document.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fieldName",
+          "values"
+        ],
+        "properties": {
+          "updateType": {
+            "type": "string",
+            "title": "Update Type",
+            "description": "The Update Type",
+            "enum": [
+              "set",
+              "add",
+              "remove",
+              "remove_regex",
+              "increment",
+              "decrement"
+            ],
+            "default": "set"
+          },
+          "fieldName": {
+            "type": "string",
+            "title": "Field Name",
+            "description": "The Solr Document Field to update."
+          },
+          "values": {
+            "type": "string",
+            "title": "Value",
+            "description": "For increment operation only one value (positive or negative int) is allowed. For add, set, remove or remove_regex a single value or list of values can be specified. The list separator is a comma (,) if the comma should be present in the field value, escape it with a backslash (\\). Quotation marks(\"\") can be used to enclose Field value to preserve the white spaces, if needed."
+          }
+        }
+      }
+    },
+    "deletedFields": {
+      "type": "array",
+      "title": "Deletions",
+      "description": "Fields to Delete from Solr Document.",
+      "items": {
+        "type": "object",
+        "required": [
+          "fields"
+        ],
+        "properties": {
+          "fields": {
+            "type": "string",
+            "title": "Field"
+          }
+        }
+      }
+    },
+    "positionalUpdates": {
+      "type": "array",
+      "title": "Positional Updates",
+      "description": "Update Field or Group of Fields to update (add or set) value at a specific position. See documentation for additional information.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "position",
+          "fieldsAndValues"
+        ],
+        "properties": {
+          "positionalUpdateType": {
+            "type": "string",
+            "title": "Update Type",
+            "description": "The Update Type",
+            "enum": [
+              "set",
+              "add"
+            ],
+            "default": "set"
+          },
+          "position": {
+            "type": "string",
+            "title": "Position",
+            "description": "The position at which the new value(s) will be changed. Could be 'first', 'last' or numeric value (position index)."
+          },
+          "fieldsAndValues": {
+            "type": "string",
+            "title": "Fields and Values",
+            "description": "The field:value [,field:value ...] list. The values will be changed for specified fields at specified position. The list separator is comma (,) if the comma present in the field value, escape it with a backslash (\\). Quotation marks(\"\") can be used to enclose Field value to preserve the white spaces, if needed."
+          }
+        }
+      }
+    },
+    "positionalRemovals": {
+      "type": "array",
+      "title": "Positional Removals",
+      "description": "Update Field or Group of Fields to remove value at a specific position. See documentation for additional information.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "position",
+          "fields"
+        ],
+        "properties": {
+          "position": {
+            "type": "string",
+            "title": "Position",
+            "description": "The position at which the field value will be removed. Could be 'first', 'last' or numeric value (position index)."
+          },
+          "fields": {
+            "type": "string",
+            "title": "Fields List",
+            "description": "The field [,field ...] list of fields (Solr field names) where removal of a value at specified position should happen."
+          }
+        }
+      }
+    },
+    "customRouteFieldName": {
+      "type": "string",
+      "title": "Custom Route Field Name",
+      "description": "This option is used when custom shard routing is configured is Solr so the document route is defined by value of Solr document's field (defined as 'router.field' when created the collection). If set here, the field with this name will be transferred to the partial update Solr document from the pipeline document."
+    }
+  },
+  "category": "Indexing",
+  "categoryPriority": 5,
+  "unsafe": false
+}

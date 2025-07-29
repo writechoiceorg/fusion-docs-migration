@@ -1,0 +1,58 @@
+---
+title: "JDBC"
+description: "Index pipeline stage configuration specifications"
+permalink: "efq5no"
+---
+
+The JDBC Index Stage is used to connect to a database, lookup one or more values, and then inject them into the context.
+The properties for setting stage are identical to the [JDBC Query Stage](/managed-fusion/5.9/a8d5qj/jdbc-lookup-stage), except for the "rows" property, which defaults to **-1** for the index stage (which returns all rows in the database), and defaults to **10** returned rows for the query stage.
+
+<Note>
+You must first [upload the JDBC driver to Managed Fusion](/how-to/ennwa5/upload-a-jdbc-driver-to-managed-fusion).
+</Note>
+
+## Example
+
+An example of a JDBC Index Stage setup
+
+*Upload stage config via POST to Managed Fusion REST API endpoint `api/index-stages/instances`*
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type: application/json" -d '{"id": "jdbc-index-test","type":"jdbc-index-lookup","driver":"postgresql-9.3-1101-jdbc4.jar","connection":"jdbc:postgresql:database","username":"user","password":"password1","preparedStatement":"select ID as id from DATABASE;"}' http://EXAMPLE_COMPANY.lucidworks.cloud/api/index-stages/instances
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+*Response*
+
+```json
+{
+  "type" : "jdbc-index-lookup",
+  "id" : "jdbc-index-test",
+  "driver" : "postgresql-9.3-1101-jdbc4.jar",
+  "connection" : "jdbc:postgresql:database",
+  "username" : "user",
+  "password" : "password1",
+  "preparedStatement" : "select ID as id from DATABASE;",
+  "fetchSize" : -1,
+  "join" : true,
+  "rows" : -1,
+  "skip" : false,
+  "label" : "jdbc-index-lookup",
+  "type" : "jdbc-index-lookup"
+}
+
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/jdbc-lookup.mdx";
+
+<SchemaParamFields schema={schema}/>

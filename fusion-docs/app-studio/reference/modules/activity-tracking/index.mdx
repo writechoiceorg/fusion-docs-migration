@@ -1,0 +1,49 @@
+---
+title: "Activity Tracking"
+permalink: "3172"
+---
+
+Appkit can capture any and all interaction users have with an Appkit powered application. This includes what queries were typed, filters applied, sort order used, and links opened.
+
+The information is stored in a highly scalable embedded search index which can be used to:
+
+* Data mine or analyze information through a regular Appkit user interface
+* Empower and aid users in content discovery by grouping together similar queries using statistical methods and suggesting alternatives to users seeking similar content
+* Perform auditing and compliance functions in secure applications
+
+## Activity processing
+
+The activity tracking framework supports these endpoints for processing activity events:
+
+* [Lucidworks Fusion Signals](/how-to/3012/tracking-fusion-signals)
+* [Log file writer](/how-to/3044/logging)
+
+## Query Tracking
+
+To track user-generated queries on your page, add a `<track:query>` tag with a reference to the query object that captures the user’s input:
+
+```xml
+<track:query query="query" path="/search" page-title="Search Page"></track:query>
+```
+
+To see all related attributes, see the [track:query](/fusion/5.9/1147/track-query) tag documentation.
+
+## Click Tracking
+
+To track click events, wrap a `<track:clicks>` tag around any result list to be tracked:
+
+```xml
+<track:clicks query="query" type="People Results">
+<search:result-list response="response">
+    <search:result>
+        ...
+    </search:result>
+</search:result-list>
+</track:clicks>
+```
+
+To see all related attributes, see the [track:clicks](/fusion/5.9/1072/track-clicks) tag documentation.
+
+Alternatively, to track a static URL, wrap the address in your href as shown. Optionally, you can use the `_type` parameter to provide a click type:
+
+`/twigkit/secure/services/url?url=http://www.google.com&_type=Other_Sites"`

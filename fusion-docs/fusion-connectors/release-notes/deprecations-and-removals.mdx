@@ -1,0 +1,93 @@
+---
+title: "Deprecations and Removals"
+description: "Fusion Connectors"
+permalink: "ft39rr"
+---
+
+This article lists connectors that have been deprecated and are removed or expected to be removed in the future. A deprecated connector is no longer actively maintained or supported by Lucidworks.
+
+For updates on connectors, including deprecations and removals, read the [Fusion Connectors Release Notes](/fusion-connectors/4/release-notes) and [Fusion Release Notes](/fusion/5.9/97/release-notes).
+
+## V1 connectors
+
+V1 connectors are deprecated and removed by Fusion version. The following table shows the deprecation and removal schedule for V1 connectors. Unreleased Fusion versions indicate the connector is expected to be removed at that time.
+
+<Tip>
+**Important**
+
+V1 deprecation notice
+
+Starting in Fusion 5.12.0, all V1 connectors will be deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0. Please note:
+
+* **Some V1 connectors already have a direct replacement available.** You can find the replacement connector in the following table.
+* **For other V1 connectors, a replacement is still under development.** We will update the documentation when the replacement is available.
+
+If you are using a V1 connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+| Connectors | Deprecation | Removal | Notes |
+| --- | --- | --- | --- |
+| Alfresco V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Apache Hadoop 2 V1 | 4.2 | 5.0 |  |
+| AWS S3 V1 | 5.2 | 5.5 | Use the AWS S3 V2 connector. |
+| Azure V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Box V1 | 5.2 | 5.3 | Use the Box V2 connector. |
+| Cloudera V1 | 4.2 | 5.0 |  |
+| Confluence V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Couchbase V1 | 4.2 | 5.0 | Due to a dependency issue, the Couchbase V1 connector does not work as expected in Fusion 4.2. Use the Couchbase V2 connector. |
+| Dropbox V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Drupal V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| File Upload V1 | 5.9.9 | 5.13 | Use the Local File System V2 connector. |
+| FTP V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Github V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Google Drive V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| HDFS V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Hortonworks V1 | 4.2 | 5.0 |  |
+| JDBC V1 | 5.3 | 5.4 | Use the JDBC V2 connector. |
+| Jira V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| JIVE V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| MapR V1 | 4.2 | 5.0 |  |
+| Mongo DB V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Salesforce V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| ServiceNow V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| SharePoint Online V1 | 5.3 | 5.5 | Use the SharePoint Optimized V2 connector. |
+| SharePoint Online V1 Optimized | 4.2 | 5.0 | Use the SharePoint Optimized V2 connector. |
+| SharePoint V1 | 5.4 | 5.5 | Use the SharePoint Optimized V2 connector. |
+| SharePoint V1 Optimized | 4.2 | 5.0 | Use the SharePoint Optimized V2 connector. |
+| Solr index V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| SolrXML V1 | 4.2 | 5.0 | Use the Solr V1 connector. |
+| Twitter Search V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Twitter Stream V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+| Web V1 | 5.12 | 5.13 | Use the Web V2 connector. |
+| Windows Share SMB2/3 V1 | 5.9.9 | 5.13 | Use the Windows Share SMB2/3 V2 connector. |
+| Windows Share V1 | 4.0 | 5.0 | Use the Windows Share SMB2/3 V2 connector. |
+| Zendesk V1 | 5.12 | 5.13 | A future V2 connector will be introduced to replace this connector. |
+
+<Tip>
+
+In the preceding table, the SharePoint Online V1 connector was deprecated in Fusion 5.3 and removed in Fusion 5.5. As a result, Fusion 5.4 was the last version of Fusion the connector was available in.
+
+</Tip>
+
+
+
+## V2 connectors
+
+V2 connectors are deprecated and removed by date. The following table shows the deprecation and removal schedule for V2 connectors. Future dates indicate the connector is expected to be removed at that time.
+
+| Connectors | Deprecation | Removal | Notes |
+| --- | --- | --- | --- |
+| JavaScript V2 | August 24, 2020 | May 18, 2022 | Use the index pipeline for fetching content. |
+| Active Directory for ACLs V2 | June 19, 2023 | January 31, 2024 | The Active Directory for ACLs V2 connector is not compatible with Fusion 5.6 and later, regardless of the removal date. Use the LDAP ACLs V2 connector. |
+| SharePoint V2 | June 19, 2023 | January 31, 2024 | The SharePoint V2 connector is not compatible with Fusion 5.6 and later, regardless of the removal date. Use the SharePoint Optimized V2 connector. |
+| Subversion V2 | N/A | September 12, 2021 |  |
+
+<Tip>
+
+In the preceding table, the LDAP V2 connector was deprecated on June 19, 2023 and is expected to be removed on January 31, 2024. At that time, the connector will no longer be available for installation and the connector may cease to function.
+
+</Tip>
+

@@ -1,0 +1,126 @@
+---
+title: "REST Query"
+description: "Index pipeline stage configuration specifications"
+permalink: "a20hmu"
+---
+
+The REST Query index stage performs remote procedure calls to external services, merges the response from that service with a document being processed by the pipeline, and makes calls to the external system for each document.
+
+This stage can call external systems in any of the following ways:
+
+* any HTTP or HTTPS request: `<http-protocol>://<path>`
+* a Solr request: `solr://COLLECTION_NAME/…​`
+* a Managed Fusion service request: `extservice://SERVICE_NAME/<path>`
+
+The call syntax allows the use of document field variables. For example, variable `${docField}` will be replaced with the value of the field named `docField` for the document being processed.
+
+Several types of responses are also supported:
+
+* POJOs
+* JSON
+* XML
+
+## Call Parameters
+
+In the Managed Fusion UI, select **include** to display the fields for the call parameters (`params` in the REST API). Parameters are specified as key-value pairs:
+
+|  |  |
+| --- | --- |
+| **Endpoint URI** / `uri` | A fully-qualified service URI. This can be an HTTP call, a Solr request, or a Managed Fusion service call  <br/>* any HTTP or HTTPS request: `<http-protocol>://<path>`  <br/>* a Solr request: `solr://COLLECTION_NAME/…​`  <br/>* a Managed Fusion service request: `extservice://SERVICE_NAME/<path>` |
+| **Call Method** / `method` | The method to use for the RPC call. Supported methods are `GET`, `POST`, `PUT`, and `DELETE`. |
+| **Query parameters** / `queryParams` | Query parameters to be passed with the request. |
+| **Request protocol headers** / `headers` | Request protocol headers, such as `"Content-Type" : "application/json"`. |
+| **Request entity (as string)** / `entity` | The request body. This parameter can only be configured via the REST API; [see the example below](#entity-example). |
+
+The `params` can also take variable substitution expressions. Variables are expressed as `${fieldName}`, where `fieldName` is a name of the current document’s field (or `id` for the document’s id). Only the first value of a multi-valued field is used for substitution, and this value is treated as a string.
+
+For example, a `queryParams` could be constructed as follows:
+
+```json
+"params" : {
+  "uri" : "solr://collection1/select",
+  "method" : "GET",
+  "queryParams" : {
+    "q" : "{!field f=a_txt v=$prodName}",
+    "prodName" : "${prodName}"
+  }
+}
+```
+
+In this example, the variable `${prodName}` will be replaced with the string value of the 'prodName' field in the current document being processed. If the current document contains "iPhone 6" as the value of 'prodName', the resulting query in this example will be a fielded search `q=a_txt:iPhone 6`.
+
+## Mapping Rules
+
+The **mappingRules** property takes the following, specified as key-value pairs:
+
+* path. an [XPath expression](http://www.w3schools.com/xml/xpath_syntax.asp). It is assumed that this expression always returns a node list, and each returned node is processed separately and its converted value is added to a multi-valued field.
+* target. the name of the target field in the current document where the value(s) will be stored.
+* append. if true, values extracted from the RPC response will be appended to the target multi-valued field. When this is false, the default, existing values in the target field will be discarded and replaced with the values from the RPC response.
+* xml. if true, the extracted DOM nodes will be separately serialized to XML and the resulting XML-formatted text will be added to the target field. When this is false, the default, the extracted DOM nodes will be flattened and converted to a list of fields. Field names in this case will correspond to XML element names, dot-separated, and element attributes will be represented as fields with @attributeName suffix.
+
+## Examples
+
+**Create a REST Query stage to merge results from another Solr system:**
+
+```json
+{
+  "type" : "indexing-rpc",
+  "id" : "BasicSolrCall",
+  "mappingRules" : [ {
+    "path" : "//result/doc[1]/str[@name='foo_s']/text()",
+    "target" : "foo_s",
+    "append" : true,
+    "xml" : false
+  }, {
+    "path" : "//result/doc/arr[@name='a_txt']/*",
+    "target" : "doc_txt",
+    "append" : true,
+    "xml" : false
+  } ],
+  "debug" : true,
+  "params" : {
+    "uri" : "solr://collection1/select",
+    "method" : "GET",
+    "queryParams" : {
+      "q" : "a_txt:${doc_value}"
+    },
+    "headers" : { }
+  },
+  "skip" : false,
+  "label" : "indexing-rpc"
+}
+```
+
+**Upload a stopword list:**
+
+```json
+{
+ "type" : "indexing-rpc",
+ "id" : "demo",
+ "debug" : true,
+ "params" : {
+   "uri" : "http://EXAMPLE_COMPANY.lucidworks.cloud/api/stopwords/movies",
+   "method" : "PUT",
+   "headers" : { "Content-Type" : "application/json" },
+   "entity" : "New stopword list"
+ },
+ "skip" : false,
+ "label" : "Indexing RPC Demo",
+ "type" : "indexing-rpc"
+}
+```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/rest-query.mdx";
+
+<SchemaParamFields schema={schema}/>

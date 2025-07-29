@@ -1,0 +1,33 @@
+---
+title: "Send Slack Message Stage"
+permalink: "290"
+---
+
+This stage sends a [Slack](https://slack.com/) message from Fusion, for alerting, reporting, and more, using Fusion’s [Messaging Services](/fusion-server/4.2/135/messaging-and-alerting).
+
+## Enabling Slack Messaging
+
+Before you can use the Slack pipeline stage, you must enable Slack messaging in Fusion:
+
+1. From any app, click **System > Messaging Services**.
+2. Select **Slack Message Service** from the drop-down menu.
+3. Enter the following information:
+
+   * [Slack auth token](https://api.slack.com/docs/oauth)
+   * Message template
+
+     The default is `<subject> : <body>`, which are configured with `messageSubjectTemplate` and `messageBodyTemplate` below. See
+     [Messaging Services Templates](/fusion-server/4.2/397/messaging-services-template-expression-variables) for details on the template language.
+   * Optionally, you can configure a proxy or the error reporting channel name.
+4. Click **Save message service**.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/send-slack-message.mdx";
+
+<SchemaParamFields schema={schema}/>

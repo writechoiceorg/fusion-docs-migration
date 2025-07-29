@@ -1,0 +1,43 @@
+---
+title: "FAQ"
+description: "REST V2 connector"
+permalink: "tb24w7"
+---
+
+## Where can I find recipes?
+
+Recipes that have been developed are stored in the [REST V2 connector public repository](https://github.com/lucidworks/rest-configurations) in GitHub.
+
+## What HTTP method types are available for the REST V2 connector?
+
+For sending a recipe to Fusion, the REST V2 connector can use any HTTP method included in the [Connector Datasources API](/fusion/5.9/353/connector-datasources-api).
+
+Once a recipe is in Fusion, it works by sending an API call to the associated service. For making these API calls to services outside of Lucidworks, `POST` and `GET` are supported in the **HTTP Method** dropdown menu. Updates can be made directly within the Fusion UI. Deleting the datasource from Fusion can be accomplished by selecting **Delete datasource** at the bottom of the datasource window.
+
+## What types of pagination are supported?
+
+The REST V2 connector options include two types of pagination: pagination by next page URL and pagination by batch size. Pagination by next page URL is particularly useful for datasources whose URLs are incremented numerically. Pagination by batch size is a more common implementation for paginating results that defines the number of documents to fetch per page request.
+
+## What is the significance of loop requests?
+
+The main request sets up the structure for the API results and includes properties such as the API endpoint used, HTTP method used, and additional query values to append to the endpoint. Loop requests extract more information from a datasource for the documents being indexed. This data adds to the content of the documents and can be useful when searching and faceting the indexed information.
+
+## Is incremental crawling supported?
+
+Currently, incremental crawling is not supported by the REST V2 connector. Updated documents are identified by their last modified date during a full recrawl.
+
+## How does the connector handle HTTP status codes?
+
+When validating credentials using basic authentication to a third-party REST API:
+
+* `200` indicates a successful authentication.
+* `401` or `403` means the credentials are not valid and should be rechecked.
+
+When validating credentials using OAuth:
+
+* `200` indicates a successful authentication.
+* `401` or `403` means the credentials are not valid and should be rechecked. If a response status of `401` happens in the middle of the crawl, the connector requests a refreshed access token.
+
+Retry feature:
+
+* The connector reattempts the connection when it encounters any of the following status codes: `408`, `429`, `500`, `502`, `503`, or `504`.

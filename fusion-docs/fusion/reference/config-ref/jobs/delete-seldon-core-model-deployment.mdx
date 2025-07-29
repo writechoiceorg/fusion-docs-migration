@@ -1,0 +1,34 @@
+---
+title: "Delete Seldon Core Model Deployment Job"
+permalink: "584"
+---
+
+Fusion uses Seldon Core to deploy machine learning (ML) models into production.
+
+This job removes a Seldon Core deployment from the Fusion cluster.
+
+To delete the job, sign in to Fusion and click **Collections > Jobs**. Then click **Add+** and in the Model Deployment Jobs section, select **Delete Seldon Core Model Deployment**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Job ID.** The unique ID that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Model name.** The model name of the Seldon Core deployment to delete. This is the `modelName` field in the configuration file. Required field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Additional parameters.** This section lets you enter `parameter name:parameter value` options to be injected into the training JSON map at runtime. The values are inserted as they are entered, so you must surround string values with `"`. This is the `sparkConfig` field in the configuration file.
+* **Write Options.** This section lets you enter `parameter name:parameter value` options to use when writing output to Solr or other sources. This is the `writeOptions` field in the configuration file.
+* **Read Options.** This section lets you enter `parameter name:parameter value` options to use when reading input from Solr or other sources. This is the `readOptions` field in the configuration file.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/delete-seldon-core-model-deployment.mdx";
+
+<SchemaParamFields schema={schema}/>

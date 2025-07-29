@@ -1,0 +1,28 @@
+---
+title: "filterValue"
+permalink: "1014"
+---
+
+## Description
+
+Returns the facet filter that has the requested value
+
+## Usage
+
+### In HTML Template Binding
+
+```
+{{ filterValue_expression | filterValue[:value] }}
+```
+
+### In JavaScript
+
+```js
+$filter('filterValue')(facet[, value])
+```
+
+#### Parameters
+
+| --- | --- | --- |
+| facet | string | The facet object to get the filter from |
+| value *(optional)* | number | The value of the filter to get |

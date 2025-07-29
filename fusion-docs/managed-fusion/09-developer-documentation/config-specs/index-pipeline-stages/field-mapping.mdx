@@ -1,0 +1,122 @@
+---
+title: "Field Mapping"
+description: "Index pipeline stage configuration specifications"
+permalink: "ea0urj"
+---
+
+A Field Mapping stage is used to do customized mapping of the fields in an Index Pipeline document to fields in the Solr schema.
+
+For examples of how to use this stage in the Managed Fusion UI, see [Part 2](/how-to/643/get-started-with-fusion-server-part-2) of the [Getting Started](/how-to/880/get-started-with-fusion-server) tutorial.
+
+## Field Mapping Stage Properties
+
+A Field Mapping stage specification consists of three things:
+
+* a unique ID
+* a set of mapping rules that specify operations applied to named fields as a triple: `{ source, target, operation }`.
+* a set of rules called "unmapped" rules which specify operations applied to fields whose name does not match any of the mapping rules, also a triple `{ source, target, operation }`.
+
+### Mapping Rules and Unmapped Rules
+
+Each rule has the following properties:
+
+| Property | Description |
+| --- | --- |
+| source | The name of the source field. This will be the name of the field in the Pipeline document that should be mapped to another field. Java regular expressions can be used in the source field by surrounding the regular expression with forward slashes ('/'). For example, `/(.*)text(.*)/` is a valid expression that will find field names in the incoming document that contain the string 'text' between any number of preceding or succeeding characters. If a regular expression is not used, the value supplied for the source will be treated as a literal field name and will be matched ignoring the case (for example, "text" will match "tExt" or "Text", etc.). |
+| target | The name of the target field. If the value for the `source` was a regular expression, then this can also be a regular expression. It can also contain substitutions using references to capture groups (using [Java’s Matcher.replaceAll](http://docs.oracle.com/javase/8/docs/api/java/util/regex/Matcher.html#replaceAll-java.lang.String-)). Otherwise, the source field name will be simply substituted by the value of target according to the operation rules described below. |
+| operation | What to do with the field during mapping. Several options are available: <br/>- **copy.** Content contained in fields matching `source` will be copied to `target`.<br/>- **move.** Content contained in fields matching `source` will be moved to `target` (it may also help to think of this as the field name being replaced by the value of `target`).<br/>- **delete.** Content contained in fields matching `source` will be dropped from the document and not indexed. In this case, the `target` can be null or not defined at all.<br/>- **add.** The literal value of `target` will be added to the `source` if `source` is a regular expression. If `source` is not a regular expression, `target` will be added as a new field.<br/>- **set.** The literal value of `target` will be set as the new value of `source` if `source` is a regular expression. If `source` is not a regular expression, `target` will be set as a new field.<br/>- **keep.** Content contained in fields matching `source` will be retained and unchanged, and the fields will be added to a list of known fields and they will not be affected by however the `renameUnknown` rule has been set. |
+
+Order of operations
+
+Field mapping rules are applied in the order in which they are defined within each operation *type*. Operation types are applied in this order:
+
+1. **Field Retention** - `keep` or `delete`
+2. **Field Value Updates** - `add` or `set`
+3. **Field Translations** - `copy` or `move`
+
+As a result, `keep` and `delete` rules are always applied before `add`, `set`, `copy`, or `move` rules. Likewise, `add` and `set` rules are always applied before `copy` or `move` rules.
+
+In some cases, you may wish to delete fields after they are processed by other operations. To accomplish this, you can add another Field Mapping stage which deletes the fields.
+
+## Field Mapping Behavior
+
+The field mapping rules are applied in a specific order.
+
+1. A copy of the Pipeline document is prepared. All further operations are applied to this copy.
+2. The rules are traversed only once, in the order of their declaration in the `mapping` property. This means it is possible to do multiple operations on a field. However, note that if fields are moved (renamed), further operations should reference the new field name.
+3. Before each rule is evaluated, the current list of field names is prepared and sorted in alphabetic ascending order.
+4. The current rule is applied to field values for each matching name from the list of names prepared in step 3. New field names resulting from the current rule do not effect the snapshot list of field names; in order for a rule to be applied to a new field name, it will be included in a later round of the evaluation cycle.
+5. The process is repeated for each rule, and a list of matching source fields is noted.
+6. If the document contains any fields that were not affected by any mapping rule, the `renameUnknown` option is applied if it has been set to true.
+7. Finally, the resulting transformed document is returned to the next stage of the index pipeline.
+
+## Examples
+
+*Map several fields:*
+
+```json
+{
+    "id": "mapping-text",
+    "type": "field-mapping",
+    "mappings": [
+        {
+            "operation": "move",
+            "source": "plaintextcontent",
+            "target": "body"
+        },
+        {
+            "operation": "add",
+            "source": "content-length",
+            "target": "fileSize"
+        },
+        {
+            "operation": "move",
+            "source": "/file(.*)/",
+            "target": "lastModified"
+        },
+        {
+            "operation": "delete",
+            "source": "last-printed"
+        },
+        {
+            "operation": "copy",
+            "source": "mimetype",
+            "target": "content_type"
+        }
+    ],
+    "unmapped": {
+        "source": "/(.*)/",
+        "target": "$1_ss",
+        "operation": "move"
+    },
+    "skip" : false
+}
+```
+
+*Set the `urlX` field based on the value of the `employee_id` field:*
+
+```json
+{
+    "id": "set-field",
+    "type": "field-mapping",
+    "mappings": [
+        {
+            "operation": "set",
+            "source": "urlX",
+            "target": "https://mydomain.com/<employee_id>"
+        }
+    ],
+    "skip" : false
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/field-mapping.mdx";
+
+<SchemaParamFields schema={schema}/>

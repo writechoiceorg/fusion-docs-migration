@@ -1,0 +1,63 @@
+---
+title: "collaborate:bookmark"
+permalink: "1098"
+---
+
+## Description
+
+Creates a new bookmark.
+
+* If used within a result you will need to add the following workflow
+  processor to your platform in order to get the status of the bookmark
+  and the number of people who have bookmarked the result
+
+```yaml
+workflow:
+ twigkit.social.processor.AddBookmarkFactsProcessor
+
+```
+
+## Usage
+
+as element:
+
+```xml
+<collaborate:bookmark
+       target="{string}"
+       title="{string}"
+       [topic="{number}"]
+       [collection="{string}"]
+       [url="{string}"]
+       [enable-tooltip="{boolean}"]>
+</collaborate:bookmark>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | A unique identifier for a document that is being bookmarked. Example values: document123 Maximum length: 2083 characters |
+| title | **string** | A title for the new bookmark. Example values: Interesting document Maximum length: 4000 characters |
+| topic  *(optional)* | **number** | A topic to which the new bookmark should belong. |
+| collection  *(optional)* | **string** | The collection to which the target document belongs. |
+| url  *(optional)* | **string** | A URL which the new bookmark should link to. Default: the bookmark target, if it is a URL |
+| enable-tooltip  *(optional)* | **boolean** | Whether to enable the tooltip (Default:true). |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_custom-html">Custom HTML</h3>
+<collaborate:bookmark><a styling="button">Bookmark</a></collaborate:bookmark>
+<hr/>
+<h3 id="example_traditional">Traditional</h3>
+<collaborate:bookmark></collaborate:bookmark>
+<hr/>
+<h3 id="example_without-tooltip">Without Tooltip</h3>
+<collaborate:bookmark enable-tooltip="false"></collaborate:bookmark>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/collaborateBookmark.png)</Frame>

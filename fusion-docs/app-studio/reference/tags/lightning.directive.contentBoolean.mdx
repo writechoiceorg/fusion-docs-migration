@@ -1,0 +1,45 @@
+---
+title: "content:boolean"
+permalink: "1120"
+---
+
+## Description
+
+Creates a checkbox boolean
+
+## Usage
+
+as element:
+
+```xml
+<content:boolean
+       label="{string}"
+       field="{string}"
+       [true-value="{string}"]
+       [false-value="{string}"]>
+</content:boolean>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| label | **string** | The label for the textarea |
+| field | **string** | The name of the field. |
+| true-value  *(optional)* | **string** | The value to use when true, (default: true) |
+| false-value  *(optional)* | **string** | The value use when false, (default: false) |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_stacked">Stacked</h3>
+<content:form styling="form-stacked">
+    <content:boolean label="Test" field="test"></content:boolean>
+</content:form>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/contentBoolean.png)</Frame>

@@ -1,0 +1,136 @@
+---
+title: "Query Processors"
+permalink: "3180"
+---
+
+## twigkit.search.processors.query.AddFilterProcessor
+
+Add a Filter to a Query. By creating or passing in a Filter instance, you can override or set all attributes of the filter that will then be added to the Query.
+
+### Parameters
+
+- `filter (twigkit.model.Filter)`
+    Instance of a filter to add (optional).
+
+- `field (java.lang.String)`
+    Field name of the filter.
+
+- `actualValue (java.lang.String)`
+    The actual value of the filter to be applied.
+
+- `displayValue (java.lang.String)`
+    The display value of the filter to be applied.
+
+- `hidden (java.lang.Boolean)`
+    Whether the filter should be hidden (visible in breadcrumbs and URLs) or not.
+
+- `exclude (java.lang.Boolean)`
+    Whether the filter should exclude values in the given field.
+
+## twigkit.search.processors.query.CompositeFieldProcessor
+
+Create a pseudo composite field for user fielded search, where a users query expression will be reformatted as an OR query on a set of fields.
+
+### Parameters
+
+- `fieldNames (java.lang.String)`
+    Names of fields to apply query terms to as an OR query.
+
+- `compositeField (java.lang.String)`
+    Name of the pseudo composite field that the user can invoke via fielded search syntax (compositeField:expression).
+
+## twigkit.search.processors.query.ReplaceFilterValue
+
+Replace all Query filter values (actual, display or both) that match a given regular expression with a different value. The replacement value can contain back-references to matches.
+
+### Parameters
+
+- `replace (java.lang.String)`
+    The pattern to replace (can contain regular expressions).
+
+- `with (java.lang.String)`
+    The replacement (can contain backreferences to the regular expression pattern).
+
+- `values (java.lang.String)`
+    Whether to replace 'actual', 'display' or 'both' values.
+    Default: 'both'
+
+- `ignoreCase (java.lang.Boolean)`
+    Whether to ignore case during pattern matching.  
+    Default: false
+
+## twigkit.search.processors.query.QueryLoggingProcessor
+
+Logs the full details of each query sent to the platform at TRACE log level.
+
+## twigkit.social.processor.AddBookmarkListToQueryProcessor
+
+Query processor for retrieving a list of bookmarks in a query
+
+### Parameter
+
+- `id (java.lang.String)`
+    Required. The field name to use as a filter when filtering the query with the bookmark `id`.
+
+### Example configuration
+
+```
+name: twigkit.social.processor.AddBookmarkListToQueryProcessor
+id: ID
+
+```
+
+<Note>
+There is no reliable way of making the query return nothing if there are no bookmarks in the list, so this logic is best handled in the JSP, testing whether they exist using a conditional test with a `social:getBookmarkCount` function before applying the processor.
+</Note>
+
+
+
+## twigkit.search.processors.query.DynamicSolrDateRangeQueryProcessor
+
+**Since 4.2.0**
+
+Query processor to create Solr (and Fusion) query parameters to enable date range faceting with a dynamic bucket size based on the current filters applied to the query.
+This processor should be used in conjunction with the `twigkit.search.processors.response.ApplyDynamicSolrDateFormattingResponseProcessor` response processor.
+
+### Parameters
+
+- `fields (java.lang.String)`
+    *Required*  
+Comma separated list of fields to apply the processor to. If the field is aliased on the platform it must be provided as `field=alias`.
+
+- `max-data-points (java.lang.int)`
+    *Required*  
+The number of date buckets do you want to generate at a maximum. This drives the size of the buckets being requested. For example if the overall interval is 1 year, and this parameter is set to 36, the size of the buckets will be 1 month. If this parameter is set to 500 the size will be 1 day.
+
+- `dynamic-buckets (java.lang.Boolean)`
+    *Optional*  
+Whether or not to apply the `facet.range.gap` Solr query parameter or rely on it being set elsewhere.  
+    Default: `true`
+
+- `default-start-date (java.lang.Date)`
+    _Required+  
+When no date filters are applied on the query, this will be the lower bound of the first bucket requested to the platform endpoint.
+
+- `default-end-date (java.lang.Date)`
+    *Required*  
+When no date filters are applied on the query, this will be the higher bound of the last bucket requested to the platform endpoint.
+
+- `default-other (java.lang.String)`
+    *Optional*  
+This specified the solr `facet.range.other` parameter. If none is specified this parameter will not be set on the query. See [here](https://lucene.apache.org/solr/guide/7_2/faceting.html#range-faceting) for the different values this parameter can take.
+
+- `default-unit (java.lang.String)`
+    *Optional*  
+    Initial size of the buckets to request when no filters are applied.
+    Default: one year
+
+### Example configuration
+
+```
+name: twigkit.search.processors.query.DynamicSolrDateRangeQueryProcessor
+fields: last_modified_dateX=Modified Date
+max-data-points: 36
+default-start-date: 2016-01-01T00:00:00.000Z
+default-end-date: 2018-06-01T00:00:00.000Z
+```

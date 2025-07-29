@@ -1,0 +1,21 @@
+---
+title: "Header tag"
+permalink: "3102"
+---
+
+The Table Header tag outputs the header of the results table. The tag must be nested within a [Table Result List tag](/fusion/5.9/3103/table-result-list-tag).
+
+## Usage
+
+Place the Header tag inside the body of a /app-studio/5.9/3103/table-result-list-tag[Table Result List tag]. It contains nested [Header Cell tags](/fusion/5.9/3100/header-cell-tag), one for every table column.
+
+```xml
+<table:result-list response="response">
+    <table:header>
+        <table:header-cell name="full_name" label="Name" sort="true"></table:header-cell>
+        <table:header-cell name="address" label="Address" sort="true"></table:header-cell>
+        <table:header-cell name="dob" label="Date of birth" sort="true"></table:header-cell>
+    </table:header>
+    ...
+</table:result-list>
+```

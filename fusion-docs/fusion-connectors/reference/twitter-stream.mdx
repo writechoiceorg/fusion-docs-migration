@@ -1,0 +1,36 @@
+---
+title: "Twitter Stream V1"
+description: "Connector Configuration Reference"
+permalink: "80"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Twitter Stream connector uses [Twitter’s streaming API](https://dev.twitter.com/streaming/overview) to continually index Twitter. The datasource can be configured to limit tweets or it can be run indefinitely, until Twitter cuts off your access or you stop the datasource. This connector only retrieves tweets created after the datasource has been started.
+
+<Warning>
+**Caution**
+
+This connector is no longer functional in Fusion 5.9 and later. This incompatibility arises due to changes implemented in the data source version or related APIs.
+
+Although the V1 connector might still be visible within the Fusion UI, it cannot be used effectively. To ensure uninterrupted operation, we strongly recommend switching to a valid V2 alternate connector.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+</Warning>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-twitter-stream.mdx";
+
+<SchemaParamFields schema={schema}/>
+

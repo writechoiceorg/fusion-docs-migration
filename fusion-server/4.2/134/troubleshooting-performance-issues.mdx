@@ -1,0 +1,86 @@
+---
+title: "Troubleshooting Performance Issues"
+permalink: "134"
+---
+
+## Troubleshooting
+
+### High CPU load
+
+Heavy CPU load across all nodes in the cluster might indicate the need for more nodes. More typically, however, a single node or service is being overloaded.
+
+* Use `top` or another monitoring utility to find out which processes are using high CPU.
+* All Fusion services, including Solr and Zookeeper, run as Java processes. Most services indicate the name of the service via the `-DserviceName` command-line argument.
+
+Common reasons for busy services:
+
+* Connectors-classic: document parsing and ingestion
+* Connectors-classic: document-heavy index and/or query pipeline use
+* API: document-heavy index and/or query pipeline use
+* Solr: use across multiple nodes holding the same collection
+* Solr: use across multiple nodes holding shard leaders
+* Heavy query load involving facets, stats, and/or sorting
+* Heavy document writing to a given collection
+
+What to do:
+
+* Find out which services or nodes are being overloaded.
+* Find out if there is known activity to explain the excessive CPU load.
+* If no explanation is found, [Contact Lucidworks Support](https://support.lucidworks.com/hc/en-us/requests/new).
+
+### Low memory
+
+Low memory problems are typically the result of two issues: low system memory and a lack of heap space for an individual service.
+
+#### Lack of free memory
+
+You can detect a lack of free memory on a server using the `free -h` command. On servers running the Solr service, large amounts of free memory is ideal because this memory is used for filesystem caching. Take note of the amount of free memory and the disk cache in comparison to the overall index size. Ideally, the disk cache should be able to hold all of the index, although this is not as important when using newer SSD technologies.
+
+There are several ways to increase the available memory on a server:
+
+* Change the command-line options configured in `conf/fusion.properties` to reduce the heap sizes of individual services. However, this might result in a [lack of heap space](#heapspace), as described below.
+* Run fewer services on a node and/or reallocate services that need more memory to nodes with extra capacity.
+* Add nodes to the cluster.
+* Add memory to the nodes.
+
+#### Lack of heap space
+
+Finding processes that have exited with `OutOfMemoryError` in the logs, or finding a dump file called `java_pidXXX.hprof` in the log directory, indicates that a service failed due to lack of heap space.
+
+Heap space is configured on a per-service basis in the `conf/fusion.properties` file via the `-Xmx` and `-Xms` command-line parameters. Avoid allocating heap sizes that are known to be larger than needed for a service, because these can lead to long GC pauses.
+
+Two common ways to detect long GC pauses include:
+
+* Examine the `gc_*.log` files in the log directories. For deep analysis, upload files to http://gceasy.io.
+* Using `top`, look for periods when all cores are busy followed by a spike in one core (with most or all other cores dropping to near zero). This is pattern is typically found when one service is busy and is encountering long GC pauses.
+
+<Note>
+The need for GC analysis varies from application to application.
+</Note>
+
+### High response time at proxy and api layer
+
+Under regular load with some spike, the response time might go very high.
+
+The default values for both of these properties that control on the number of connections available in the pool is `50`:
+
+* `com.lucidworks.apollo.admin.proxy.max.conn.per.route`: controls the number of connections per route
+* `com.lucidworks.apollo.admin.proxy.max.conn.total`: controls the max number of connections
+
+Check the proxy logs:
+
+```
+019-08-26T18:20:26,377 - INFO  [main:clojure.tools.logging$eval11$fn__16@0] - {} - max-per-route: 50 , max-conn-total: 50
+```
+
+In the **conf/fusion.properties** file, modify the property values. If the number of connections is a bottleneck, configure the connections for the proxy JVM parameters. For example, configure the pool to have 150 connections:
+
+```
+proxy.jvmOptions = -Xmx${PROXY_MEM:-512m} -Dcom.lucidworks.apollo.admin.proxy.max.conn.per.route=150 -Dcom.lucidworks.apollo.admin.proxy.max.conn.total=150
+```
+
+The proxy logs should now show the max connections set to 150:
+
+```
+019-08-26T18:25:26,377 - INFO  [main:clojure.tools.logging$eval11$fn__16@0] - {} - max-per-route: 150 , max-conn-total: 150
+```

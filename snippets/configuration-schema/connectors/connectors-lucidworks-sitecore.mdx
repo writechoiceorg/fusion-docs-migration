@@ -1,0 +1,738 @@
+export const schema = {
+  "type": "object",
+  "title": "SiteCore (v2)",
+  "description": "Connector for SiteCore",
+  "required": [
+    "parserId",
+    "id",
+    "properties",
+    "pipeline"
+  ],
+  "properties": {
+    "created": {
+      "type": "string",
+      "title": "Date Created",
+      "description": "The date at which this Configuration was created.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "description": "Optional description",
+      "hints": [
+        "lengthy"
+      ],
+      "maxLength": 125
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection ID",
+      "description": "The associated content Collection.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "description": "A type ID for this connector.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "pipeline": {
+      "type": "string",
+      "title": "Pipeline ID",
+      "description": "Name of the IndexPipeline used for processing output.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "diagnosticLogging": {
+      "type": "boolean",
+      "title": "Diagnostic Logging",
+      "description": "Enable diagnostic logging; disabled by default",
+      "default": false
+    },
+    "connector": {
+      "title": "Connector Type",
+      "description": "Connector type.",
+      "minLength": 1,
+      "type": "string",
+      "hints": [
+        "hidden"
+      ]
+    },
+    "parserId": {
+      "type": "string",
+      "title": "Parser ID",
+      "description": "The Parser to use in the associated IndexPipeline."
+    },
+    "coreProperties": {
+      "type": "object",
+      "title": "Core Properties",
+      "description": "Common behavior and performance settings.",
+      "required": [],
+      "properties": {
+        "fetchSettings": {
+          "type": "object",
+          "title": "Fetch Settings",
+          "description": "System level settings for controlling fetch behavior and performance.",
+          "required": [],
+          "properties": {
+            "pluginInstances": {
+              "type": "number",
+              "title": "Number of plugin instances for distributed fetching",
+              "description": "Maximum number of plugin instances for distributed fetching. Only specified number of plugin instanceswill do fetching. This is useful for distributing load between different instances.",
+              "default": 0,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchItemQueueSize": {
+              "type": "number",
+              "title": "Fetch Item Queue Size",
+              "description": "Size of the fetch item queue.Larger values result in increased memory usage, but potentially higher performance.Default is 10k.",
+              "default": 10000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchRequestCheckInterval": {
+              "type": "number",
+              "title": "Fetch request check interval(ms)",
+              "description": "The amount of time to wait before check if a request is done",
+              "default": 15000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseScheduledTimeout": {
+              "type": "number",
+              "title": "Fetch response scheduled timeout(ms)",
+              "description": "The maximum amount of time for a response to be scheduled. The task will be canceled if this setting is exceeded.",
+              "default": 300000,
+              "maximum": 500000,
+              "exclusiveMaximum": false,
+              "minimum": 1000,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "numFetchThreads": {
+              "type": "number",
+              "title": "Fetch Threads",
+              "description": "Maximum number of fetch threads; defaults to 20.This setting controls the number of threads that call the Connectors fetch method.Higher values can, but not always, help with overall fetch performance.",
+              "default": 20,
+              "maximum": 500,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "fetchResponseCompletedTimeout": {
+              "type": "number",
+              "title": "Fetch response completion timeout(ms)",
+              "description": "The maximum amount of time for a response to be completed. If exceeded, the task will be retried if the job is still running",
+              "default": 300000,
+              "hints": [
+                "hidden"
+              ],
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexingInactivityTimeout": {
+              "type": "number",
+              "title": "Indexing inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for indexing results (in seconds). If exceeded, the job will fail with an indexing inactivity timeout.",
+              "default": 86400,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "pluginInactivityTimeout": {
+              "type": "number",
+              "title": "Plugin inactivity timeout(seconds)",
+              "description": "The maximum amount of time to wait for plugin activity (in seconds). If exceeded, the job will fail with a plugin inactivity timeout.",
+              "default": 600,
+              "maximum": 691200,
+              "exclusiveMaximum": false,
+              "minimum": 60,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "asyncParsing": {
+              "type": "boolean",
+              "title": "Async Parsing",
+              "description": "When enabled, content will be indexed asynchronously.",
+              "default": false
+            },
+            "indexingThreads": {
+              "type": "number",
+              "title": "Index Subscription Threads",
+              "description": "Maximum number of indexing threads; defaults to 4.This setting controls the number of threads in the indexing service used for processing content documents emitted by this datasource.Higher values can sometimes help with overall fetch performance.",
+              "default": 4,
+              "maximum": 10,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "indexContentFields": {
+              "type": "boolean",
+              "title": "Index content fields",
+              "description": "When enabled, content fields will be indexed to the crawl-db collection.",
+              "default": false
+            },
+            "indexMetadata": {
+              "type": "boolean",
+              "title": "Index metadata",
+              "description": "When enabled the metadata of skipped items will be indexed to the content collection.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig$FetchSystemSettings"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.fusion.connector.plugin.api.config.CoreConfig"
+      ],
+      "hints": [
+        "advanced"
+      ]
+    },
+    "modified": {
+      "type": "string",
+      "title": "Date Modified",
+      "description": "The date at which this Configuration was last modified.",
+      "hints": [
+        "readonly",
+        "hidden"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "title": "Configuration ID",
+      "description": "A unique identifier for this Configuration.",
+      "minLength": 1,
+      "pattern": "^[a-zA-Z0-9_-]+$"
+    },
+    "category": {
+      "type": "string",
+      "title": "Category",
+      "default": "Connector for SiteCore",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "title": "Plugin Configuration",
+      "description": "Plugin specific properties.",
+      "required": [
+        "sitecoreServerURL",
+        "sitecoreUsername",
+        "sitecorePassword",
+        "itemPaths",
+        "indexMetadata"
+      ],
+      "properties": {
+        "sitecoreServerURL": {
+          "type": "string",
+          "title": "SiteCore server URL",
+          "description": "SiteCore server root URL (https://<server>)"
+        },
+        "sitecoreUsername": {
+          "type": "string",
+          "title": "SiteCore username",
+          "description": "An administrator SiteCore username"
+        },
+        "sitecorePassword": {
+          "type": "string",
+          "title": "SiteCore password",
+          "description": "The password of the administrator user",
+          "hints": [
+            "secret"
+          ]
+        },
+        "itemPaths": {
+          "type": "array",
+          "title": "Item paths to index",
+          "description": "A list of SiteCore Item paths to be indexed ex. '/sitecore/content/Home' ",
+          "default": [
+            "/sitecore/content/Home"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "sitecoreDatabase": {
+          "type": "string",
+          "title": "SiteCore context database",
+          "description": "SiteCore context database to use when accessing SiteCore. For example: master, web, core. If you leave this blank, the connector will pick the default database associated with your current user."
+        },
+        "indexMetadata": {
+          "type": "boolean",
+          "title": "Index item metadata",
+          "description": "If enabled, the item metadata will be added to the indexed document",
+          "default": true,
+          "hints": [
+            "advanced"
+          ]
+        },
+        "fetchRetryProperties": {
+          "type": "object",
+          "title": "Retry Options",
+          "description": "A set of options for configuring retry behavior.",
+          "required": [
+            "delayMs",
+            "maxDelayTimeMs",
+            "delayFactor"
+          ],
+          "properties": {
+            "maxRetries": {
+              "type": "number",
+              "title": "Maximum Retries",
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. This parameter states the number of attempts to retry until giving up. This parameter, if specified, will override the \"Stop retrying after time (milliseconds)\" parameter.",
+              "default": 3,
+              "maximum": 100,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "delayFactor": {
+              "type": "number",
+              "title": "Delay Factor",
+              "description": "The retryer will retry failed operations in the case that they might succeed if attempted again. The retryer will sleep an exponential amount of time after the first failed attempt and retry in exponentially incrementing amounts after each failed attempt up to the maximumTime. nextWaitTime = exponentialIncrement * multiplier.",
+              "default": 2,
+              "maximum": 9999,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "delayMs": {
+              "type": "number",
+              "title": "Retry Delay",
+              "description": "Sets the delay between retries, exponentially backing off to the maxDelayTimeMs and multiplying successive delays by the delayFactor",
+              "default": 1000,
+              "maximum": 9223372036854776000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxDelayTimeMs": {
+              "type": "number",
+              "title": "Maximum Delay Time",
+              "description": "The maximum time wait time between successive retries.",
+              "default": 300000,
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "maxTimeLimitMs": {
+              "type": "number",
+              "title": "Maximum Time Limit",
+              "description": "This setting is used to limit the maximum amount of time spent on retries. Note: this will be ignored if \"Maximum Retries\" is specified.",
+              "default": 600000,
+              "maximum": 28800000,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "errorExclusions": {
+              "type": "array",
+              "title": "Error Exclusions",
+              "description": "Optional regex list that will be matched against failed attempts exception class and message. If any regex matches, do not retry this request. This is needed to prevent the retryer from retrying non-recoverable errors that were not already ignored by the connector implementation.",
+              "items": {
+                "type": "string",
+                "maxLength": 256,
+                "minLength": 1
+              }
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig$Properties"
+          ]
+        },
+        "connections": {
+          "type": "object",
+          "title": "Http client connection options",
+          "description": "A set of options for configuring the http client behavior.",
+          "required": [
+            "maxConnections"
+          ],
+          "properties": {
+            "maxConnections": {
+              "type": "number",
+              "title": "Max connections",
+              "description": "The maximum number of connections",
+              "default": 10,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": 1,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "ignoreSSLValidationExceptions": {
+              "type": "boolean",
+              "title": "Ignore SSL Validation Exceptions",
+              "description": "Do not attempt to do an SSL Handshake and do not verify the hostname of SSL certificates. Use this when accessing an https url with a self-signed or enterprise certificate authority that you do not want to put in the Java keystore.",
+              "default": false
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.sitecore.config.SiteCoreHttpClientConfig$Properties"
+          ]
+        },
+        "timeouts": {
+          "type": "object",
+          "title": "Http timeout options",
+          "description": "A set of options for configuring the http client timeouts.",
+          "required": [],
+          "properties": {
+            "readTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 300000,
+              "maximum": 600000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "connectTimeoutMs": {
+              "type": "number",
+              "title": "",
+              "default": 60000,
+              "maximum": 300000,
+              "exclusiveMaximum": false,
+              "minimum": 0,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.sitecore.config.SiteCoreHttpTimeoutsConfig$Properties",
+            "com.lucidworks.connector.components.httpclient.config.TimeoutsConfig$Properties"
+          ]
+        },
+        "proxyProperties": {
+          "type": "object",
+          "title": "Proxy options",
+          "description": "A set of options for configuring the proxy.",
+          "required": [],
+          "properties": {
+            "username": {
+              "type": "string",
+              "title": "Proxy username",
+              "description": "Proxy username",
+              "minLength": 1
+            },
+            "password": {
+              "type": "string",
+              "title": "Proxy password",
+              "description": "Proxy password",
+              "hints": [
+                "secret"
+              ],
+              "minLength": 1
+            },
+            "url": {
+              "type": "string",
+              "title": "Proxy URL",
+              "description": "The proxy URL",
+              "minLength": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.components.httpclient.config.ProxyConfig$Properties"
+          ]
+        },
+        "sizeLimitProperties": {
+          "type": "object",
+          "title": "Item Size Limits",
+          "description": "Options for including or excluding items based on size, in bytes.",
+          "required": [],
+          "properties": {
+            "maxSizeBytes": {
+              "type": "number",
+              "title": "Maximum",
+              "description": "Used for excluding items when the item size is larger than the configured value.",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "minSizeBytes": {
+              "type": "number",
+              "title": "Minimum",
+              "description": "Used for excluding items when the item size is smaller than the configured value.",
+              "default": 1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig$Properties"
+          ]
+        },
+        "extensionConfig": {
+          "type": "object",
+          "title": "File Extension rules",
+          "required": [],
+          "properties": {
+            "includedFileExtensions": {
+              "type": "array",
+              "title": "Included file extensions",
+              "description": "Set of file extensions to be fetched. If specified, all non-matching files will be skipped.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "excludedFileExtensions": {
+              "type": "array",
+              "title": "Excluded file extensions",
+              "description": "A set of all file extensions to be skipped from the fetch.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "Regex Cache Size",
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "default": 10000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.ExtensionConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "regexConfig": {
+          "type": "object",
+          "title": "Regular expression rules",
+          "required": [],
+          "properties": {
+            "inclusiveRegexes": {
+              "type": "array",
+              "title": "Inclusive regexes",
+              "description": "Regular expressions for URI patterns to include. This will limit this datasource to only URIs that match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "exclusiveRegexes": {
+              "type": "array",
+              "title": "Exclusive regexes",
+              "description": "Regular expressions for URI patterns to exclude. This will limit this datasource to only URIs that do not match the regular expression.",
+              "default": [],
+              "items": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "regexCacheSize": {
+              "type": "number",
+              "title": "Regex Cache Size",
+              "description": "The number of regex matches to cache when evaluating regular expressions. For example if you exclude files by filename, each filename's regex result will be cached so that if this same filename came up again, the regex matches would be remembered.",
+              "default": 10000,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.RegexConfig$Properties",
+            "com.lucidworks.fusion.connector.checker.config.RegexCacheConfig"
+          ]
+        },
+        "depthLimitConfig": {
+          "type": "object",
+          "title": "Item Depth Limits",
+          "required": [],
+          "properties": {
+            "maxDepth": {
+              "type": "number",
+              "title": "Maximum Item Depth",
+              "description": "Maximum depth level for fetch items. If an item has a depth greater than the configured value, it will not be fetched. The default is \"no limit\" (-1).",
+              "default": -1,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.DepthLimitConfig$Properties"
+          ]
+        },
+        "mimeTypeProperties": {
+          "type": "object",
+          "title": "MIME Types",
+          "description": "Options for including or excluding items, based on MIME types.",
+          "required": [],
+          "properties": {
+            "includedMimeTypes": {
+              "type": "array",
+              "title": "Included mime types",
+              "description": "A list of the Mime types to include in this crawl. Note: If you specify includes, the exclude mime types property will be ignored.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "excludedMimeTypes": {
+              "type": "array",
+              "title": "Excluded mime types",
+              "description": "A list of the Mime types to exclude from this crawl. NOTE: This is only used if the \"Mime Type Includes\" field is empty.",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.fusion.connector.checker.config.MimeTypeConfig$Properties"
+          ]
+        },
+        "databaseProperties": {
+          "type": "object",
+          "title": "Database properties",
+          "description": "A set of options for configuring the connection to the database used for incremental crawls.",
+          "required": [
+            "sitecoreDatabaseMaxQuerySize",
+            "sitecoreDatabasePort"
+          ],
+          "properties": {
+            "sitecoreDatabaseHost": {
+              "type": "string",
+              "title": "SiteCore database JDBC host",
+              "description": "The SiteCore SQL Server host. Example: 192.168.1.59 Note: This is only needed for faster incremental updates. If not specified, updates will be done with a recrawl strategy."
+            },
+            "sitecoreDatabasePort": {
+              "type": "number",
+              "title": "SiteCore database JDBC port",
+              "description": "The SiteCore SQL Server port. Typically this is the sql server default of 1433.",
+              "default": 1433,
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            },
+            "sitecoreDatabaseName": {
+              "type": "string",
+              "title": "SiteCore master database name",
+              "description": "The SiteCore master database's name. Example: sc902_Master"
+            },
+            "sitecoreDatabaseUsername": {
+              "type": "string",
+              "title": "SiteCore database username",
+              "description": "The SiteCore database username. Only SELECT access is required for this user on the sc*_Master database for these tables: [Items, ArchivedItems, PublishQueue]."
+            },
+            "sitecoreDatabasePassword": {
+              "type": "string",
+              "title": "SiteCore database password",
+              "description": "The SiteCore database user password.",
+              "hints": [
+                "secret"
+              ]
+            },
+            "sitecoreDatabaseMaxQuerySize": {
+              "type": "number",
+              "title": "SiteCore database query max page size",
+              "description": "The maximum number of query results that can be returned from SiteCore database at once.",
+              "default": 10000,
+              "hints": [
+                "advanced"
+              ],
+              "maximum": 2147483647,
+              "exclusiveMaximum": false,
+              "minimum": -2147483648,
+              "exclusiveMinimum": false,
+              "multipleOf": 1
+            }
+          },
+          "interfaces": [
+            "com.lucidworks.connector.plugins.sitecore.config.SiteCoreDatabaseConfig$Properties"
+          ]
+        }
+      },
+      "interfaces": [
+        "com.lucidworks.connector.plugins.sitecore.config.SiteCoreConfig$Properties",
+        "com.lucidworks.connector.plugins.sitecore.config.SiteCoreHttpTimeoutsConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.RetryConfig",
+        "com.lucidworks.fusion.connector.checker.config.RegexConfig",
+        "com.lucidworks.fusion.connector.checker.config.ExtensionConfig",
+        "com.lucidworks.connector.plugins.sitecore.config.SiteCoreHttpClientConfig",
+        "com.lucidworks.connector.components.httpclient.config.TimeoutsConfig",
+        "com.lucidworks.connector.components.httpclient.config.ProxyConfig",
+        "com.lucidworks.connector.plugins.sitecore.config.SiteCoreDatabaseConfig",
+        "com.lucidworks.fusion.connector.checker.config.SizeLimitConfig",
+        "com.lucidworks.fusion.connector.plugin.api.config.ConnectorPluginProperties",
+        "com.lucidworks.fusion.connector.checker.config.DepthLimitConfig",
+        "com.lucidworks.fusion.connector.checker.config.MimeTypeConfig"
+      ]
+    },
+    "type_description": {
+      "type": "string",
+      "title": "Type Description",
+      "default": "Connector for SiteCore",
+      "hints": [
+        "hidden",
+        "readonly"
+      ]
+    }
+  },
+  "category": "File System",
+  "categoryPriority": 1
+}

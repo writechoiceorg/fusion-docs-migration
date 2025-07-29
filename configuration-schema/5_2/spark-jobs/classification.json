@@ -1,0 +1,602 @@
+{
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Trains a classification model to classify text documents by assigning a label to them.",
+  "properties": {
+    "deployModelName": {
+      "description": "Name of the model to be used for deployment (must be a valid DNS subdomain with no underscores).",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z][\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Model Deployment Name",
+      "type": "string"
+    },
+    "dimReduction": {
+      "default": false,
+      "description": "Whether to perform dimensionality reduction or not. Truncated SVD is used to reduce dimensionality. Reduces overfitting and training time. Note that sparse vectors will become dense.",
+      "title": "Perform Dimensionality Reduction",
+      "type": "boolean"
+    },
+    "dimReductionSize": {
+      "default": 256,
+      "description": "The target dimension size of the features after dimensionality reduction.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Reduced Dimension Size",
+      "type": "integer"
+    },
+    "dropout": {
+      "default": 0.2,
+      "description": "Probability for applying dropout regularization.",
+      "title": "Dropout",
+      "type": "number"
+    },
+    "embeddingReg": {
+      "default": 0.8,
+      "description": "The scale of how critical the algorithm should be of minimizing the maximum similarity between embeddings of different classes",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Embedding regularization",
+      "type": "number"
+    },
+    "embeddingsSize": {
+      "default": 100,
+      "description": "Dimension size of final embedding vectors for text and class.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Embedding size",
+      "type": "integer"
+    },
+    "featurizerType": {
+      "default": "tfidf",
+      "description": "The type of featurizer to use. TFIDF will compute both term-frequency and inverse document-frequency, whereas Count will use only term-frequency",
+      "enum": [
+        "tfidf",
+        "count"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Featurizer",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "l1Ratio": {
+      "default": 0.5,
+      "description": "Only used with the `elasticnet` penalty. If its value = 0, l2 penalty will be used. If it's value = 1, l1 penalty will be used. A value in between will use the appropirate ratio of l1 and l2 penalties.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "L1 penalty ratio",
+      "type": "number"
+    },
+    "labelField": {
+      "description": "Solr field name containing the classes/labels for the text",
+      "minLength": 1,
+      "title": "Training collection class field",
+      "type": "string"
+    },
+    "labelLayersSizes": {
+      "default": "[]",
+      "description": "Sizes of hidden layers before the embedding layer for classes. Specify as a list of numbers for multiple layers or a single number for 1 layer. Leave blank if no hidden layers are required.",
+      "pattern": "^(\\[(((\\d)*,\\s*)*(\\d+)+)?\\])?$",
+      "title": "Hidden sizes before class embedding",
+      "type": "string"
+    },
+    "lowercaseTexts": {
+      "default": true,
+      "description": "Select if you want the text to be lowercased",
+      "title": "Lowercase Text",
+      "type": "boolean"
+    },
+    "maxBatchSize": {
+      "default": 128,
+      "description": "The largest batch size to use during training. Batch size will be increased linearly every epoch, upto the maximum batch size specified.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Maximum Batch Size",
+      "type": "integer"
+    },
+    "maxCharLen": {
+      "default": 100000,
+      "description": "Maximum length, in characters, of the training text. Texts longer than this value will be truncated.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Maximum No. of Characters",
+      "type": "integer"
+    },
+    "maxDf": {
+      "default": 0.8,
+      "description": "Maximum Df for token to be considered. Provide a float (0,1) if you want to specify as a fraction, otherwise integer >= 1 to specify the exact number of documents in which a token should occur",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Max Document Frequency",
+      "type": "number"
+    },
+    "maxFeatures": {
+      "default": 250000,
+      "description": "Maximum number of tokens (including word or character ngrams) to consider for the vocabulary. Less frequent tokens will be omitted.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Maximum Vocab Size",
+      "type": "integer"
+    },
+    "maxIter": {
+      "default": 200,
+      "description": "Maximum number of iterations taken for the optimization algorithm to converge.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Maximum iterations for algorithm",
+      "type": "integer"
+    },
+    "maxNgram": {
+      "description": "Maximum word or character ngram size to be used.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Max Ngram size",
+      "type": "integer"
+    },
+    "minBatchSize": {
+      "default": 64,
+      "description": "The smallest batch size with which to start training. Batch size will be increased linearly every epoch, upto the maximum batch size specified.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Minimum Batch Size",
+      "type": "integer"
+    },
+    "minCharLen": {
+      "default": 2,
+      "description": "Minimum length, in characters, for the text to be included into training.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Minimum No. of Characters",
+      "type": "integer"
+    },
+    "minClassSize": {
+      "default": 5,
+      "description": "Minimum number of samples that class should have to be included into training. Otherwise the class and all its samples are dropped.",
+      "exclusiveMinimum": false,
+      "minimum": 2,
+      "title": "Minimum no. of examples per class",
+      "type": "integer"
+    },
+    "minDf": {
+      "default": 1,
+      "description": "Minimum Df for token to be considered. Provide a float (0,1) if you want to specify as a fraction, otherwise integer >= 1 to specify the exact number of documents in which a token should occur.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Min Document Frequency",
+      "type": "number"
+    },
+    "minNgram": {
+      "description": "Minimum word or character ngram size to be used.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Min Ngram size",
+      "type": "integer"
+    },
+    "modelReplicas": {
+      "default": 1,
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Model replicas",
+      "type": "integer"
+    },
+    "muNeg": {
+      "default": -0.4,
+      "description": "How similar algorithm should try to make embedding vectors for negative classes.  The algorithm will try to minimize similarities so that it's lower than the value specified here.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Maximum negative class similarity",
+      "type": "number"
+    },
+    "muPos": {
+      "default": 0.8,
+      "description": "How similar algorithm should try to make embedding vectors for correct classes.  The algorithm will try to maximize similarities so that it's higher than the value specified here.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Maximum correct class similarity",
+      "type": "number"
+    },
+    "multiClass": {
+      "default": "auto",
+      "description": "Whether to train a binary classifier for each class or use a multinomial loss. ‘auto’ selects ‘ovr’ if the data is binary, or if algorithm=’liblinear’, and otherwise selects ‘multinomial’.",
+      "enum": [
+        "auto",
+        "ovr",
+        "multinomial"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Loss Method",
+      "type": "string"
+    },
+    "norm": {
+      "default": "None",
+      "description": "Select the norm method to use.",
+      "enum": [
+        "None",
+        "L1",
+        "L2"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Use Norm",
+      "type": "string"
+    },
+    "numEpochs": {
+      "default": 40,
+      "description": "Number of epochs for which to train the model.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Number of training epochs",
+      "type": "integer"
+    },
+    "numNeg": {
+      "description": "Number of negative classes to use during training to minimize their similarity to the input text. Should be less than the total number of classes.",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Number of negative classes for training",
+      "type": "integer"
+    },
+    "penalty": {
+      "default": "l2",
+      "description": "Specify the norm used in the penalization. l2 is supported only by the ‘newton-cg’, ‘sag’ and ‘lbfgs’ solvers. ‘elasticnet’ is only supported by the ‘saga’ solver. Select none, if you don't want to regularize (this is not supported by the `liblinear` solver).",
+      "enum": [
+        "l1",
+        "l2",
+        "elsaticnet",
+        "none"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Penalty",
+      "type": "string"
+    },
+    "randomSeed": {
+      "default": 12345,
+      "description": "Pseudorandom determinism fixed by keeping this seed constant",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random Seed",
+      "type": "integer"
+    },
+    "reg": {
+      "default": 1,
+      "description": "This is the inverse of regularization strength. Smaller values result in stronger regularization.",
+      "title": "Regularization term",
+      "type": "number"
+    },
+    "regTerm": {
+      "default": 0.002,
+      "description": "Scale of L2 regularization",
+      "title": "Regularization Term",
+      "type": "number"
+    },
+    "scaling": {
+      "default": true,
+      "description": "Whether to apply Standard Scaling (X - mean(X)) / std(X) for the features. If the feature vector is sparse (no dimensionality reduction is used), then only division on standard deviation will be applied.",
+      "title": "Scale Features",
+      "type": "boolean"
+    },
+    "similarityType": {
+      "default": "cosine",
+      "description": "Type of similarity to use to compare the embedded vectors.",
+      "enum": [
+        "cosine",
+        "inner"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Similarity type",
+      "type": "string"
+    },
+    "smoothIdf": {
+      "default": true,
+      "description": "Smooth IDF weights by adding one to document frequencies. Prevents zero divisions.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Smooth IDF",
+      "type": "boolean"
+    },
+    "solver": {
+      "default": "lbfgs",
+      "description": "The optimization algorithm to use to fit to the data. LBFGS and SAGA are good initial choices.",
+      "enum": [
+        "lbfgs",
+        "newton-cg",
+        "liblinear",
+        "sag",
+        "saga"
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Optimization Algorithm",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "stopwordsBlobName": {
+      "blobType": "file:spark",
+      "default": "stopwords/stopwords_en.txt",
+      "description": "Name of the stopwords blob resource. This is a .txt file with one stopword per line. By default the file is called stopwords/stopwords_en.txt however a custom file can also be used. Check documentation for more details on format and uploading to blob store.",
+      "reference": "blob",
+      "title": "Stopwords Blob Store",
+      "type": "string"
+    },
+    "sublinearTf": {
+      "default": true,
+      "description": "Whether to apply sublinear scaling to TF, i.e. replace tf with 1 + log(tf). It usually helps when characters are used. ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sublinear TF",
+      "type": "boolean"
+    },
+    "textField": {
+      "description": "Solr field name containing the text to be classified",
+      "minLength": 1,
+      "title": "Training collection content field",
+      "type": "string"
+    },
+    "textLayersSizes": {
+      "default": "[256, 128]",
+      "description": "Sizes of hidden layers before the embedding layer for text. Specify as a list of numbers for multiple layers or a single number for 1 layer. Leave blank if no hidden layers are required.",
+      "pattern": "^(\\[(((\\d)*,\\s*)*(\\d+)+)?\\])?$",
+      "title": "Hidden sizes before text embedding",
+      "type": "string"
+    },
+    "tokenPattern": {
+      "default": "(?u)\\b\\w\\w+\\b",
+      "description": "Regex pattern for filtering tokens.",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Token filtering pattern",
+      "type": "string"
+    },
+    "tol": {
+      "default": 0.0001,
+      "description": "Tolerance for stopping criteria.",
+      "title": "Stopping tolerance",
+      "type": "number"
+    },
+    "topK": {
+      "default": 1,
+      "description": "Number of most probable output classes to assign to each sample along with their scores.",
+      "exclusiveMinimum": false,
+      "minimum": 1,
+      "title": "Number of Output classes",
+      "type": "integer"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing documents for classification.",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to filter training data (e.g. downsampling or selecting based on min. pref values)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Training Data Filter Query",
+      "type": "string"
+    },
+    "trainingSampleFraction": {
+      "default": 1,
+      "description": "Choose a fraction of the data for training.",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training Data Sampling Fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "argo-classification",
+      "enum": [
+        "argo-classification"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "unidecodeTexts": {
+      "default": true,
+      "description": "Select if you want the text to be unidecoded",
+      "title": "Unidecode Text",
+      "type": "boolean"
+    },
+    "useCharacters": {
+      "default": true,
+      "description": "Whether to use the characters or word analyzer. Use words if the text is long. Using characters on long text can significantly increase vectorization time and memory requirements.",
+      "title": "Use Characters",
+      "type": "boolean"
+    },
+    "useClassWeights": {
+      "default": false,
+      "description": "If true, a weight is applied to each class inversely proportional to its frequency.",
+      "title": "Use class weights",
+      "type": "boolean"
+    },
+    "useMaxNegSim": {
+      "default": true,
+      "description": "If true, only the maximum similarity for negative classes will be minimized. If unchecked, all negative similarities will be used.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Only minimize max. negative similarity",
+      "type": "boolean"
+    },
+    "valSize": {
+      "default": 0.1,
+      "description": "Size of the validation dataset. Provide a float (0, 1) if you want to sample as a fraction, or an integer >= 1 if you want to sample exact number of records.",
+      "title": "Validation set size",
+      "type": "number"
+    },
+    "workflowType": {
+      "default": "Logistic Regression",
+      "description": "Method to be used for classification.",
+      "enum": [
+        "Logistic Regression",
+        "Starspace"
+      ],
+      "title": "Method",
+      "type": "string"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "deployModelName",
+        "trainingCollection",
+        "modelReplicas"
+      ]
+    },
+    {
+      "label": "Training Data Settings",
+      "properties": [
+        "trainingDataFilterQuery",
+        "trainingSampleFraction",
+        "randomSeed",
+        "textField",
+        "labelField"
+      ]
+    },
+    {
+      "label": "Preprocessing Parameters",
+      "properties": [
+        "minCharLen",
+        "maxCharLen",
+        "minClassSize",
+        "lowercaseTexts",
+        "unidecodeTexts"
+      ]
+    },
+    {
+      "label": "Eval and Output Parameters",
+      "properties": [
+        "valSize",
+        "topK"
+      ]
+    },
+    {
+      "label": "Vectorization Parameters",
+      "properties": [
+        "featurizerType",
+        "useCharacters",
+        "stopwordsBlobName",
+        "minDf",
+        "maxDf",
+        "minNgram",
+        "maxNgram",
+        "maxFeatures",
+        "norm",
+        "smoothIdf",
+        "sublinearTf",
+        "scaling",
+        "dimReduction",
+        "dimReductionSize"
+      ]
+    },
+    {
+      "label": "Logistic Regression Parameters",
+      "properties": [
+        "penalty",
+        "l1Ratio",
+        "tol",
+        "reg",
+        "useClassWeights",
+        "solver",
+        "multiClass",
+        "maxIter"
+      ]
+    },
+    {
+      "label": "Starspace Parameters",
+      "properties": [
+        "textLayersSizes",
+        "labelLayersSizes",
+        "embeddingsSize",
+        "regTerm",
+        "dropout",
+        "embeddingReg",
+        "minBatchSize",
+        "maxBatchSize",
+        "numEpochs",
+        "muPos",
+        "muNeg",
+        "similarityType",
+        "numNeg",
+        "useMaxNegSim"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "textField",
+    "labelField",
+    "deployModelName",
+    "workflowType",
+    "type"
+  ],
+  "title": "Classification",
+  "type": "object"
+}

@@ -1,0 +1,191 @@
+export const schema = {
+  "type": "object",
+  "title": "Facets",
+  "description": "Configure range or field facets. Facets indicate categories and aggregations of results according to values in the configured fields",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "fieldFacets": {
+      "type": "array",
+      "title": "Facet Fields",
+      "items": {
+        "type": "object",
+        "required": [
+          "field"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The field whose values you want to facet on."
+          },
+          "prefix": {
+            "type": "string",
+            "title": "Prefix",
+            "description": "Prefix of terms to facet on."
+          },
+          "sort": {
+            "type": "string",
+            "title": "Sort",
+            "description": "Ordering of the faceting results.",
+            "enum": [
+              "count",
+              "index"
+            ]
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit",
+            "description": "Maximum number of facets to return."
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset",
+            "description": "Offset into list of resulting facets."
+          },
+          "minCount": {
+            "type": "integer",
+            "title": "Minimum Count",
+            "description": "Lower threshold of term counts to be included.",
+            "default": 1
+          },
+          "missing": {
+            "type": "boolean",
+            "title": "Count Missing",
+            "description": "Optionally include a 'missing' facet bucket for documents without the selected field.",
+            "default": false
+          },
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "enum": [
+              "enum",
+              "fc",
+              "fcs"
+            ]
+          },
+          "enumCacheMinDf": {
+            "type": "integer",
+            "title": "Enum Cache Minimum DF",
+            "minimum": 0,
+            "exclusiveMinimum": false
+          },
+          "threads": {
+            "type": "integer",
+            "title": "NO LONGER USED.",
+            "hints": [
+              "hidden"
+            ],
+            "minimum": 0,
+            "exclusiveMinimum": false
+          }
+        }
+      }
+    },
+    "threads": {
+      "type": "integer",
+      "title": "Field facet threads (Advanced)",
+      "description": "Specifies how many threads the search engine will use while loading the underlying fields used in faceting. Recommended that this is kept at 0 or blank, which means the data is loaded in the thread already running the query."
+    },
+    "rangeFacets": {
+      "type": "array",
+      "title": "Range Facet Fields",
+      "items": {
+        "type": "object",
+        "required": [
+          "field",
+          "start",
+          "end",
+          "gap"
+        ],
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field",
+            "description": "The field whose values you want to range facet on."
+          },
+          "start": {
+            "type": "string",
+            "title": "Start",
+            "description": "Specifies the lower bound of the range."
+          },
+          "end": {
+            "type": "string",
+            "title": "End",
+            "description": "Specifies the upper bound of the range."
+          },
+          "gap": {
+            "type": "string",
+            "title": "Gap",
+            "description": "The span of each range expressed as a value to be added to the lower bound."
+          },
+          "hardEnd": {
+            "type": "boolean",
+            "title": "Hard End",
+            "description": "Specifies how to handle cases where the gap does not divide evenly between start and end."
+          },
+          "minCount": {
+            "type": "integer",
+            "title": "Minimum Count",
+            "description": "Lower threshold of term counts to be included.",
+            "default": 1
+          },
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "enum": [
+              "enum",
+              "fc",
+              "fcs"
+            ]
+          },
+          "include": {
+            "type": "array",
+            "title": "Include",
+            "description": "Specifies how bounds are processed.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "other": {
+            "type": "array",
+            "title": "Other",
+            "description": "Specifies additional counts.",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 8,
+  "unsafe": false
+}

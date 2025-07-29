@@ -1,0 +1,231 @@
+---
+title: "Managed JavaScript Index Stage"
+permalink: "217"
+---
+
+This stage runs a JavaScript transformation on documents using a script from the [blob store](/fusion/5.9/153/blob-storage). The script must have the blob type `file:js-index`.
+
+## Uploading a JavaScript blob
+
+In Fusion 5.9, JavaScript blobs must be uploaded using the [Blob Store API](/fusion/5.9/305/blob-store-api), like this:
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-Type: text/javascript' --data-binary @index-pipeline-js-stage.js http://FUSION_HOST:FUSION_PORT/api/apps/APP_NAME/blobs/index-pipeline-js-stage.js?resourceType=file:js-index
+```
+
+Open the [blob manager](/fusion/5.9/153/blob-storage#the-blob-manager) to verify that the new blob is present:
+
+<Frame>![Uploaded JavaScript blob in the blob manager](/assets/images/4.1/known-issue-APOLLO-15672-index.png)</Frame>
+
+## Referencing a JavaScript blob
+
+Use any of the following formats for the `ref`/**Script Reference** configuration field:
+
+```sh
+index-pipeline-js-stage.js
+```
+
+```sh
+blob:index-pipeline-js-stage.js
+```
+
+```sh
+urn:x-fusion:blob:index-pipeline-js-stage.js
+```
+
+<Note>
+The examples above use `index-pipeline-js-stage.js` as the blob ID.
+</Note>
+
+## Edit JavaScript
+
+For Fusion 5.4.x and later, select **Edit** in the **Script Reference** field to edit JavaScript directly in the Fusion UI.
+
+## JavaScript examples
+
+<Note>
+When reusing a script in both Managed JavaScript index stages and Managed JavaScript query stages, you need to upload it twice: once as a `file:js-index` blob and once as a `file:js-query` blob.
+</Note>
+
+### Set up a reusable library
+
+This is an example of a reusable JavaScript library that provides various utility functions for string processing, date handling, and type conversion.
+To reuse Javascript functions, create a stage like this one that defines them, then place it *before* any of the stages that use it.
+
+```js
+/* globals Java, logger*/
+//JavaScript (ES5.1)
+/**
+ * UtilitiesDemoLib - A stripped-down demo utility library for Fusion Pipeline scripts
+ *
+ * Contains essential utility functions for demonstration purposes:
+ * - Debug logging
+ * - Type checking
+ * - String manipulation
+ *
+ * This library is designed to work in both Index and Query pipelines
+ * and automatically registers itself in the pipeline context.
+ */
+(function () {
+    "use strict";
+
+    var libName = 'UtilitiesDemoLib'
+    var exports = {};
+
+    /** Debug flag for conditional logging */
+    var isDebug = false;
+
+    /**
+     * Conditional debug logging function
+     * @param {string} m - Primary message to log
+     * @param {...*} args - Additional arguments to log
+     */
+    function logIfDebug(m) {
+        if (isDebug && m) {
+            logger.info(m, Array.prototype.slice.call(arguments).slice(1));
+        }
+    }
+
+    /**
+     * Enables or disables debug logging for this library
+     * @param {boolean} debug_b - true to enable debug logging, false to disable
+     */
+    function setDebugLogging(debug_b) {
+        isDebug = debug_b;
+        logIfDebug("Debug logging {} for {}", isDebug ? "enabled" : "disabled", libName);
+    }
+
+    /**
+     * Returns the name of this library
+     * @return {string} The library name
+     */
+    function getLibName() {
+        return libName;
+    }
+
+    /**
+     * Tests whether an object is a Java object by checking for standard Java methods
+     * @param {*} obj - Object to test
+     * @return {boolean} true if the object appears to be a Java object
+     */
+    function isJavaType(obj) {
+        if (obj === null || obj === undefined) {
+            return false;
+        }
+
+        // Check for common Java object methods
+        return (typeof obj.getClass === 'function' ||
+                typeof obj.hashCode === 'function' ||
+                typeof obj.toString === 'function' && obj.constructor.name !== 'String');
+    }
+
+    /**
+     * Returns a simplified type name for both Java and JavaScript objects
+     * For Java objects: returns simple class name (e.g., 'String' for java.lang.String)
+     * For JavaScript objects: returns lowercase type name (e.g., 'string')
+     * @param {*} obj - Object to get type information for
+     * @param {boolean} [verbose=false] - If true, return full Java class name
+     * @return {string} Type name of the object
+     */
+    function getTypeOf(obj, verbose) {
+        if (obj === null) return 'null';
+        if (obj === undefined) return 'undefined';
+
+        if (isJavaType(obj)) {
+            try {
+                var className = obj.getClass().getName();
+                if (verbose) {
+                    return className;
+                } else {
+                    // Return simple class name (last part after final dot)
+                    return className.substring(className.lastIndexOf('.') + 1);
+                }
+            } catch (e) {
+                return 'JavaObject';
+            }
+        } else {
+            // JavaScript object
+            return typeof obj;
+        }
+    }
+
+    /**
+     * Remove whitespace from start and end of str. Also remove redundant whitespace (set to space).
+     * @param {string} str - String to trim
+     * @return {string} Trimmed string with normalized whitespace
+     */
+    function trimWhitespace(str) {
+        if (!str || typeof str !== 'string') {
+            return str;
+        }
+
+        // Trim leading/trailing whitespace and normalize internal whitespace
+        return str.trim().replace(/\s+/g, ' ');
+    }
+
+    // Export all utility functions for external use
+    exports.setDebugLogging = setDebugLogging;
+    exports.getLibName = getLibName;
+    exports.isJavaType = isJavaType;
+    exports.getTypeOf = getTypeOf;
+    exports.trimWhitespace = trimWhitespace;
+
+    /**
+     * Auto-registration function for pipeline contexts
+     * Detects pipeline type (Index vs Query) and registers this library in the context
+     *
+     * For Index Pipelines: arguments are (doc, ctx, collection, solrClient, solrFactory)
+     * For Query Pipelines: arguments are (request, response, ctx, ...)
+     *
+     * The function identifies the context object by checking argument types and
+     * registers the library functions under the library name for easy access
+     *
+     * @return {*} Returns the document object for Index pipelines, undefined for Query pipelines
+     */
+    return function main() {
+        var doc, ctx;
+
+        // Detect pipeline type by argument pattern
+        if (arguments.length >= 3) {
+            if (arguments[0] && typeof arguments[0].getId === 'function') {
+                // Index Pipeline: (doc, ctx, collection, solrClient, solrFactory)
+                doc = arguments[0];
+                ctx = arguments[1];
+            } else if (arguments[0] && typeof arguments[0].getParam === 'function') {
+                // Query Pipeline: (request, response, ctx, collection, solrClient, solrFactory)
+                ctx = arguments[2];
+            }
+        }
+
+        if (ctx && typeof ctx.put === 'function') {
+            // Register this library in the context
+            var lib = {
+                setDebugLogging: setDebugLogging,
+                getLibName: getLibName,
+                isJavaType: isJavaType,
+                getTypeOf: getTypeOf,
+                trimWhitespace: trimWhitespace
+            };
+
+            ctx.put(libName, lib);
+            logIfDebug("Registered {} in pipeline context", libName);
+        }
+
+        // Return doc for Index pipelines (required), undefined for Query pipelines
+        return doc;
+    };
+})();
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/managed-javascript.mdx";
+
+<SchemaParamFields schema={schema}/>

@@ -1,0 +1,158 @@
+---
+title: "Jobs API"
+description: "Fusion Admin APIs"
+permalink: "327"
+---
+
+The Jobs API allows you to define schedules for objects that perform work. You can schedule datasources, tasks, and Spark jobs.
+
+This topic explains how to format requests to the Jobs API. To learn how to work with jobs and schedules in the Fusion UI, see [Jobs and Schedules](/fusion/5.9/184/jobs-and-scheduling).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Job runtime configuration
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion/5.9/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+Job configuration requests have these parameters:
+
+* `<type>:<id>` path parameter (required)
+
+  The resource identifier takes the form `<type>:<id>`, such as `datasource:movie-db`, `spark:dailyMetricsRollup-counters`, or `task:delete-old-system-logs`.
+
+  See [Job types](#types) below.
+* `enabled` body parameter
+
+  "True" or "false" to enable or disable the job.
+* `triggers` body parameter
+
+  This parameter defines one or more conditions that trigger the job. See [Job triggers](#triggers) below.
+
+Below is an example request that configures a job:
+
+```sh
+PUT /jobs/datasource:movie-db/schedule
+{
+  "enabled": true,
+  "triggers": [
+    {"type": "cron", "enabled": true, "value": "0 */10 * * * *"}
+  ]
+}
+```
+
+### Job types
+
+The job type must be specified as part of the resource identifier in `PUT`, `POST`, and `DELETE` calls. These are the possible job types:
+
+|  |  |
+| --- | --- |
+| `datasource` | A job to ingest data according to the specified datasource configuration, such as `datasource:movie-db`. Datasources are created using the [Connector Datasources API](/fusion/5.9/353/connector-datasources-api) or the Fusion UI.  See [Datasource Jobs](/fusion/5.9/186/datasource-jobs). |
+| `spark` | A Spark job to process data, such as `spark:dailyMetricsRollup-counters`. Spark jobs are created using the [Spark Jobs API](/fusion/5.9/312/spark-jobs-api) or the Fusion UI.  See [Spark Jobs](/fusion/5.9/187/spark-jobs). |
+| `task` | A job to perform an HTTP call or log cleanup, such as `task:delete-old-system-logs`. Tasks are created using the Fusion UI.  See [Tasks](/fusion/5.9/183/tasks). |
+
+### Job triggers
+
+Each job can have multiple triggers, and each trigger configuration requires `enabled` and `type` parameters.
+
+Additional parameters are required by each trigger type, described below:
+
+| Trigger type | Parameters |
+| --- | --- |
+| `interval`  Run the job at a regular interval over some time range. | * `startTime`  The date and time at which the job will first run, as an [ISO-8601 date-time string](https://www.w3.org/TR/NOTE-datetime). * `endTime`  The date and time at which the job will run last, as an ISO-8601 date-time string. * `interval`  The interval at which the job will run, as an integer whose unit is specified by `repeatUnit` below. * `repeatUnit`  One of: `minute`, `hour`, or `day`. |
+| `cron`  Run the job on a cron-style schedule. | `value`  A cron string. |
+| `job`  Run the job after another job succeeds or fails. | * `jobID`  The ID of the job that triggers this one. * `runOnSuccess`  "True" to run when the specified job succeeds. * `runOnFailure`  "True" to run when the specified job fails. * `runOnAbort`  "True" to run when the specified job is aborted. |
+
+## Examples
+
+### Get all datasource jobs
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/jobs?type=datasource
+```
+
+**Output**
+
+```json
+[ {
+  "resource" : "datasource:ratings-db",
+  "enabled" : true,
+  "startedBy" : "acb38917-611a-46e1-a3cf-4ed46a30fd24"
+}, {
+  "resource" : "datasource:movies-db",
+  "enabled" : true,
+  "startedBy" : "acb38917-611a-46e1-a3cf-4ed46a30fd24",
+  "status" : "success", //Values include "ready", "running", "success", "aborted", or "failed".
+  "lastStartTime" : "2017-05-17T20:58:10.503Z",
+  "lastEndTime" : "2017-05-17T20:58:42.020Z"
+} ]
+
+```
+
+### Start a datasource job now
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H "Content-Type: application/json" https://FUSION_HOST:FUSION_PORT/api/jobs/datasource:movies-db/actions -d '{"action": "start"}'
+```
+
+**Output**
+
+```json
+{
+  "resource" : "datasource:movies-db",
+  "action" : "start",
+  "accepted" : true,
+  "message" : "Started job datasource:movies-db"
+}
+```
+
+### Get the job history for a datasource
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/jobs/datasource:movies-db/history
+```
+
+**Output**
+
+```json
+[ {
+  "resource" : "datasource:movies-db",
+  "startTime" : "2017-05-17T21:01:46.743Z",
+  "endTime" : "2017-05-17T21:02:05.720Z",
+  "status" : "success" //Values include "ready", "running", "success", "aborted", or "failed".
+}, {
+  "resource" : "datasource:movies-db",
+  "startTime" : "2017-05-17T20:58:10.503Z",
+  "endTime" : "2017-05-17T20:58:42.020Z",
+  "status" : "success" //Values include "ready", "running", "success", "aborted", or "failed".
+} ]
+```
+
+### Define a trigger for a datasource job
+
+**Input**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H "Content-Type: application/json" https://FUSION_HOST:FUSION_PORT/api/jobs/datasource:ratings-db/schedule -d '{"triggers": [{"type": "cron", "enabled": "true", "expression": "0 15 10 ? * MON-FRI"}]}'
+```
+
+**Output**
+
+```json
+{
+  "resource" : "datasource:ratings-db",
+  "triggers" : [ {
+    "type" : "cron",
+    "enabled" : true,
+    "expression" : "0 15 10 ? * MON-FRI",
+    "type" : "cron"
+  } ]
+}
+```

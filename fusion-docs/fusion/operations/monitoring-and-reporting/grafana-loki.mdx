@@ -1,0 +1,187 @@
+---
+title: "Grafana Loki for log exploration"
+permalink: "0b1k93"
+---
+
+Grafana Loki is a log aggregation system designed to store and query logs. Loki is available for Fusion deployments as part of the Prometheus and Grafana integration. It is a powerful tool that can be adapted for your unique logging requirements.
+
+With Grafana’s Explore UI and Loki, you can build queries to explore Fusion logs and build dashboards, visualizations, and alerts. To begin:
+
+1. Log into your Grafana environment.
+2. Navigate to Explore.
+3. Change your data source to Loki.
+
+   <Note>
+   The name of your Loki data source may be different in your deployment.
+   </Note>
+
+<Frame>![Basic Loki log query](/assets/images/5.8/loki/example01.png)</Frame>
+
+## Log exploration
+
+Build queries in Explore using labels and operations. Labels are similar to facets or filters. Adding a label defines the stream of logs. Operations filter the stream for specific information. There are many types of operations, including aggregations, range functions, and filters. For example, you can apply a line filter to the log stream to ensure lines contain a string or match a RegEx pattern.
+
+You can further customize the output using the Options menu.
+
+See the following examples for common log queries you can adapt for your unique requirements. For more information on Loki queries, see [Grafana’s documentation on the Loki query editor](https://grafana.com/docs/grafana/latest/datasources/loki/query-editor/).
+
+<Tip>
+**Try the Code tool**
+
+The examples in this article use the Builder tool. Alternatively, you can use the Code tool, which allows you to build queries using LogQL. For more information, see [Grafana’s documentation on LogQL](https://grafana.com/docs/loki/latest/logql/).
+</Tip>
+
+### Example workflow
+
+These examples illustrate how to build a query that drills down to your area of interest. The values are for example purposes only and may not reflect your own environmental values.
+
+#### Query all logs in a namespace
+
+Add a label to filter for logs in the production namespace, `prd-a`. This focuses your stream to return all logs, regardless of context.
+
+##### Configuration
+
+| Type | Field | Value |
+| --- | --- | --- |
+| **Label** | `namespace` | `prd-a` |
+
+##### Screenshot
+
+<Frame>![Query 01](/assets/images/5.8/loki/query01.png)</Frame>
+
+#### Query a specific service within the namespace
+
+Add a label to examine logs for the Fusion query pipeline service. This focuses your stream on query pipeline operations and excludes other service operations.
+
+##### Configuration
+
+| Type | Field | Value |
+| --- | --- | --- |
+| **Label** | `namespace` | `prd-a` |
+| **Label** | `component` | `query-pipeline` |
+
+Logs for some services may require you to query different components, depending on what information you are trying to discover. For example, the `fusion-indexing`, `connector-plugin`, and `connectors` components provide logs related to the indexing service.
+
+<Danger>
+**FAQ**
+
+When should I use the `component` label instead of `container`?
+
+The values available for the `component` label are also found for `container`, and the logs are identical. However, `component` values can be used for examining logs *and* metrics.
+
+In general, prefer using the `component` label, so you can reuse the query for viewing metrics. Use the `container` label when you need logs for a value not associated with the `component` label.
+
+</Danger>
+
+
+
+##### Screenshot
+
+<Frame>![Query 02](/assets/images/5.8/loki/query02.png)</Frame>
+
+#### Query a specific host for the query pipeline service
+
+Add a label to focus the stream on a specific query pipeline service host by creating the pod label and finding the host in the list.
+
+##### Configuration
+
+| Type | Field | Value |
+| --- | --- | --- |
+| **Label** | `namespace` | `prd-a` |
+| **Label** | `component` | `query-pipeline` |
+| **Label** | `pod` | `prd-a-query-pipeline-f9b9494c4-ws6nm` |
+
+##### Screenshot
+
+<Frame>![Query 03](/assets/images/5.8/loki/query03.png)</Frame>
+
+#### Basic query for errors
+
+Look for errors with the query pipeline service by adding an operation that checks for lines containing the keyword "ERROR".
+
+##### Configuration
+
+| Type | Field | Value |
+| --- | --- | --- |
+| **Label** | `namespace` | `prd-a` |
+| **Label** | `component` | `query-pipeline` |
+| **Label** | `pod` | `prd-a-query-pipeline-f9b9494c4-ws6nm` |
+| **Operations** | `Line contains` | `ERROR` |
+
+##### Screenshot
+
+<Frame>![Query 04](/assets/images/5.8/loki/query04.png)</Frame>
+
+<Tip>
+**Matches are case-sensitive**
+
+The **Line contains** operation is case-sensitive and matches the value exactly. If you want `ERROR` to match the term "error" as well, use the **Line contains regex match** operation, and prefix the query term with `(?i)`, which ignores the case. For example, `(?i)ERROR` will match "ERROR", "error", "Error", and other variants.
+</Tip>
+
+#### Remove some logs from the stream
+
+From the logs discovered so far, you may find a frequent error that you have confirmed is not the issue. That frequent error contains the text `.query_rewrite.sidecar`. Remove those errors from the log stream by adding a **Line does not contain** operation.
+
+##### Configuration
+
+| Type | Field | Value |
+| --- | --- | --- |
+| **Label** | `namespace` | `prd-a` |
+| **Label** | `component` | `query-pipeline` |
+| **Label** | `pod` | `prd-a-query-pipeline-f9b9494c4-ws6nm` |
+| **Operations** | `Line contains` | `ERROR` |
+| **Operations** | `Line does not contain` | `.query_rewrite.sidecar` |
+
+##### Screenshot
+
+<Frame>![Query 05](/assets/images/5.8/loki/query05.png)</Frame>
+
+You have now focused your log stream on a specific namespace, service, service host, and keyword, and you have removed logs irrelevant to your interests.
+
+### Analyzing logs
+
+Once you have created a log stream and filtered it to show the logs you are interested in, you can explore individual logs.
+
+1. Locate an individual log record in the list of logs.
+2. Point to the log record, and a **Show context** option appears.
+3. Click **Show context** to launch the context modal and view more messages from the log.
+4. Close the modal and return to the list of logs.
+5. Click a log record to expand key details.
+
+From this view, you can select:
+
+**Labels**
+        1. **Ad-hoc statistics.** View how frequently the label is found in the list of logs.
+        2. **Filter for value.** Add the label field and value to your query.
+        3. **Filter out value.** Remove the label field and value from your query.
+
+**Detected fields**
+        1. **Ad-hoc statistics.** View how frequently the label is found in the list of logs.
+        2. **Show this field instead of the message.** This multi-select option replaces the title of individual logs with the selected values.
+
+## Saving Loki queries
+
+### Starred queries
+
+View your query history by clicking the **Query history** button. By default, Loki stores your queries in Query History for 2 weeks. However, you can save queries indefinitely by clicking the star icon next to your query. These queries are found under Starred.
+
+<Frame>![Query history](/assets/images/5.8/loki/queryHistory01.png)</Frame>
+
+For more information, see [Grafana’s documentation on Query history](https://grafana.com/docs/grafana/latest/explore/query-management/#query-history).
+
+### Custom dashboards
+
+<Note>
+Managed Fusion offers read-only access for Grafana. If you are a Managed Fusion customer, you cannot create custom dashboards.
+</Note>
+
+From your Loki queries, you have the option to create custom dashboards. Dashboards display data for your environment visually. To create a dashboard:
+
+1. Define and run your query in the Explore UI, then click the **Add to dashboard** button.
+2. Choose the **New dashboard** option, then click the **Open dashboard** button. Alternatively, add your query to an existing dashboard.
+
+    A new dashboard appears containing the panel for your query.
+
+    <Frame>![New Loki panel](/assets/images/5.8/loki/newPanel01.png)</Frame>
+3. Optional: Click the new panel title, then select **Edit**. Edit the panel and save your changes.
+4. Click the **Save dashboard** button.

@@ -1,0 +1,62 @@
+---
+title: "series:time"
+permalink: "1110"
+---
+
+## Description
+
+The series time directive shows a time series on a chart, in order to
+use this you must set type to 'time' on the
+[chart display tag](/app-studio/4.2/1056/chart-display).
+
+For detail on how to change the color and background color see the demo
+below, for more detail on what you can change and set using CSS see
+[here.](http://www.highcharts.com/docs/chart-design-and-style/style-by-css)
+
+## Usage
+
+as element:
+
+```xml
+<series:time
+       response="{object}"
+       platform="{string}"
+       name="{string}"
+       value-field="{string|expression}"
+       label-field="{string|expression}"
+       [title="{string|expression}"]
+       [show-marker="{string}"]
+       [type="{string}"]
+       [range-selector="{boolean}"]
+       [navigator="{boolean}"]
+       [query="{object}"]
+       [measure="{string}"]
+       [sort="{boolean}"]
+       [number-to-show="{Number}"]
+       [selected-by-default="{boolean}"]>
+</series:time>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object (please include either a response or a platform not both!). |
+| platform | **string** | The name of the platform to get the data from (please include either a response or a platform not both!). |
+| name | **string** | Name of facet. (Use either name or value-field and label-field not both!) |
+| value-field | **string]link:[expression** | Field from the result containing the count. (Use either name or value-field and label-field not both!) |
+| label-field | **string]link:[expression** | Field from the result containing the label. (Use either name or value-field and label-field not both!) |
+| title  *(optional)* | **string]link:[expression** | The title of the series that appears in the legend and tooltip. |
+| show-marker  *(optional)* | **string** | Whether to show marker or not. |
+| type  *(optional)* | **string** | Type of chart to render. |
+| range-selector  *(optional)* | **boolean** | Where the input boxes should be enabled (from and to) Default:true |
+| navigator  *(optional)* | **boolean** | Whether to enable the navigator beneth the chart. Default:true |
+| query  *(optional)* | **object** | The search query from which to build links. |
+| measure  *(optional)* | **string** | What fact to use as an alternative to count as quantitative value for a filter. |
+| sort  *(optional)* | **boolean** | Whether the data should be sort by the directive. Defaults to true. |
+| number-to-show  *(optional)* | **Number** | The number of points to show on the graph. Applies only when using the platform attribute. (Default:25) |
+| selected-by-default  *(optional)* | **boolean** | Whether this series should be shown when the chart:display is using select-series="true" mode. Default: true. |

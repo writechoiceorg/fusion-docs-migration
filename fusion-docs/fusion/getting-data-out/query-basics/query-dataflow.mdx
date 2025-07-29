@@ -1,0 +1,36 @@
+---
+title: "Query Data Flow"
+permalink: "3234"
+---
+
+[Indexing Data Flow](/fusion/5.9/3211/indexing-data-flow) shows you how your content, signals, and recommendations are indexed in Fusion. This topic explains how to query your indexed data.
+
+## 1. Query your content
+
+When you query your content using the default query pipeline *and* you have [signals enabled](/fusion/5.9/3211/indexing-data-flow#signals-enabled), you also get [query rewrites](/fusion/5.9/489/query-rewriting) and [automatic boosting](/fusion/5.9/483/boost-with-signals) to enhance the relevancy of your search results. In addition to matches from your primary collection, you’ll get results produced by Fusion’s machine learning jobs, based on [signals](/fusion/5.9/469/signals) from your users.
+
+[Query profiles](/fusion/5.9/174/query-profiles) give you a stable endpoint that can be associated with any [query pipeline](/fusion/5.9/173/query-pipelines). Just specify the query profile when sending queries to the [Query Profiles API](/fusion/5.9/361/query-profiles-api) endpoint. You can always reconfigure the query profile to point to a different pipeline, or to an [experiment](/fusion/5.9/460/experiments).
+
+Querying your content
+
+<Frame>![Query your content](/assets/images/5.4/diagrams/primary-query.png)</Frame>
+
+* Several stages perform [query rewriting](/fusion/5.9/489/query-rewriting) and [response rewriting](/fusion/5.9/449/response-rewriting) by reading from the `_query_rewrite` collection:
+
+  + The [Text Tagger stage](/fusion/5.9/520/text-tagger-stage) finds [misspellings](/fusion/5.9/488/misspelling-detection), [phrases](/fusion/5.9/487/phrase-detection), [underperforming query strings](/fusion/5.9/486/underperforming-queries), and [synonyms](/fusion/5.9/8803/synonym-detection-jobs) in the incoming query.
+  + The [Apply Rules stage](/fusion/5.9/535/apply-rules-stage) applies your [business rules](/fusion/5.9/8835/business-rules) to the incoming query.
+  + The [Modify Response with Rules stage](/fusion/5.9/537/modify-response-with-rules-stage)
+* The [Boost with Signals stage](/fusion/5.9/511/boost-with-signals-stage) reads aggregated signals to boost search results that have been popular with users.
+* The [Solr Query stage](/fusion/5.9/265/solr-query-stage) fetches the final set of relevant search results from the primary collection.
+
+## 2. Query for recommendations
+
+To get even more relevant results based on AI-powered analysis of your signals data, your query pipeline can perform any number of secondary queries to the collections where the output from machine learning jobs is indexed. Your secondary queries can provide additional search results based on Fusion’s analysis of your signals.
+
+Querying for recommendations
+
+<Frame>![Query your recommendations](/assets/images/5.4/diagrams/secondary-query.png)</Frame>
+
+* Use the [Recommend Items for Item stage](/fusion/5.9/514/recommend-items-for-item-stage) to query for [collaborative items-for-item recommendations](/fusion/5.9/476/items-for-item-recommendations#collaborative-items-for-item-recommendations).
+* The [Recommend Items for User stage](/fusion/5.9/529/recommend-items-for-user-stage) queries for [items-for-user recommendations](/fusion/5.9/477/items-for-user-recommendations).
+* The [Recommend Similar Queries stage](/fusion/5.9/8801/recommend-similar-queries-stage) provides [queries-for-query recommendations](/fusion/5.9/479/queries-for-query-recommendations).

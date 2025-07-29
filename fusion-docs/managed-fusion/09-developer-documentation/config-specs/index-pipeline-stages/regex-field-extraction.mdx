@@ -1,0 +1,40 @@
+---
+title: "Regex Field Extraction"
+description: "Index pipeline stage configuration specifications"
+permalink: "fjlj93"
+---
+
+The Regex Field Extraction stage (called the Regular Expression Extractor stage in versions earlier than 3.0) is used to extract entities from documents based on matching regular expressions. The resulting regex matches over the contents of the source field are copied to the target field. The regular expression, source, and target fields are defined properties of this stage.
+
+If using the REST API, this stage type is named "regex-extractor".
+
+For examples of how to use this stage in the Managed Fusion UI, see [Part 2](/how-to/643/get-started-with-fusion-server-part-2) of the [Getting Started](/how-to/880/get-started-with-fusion-server) tutorial.
+
+## Example Stage Specification
+
+*Define a regex-field-extraction stage to apply a regular expression that looks for storage capabilities of products when it appears in the product 'name' field, and store it in a special field:*
+
+```json
+{
+  "type" : "regex-field-extraction",
+  "id" : "storagesize-regex-extraction",
+  "rules" : [ {
+    "source" : [ "name" ],
+    "target" : "storage_size_ss",
+    "pattern" : "(\\d{1,20}\\s{0,3}(GB|MB|TB|KB|mb|gb|tb|kb))",
+    "annotateAs" : "storage_size"
+  } ],
+  "skip" : false
+}
+```
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/regex-field-extraction.mdx";
+
+<SchemaParamFields schema={schema}/>

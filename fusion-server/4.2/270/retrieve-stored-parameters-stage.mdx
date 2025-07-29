@@ -1,0 +1,32 @@
+---
+title: "Retrieve Stored Parameters Stage"
+permalink: "270"
+---
+
+The Retrieve Stored Parameters stage is used to add parameters to the downstream Solr query stage in the pipeline.
+The primary use case for this query stage is in eCommerce applications to organize and enhance search query results,
+where the parameters added to the Solr query are used for faceting.
+This stage is used in query pipelines for applications where the documents in the collection are to be
+classified according to a known category hierarchy that is
+stored in Fusion as an auxiliary "stored parameters" collection.
+
+The information in a taxonomy is meta-information about the categories used to classify a set of things.
+For an eCommerce site, the set of things are items in the product catalog,
+which are stored in a Fusion collection, referred to as the primary collection.
+The taxonomy itself is specified as a set of
+[categories](/fusion-server/4.2/304/taxonomy-api#taxonomyapi-taxonomystructure)
+which are stored in an auxiliary collection and naming conventions
+relate the primary and auxiliary collections so that for
+a primary collection named "COLL", the auxiliary taxonomy
+is stored in a collection named "COLL_stored_parameters".
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/retrieve-stored-parameters.mdx";
+
+<SchemaParamFields schema={schema}/>

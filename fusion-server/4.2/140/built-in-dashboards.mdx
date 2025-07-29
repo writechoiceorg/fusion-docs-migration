@@ -1,0 +1,78 @@
+---
+title: "Built-in Dashboards"
+permalink: "140"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+Fusion ships with built-in dashboards. To access these dashboards from the Fusion UI, click **System > Log Viewer**.
+
+### Service Logs dashboard
+
+The Service Logs dashboard (`lucidworks-service-logs.json`) is also the default dashboard (`default.json`).
+
+<Frame>![Service Logs dashboard](/assets/images/4.1/dashboard-service-logs.png)</Frame>
+
+You can modify the default dashboard to suit your needs. To set a different dashboard as the browser default, click the dashboard you want to set as the default, then click **Save > Set as Browser Default**.
+
+To open the default dashboard from the Fusion workspace, click Analytics <InlineImage src="/assets/images/4.0/icons/workspace-menu-analytics.png"/> > **Dashboards** or System <InlineImage src="/assets/images/4.0/icons/workspace-menu-system.png"/> > **Log Viewer**. Alternatively, on any dashboard, click **Goto saved default** <InlineImage src="/assets/images/common/dashboards/open-default-dashboard.png"/>.
+
+### Access Logs dashboard
+
+The Access logs dashboard (`lucidworks-access-logs.json`) lets you analyze logs from the `system_logs` collection where `type_s:http`, that is Fusion access over the Web, for example, from the Fusion UI and web apps that submit Fusion requests.
+
+<Frame>![Access Logs dashboard](/assets/images/4.1/dashboard-access-logs.png)</Frame>
+
+### Combined Logs dashboard
+
+The Combined Logs dashboard (`lucidworks-combined-logs.json`) lets you analyze all logs from the `system_logs` collection.
+
+<Frame>![Combined Logs dashboard](/assets/images/4.1/dashboard-combined-logs.png)</Frame>
+
+### Blank dashboard
+
+An entirely blank dashboard (`blank.json`) is available. To open this dashboard from the default dashboard, click **Blank Dashboard** at the top right.
+
+### Fusion Metrics dashboard
+
+The Fusion Metrics dashboard (`lucidworks-metrics.json`) displays key Fusion metrics from the Fusion collection `system_metrics`, if this type of metrics collection is enabled. See [System Metrics](/fusion-server/4.2/198/system-metrics).
+
+<Note>
+In Fusion 4.2 through 5.5, metrics collection is automatically enabled and metrics are indexed to the `system_monitor` collection. Use the [DevOps Center](/fusion-server/4.2/130/the-dev-ops-center) to view them.
+</Note>
+
+<Frame>![Fusion Metrics dashboard](/assets/images/5.0/dashboard-metrics.png)</Frame>
+
+To open the Fusion Metrics dashboard from the default dashboard, click **Metrics Dashboard** at the top right.
+
+### Search Analytics dashboard
+
+The Fusion Search Analytics dashboard (`lucidworks-searchanalytics.json`) displays search analytics derived from collection logs and from queries to Solr (`/api/solr`).
+
+<Frame>![Search Analytics dashboard](/assets/images/5.0/dashboard-search-analytics.png)</Frame>
+
+To open the Search Analytics dashboard from the default dashboard, click **Search Analytics** at the top right.
+
+### Fusion Signals dashboard
+
+The Fusion Signals dashboard (`lucidworks-signals.json`) is a time-series dashboard that you can use to monitor signals collections. It uses the signal timestamp as the time field.
+
+<Frame>![Fusion Signals dashboard](/assets/images/5.0/dashboard-signals.png)</Frame>
+
+To open the Fusion Signals dashboard from the default dashboard, click **Lucidworks Fusion Signals** at the top right.
+
+### Default Non-Time-Series dashboard
+
+Fusion includes a default non-time-series dashboard (`default-nts.json`). This is an example:
+
+<Frame>![Non time-series dashboard](/assets/images/5.0/dashboard-non-time-series.png)</Frame>
+
+To open the default non-time-series dashboard, at the top right of any dashboard, click **New > Non-time-series dashboard**.
+
+### Default Time-Series dashboard
+
+Fusion includes a default time-series dashboard (`default-ts.json`). This is an example:
+
+<Frame>![Time-series dashboard](/assets/images/5.0/dashboard-time-series.png)</Frame>
+
+To open the default time-series dashboard, at the top right of any dashboard, click **New > Time-series dashboard**.

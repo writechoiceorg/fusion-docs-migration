@@ -1,0 +1,107 @@
+---
+title: "Fusion Server 4.2.3 Release Notes"
+permalink: "88"
+---
+
+**Release date:** 28 June 2019
+
+**Component versions:**
+
+|  |  |  |  |  |
+| --- | --- | --- | --- | --- |
+| Solr 7.7.2 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.12.v20180830 | Ignite 2.6.0 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+* The [Confluence connector](/fusion-connectors/56/confluence) now supports New Technology LAN Manager (NTLM) authentication.
+
+* [SQL aggregations](/fusion-ai/4.2/471/sql-aggregations) aggregations now support the use of the `NOT` operator inside `AND` or `OR` clauses. For example:
+
+    ```sql
+    FROM ${inputCollection} c
+    WHERE
+          ((c.type IN ('click') AND !(c.query <> '*:*')))
+          OR
+          (c.type IN ('cart','purchase'))
+    ```
+
+## Improvements
+
+* V2 [connectors](/fusion-connectors/63/configuration-reference) now support multivalued fields.
+
+* Wait times at the end of V2 connector jobs have been reduced.
+
+* Users can now enable or disable spell correction and tail rewrites separately in the [Text Tagger stage](/fusion-server/4.2/264/text-tagger-stage).
+
+  <Frame>![TextTagger Stage Options^](/assets/images/4.2/release-notes/texttagger-disable-options.png)</Frame>
+
+* Recently created jobs are now available in the [Scheduler](/fusion-server/4.2/184/jobs-overview#the-scheduler) immediately.
+
+* Authentication is no longer required to [send SMTP emails](/fusion-server/4.2/253/send-smtp-email-stage).
+
+* Changed how the Fusion UI handles proxied requests to Solr in order to reduce errors.
+
+* Images sent to the Apache Tika parser with the `Include images` option unchecked are no longer discarded.
+
+* Added a new field, `unsafe`, to the index pipeline schema.
+
+## Other changes
+
+* Fixed an issue with the SharePoint connector, which was skipping some documents in the index pipeline.
+
+* Fixed an error with the SharePoint Online connector’s [security trimming](/fusion-connectors/51/share-point-online-v-1#security-trimming) feature, which failed to filter by the "Everyone except external users" group.
+
+* Fixed an issue which caused new information added to `fusion.properties` to be appended to an existing value instead of creating a new line.
+
+* Fixed an issue which caused the [misspelling](/fusion-ai/4.2/488/misspelling-detection), [phrase](/fusion-ai/4.2/487/phrase-detection), and [synonym](/fusion-ai/4.2/485/synonym-detection) detection features to publish corrections which had low confidence scores.
+
+* Fixed an issue which caused file-extension filtering in the [SharePoint V1 connector](/fusion-connectors/61/share-point-v-1) to be case-sensitive.
+
+* Fixed an issue which produced a Null Pointer Exception (NPE) error while using [SharePoint security trimming](/fusion-connectors/61/share-point-v-1#security-trimming) on a user with no user groups.
+
+* Fixed how Cross-Origin Resource Sharing (CORS) is handled when the port is missing from the host/origin headers.
+
+* Fixed an issue that caused the SmartForm login process in the [Web V1 connector](/fusion-connectors/39/web-v-1) to fail.
+
+* Fixed an issue which caused multivalued fields that were being sent to the signals collection to be assigned the single value string field type `_s` instead of the multivalued string field type `_ss`.
+
+* Fixed minor issues with the drag-to-reorder feature in the Fusion UI.
+
+* Fixed an issue that caused the [Confluence connector](/fusion-connectors/56/confluence) to not create the title field or update the last modified date value.
+
+* Improved how [bi-directional synonyms](/fusion-ai/4.2/485/synonym-detection#bi-directional-synonyms) are handled.
+
+* Improved processes for using multiple Chrome/PhantomJS workers in parallel to [crawl JavaScript-enabled websites](/fusion-connectors/39/web-v-1#crawl-javascript-web-sites).
+
+* Fixed an error that could result from the Connectors Classic Service failing to start while attempting to migrate from 3.1.5 to 4.2.1.
+
+* Fixed an error that caused the SharePoint Online datasources to disappear while upgrading Fusion.
+
+* Fixed an issue which caused a target collection to not be found while attempting to transfer documents from a Solr collection in Fusion 4.1.x to a Solr collection in Fusion 3.1.x.
+
+## Addressed Security Vulnerabilities
+
+* Fusion 4.2.3 upgrades [Solr](http://lucene.apache.org/solr) to version 7.7.2, which uses [Jackson Release 2.9.8](https://github.com/FasterXML/jackson/wiki/Jackson-Release-2.9.8). This resolves multiple Common Vulnerabilities and Exposures (CVE).
+* Fusion 4.2.3 upgrades [Hibernate Validator](http://hibernate.org/validator) to version 4.1.0, which resolves multiple CVEs.
+
+## Known issues
+
+* When under load, the Fusion proxy service can occasionally become stuck, causing user authentication to fail. This is the result of the proxy `InputStream` failing to close properly.
+
+  An upgrade to Fusion 4.2.4 is required to fix this issue. See [Upgrade Fusion](/how-to/710/upgrade-fusion-server-4-2-x-to-4-2-y).
+
+* The [JDBC V1 connector](/fusion-connectors/83/jdbc-v-1) ignores the `max_docs` field value when crawling a datasource.
+
+* It is not possible to use a future date as a [business rule condition](/fusion-ai/4.2/489/query-rewriting#rule-conditions).
+
+* Fusion overwrites existing Underperforming Query rules when the head/tail analysis job runs. This issue is fixed in Fusion 4.2.6.
+
+* The [Scala script job](/fusion-server/4.2/386/script-jobs) sometimes fails when indentation is used.
+
+    <Note>
+    This is fixed in Fusion 4.2.6.
+    </Note>
+
+* Jira no longer supports user/password authentication. As a result, the Jira connector must use a different authentication method.

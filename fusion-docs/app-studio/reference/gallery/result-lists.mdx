@@ -1,0 +1,148 @@
+---
+title: "Result List"
+permalink: "1047"
+---
+
+## Default
+
+The default result list shows all the fields
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist01.png)</Frame>
+
+```xml
+<search:result-list response="smallResponse"></search:result-list>
+```
+
+## List
+
+Full width list of results
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist02.png)</Frame>
+
+```xml
+<search:result-list response="smallResponse">
+    <search:result>
+        <layout:grid>
+            <layout:block md="1-4" padding-right="1">
+                <Frame><img src="{{ result | field:'photo' | actual }}" alt=""></Frame>
+            </layout:block>
+            <layout:block md="3-4">
+                <search:field name="full_name" styling="title"></search:field>
+                <search:field name="year" label="Year" styling="label-inline"></search:field>
+                <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+                <search:field name="Prize Category" styling="label-inline"></search:field>
+                <br>
+                <search:field name="motivation" styling="description"></search:field>
+                <search:field name="details_url" styling="url description" prefix="http://nobel.divedeeper.io" urlfield="details_url" url-prefix="http://nobel.divedeeper.io"></search:field>
+            </layout:block>
+        </layout:grid>
+    </search:result>
+</search:result-list>
+```
+
+## Cards
+
+Result cards that can be shown in a row
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist03.png)</Frame>
+
+```xml
+<search:result-list response="response" styling="cards-md-2 cards-xl-3">
+    <search:result>
+        <layout:grid>
+            <layout:block md="1-4" padding-right="1">
+                <Frame><img src="{{ result | field:'photo' | actual }}" alt=""></Frame>
+            </layout:block>
+            <layout:block md="3-4">
+                <search:field name="full_name" styling="title"></search:field>
+                <search:field name="year" label="Year" styling="label-inline"></search:field>
+                <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+                <search:field name="Prize Category" styling="label-inline"></search:field>
+                <br>
+                <search:field name="motivation" styling="description"></search:field>
+                <search:field name="details_url" styling="url description" prefix="http://nobel.divedeeper.io" urlfield="details_url" url-prefix="http://nobel.divedeeper.io" target="_blank"></search:field>
+            </layout:block>
+        </layout:grid>
+    </search:result>
+</search:result-list>
+```
+
+## Card Emphasis
+
+A result card with a little more border
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist04.png)</Frame>
+
+```xml
+<search:result-list response="smallResponse" styling="cards-md-2">
+    <search:result styling="card-emphasis">
+        <layout:grid>
+            <layout:block md="1-4" padding-right="1">
+                <Frame><img src="{{ result | field:'photo' | actual }}" alt=""></Frame>
+            </layout:block>
+            <layout:block md="3-4">
+                <search:field name="full_name" styling="title"></search:field>
+                <search:field name="year" label="Year" styling="label-inline"></search:field>
+                <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+                <search:field name="Prize Category" styling="label-inline"></search:field>
+                <br>
+                <search:field name="motivation" styling="description"></search:field>
+                <search:field name="details_url" styling="url description" prefix="http://nobel.divedeeper.io" urlfield="details_url" url-prefix="http://nobel.divedeeper.io" target="_blank"></search:field>
+            </layout:block>
+        </layout:grid>
+    </search:result>
+</search:result-list>
+```
+
+## Card Shadow
+
+Add a small drop shadow
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist05.png)</Frame>
+
+```xml
+<search:result-list response="smallResponse" styling="cards-md-2">
+    <search:result styling="card-shadow">
+        <layout:grid>
+            <layout:block md="1-4" padding-right="1">
+                <Frame><img src="{{ result | field:'photo' | actual }}" alt=""></Frame>
+            </layout:block>
+            <layout:block md="3-4">
+                <search:field name="full_name" styling="title"></search:field>
+                <search:field name="year" label="Year" styling="label-inline"></search:field>
+                <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+                <search:field name="Prize Category" styling="label-inline"></search:field>
+                <br>
+                <search:field name="motivation" styling="description"></search:field>
+                <search:field name="details_url" styling="url description" prefix="http://nobel.divedeeper.io" urlfield="details_url" url-prefix="http://nobel.divedeeper.io" target="_blank"></search:field>
+            </layout:block>
+        </layout:grid>
+    </search:result>
+</search:result-list>
+```
+
+## Card Step
+
+A result card with a slightly raised edge
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/resultlist06.png)</Frame>
+
+```xml
+<search:result-list response="smallResponse" styling="cards-md-2">
+    <search:result styling="card-step">
+        <layout:grid>
+            <layout:block md="1-4" padding-right="1">
+                <Frame><img src="{{ result | field:'photo' | actual }}" alt=""></Frame>
+            </layout:block>
+            <layout:block md="3-4">
+                <search:field name="full_name" styling="title"></search:field>
+                <search:field name="year" label="Year" styling="label-inline"></search:field>
+                <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+                <search:field name="Prize Category" styling="label-inline"></search:field>
+                <br>
+                <search:field name="motivation" styling="description"></search:field>
+                <search:field name="details_url" styling="url description" prefix="http://nobel.divedeeper.io" urlfield="details_url" url-prefix="http://nobel.divedeeper.io" target="_blank"></search:field>
+            </layout:block>
+        </layout:grid>
+    </search:result>
+```

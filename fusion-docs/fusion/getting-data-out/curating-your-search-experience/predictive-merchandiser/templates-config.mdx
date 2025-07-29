@@ -1,0 +1,219 @@
+---
+title: "Templates UI Configuration Options"
+permalink: "8857"
+---
+
+The Templates screen in the Rules Editor allows you to design, test, and implement a wide variety of search experiences. Results are conditionally delivered from multiple different query pipelines, enabling you to use Fusion’s search, browse, and AI-driven functionality throughout your site.
+
+## Configuration options
+
+### Templates
+
+When creating or editing a template, the status, such as active or stale, is indicated after the template name.
+
+<Frame>![Template status example](/assets/images/5.6/stale-example-56.png)</Frame>
+
+The active status can hold the following values:
+
+| Tag | New | Saved | Published | Active |
+| --- | --- | --- | --- | --- |
+| **Editing** | ✅ |  |  |  |
+| **Stale** |  | ✅ |  |  |
+| (nothing) |  |  | ✅ | ✅ |
+
+Configuration options for templates:
+
+<table class="tableblock frame-all grid-all stretch">
+  <colgroup>
+    <col style="width: 25%;" />
+    <col style="width: 75%;" />
+  </colgroup>
+  <thead>
+    <tr>
+      <th class="tableblock halign-left valign-top">Option</th>
+      <th class="tableblock halign-left valign-top">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Precedence</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              If multiple templates are triggered, this setting determines which template is displayed.
+              Lower numbers are considered higher precedence. For example, a template with precedence of
+              <code>999</code> will trigger before a template with precedence of <code>1</code>.
+            </p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Display Name</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>The name of the template.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Type</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>
+              The type of template. This is an arbitrary value classifying the template. It has no effect
+              on triggering/rendering logic unless the value is <code>Typeahead</code>. If
+              <code>Typeahead</code> is assigned, the template will be excluded from
+              <code>/trigger</code> and <code>/render</code> endpoints.
+            </p>
+          </div>
+          <div class="paragraph">
+            <p>This value is read-only and for informational purposes only.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Zones</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Determines which zones are loaded when the template is triggered. Zones are displayed in the order they appear.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Triggering</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>The conditions that must be met for the template to display.</p>
+          </div>
+          <ul>
+            <li>
+              <p><strong>Date Range.</strong> Define a date range to trigger the display of the template. For example, set to display during a Black Friday sales event.</p>
+            </li>
+            <li>
+              <p><strong>Trigger.</strong> Define triggers to display the template. Triggers are added with the <strong>Trigger</strong> button.</p>
+              <ul>
+                <li>
+                  <p><strong>Search Term.</strong> Search terms required in the query for this trigger to match. Configured analysis will tokenize and process these terms.</p>
+                </li>
+                <li>
+                  <p><strong>Match Mode.</strong> Defines search term matching criteria:</p>
+                  <ul>
+                    <li><code>phrase</code> requires the search tokens of this trigger to exist as a phrase in the same order.</li>
+                    <li><code>all</code> requires the search tokens to exist in any order.</li>
+                    <li><code>exact</code> requires search tokens to match exactly in the same order, applying configured analysis (e.g. stemming).</li>
+                  </ul>
+                </li>
+                <li>
+                  <p><strong>Filters.</strong> <code>fq</code> values required in the query for this trigger to match. Additional filters may be present and still satisfy this trigger.</p>
+                </li>
+                <li>
+                  <p><strong>Exact.</strong> If <strong>On</strong>, the nav state must match this trigger’s criteria exactly (no extra filters or terms if none defined).</p>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>Matches All Locations</p>
+          </div>
+        </div>
+      </td>
+      <td class="tableblock halign-left valign-top">
+        <div class="content">
+          <div class="paragraph">
+            <p>If set to <strong>On</strong>, this template is always displayed, and triggers are ignored.</p>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Triggering
+
+The date range trigger is activated alongside triggers with an `AND` logical operator. Conversely, triggers are activated alongside other triggers with an `OR` logical operator. For example, consider the following scenarios:
+
+| Scenario 1 | | Scenario 2 | |
+| --- | --- | --- | --- |
+| Date Range | *none* | Date Range | `November 25, 2020 - December 5, 2020` |
+| Search Term | `cyber monday` | Search Term | `cyber monday` |
+| Search Term | `sales event` | Search Term | `sales event` |
+
+In **Scenario 1**, no date range is configured. The template is triggered if:
+
+* The user searches the term `cyber monday` *or* `sales event`.
+
+In **Scenario 2**, a date range is configured. The template is triggered if:
+
+* Today’s date is within the date range `November 25, 2020 - December 5, 2020`, *and* the user searches the term `cyber monday`
+* Today’s date is within the date range `November 25, 2020 - December 5, 2020`, *and* the user searches the term `sales event`
+
+The template is *not* triggered if:
+
+* Today’s date is not within the date range `November 25, 2020 - December 5, 2020`
+* Today’s date is within the date range `November 25, 2020 - December 5, 2020`, but the user does not search the term `cyber monday` *or* `sales event`
+
+### Zones
+
+| Option | Description |
+| --- | --- |
+| Display Name | The name of the zone. |
+| Type | An arbitrary value classifying the zone. It has no effect on triggering/rendering logic. Intended only to be used by the PM UI. This value is read-only and for informational purposes only. |
+| Query Profile | Determines query profile the zone will fetch results from. |
+| Tags | Tags are passed to the query profile when rendering. They are combined with tags found in the request parameters of the render request. |
+| Omit Filters from Query | If set to **On**, the filters (`fq`) are ignored. For example, if you want the zone to display items with type `sunglasses` even though the user has filtered the results to `shorts`, enabling this setting allows the zone to display sunglasses. |
+| UI Treatment | Arbitrary text that is included in the response when rendering the zone. This is generally used by the frontend to determine how to display the zone. UI Treatment tags accept a color value to help distinguish them in the Predictive Merchandiser screen:  <br/><Frame>![](/assets/images/5.3/ui-treatment.png)</Frame> |
+| Results Layout | Select grid or list view. |
+| Display Fields | Add field names and how they are displayed (type of field). |
+| Product Image | Field name for the product image. |
+| Product Title | Field name for the product title. |
+| Product Description | Field name for the product description. |
+
+<Note>
+Product Image, Product Title, and Product Description are only used for rendering products in Predictive Merchandiser. Your search application will determine what fields are used in production.
+</Note>
+

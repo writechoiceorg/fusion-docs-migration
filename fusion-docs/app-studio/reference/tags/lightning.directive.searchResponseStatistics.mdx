@@ -1,0 +1,72 @@
+---
+title: "search:response-statistics"
+permalink: "1066"
+---
+
+## Description
+
+The Response Statistics directive.
+
+## Usage
+
+as element:
+
+```xml
+<search:response-statistics
+       response="{object}"
+       [number-format="{string}"]>
+</search:response-statistics>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **object** | A response object |
+| number-format  *(optional)* | **string** | Format string for the numbers used using the Java DecimalFormat pattern. Default: ',0.' |
+
+## Example
+
+#### Source
+
+```xml
+<search:response-statistics response="response"></search:response-statistics>
+<hr />
+<h6 id="example_source_edit-values">Edit Values</h6>
+<label>Enter Page Number: <input ng-model='response.page' ng-change="reloadResponse()" /></label><br>
+<label>Enter Results Per Page <input ng-model='response.query.rpp' ng-change="reloadResponse()" /></label><br>
+<label>Enter Actual Number of Results <input ng-model='response.hits.act[1]' ng-change="reloadResponse()" /></label><br>
+
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', 'ResponseService', function($scope, ResponseService) {
+            $scope.response = {
+                hits:{
+                act:[264,264]
+                },
+                page:1,
+                query:{
+                rpp:10
+                }
+            }
+
+            ResponseService.setResponse('response',$scope.response);
+
+            $scope.reloadResponse = function(){
+                var response = angular.copy($scope.response);
+                $scope.response = {};
+                $scope.response = response;
+                ResponseService.setResponse('response',$scope.response);
+            }
+        }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchResponseStatistics.png)</Frame>

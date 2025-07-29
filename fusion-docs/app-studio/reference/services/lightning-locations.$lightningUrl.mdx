@@ -1,0 +1,415 @@
+---
+title: "$lightningUrl"
+permalink: "1223"
+---
+
+## Description
+
+Twigkit factory for getting and setting the location (url).
+
+## Methods
+
+### addFilterObjectToUrl(filter, reloadSearch)
+
+Method to add a filter to the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filter | Object | The filter object to add to the url. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+
+#### Example
+
+```js
+$lightningUrl.addFilterObjectToUrl(filter);
+```
+
+### addFilterToLocationCopy(fieldName, actual, display, orFilter, location, exclude, match)
+
+Method to add a filter to the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| actual | string | The actual value of the filter. |
+| display | string | The display value of the filter. |
+| orFilter *(optional)* | string | If the filter is to be ORed. |
+| location | object | The location object to use, this should be angular.copy'd before |
+| exclude *(optional)* | boolean | If the filter is to be exclude values |
+| match *(optional)* | string | 'left_partial' or 'partial' or 'right_partial' or 'exact' |
+
+#### Example
+
+```js
+$lightningUrl.addFilterToUrl(addFilterToLocationCopy, actual, display, orFilter, location);
+```
+
+### addFilterToUrl(fieldName, actual, display, reloadSearch, orFilter, exclude, match)
+
+Method to add a filter to the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| actual | string | The actual value of the filter. |
+| display | string | The display value of the filter. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+| orFilter *(optional)* | string | If the filter is to be ORed |
+| exclude *(optional)* | boolean | If the filter is to be exclude values |
+| match *(optional)* | string | 'left_partial' or 'partial' or 'right_partial' or 'exact' |
+
+#### Example
+
+```js
+$lightningUrl.addFilterToUrl(filterName, actual, display, reloadSearch);
+```
+
+### addRangeFilterDisplayToUrl(fieldName, from, to, displayFrom, displayTo, reloadSearch, orFilter, fromExcluded, toExcluded, exclude)
+
+Method to add a filter to the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| from | string | The from value of the filter. |
+| to | string | The to value of the filter. |
+| displayFrom | string | The from display value of the filter. |
+| displayTo | string | The to display value of the filter. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+| orFilter *(optional)* | boolean | If the filter is to be ORed |
+| fromExcluded *(optional)* | string | whether the from is to be excluded. |
+| toExcluded *(optional)* | string | Whether the to is to be excluded. |
+| exclude *(optional)* | boolean | Whether the values should be excluded. |
+
+#### Example
+
+```js
+$lightningUrl.addRangeFilterDisplayToUrl(fieldName, from, to, display, reloadSearch, orFilter, fromExcluded, toExcluded) ;
+```
+
+### addRangeFilterToUrl(fieldName, from, to, displayFrom, displayTo, reloadSearch, orFilter, toLabel, fromExcluded, toExcluded, exclude)
+
+Method to add a filter to the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| from | string | The from value of the filter. |
+| to | string | The to value of the filter. |
+| displayFrom | string | The from display value of the filter. |
+| displayTo | string | The to display value of the filter. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+| orFilter *(optional)* | boolean | If the filter is to be ORed |
+| toLabel *(optional)* | string | The label which appears between the from and to values. |
+| fromExcluded *(optional)* | string | whether the from is to be excluded. |
+| toExcluded *(optional)* | string | Whether the to is to be excluded. |
+| exclude *(optional)* | boolean | Whether the values should be excluded. |
+
+#### Example
+
+```js
+$lightningUrl.addRangeFilterToUrl(fieldName, from, to, displayFrom, displayTo, reloadSearch, orFilter, toLabel, fromExcluded, toExcluded);
+```
+
+### createFilter(fieldName, actual, display, orFilter, exclude, match, type)
+
+Creates a filter for the URL
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| actual | string | The actual value of the filter. |
+| display | string | The display value of the filter. |
+| orFilter *(optional)* | string | If the filter is to be ORed (field or value) |
+| exclude *(optional)* | boolean | If the filter is to be exclude values |
+| match *(optional)* | string | 'left_partial' or 'partial' or 'right_partial' or 'exact' |
+| type *(optional)* | string | Explicitly set the type of the filter, 'string' or 'number'. A string filter value will be wrapped in double quotes. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns a filter that can be added to the URL |
+### createFilterFromObject(filter)
+
+Creates a filter for the URL
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filter | Object | The filter object or string to create a filter from. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns a filter that can be added to the URL |
+### createRangeFilter(fieldName, from, to, displayFrom, displayTo, orFilter, toLabel, fromExcluded, toExcluded, exclude)
+
+Creates a range filter for the URL
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | The name of the filter to apply. |
+| from | string | The from value of the filter. |
+| to | string | The to value of the filter. |
+| displayFrom | string | The from display value of the filter. |
+| displayTo | string | The to display value of the filter. |
+| orFilter *(optional)* | string | If the filter is to be ORed (value | field) |
+| toLabel *(optional)* | string | The label which appears between the from and to values. |
+| fromExcluded *(optional)* | string | whether the from is to be excluded. |
+| toExcluded *(optional)* | string | Whether the to is to be excluded. |
+| exclude *(optional)* | boolean | Whether the values should be excluded. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns a filter that can be added to the URL |
+### createRangeFilterDisplay(filterName, from, to, display, orFilter, fromExcluded, toExcluded, exclude)
+
+Creates a range filter for the URL
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filterName | string | The name of the filter to apply. |
+| from | string | The from value of the filter. |
+| to | string | The to value of the filter. |
+| display | string | The display value of the filter. |
+| orFilter *(optional)* | string | If the filter is to be ORed (value | field) |
+| fromExcluded *(optional)* | string | whether the from is to be excluded. |
+| toExcluded *(optional)* | string | Whether the to is to be excluded. |
+| exclude *(optional)* | boolean | Whether the values should be excluded. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns a filter that can be added to the URL |
+### getAllUrlParameters()
+
+Method to get a copy of all URL parameters
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| object | Object literal of all URL parameters |
+
+#### Example
+
+```js
+$lightningUrl.getAllUrlParameters();
+```
+
+### getFiltersFromUrl(fieldName)
+
+Method to gets all of a set of filters from the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| fieldName | string | Only get filters on the specified field. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| Array | Returns values of the filterName from URL. |
+
+#### Example
+
+```js
+$lightningUrl.getFiltersFromUrl(filterName);
+```
+
+### getUrlParameter(parameter, defaultValue)
+
+Method to get a url parameter
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| parameter | string | The parameter to get from the URL. |
+| defaultValue *(optional)* | string | The value to return if parameter returns null. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| var | Returns value of parameter from URL or defaultValue. |
+
+#### Example
+
+```js
+$lightningUrl.getUrlParameter(parameter, defaultValue);
+```
+
+### getUrlParametersAsArray(parameter, defaultValue)
+
+Method to gets an array of url parameters
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| parameter | string | The parameter to get from the URL. |
+| defaultValue *(optional)* | string | The value to return if parameter returns null. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| Array | Returns values of the parameter from URL or defaultValue in an array. |
+
+#### Example
+
+```js
+$lightningUrl.getUrlParametersAsArray(parameter, defaultValue);
+```
+
+### removeFiltersFromUrl(filterName, reloadSearch)
+
+Method to remove all of a set of filters from the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filterName | string | The name of the filter to remove. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+
+#### Example
+
+```js
+$lightningUrl.removeFiltersFromUrl(filterName, reloadSearch);
+```
+
+### removeFiltersFromUrl(filterName, reloadSearch)
+
+Method to remove all of a set of filters from the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filterName | string | The name of the filter to remove. |
+| reloadSearch *(optional)* | boolean | Whether to reload search results. |
+
+#### Example
+
+```js
+$lightningUrl.removeFiltersFromUrl(filterName, reloadSearch);
+```
+
+### resetAllParameters(reloadSearch)
+
+Resets all URL Parameters
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| reloadSearch | boolean | Whether to reload the search |
+
+### resetParameters(parameters, reloadSearch)
+
+Resets a selection of parameter types
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| parameters | array | types to reset |
+| reloadSearch | boolean | Whether to reload the search |
+
+### setUrlParameter(parameter, value, reloadSearch)
+
+Method to set a url parameter
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| parameter | string | The parameter to add to the URL. |
+| value | Arraystring | The value to assign to the parameter. |
+| reloadSearch *(optional)* | boolean | Whether to reload the results. |
+
+#### Example
+
+```js
+$lightningUrl.setUrlParameter(parameter, value, reloadSearch);,
+```
+
+### setUrlParameters(query, reloadSearch)
+
+Method to set a group of url parameters from a query.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | Object | Query object from which URL Parameters are to be used. |
+| reloadSearch *(optional)* | boolean | Whether to reload the search once all the parameters have been set. |
+
+#### Example
+
+```js
+$lightningUrl.setUrlParameters(query);
+```
+
+### urlContainsFilter(filterName, actual, display, orFilter, exclude, match)
+
+Method to set if filter is in the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filterName | string | The name of the filter to apply. |
+| actual | string | The actual value of the filter. |
+| display | string | The display value of the filter. |
+| orFilter *(optional)* | string | If the filter is to be ORed on `value` or `field` |
+| exclude *(optional)* | boolean | If the filter is to be exclude values |
+| match *(optional)* | string | 'left_partial' or 'partial' or 'right_partial' or 'exact' |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| boolean | Whether the URL contains the filter. |
+
+### urlContainsFilterFromObject(filter)
+
+Method to see if filter is in the url
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| filter | object | The filter object |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| boolean | Whether the URL contains the filter. |

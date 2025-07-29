@@ -1,0 +1,70 @@
+---
+title: "Faceting"
+permalink: "175"
+---
+
+<Frame>![Faceted Results](/assets/images/common/Faceted_Results.png)</Frame>
+
+Faceting is the name given to a set of computed counts over a search result
+which are returned together with the documents which match the search query.
+Facets are most often used to create additional navigational controls
+on the search results page or panel which
+allow users to expand and restrict their search criteria in a natural way,
+without having to construct complicated queries.
+For example, popular e-commerce facets include product category,
+price range, availability, and user ratings.
+
+Fusion leverages [Solr’s Faceting](https://cwiki.apache.org/confluence/display/solr/Faceting) search components.
+
+## Field faceting
+
+In Solr the most straightforward kind of faceting is field faceting, in which Solr’s FacetComponent
+computes the top values for a field and returns the list of those values along with a count of the subset
+of documents in the search results which match that term.
+Field faceting works best over fields which contain a single label or set of labels from a finite, controlled lexicon
+such as product category.
+Fusion’s
+[Facet Query Stage](/fusion-server/4.2/252/field-facet-stage)
+can be used to configure field faceting as part of the search query pipeline.
+
+## Range faceting
+
+Range facets are used for fields which contain date or number values. Values can be grouped into ranges by specifying additional query parameters.
+
+To configure range faceting, use the [Additional Query Parameters Stage](/fusion-server/4.2/294/additional-query-parameters-stage) to specify [Solr range faceting parameters](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-RangeFaceting).
+
+## Faceting concepts
+
+Key Facet Concepts:
+
+**Term**
+    A specific value from a field.
+
+**Limit**
+    The maximum number of terms to be returned.
+
+**Offset**
+    The number of top facet values to skip in the response (just like paging through search results and choosing an offset of 51 to start on page 2 when showing 50 results per page).
+
+**Sort**
+    The order in which to list facet values: `count` ordering is by documents per term, descending, and `index` ordering is sorted on term values themselves.
+
+**Missing**
+    The number of documents in the results set which have no value for the facet field.
+
+**Choice of facet method**
+    (advanced) Specify Solr algorithm used to calculate facet counts.
+    (See [Facet Method Configuration](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.methodParameter) for details).
+    One of:
+
+    * `enum`. Small number of distinct categories.
+    * `fc` ("field cache"). Many different values in the field, each document has low number of values, multi-valued field.
+    * `fcs` ("single value string fields"). Good for rapidly changing indexes.
+
+## Further Reading
+
+- https://lucidworks.com/post/pivot-facets-inside-and-out/
+
+- https://lucidworks.com/post/apache-solr-statistics/
+
+- https://lucidworks.com/post/pivoting-to-the-query-using-pivot-facets-to-build-a-multi-field-suggester/

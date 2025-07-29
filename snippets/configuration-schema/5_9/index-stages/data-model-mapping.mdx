@@ -1,0 +1,105 @@
+export const schema = {
+  "type": "object",
+  "title": "Data Model Mapping",
+  "description": "Map document fields to data model fields.",
+  "required": [
+    "dataModelType",
+    "mappings",
+    "keepUnmappedFields"
+  ],
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "dataModelType": {
+      "type": "string",
+      "title": "DataModel Type",
+      "description": "Fusion Data Model type to map to",
+      "hints": [
+        "enumUrl:/api/data-models"
+      ]
+    },
+    "matchTrigger": {
+      "type": "object",
+      "title": "Match Trigger",
+      "required": [
+        "fieldToMatch",
+        "valueToMatch"
+      ],
+      "properties": {
+        "fieldToMatch": {
+          "type": "string",
+          "title": "Field to match",
+          "description": "The name of the field to match on. Enter '*' to match all documents that don't already have a data model."
+        },
+        "valueToMatch": {
+          "type": "string",
+          "title": "Value to match",
+          "description": "The value of the field to match on. Supports regular expression by wrapping the value in slashes, e.g.: '/text.*/'"
+        }
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "title": "Field Mappings",
+      "description": "List of mapping rules",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceField",
+          "dataModelField"
+        ],
+        "properties": {
+          "sourceField": {
+            "type": "string",
+            "title": "Source Field"
+          },
+          "dataModelField": {
+            "type": "string",
+            "title": "Data model field",
+            "hints": [
+              "enumUrl:/api/data-models/${dataModelType}/fields"
+            ],
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "keepUnmappedFields": {
+      "type": "boolean",
+      "title": "Keep unmapped fields",
+      "default": false
+    }
+  },
+  "category": "Advanced",
+  "categoryPriority": 3,
+  "unsafe": false
+}

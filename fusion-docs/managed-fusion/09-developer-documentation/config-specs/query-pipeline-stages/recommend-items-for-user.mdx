@@ -1,0 +1,49 @@
+---
+title: "Recommend items for user"
+description: "Query pipeline stage configuration specifications"
+permalink: "e8ayom"
+---
+
+The Recommend Items for User query pipeline stage uses signals about item choices to recommend other similar items for a specific user. Personalization for the user can be based on the user’s search history, browsing history, or purchase history, and so on.
+
+This pipeline stage uses items-for-user recommendations that have been precomputed by the [BPR Recommender](/managed-fusion/5.9/ec8fkn/bpr-recommender-jobs).
+
+See also [Items-for-user recommendations](/managed-fusion/5.9/pbwiub/items-for-user-recommendations) to learn how to configure this recommender type and fetch recommendations.
+
+## Prerequisites
+
+**Enable recommendations:**
+
+Before creating a Recommend Items for Item stage, enable recommendations.
+
+* **In the Managed Fusion UI** – With Query Workbench open, click **Settings > Enable Recommendations**.
+* **Using the REST API** – Use this command to enable recommendations:
+
+  ```bash
+  curl -u USERNAME:PASSWORD -X PUT http://EXAMPLE_COMPANY.lucidworks.cloud/api/v1/collections/COLLECTION_NAME/features/recommendations -H 'content-type: application/json' -d '{"enabled":true}'
+  ```
+
+<Note>
+Replace `EXAMPLE_COMPANY` with the name provided by your Lucidworks representative.
+</Note>
+
+<Note>
+When you enable recommendations, Managed Fusion creates a query pipeline that already contains this stage, and that is configured for boosting. The query pipeline is `COLLECTION_NAME_items_for_user_recommendations`.
+</Note>
+
+## Using live signals
+
+The **Estimate Recent Results** option uses live signals to augment items-for-user recommendations with real-time recommendations.
+
+When this is enabled, Managed Fusion first looks up items from previously generated recommendations that are similar to the new items. If there are none then it looks up similar users who also interacted with that item to get a list of recommendations based on the new items. It then combines those new recommendations with the job-based recommendations already generated for that user, to generate a final list of recommendations.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/recommend-items-for-user.mdx";
+
+<SchemaParamFields schema={schema}/>

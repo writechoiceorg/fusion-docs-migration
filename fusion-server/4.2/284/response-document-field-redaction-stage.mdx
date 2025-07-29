@@ -1,0 +1,23 @@
+---
+title: "Response Document Field Redaction Stage"
+permalink: "284"
+---
+
+This is a [response rewriting](/fusion-ai/4.2/449/response-rewriting) stage that removes fields that match a regular expression from a document. This stage must be used *after* the [Solr Query stage](/fusion-server/4.2/265/solr-query-stage) in your pipeline.
+
+<Tip>
+The `sourceField`/**Source Field** can be a [String Template](/fusion-server/4.2/135/messaging-and-alerting#string-templates).
+</Tip>
+
+This stage adds to the context a list of maps (`type String, String`) that tracks, based on document position, which fields were removed from the document.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/response-document-field-redaction.mdx";
+
+<SchemaParamFields schema={schema}/>

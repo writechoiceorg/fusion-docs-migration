@@ -1,0 +1,180 @@
+---
+title: "REST API Examples for Front-End Development"
+permalink: "3217"
+---
+
+This document provides examples of queries and calls that may be useful for front-end development of your application.
+
+## Prerequisites
+
+Before working with the Fusion API, ensure that you have specified API [permissions](/fusion/5.9/123/permissions.asciidoc) or [roles](/fusion/5.9/126/roles.asciidoc) to allow access to the API.
+
+## Simple queries
+
+### Send signals to Fusion from front-end applications
+
+The Signals API stores signals as JSON for indexing into a signals collection. See [Signals API](/fusion/5.9/549/signals-api.asciidoc) for more information.
+
+**REQUEST**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/signals/COLLECTION_NAME
+```
+
+**ENDPOINTS**
+
+|  |  |  |
+| --- | --- | --- |
+| **POST** | | |
+| **/signals/COLLECTION_NAME** | Send one or more signals for indexing | |
+
+**PARAMETERS**
+
+|  |  |  |
+| --- | --- | --- |
+| `commit` | ``` optional ``` | The `commit` parameter can potentially cause resource problems if your application has a high signal volume, or if it sends all signals as individual POST requests in real-time. |
+| `collection` | ``` required ``` | Collection ID |
+| `params` | ``` optional ``` | Configuration parameters  For more information, see [Parallel Bulk Loader](/fusion/5.7/557/parallel-bulk-loader). |
+
+**EXAMPLE**
+
+```bash
+curl \
+ -u USERNAME:PASSWORD -X POST -H 'Content-type:application/json' -d @- \
+https://FUSION_HOST:FUSION_PORT/api/signals/docs?commit=true \
+<<EOF
+[{
+    "params": {
+      "query": "Televisiones Panasonic  50 pulgadas",
+      "filterQueries": ["cat00000", "abcat0100000", "abcat0101000", "abcat0101001"],
+      "docId": "2125233"
+    },
+    "type": "click",
+    "timestamp": "2011-09-01T23:44:52.53Z"
+  },
+  {
+    "params": {
+      "query": "Sharp",
+      "filterQueries": ["cat00000", "abcat0100000", "abcat0101000", "abcat0101001"],
+      "docId": "2009324"
+    },
+    "type": "click",
+    "timestamp": "2011-09-05T12:25:37.42Z"
+  }
+]
+EOF
+
+```
+
+### Send queries to Fusion using the Query Profile
+
+**REQUEST**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/apps/APP_NAME/query/QUERY_PROFILE?QUERY
+```
+
+**ENDPOINTS**
+
+|  |  |  |
+| --- | --- | --- |
+| **POST** | | |
+| **/signals/COLLECTION_NAME** | Send one or more signals for indexing | |
+
+**PARAMETERS**
+
+|  |  |  |
+| --- | --- | --- |
+| `rows` | ``` optional ``` | The number of documents (results) to return |
+| `wt` | ``` required ``` | The response format. For example, XML, JSON, CSV |
+| `fl` | ``` optional ``` | The list of fields to return for each document in the response |
+
+**EXAMPLE**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/apps/Movies/query/Movies_main?q=star&fq=genres_ss:(“Sci-Fi”)&rows=5
+```
+
+## Complex Queries
+
+### Call the query profiles assigned to a zone
+
+The Render API is part of the [Templating API](/fusion/5.9/wm0epz/templating-api.asciidoc). It is the main way to ingest the content of templates and their contained zones, which will further drive the search experience. Templates/zones data cannot be incorporated with the [Query Profile](/fusion/5.9/363/query-profiles-crud-api.asciidoc) or [Query Pipelines](/fusion/5.9/360/query-pipelines-api.asciidoc) APIs.
+
+You can create templates in the Fusion UI, specifying trigger criteria for each template, such as search terms or filters. You can then add zones to these templates, choosing a query profile to be queried for each zone along with other configurable data. When you query the Render API, Fusion determines which template’s trigger criteria is satisfied by the query and calls the query profiles designated by the zones in the triggered template, passing the original query on to each query profile. The results from each query profile are returned alongside the zone configuration in the final response.
+
+For example, a web front-end can consume this API to drive a search results page. It will inspect the list of returned zones, using each zone’s configuration to decide how to display each query profile result in the UI. This allows you to manage the search experience with the Fusion UI, using the template trigger criteria and zone configuration along with different query profiles to define what content should be shown based on the search context.
+
+Templates and zones have both a "staging" and "live" (or "published") version. The staging parameter present on all Render API endpoints determines the version of the content that will be used. Modifications to the templating content only show in the "staging" view until you publish the content.
+
+The Render API works similarly to the Query API in that it supports all of the same ways of providing a query, and the responses for each zone are the same structure. However, there are four differences:
+
+* You do not need to specify a query profile in your request
+* The endpoint paths are different
+* The Render API determines which template to trigger based on the query terms, filters, and the templates' configurations
+* The provided query is issued against one or more query profiles (one for each zone in the triggered template), and the response from each query profile is included in the Render API response.
+
+See [Query Profiles CRUD API](/fusion/5.9/363/query-profiles-crud-api.asciidoc) for more information.
+
+**REQUEST**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/templating/render/APP_NAME
+```
+
+<Tip>
+See [Templating API](/fusion/5.9/wm0epz/templating-api.asciidoc) for more supported parameters.
+</Tip>
+
+**ENDPOINTS**
+
+|  |  |  |
+| --- | --- | --- |
+| **GET** | | |
+| **/render/APP_NAME** | Retrieve and render the template for the given navigation state. By default will only trigger published versions of templates, specify staging=true to instead trigger staging versions of templates. | |
+| **/renderId/TEMPLATE_ID** | Retrieve and render the template with the specified id. All provided query params will be passed on to each query profile invoked during the rendering. | |
+| **POST** | | |
+| **/render/APP_NAME** | Retrieve and render the template for the given navigation state. By default will only trigger published versions of templates, specify staging=true to instead trigger staging versions of templates. | |
+| **/renderDSL/APP_NAME** | Retrieve and render the template for the given navigation state. By default will only trigger published versions of templates, specify staging=true to instead trigger staging versions of templates. The provided DSL request object + any additional request parameters are passed through to each query profile when rendering each zone. | |
+| **/renderId/TEMPLATE_ID** | Retrieve and render the template with the specified id. All provided query params will be passed on to each query profile invoked during rendering. | |
+| **/renderIdDSL/TEMPLATE_ID** | Retrieve and render the template with the specified id, passing the provided DSL request to each query profile invoked during rendering. | |
+
+**EXAMPLE**
+
+The example query specifies `some query` as the query terms and is restricted to only return templates of the `landing` type. It will retrieve the template with trigger criteria that is satisfied by the query terms `some query`.
+
+By specifying `staging=true`, it will only consider the current "staging" version of the templating content, which are templates/zones that haven’t been published yet. Omitting the staging param would return only the published versions of templates/zones.
+
+```
+GET https://FUSION_HOST:FUSION_PORT/api/templating/render/APP_NAME?q=QUERY&templateTypes=landing&staging=true
+```
+
+## Queries for Recommendations
+
+### Create a personalized list of potential interests
+
+The Recommendations API uses signals to generate a personalized list of interests. See [Recommendations API](/fusion/5.9/8826/recommendations-api.asciidoc) for more information.
+
+**REQUEST**
+
+```
+https://FUSION_HOST:FUSION_PORT/api/recommend/APP_NAME/{endpoint}?q=QUERY
+```
+
+**ENDPOINTS**
+
+|  |  |  |
+| --- | --- | --- |
+| **GET** | | |
+| **itemsForQuery** | Get items for a defined query. The response is a list of *document IDs* and their weights. | |
+| **queriesForItem** | Get queries for a defined item (a document ID). This finds the top queries that led users to the defined item. The response is a list of query terms and their weights. | |
+
+**EXAMPLES**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/recommend/lucidworks102/itemsForQuery?q=ipod&fq=count_d:4&debug=true
+```
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/recommend/lucidworks102/queriesForItem?docId=9225439`
+```

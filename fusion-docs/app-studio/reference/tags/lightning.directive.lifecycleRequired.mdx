@@ -1,0 +1,52 @@
+---
+title: "lifecycle:required"
+permalink: "1129"
+---
+
+## Description
+
+Renders objects when other object is available;
+
+## Usage
+
+as element:
+
+```xml
+<lifecycle:required
+       object="{string}">
+</lifecycle:required>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| object | **string** | The object in question |
+
+## Example
+
+#### Source
+
+```xml
+<button class="tk-stl-button" ng-click="toggle()">Toggle</button>
+<lifecycle:required object="value">
+    <p>I only appear when "value" has a value.</p>
+</lifecycle:required>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+                    $scope.toggle = function(){
+                    if($scope.value == undefined){
+                        $scope.value = 'A Value';
+                    } else {
+                        $scope.value = undefined;
+                    }
+                    }
+                }]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/lifecycleRequired.png)</Frame>

@@ -1,0 +1,26 @@
+---
+title: "Query APIs"
+permalink: "s4cope"
+---
+
+The Query APIs are a group of APIs that allow you to customize your search experience. You can use them to [run queries](/fusion/5.9/361/query-profiles-api), [reorder and test pipeline stages](/fusion/5.9/360/query-pipelines-api), [improve search relevancy](/fusion/5.9/551/experiments-api), and more.
+
+Query APIs allow a variety of options for modifying a search term when it is sent to Fusion to help provide improved search results.
+
+For more information, [view the API specification.](?open-api=true)
+
+The basic way to change how queries are processed starts with creating [query stages](/fusion/5.9/278/query-pipeline-stages). These stages are steps that each query will go through to adjust the search term before it is compared against indexed documents.
+
+Query stages must be configured in the Fusion UI. Once they are set up, you can use the [Query Stages API](/fusion/5.9/362/query-stages-api) to view query stage JSON schemas.
+
+Custom-made query stages are developed using the [Query Stage SDK](/fusion/5.9/hbu2ug/query-stage-sdk), which saves them as plugins. A plugin is a ZIP file that contains one or more query stage implementations. The ZIP file contains JAR files for stage definitions and additional dependencies. It also contains a manifest file that holds the metadata Fusion uses to run the plugin. You can use the [Query Stage Plugins API](/fusion/5.9/iwwngg/query-stage-plugins-api) to manage your custom stages.
+
+[Custom rules](/fusion/5.9/8835/business-rules#custom-rule-actions) are additional actions a website can take when certain search terms are entered by a user. For example, the site can display a sale banner when a search includes a specified manufacturer, or a particular search term can alter results where returned documents are listed higher or lower than they normally would be. You can manage custom rules with the [Custom Rules API](/fusion/5.9/331/custom-rules-api).
+
+A [query pipeline](/fusion/5.9/173/query-pipelines) is a series of query stages ordered in a particular way. The [Query Pipelines API](/fusion/5.9/360/query-pipelines-api) lets you manage query pipelines by allowing you to create, view, update, and delete query pipelines.
+
+[Experiments](/fusion/5.9/460/experiments) let you compare results for different combinations of pipelines, collections, search handlers, and request parameters. This is useful for A/B testing. You can manage experiments with the [Experiments API](/fusion/5.9/551/experiments-api).
+
+[Query profiles](/fusion/5.9/174/query-profiles) are the way you select which pipeline and collection combination to use. You can use different pipelines with the same collection to test different stage combinations. Another way profiles can be used is to switch to another pipeline to allow different search results for special occasions. You can use the [Query Profiles CRUD API](/fusion/5.9/363/query-profiles-crud-api), formerly known as the Query Profiles API, to create, view, update, and delete query profiles.
+
+Once you have a query profile set up, you can use the [Query Profiles API](/fusion/5.9/361/query-profiles-api), formerly known as the Query API, to send a query through a profile.

@@ -1,0 +1,85 @@
+---
+title: "Fusion SQL Statistics"
+permalink: "3280"
+---
+
+Sampling is often used in statistical analysis to gain an understanding of the **distribution**,
+**shape** and **dispersion** of a variable or the relationship between variables.
+
+Fusion SQL returns a random sample for all basic selects that **do not** contain an ORDER BY clause. The random
+sample is designed to return a uniform distribution of samples that match a query. The sample can be used to
+infer statistical information about the larger result set.
+
+The example below returns a random sample of single field:
+
+```sql
+select filesize_d from logs where year_i = 2019
+```
+
+If no limit is specified the sample size will be 25000. To increase the sample size add a limit larger then
+25000.
+
+```sql
+select filesize_d from logs where year_i = 2019 limit 50000
+```
+
+The ability to subset the data with a query and then sample from that subset is called **Stratified Random
+Sampling**. Stratified Random Sampling is an important statistical technique used to better understand sub-populations
+of a larger data set.
+
+## Descriptive statistics
+
+Sub-queries can be used to return random samples for fast, often sub-second, statistical analysis. For example:
+
+```sql
+select count(*) as samplesize,
+       mean(filesize_d) as mean,
+       min(filesize_d) as min,
+       max(filesize_d) as max,
+       approx_percentile(filesize_d, .50) as median,
+       variance(filesize_d) as variance,
+       std(filesize_d) as standard_dev,
+       skewness(filesize_d) as skewness,
+       kurtosis(filesize_d) as kurtosis,
+       sum(filesize_d) as sum
+           from (select filesize_d from logs where year_i = 2019 limit 50000)
+```
+
+In the example above the sub-query is returning a random sample of 50000 results
+which is operated on by the main statistical query. The statistical query returns aggregations
+which describe the distribution, shape and dispersion of the sample set.
+
+## Correlation and covariance
+
+Sub-queries can be used to provide random samples for correlation and covariance:
+
+```sql
+select corr(filesize_d, response_d) as correlation,
+       covar_samp(filesize_d, response_d) as covariance
+            from (select filesize_d, response_d from logs limit 50000)
+```
+
+In the example above the random sample returns two fields to the corr and covar_samp functions
+in the main query. Correlation and covariance are used to show the strength of the linear
+relationship between two variables.
+
+## Pushed-down statistical queries
+
+A narrower set of statistical aggregations can be pushed down to the search engine
+and operate over entire result sets. These functions are: count(*), count(distinct),
+sum, min, max, avg and approx_percentile.
+
+Below is an example of a fully pushed down statistical query:
+
+```sql
+select count(*) as cnt, avg(filesize_d) as avg, approx_percentile(filesize_d, .50) as median from logs where year_i = 2018
+```
+
+Statistical queries that contain a mix of the queries above and non-pushdown such as skewness or kurtosis will
+be operate over a random sample that matches the query.
+
+Below is an example of a statisical query that operates over a random sample:
+
+```sql
+select count(*) as cnt,  skewness(filesize_d) as skewness from logs where year_i = 2018
+```

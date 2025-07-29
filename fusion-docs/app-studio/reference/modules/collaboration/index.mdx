@@ -1,0 +1,63 @@
+---
+title: "Social and Collaboration Tools"
+permalink: "3155"
+---
+
+The social and collaboration tools provided by the Social module extend the search application with the ability to store user-generated information on individual documents and document collections, and to share this information among groups of authenticated users.
+
+Features include:
+
+* **Saved searches.** Users can save important keyword search queries, apply filters, and retrieve the information later.
+* **Saved results.** Users can bookmark results, add them to a basket, and search those saved items.
+* **Rating.** Users can choose to rate or "like" results, giving a social signal to their peers. Rating analytics can be used to influence ranking.
+* **Tagging.** Users can tag content with keywords, which content owners can use to improve data quality.
+* **Annotations.** Users can annotate/comment on results and edit or delete their own comments. Users cannot edit or delete the comments of others.
+* **Topics.** Users can create topics and any captured metadata. For example, saved searches can be associated with a topic.
+
+User-generated content can be stored in a relational database or any other kind of data store, using our pluggable architecture.
+
+Authentication and authorization of users is managed via the [Security module](/fusion/5.9/3162/authentication).
+
+## Terminology
+
+While much of the language used to describe collaborative tools is carefully chosen to be self explanatory, there are several general concepts which are used throughout and are introduced in this section.
+
+### Annotations
+
+Key to the collaboration enabled by inclusion of this module, there are several types of *annotation* which can be applied to documents. These include bookmarks, comments, and likes, which are commonly found in many applications and provide a versatile way for users to contribute and save information during their search.
+
+### Topics
+
+A *topic* is a general term for a subject that users are intending to collect information about. This module provides facilities for users to create a named group with which they can associate any number of annotated documents. Topics themselves can be created and selected using the [Topic Form tag](/fusion/5.9/1118/collaborate-topic-form). Many of the collaborative tags included in this module have a *topic* attribute that links the saved information to a specific topic (which can be picked up from the URL).
+Topics can be defined by the developer as being 'namespaced' so they can be global (available for all users to collaborate on) or local (only viewable by the individual user that created them).
+
+### Collections
+
+Some annotations can be categorized by *collection*. This is a mechanism for separating annotations of different types of document. There is a subtle difference between topics and collections, in that collections are usually determined by the categories of information in the data and generally pre-defined by the application developer offering a small number of collections with which to associate annotations. Collections are intended for a finite number of categorical groups whereas any number of topics can be created.
+
+## Social and Collaboration tags
+
+### Like Documents
+
+The [collaborate:like](/fusion/5.9/1163/collaborate-like) tag displays controls for the user to "like" a document. It also displays statistics on the number of times a specified target document has been liked.
+
+### Saving Queries
+
+The Appkit social module lets users save and retrieve their search queries. Use the [collaborate:saved-query-list](/fusion/5.9/1073/collaborate-saved-query-list) tag to let users save and retrieve their saved search queries. Alternatively, you can enable social features in the [search:box](/fusion/5.9/1058/search-box) to have access to the same form.
+
+### Bookmarks
+
+The [collaborate:bookmark](/fusion/5.9/1098/collaborate-bookmark) tag displays controls for adding a new bookmark, in addition to statistics on the number of times a specified target document has been bookmarked. This tag is typically used within a Result List tag, to enable the user to bookmark a particular document in the result list.
+
+Bookmark List tag
+The [collaborate:bookmark-list tag](/fusion/5.9/1069/collaborate-bookmark-list) retrieves and displays all bookmarks that have been created by a particular user, are within a given topic, or are linked to a particular document (or any combination of the three constraints). Alternatively, you can enable social features in the [search:box](/fusion/5.9/1058/search-box) to have access to the same form.
+
+### Commenting
+
+The Appkit Social module lets users comment on search results and display other users' comments. This gives users a flexible way to interact and contribute in an application, and can be used to implement features such as feedback, discussion, and reviewing systems.
+
+The [collaborate:comment-form](/fusion/5.9/1171/collaborate-comment-form) and [collaborate:comment-list](/fusion/5.9/1124/collaborate-comment-list) tags are used respectively to create and retrieve these annotations.
+
+### Create Topics
+
+The [collaborate:topic-form](/fusion/5.9/1118/collaborate-topic-form) tag lets users create named topics with which to associate saved information. Topics can be restricted to the user who creates a topic or global to all users. The [collaborate:topic-list](/fusion/5.9/1177/collaborate-topic-list) tag will display these topics.

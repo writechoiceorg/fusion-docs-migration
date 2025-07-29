@@ -1,0 +1,53 @@
+---
+title: "OneDrive Datasource V2"
+description: "Connector Configuration Reference"
+permalink: "49"
+---
+
+Latest version: v3.1.0
+
+Compatible with Fusion version: 4.2.0 and later
+
+OneDrive is a file hosting service that is part of the Microsoft Office Online services.
+The Fusion OneDrive connector crawls a OneDrive for Business instance and retrieves data from it for indexing within Fusion.
+
+To set up the OneDrive connector, first authenticate it with a new or existing Microsoft application. Then proceed to configuring the crawl.
+
+## Remote connectors
+
+V2 connectors support [running remotely](/fusion-connectors/8xhsoc/remote-v-2-connectors) in Fusion versions 5.7.1 and later. Refer to [Configure Remote V2 Connectors](/how-to/ssl8ue/configure-remote-v-2-connectors).
+
+Below is an example configuration showing how to specify the file system to index under the `connector-plugins` entry in your `values.yaml` file:
+
+```yaml
+additionalVolumes:
+- name: fusion-data1-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data1-pvc
+- name: fusion-data2-pvc
+    persistentVolumeClaim:
+    claimName: fusion-data2-pvc
+additionalVolumeMounts:
+- name: fusion-data1-pvc
+    mountPath: "/connector/data1"
+- name: fusion-data2-pvc
+    mountPath: "/connector/data2"
+
+```
+
+You may also need to specify the user that is authorized to access the file system, as in this example:
+
+```yaml
+securityContext:
+    fsGroup: 1002100000
+    runAsUser: 1002100000
+
+```
+
+## Configuration
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-onedrive.mdx";
+
+<SchemaParamFields schema={schema}/>
+

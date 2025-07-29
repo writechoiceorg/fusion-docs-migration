@@ -1,0 +1,168 @@
+---
+title: "Facet Processors"
+permalink: "3186"
+---
+
+Facet response processors include ones to perform these operations:
+
+* Duplicate a facet.
+* Create facets.
+* Fill in date filters for a facet.
+* Parse and formatting filter values from one Date format to another.
+* Create a pseudo date facet.
+* Set or changing Parameters for a facet.
+* Sort facets based on various properties and parameters.
+* Process facet filter values formatted as paths to represent them as hierarchical trees.
+* Remove facets from a Response.
+* Create pseudo facets based on values in a given field or fields.
+* Process hierarchical facets so that only one level is rendered at a time.
+* Define a pseudo facet from a list of facets in the response.
+
+For more information about structuring hierarchical facet data in Fusion, see [Indexing Hierarchical Taxonomies](/fusion/5.9/3207/indexing-hierarchical-taxonomies).
+
+### twigkit.search.processors.response.CopyFacetProcessor
+
+Duplicate a facet, creating two separate instances.
+
+- `from (java.lang.String)`
+    Name of facet to copy (clone).
+
+- `to (java.lang.String)`
+    Name to assign to the new Facet.
+
+### twigkit.search.processors.response.CreateFacetProcessor
+
+Create facets by name if they do not exist.
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+### twigkit.search.processors.response.DateFacetIntervalProcessor
+
+Processor for filling in date filters for a facet, based on a particular step unit (year, month, day). It assumes the named facet has date filters.
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+- `inputFormat (java.lang.String)`
+    Pattern for the original date to be parsed.
+
+- `outputFormat (java.lang.String)`
+    Format of the output.
+
+- `step (java.lang.String)`
+    `year`, `month`, or `day`
+
+### twigkit.search.processors.response.DateFacetValueFormatter
+
+Parse and format filter values from one Date format to another.
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+- `sourceFormat (java.lang.String)`
+    Pattern for the original date to be parsed.
+
+- `format (java.lang.String)`
+    Format of the output.
+
+### twigkit.search.processors.response.DateRangeFacetProcessor
+
+Create a pseudo date facet.
+
+- `field (java.lang.String)`
+    The name of the field containing the Date value.
+
+- `displayName (java.lang.String)`
+    The display name of the Facet generated for field.
+
+### twigkit.search.processors.response.FacetParameterProcessor
+
+Set or change Parameters for a facet.
+
+- `operation (java.lang.String)`
+    Currently only supports 'set'.
+
+- `parameter (java.lang.String)`
+    The name of the parameter to set.
+
+- `value (java.lang.Object)`
+    The value to set the parameter to.
+
+### twigkit.search.processors.response.FacetSortProcessor
+
+Sort facets based on properties and parameters.
+
+- `sort (java.lang.String)`
+    Sort string as per Query parameter (`-field1,field2,-field3`).
+
+### twigkit.search.processors.response.PathHierarchicalProcessor
+
+Process facet filter values formatted as paths to represent them as hierarchical trees, for example, "Europe/Central Europe/Germany/Berlin".
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+- `levelSeparator (java.lang.String)`
+    The character sequence that represents a level, for example, levelSeparator="/".
+
+<Note>
+After this processor has been applied to a facet, the facet filters are sorted alphabetically by value (rather than by count).
+</Note>
+
+### twigkit.search.processors.response.RemoveFacetsProcessor
+
+Remove facets from a Response by name.
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+### twigkit.search.processors.response.ShallowFacetGenerator
+
+Create pseudo facets based on values in a given field or fields.
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.ShallowHierarchicalFacetProcessor
+
+Process hierarchical facets so that only one level is rendered at a time, with an HTTP request/response between levels.
+
+- `facetNames (java.lang.String)`
+    Comma-separated list of facets that should be affected by this processor.
+
+### twigkit.search.processors.response.SequentialFacetChoiceProcessor
+
+Define a pseudo facet from a list of facets in the response. The facet that gets copied over to the new pseudo facet will be determined by looking at a sequence of facets (specified by the developer) and choosing the first one that does not have any filter constraints against it. When the current query contains filters against all facets in the sequence, the last facet in the sequence is copied to the pseudo facet.
+
+For example, assume you have fields in your schema for `Region`, `Country`, and `City` that you want to facet on to guide users in their search. These facets forms a natural hierarchy of `Region > Country > City`. Instead of giving the user a choice from all of the three facets at every step (which would show for example, cities from all regions mixed together), you want to present the user with a single `Location` facet that moves from `Region` to `Country` and finally `City` as users make more specific choices.
+
+To illustrate this, assume you have these data values across your corpus of documents:
+
+```
+- Region: Europe, America, Asia
+- Country: France,United Kingdom,Germany, Mexico, Brazil,Japan,Korea
+- City: Paris,Lyon,London,Manchester,Berlin,Hamburg,Mexico,Tijuana,Sao Paulo,Brazilia,Tokyo,Kyoto,Seoul
+```
+
+Configure a `SequentialFacetChoiceProcessor` with these parameters:
+
+```
+facetNames: Region,Country,City
+target: Location
+```
+
+In your search application, present the user with a *single* facet - `Location`. Now consider:
+
+* If no `Location` filter is specified, then the `Location` facet will contain `Region` values: Europe, America, Asia.
+* If the user chooses `Asia` as a location, then the `Location` facet will contain the follow `Country` option: Japan, Korea.
+* Finally, if the user chooses `Japan`, then the `Location` facet will contain these options: Tokyo, Kyoto.
+
+- `facetSequence (java.lang.String)`
+    Comma-separated list of facets that should be copied to the new target facet.
+
+- `target (java.lang.String)`
+    Name to assign to the new facet.
+
+- `separator (java.lang.String)`
+    Character sequence to separate between facet names when assembling a display label for the new target facet. By default this is `&nbsp;&#9656;&nbsp;` (an arrow pointing to the right).

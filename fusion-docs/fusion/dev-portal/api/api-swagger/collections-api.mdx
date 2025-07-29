@@ -1,0 +1,203 @@
+---
+title: "Collections API"
+description: "Fusion Admin APIs"
+permalink: "307"
+---
+
+The Collections API manages Fusion collections.
+It provides endpoints for creating, updating, and deleting collection,
+as well as endpoints for getting a collection’s status and usage statistics.
+
+Fusion maintains internal system collections for logs, blobs, and metrics data which
+operate in conjunction with collections created by users.
+The Collections API is used to manage all Fusion collections.
+
+For more information, [view the API specification.](?open-api=true)
+
+## Examples
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion/5.9/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+
+
+*Create a new collection called 'newCollection', with appropriate SolrCloud environment settings:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"name": "newCollection","solrParams":{"replicationFactor":1,"numShards":1}}' https://FUSION_HOST:FUSION_PORT/api/collections
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "newCollection",
+  "createdAt" : "2014-09-19T18:46:52.954Z",
+  "searchClusterId" : "default",
+  "solrParams" : {
+    "name" : "newCollection",
+    "numShards" : 1,
+    "replicationFactor" : 1
+  },
+  "type" : "DATA",
+  "metadata" : { }
+}
+```
+
+*Create a collection named 'local-collection1' that refers to 'collection1' in a pre-existing SolrCloud cluster named 'Solr4.10':*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"id":"local-collection1", "searchClusterId":"Solr4.10", "solrParams":{"name":"collection1"}}' https://FUSION_HOST:FUSION_PORT/api/collections
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "local-collection1",
+  "createdAt" : "2014-09-19T18:48:45.396Z",
+  "searchClusterId" : "Solr4.10",
+  "solrParams" : {
+    "name" : "collection1"
+  },
+  "type" : "DATA",
+  "metadata" : { }
+}
+```
+
+*Delete a collection, but keep the associated signals and searchLogs collections:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X DELETE https://FUSION_HOST:FUSION_PORT/api/collections/newCollection?purge=false
+```
+
+*Get the status of the 'demo' collection:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/collections/demo/status
+```
+
+**RESPONSE**
+
+```json
+{
+  "maxShardsPerNode" : 1,
+  "replicationFactor" : 1,
+  "shards" : {
+    "shard1" : {
+      "range" : "80000000-7fffffff",
+      "state" : "active",
+      "replicas" : {
+        "core_node1" : {
+          "state" : "active",
+          "core" : "demo_shard1_replica1",
+          "leader" : true,
+          "base_url" : "https://FUSION_HOST:8983/solr",
+          "node_name" : "FUSION_HOST:8983_solr"
+        }
+      }
+    }
+  }
+}
+
+```
+
+*Get stats for the 'demo' collection:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:FUSION_PORT/api/collections/demo/stats
+
+```
+
+**RESPONSE**
+
+```json
+{
+  "collectionId" : "demo",
+  "documentCount" : 536,
+  "requestCount" : 6,
+  "qps" : 28.34716542561849,
+  "sizeInBytes" : 7646045,
+  "lastModified" : "2014-05-19T19:58:33.545Z"
+}
+
+```
+
+*Add the recommendations feature for the 'tempy' collection:*
+
+<Note>
+For more information on collection features and feature management, see [Collection Features API](/fusion/5.9/333/collection-features-api)
+</Note>
+
+Use this structure to send the request:
+
+```
+https://FUSION_HOST:FUSION_PORT/api/collections/{collection}/features/{feature}
+```
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d @enable-recommendations.json https://FUSION_HOST:FUSION_PORT/api/apps/Recommender-App/collections/tempy/features/recommendations -v
+```
+
+Make sure to change the `collection-id` in the JSON and save as a file or send directly in the string.
+
+**Recommendations JSON:**
+
+```json
+{
+"name": "recommendations",
+"collectionId": "tempy",
+"params":
+
+{ "idField": "id", "itemsForUser": true, "itemsForQuery": false, "itemsForItem": true, "queriesForQuery": false }
+,
+"enabled": true
+}
+
+```
+
+**Signals JSON:**
+
+```json
+{
+"name": "signals",
+"collectionId": "tempy",
+"params": {},
+"enabled": false
+},
+
+```
+
+**Search Logs JSON:**
+
+```json
+{
+"name": "searchLogs",
+"collectionId": "tempy",
+"params": {},
+"enabled": false
+}
+
+```
+
+**Partition by time JSON:**
+
+```json
+{
+"name": "partitionByTime",
+"collectionId": "tempy",
+"params": {},
+"enabled": false
+}
+```

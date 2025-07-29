@@ -1,0 +1,104 @@
+---
+title: "Query Pipeline Stages"
+permalink: "169"
+---
+
+A query pipeline is made up of a series of query stages that process incoming search queries.
+
+A pipeline stage definition associates a unique ID with a set of properties.
+These definitions are registered with the Fusion API service and stored in ZooKeeper for re-use across pipelines and search applications.
+
+Fusion includes a number of specialized query stages as well as a JavaScript stage that allows advanced processing via a JavaScript program.
+
+## Configuring query pipeline stages
+
+* In the Fusion UI, the [Query Workbench](/fusion-server/4.2/167/query-workbench) provides an environment for configuring the stages in a query pipeline.
+* The [Query Stages API](/fusion-server/4.2/362/query-stages-api) is used to create, list, update, or delete query stages using JSON. See also the [Query Pipelines API](/fusion-server/4.2/360/query-pipelines-api).
+
+## Asynchronous query pipeline processing
+
+Query pipeline processing performance can be improved by enabling asynchronous processing for certain stages that make requests to secondary collections, external databases, and so on. The following stages support asynchronous processing:
+
+* [Active Directory Security Trimming](/fusion-server/4.2/296/active-directory-security-trimming-stage)
+* [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+* [Boost with Signals](/fusion-server/4.2/248/boost-with-signals-stage)
+* [JDBC Lookup](/fusion-server/4.2/260/jdbc-lookup-stage)
+* [Security Trimming](/fusion-server/4.2/272/security-trimming-stage)
+* [Solr Subquery](/fusion-server/4.2/297/solr-subquery-stage)
+
+This feature uses the fork-and-join model, where any of the stages above can create a fork on the pipeline. The parallel processes are joined again using the [Merge Async Results stage](/fusion-server/4.2/266/merge-async-results-stage) at a later point in the pipeline.
+
+## Conditional query processing
+
+Query Pipeline stages are used to modify Request objects
+and Response objects. Each stage can include a conditional JavaScript expression (the `condition` property in its configuration) that can access these objects.
+
+For example, this condition first checks that the property `fusion-user-name` is specified in the Request object, then checks for a particular value:
+
+```js
+request.hasParam("fusion-user-name") && request.getFirstParam("fusion-user-name").equals("SuperUser");
+```
+
+## Reference topics
+
+See these reference topics for complete details about each query pipeline stage:
+
+### Setup
+
+* [Active Directory Security Trimming](/fusion-server/4.2/296/active-directory-security-trimming-stage)
+* [Field Facet](/fusion-server/4.2/252/field-facet-stage)
+* [Query Fields](/fusion-server/4.2/289/query-fields-stage)
+* [Security Trimming](/fusion-server/4.2/272/security-trimming-stage)
+
+### Relevancy
+
+* [Block Documents](/fusion-server/4.2/259/block-documents-stage)
+* [Landing Pages](/fusion-server/4.2/285/landing-pages-stage)
+* [Parameterized Boosting](/fusion-server/4.2/279/parameterized-boosting-stage)
+* [Recommend More Like This](/fusion-server/4.2/256/solr-more-like-this-stage)
+* [Recommend Items for User](/fusion-server/4.2/281/recommend-items-for-user-stage)
+* [Recommend Items for Item](/fusion-server/4.2/251/recommend-items-for-item-stage)
+
+### Query rewriting
+
+* [Text Tagger](/fusion-server/4.2/264/text-tagger-stage)
+* [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+
+### Response rewriting
+
+* [Response Document Exclusion Stage](/fusion-server/4.2/269/response-document-exclusion-stage)
+* [Response Document Field Redaction Stage](/fusion-server/4.2/284/response-document-field-redaction-stage)
+* [Response Pairwise Swap](/fusion-server/4.2/247/response-pairwise-swap-stage)
+* [Response Shuffle Stage](/fusion-server/4.2/275/response-shuffle-stage)
+* [Modify Response with Rules](/fusion-server/4.2/295/modify-response-with-rules-stage)
+
+### Fetch data
+
+* [JDBC Lookup](/fusion-server/4.2/260/jdbc-lookup-stage)
+* [REST Query Stage](/fusion-server/4.2/276/rest-query-stage)
+* [Solr Query](/fusion-server/4.2/265/solr-query-stage)
+* [Solr Subquery](/fusion-server/4.2/297/solr-subquery-stage)
+
+### Troubleshooting
+
+* [Logging](/fusion-server/4.2/287/logging-stage)
+* [Send PagerDuty Message](/fusion-server/4.2/273/send-pager-duty-message-stage)
+* [Send Slack Message](/fusion-server/4.2/290/send-slack-message-stage)
+* [Send SMTP Email](/fusion-server/4.2/253/send-smtp-email-stage)
+* [Write Log Message](/fusion-server/4.2/271/write-log-message-stage)
+
+### Advanced
+
+* [Additional Query Parameters](/fusion-server/4.2/294/additional-query-parameters-stage)
+* [JavaScript Query Stage](/fusion-server/4.2/89cjix/java-script-query-stage)
+* [Managed Javascript](/fusion-server/4.2/258/managed-java-script-stage)
+* [Retrieve Stored Parameters](/fusion-server/4.2/270/retrieve-stored-parameters-stage)
+
+### Other
+
+* [Analytics Catalog Query](/fusion-server/4.2/288/analytics-catalog-stage)
+* [Call Pipeline](/fusion-server/4.2/261/run-query-pipeline-stage)
+* [Experiment Query](/fusion-server/4.2/280/experiment-stage)
+* [Parameterized Faceting](/fusion-server/4.2/255/parameterized-faceting-stage)
+* [Return Query Parameters](/fusion-server/4.2/268/return-query-parameters-stage)
+* [Rollup Aggregation](/fusion-server/4.2/282/rollup-aggregation-stage)

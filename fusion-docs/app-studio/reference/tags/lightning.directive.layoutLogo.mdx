@@ -1,0 +1,45 @@
+---
+title: "layout:logo"
+permalink: "1109"
+---
+
+## Description
+
+Creates a content area
+
+## Usage
+
+as element:
+
+```xml
+<layout:logo
+       [image="{string}"]
+       [image-link="{string}"]
+       [height="{string}"]
+       [width="{string}"]
+       [alt="{string}"]>
+</layout:logo>
+
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| image  *(optional)* | **string** | The URL of the image to display. |
+| image-link  *(optional)* | **string** | The URL to redirect to when the image is click. Default: '/'. |
+| height  *(optional)* | **string** | The height of the logo in px. |
+| width  *(optional)* | **string** | The width of the logo in px. |
+| alt  *(optional)* | **string** | The alternative text if the image cannot be displayed. |
+
+## Example
+
+#### Source
+
+```xml
+<layout:logo image-link="https://twigkit.com" image="//static1.squarespace.com/static/53da228ce4b052fe60de3a3c/t/548af226e4b0dd3cb0252f2b/1466005538473/?format=1500w" height="34px" alt="Logo"></layout:logo>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/layoutLogo.png)</Frame>

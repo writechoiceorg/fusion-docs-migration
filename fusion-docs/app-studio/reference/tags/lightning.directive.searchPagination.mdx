@@ -1,0 +1,66 @@
+---
+title: "search:pagination"
+permalink: "1055"
+---
+
+## Description
+
+The pagination directive.
+
+## Usage
+
+as element:
+
+```xml
+<search:pagination
+       response="{string}"
+       [max-pages="{number}"]
+       [page-limit="{number}"]
+       [first-label="{string}"]
+       [show-last="{boolean}"]
+       [scroll-to="{string|boolean}"]>
+</search:pagination>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | The name of the response to use to generate the pagination. |
+| max-pages  *(optional)* | **number** | Maximum number of page links to output (default is 10). |
+| page-limit  *(optional)* | **number** | Maximum limit for which a pagination link is created (e.g. FAST ESP has a default offset limit of ~4000). |
+| first-label  *(optional)* | **string** | Label for the link to the first page. Default: '1' |
+| show-last  *(optional)* | **boolean** | Whether to show a link to the last page. Default: false |
+| scroll-to  *(optional)* | **string]link:[boolean** | The ID of an element to scroll to when the users selects a page. By default it will scroll to the top. You can disable this automatic scrolling by setting this attribute to `false` |
+
+## Example
+
+#### Source
+
+```xml
+<h3 id="example_normal">Normal</h3>
+<search:pagination response="response" max-pages="3"></search:pagination>
+<hr />
+
+<h3 styling="text-center" id="example_center">Center (pagination-wrapper-center)</h3>
+<search:pagination response="response" max-pages="3" styling="pagination-wrapper-center"></search:pagination>
+<hr />
+
+<h3 style="text-align:right;" id="example_right">Right (pagination-wrapper-right)</h3>
+<search:pagination response="response" max-pages="3" styling="pagination-wrapper-right"></search:pagination>
+```
+
+```js
+angular.module('lightning').controller('ExampleController', ['$scope', 'ResponseService', function($scope, ResponseService) {
+    var response = {query:{rpp:10},hits:{act:[0,22555]},page:1};
+    ResponseService.setResponse('response',response);
+}]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchPagination.png)</Frame>

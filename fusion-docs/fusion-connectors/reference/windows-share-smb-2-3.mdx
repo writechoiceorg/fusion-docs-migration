@@ -1,0 +1,38 @@
+---
+title: "Windows Share SMB 2/3 V1"
+description: "Connector Configuration Reference"
+permalink: "54"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+The Windows Share connector can access content in a Windows Share or Server Message Block (SMB 2 and 3 protocols)/Common Internet File System (CIFS) filesystem. Available in Fusion 5.x.x releases.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is the Windows Share SMB2/3 V2 connector.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-smb2.mdx";
+
+<SchemaParamFields schema={schema}/>
+

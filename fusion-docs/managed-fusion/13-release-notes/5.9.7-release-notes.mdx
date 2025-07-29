@@ -1,0 +1,53 @@
+---
+title: "Managed Fusion 5.9.7"
+permalink: "t92r8m"
+---
+
+Released on December 10, 2024,
+this [maintenance release](/policies/7shln5/lucidworks-version-support-lifecycle#maintenance-release-support-policy) includes new generative AI features and some bug fixes.
+
+To learn more, skip to the [release notes](#rel-notes).
+
+## Platform Support and Component Versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platform and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.7  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New Features
+
+### Generative AI predictions with Lucidworks AI
+
+New Lucidworks AI pipeline stages are introduced in this release to enrich your index and search with [Generative AI](/lw-platform/ai/r7ai90/generative-ai) predictions:
+
+* The [LWAI Prediction index stage](/managed-fusion/5.9/bzik28/lwai-prediction) allows for asynchronous and synchronous enrichment that add predictions when indexing your data.
+  See [Configure the LWAI Prediction index stage](/how-to/ua7khh/configure-the-lucidworks-ai-prediction-index-stage) for more detailed instructions about configuring this stage.
+* The [LWAI Prediction query stage](/managed-fusion/5.9/hnuyky/lwai-prediction) fetches synchronous predictions to add to your query response.
+  [Configure the LWAI Prediction query stage](/how-to/6w8lxy/configure-the-lucidworks-ai-prediction-query-stage) explains in detail how to configure this stage.
+
+See [Generative AI](/lw-platform/ai/r7ai90/generative-ai) for more details about Lucidworks AI’s Generative AI capabilities, including pre-trained models hosted by Lucidworks.
+You can also use [LWAI custom trained embedding](/lw-platform/ai/k1zkfn/custom-embedding-model-training) and [LWAI hosted pre-trained models](/lw-platform/ai/3vqfxe/pre-trained-embedding-models) with these new stages.
+
+A new API endpoint, `/index-pipelines/{id}/async-enrichment/skip-pending`, can be used to clear the queue of outstanding asynchronous prediction index requests if needed.
+
+## Bug fixes
+
+* Fixed an issue where some collections were not displayed in the Collections Manager if the system contained one or more orphaned child collections.
+  Note that orphaned child collections are not displayed in the Collections Manager by design, but they are discoverable using the API or the Object Manager.

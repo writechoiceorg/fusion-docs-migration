@@ -1,0 +1,36 @@
+---
+title: "pivot:table"
+permalink: "1155"
+---
+
+## Description
+
+Display a facet with related filters as a table
+
+## Usage
+
+as element:
+
+```xml
+<pivot:table
+       platform="{string}"
+       query="{string}"
+       facet="{string}"
+       expand-query="{string}"
+       expand-facet="{string}"
+       [expand="{boolean}"]
+       [field="{string}"]>
+</pivot:table>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | **string** | The platform to query against |
+| query | **string** | The query to use |
+| facet | **string** | The facet to display |
+| expand-query | **string** | The query to use for expanding |
+| expand-facet | **string** | The facet to pivot on when expanding |
+| expand  *(optional)* | **boolean** | Allow expanding. Default: true |
+| field  *(optional)* | **string** | The filter field name to add to the query |

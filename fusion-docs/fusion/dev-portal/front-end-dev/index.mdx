@@ -1,0 +1,16 @@
+---
+title: "Front-end Development"
+permalink: "177"
+---
+
+Ultimately, Fusion is the back end for your own search applications.
+
+* Your application uses Fusion’s REST API to interact with the Fusion system. The REST API supports all the features available in the Fusion UI. At a minimum, your application uses the [`/query/QUERY_PROFILE_ID?SEARCH_QUERY` endpoint](/fusion/5.9/361/query-profiles-api) to query Fusion collections.
+
+* [*Recommendations*](/fusion/5.9/475/methods-for-recommendations-and-boosting) are a way to use aggregations to enhance the search experience. Based on the current search, or signals collected previously, Fusion can return results that are relevant in the end user’s current context.
+* Certain front-end features require some Fusion configuration:
+
+  + [Autocomplete](/fusion/5.9/178/autocomplete)
+  + [Faceting](/fusion/5.9/175/faceting)
+  + [Stopwords](/fusion/5.9/181/stopwords-files)
+  + [Synonyms](/fusion/5.9/3240/synonyms)

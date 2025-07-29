@@ -1,0 +1,105 @@
+---
+title: "Results and page concepts"
+description: "Experience Optimizer"
+permalink: "t29qwx"
+---
+
+This topic provides information about page components you can manage to improve query results in Experience Optimizer.
+
+## Document grouping
+
+Experience Optimizer lets you define categories and group documents that are relevant to each other.
+
+<Frame>![result list](/assets/images/experience-optimizer/eo-result-list.png)</Frame>
+
+Options to group documents include:
+
+* Block or boost. For example, promote a new document group to the top of the results for greater visibility.
+* Apply rules individually to documents within a group. For example, boost ballet-related documents to the top of the group if a specific user searches for ballet dance contest.
+
+<Frame>![ballet boost](/assets/images/experience-optimizer/eo-boost-ballet.png)</Frame>
+
+### Best practices
+
+These parameters group documents, and are defined in the Additional Query Parameters Stage:
+
+| Parameter Name | Parameter Value | Update Policy |
+| --- | --- | --- |
+| group | true | default |
+| group.format | grouped | default |
+| group.ngroups | true | default |
+| group.field | style_id_s | default |
+
+For more information about adding a query pipeline and additional query parameters, see:
+
+* [Add a Query Pipeline Stage](/how-to/56fmxr/add-a-query-pipeline-stage)
+* [Additional Query Parameters Stage](/managed-fusion/5.9/8eo8x3/additional-query-parameters-stage)
+
+### Collapse/Expand parser grouping
+
+The Collapse/Expand parser allows grouping with the following parameters:
+
+| Parameter Name | Parameter Value |
+| --- | --- |
+| expand | true |
+| enableElevation | true |
+| group | false |
+
+<Note>
+See [Collapse and Expand Results](https://solr.apache.org/guide/collapse-and-expand-results.html) for more information.
+</Note>
+
+## Search rewrites
+
+Search rewriting lets you modify search queries to more accurately reflect the intentions of your customers.
+
+These functions let you:
+
+* Create search rewrites manually.
+* Edit, test, review and publish the search rewrites generated automatically from signals data.
+
+For example, create a misspelling search rewrite to correct common spelling mistakes entered for a particular document. The misspelled query will then produce the same results as a correctly spelled search.
+
+Experience Optimizer provides four rewrite types:
+
+* [Head/Tail](/how-to/1r38or/use-eo-search-rewrites#head-tail) - improves poorly performing searches.
+* [Misspelling detection](/how-to/1r38or/use-eo-search-rewrites#misspelling) - corrects common spelling mistakes.
+* [Phrase detection](/how-to/1r38or/use-eo-search-rewritess#phrase) - identifies documents with matching phrases.
+* [Synonym detection](/how-to/1r38or/use-eo-search-rewrites#synonym) - includes alternative words with the same meaning.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Experience Optimizer: Rewrites Manager** focuses on how to create search rewrites that optimize your user’s search results:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/experience-optimizer-rewrites-manager" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/eo-rewrites-manager.jpeg" alt="Experience Optimizer: Rewrites Manager" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+## Optimize zero results
+
+Search queries that return zero results can drive customers away from your site. You can set certain documents to display when a customer search generates zero results.
+
+For more information, see [Optimizing zero results](/how-to/t3oq7w/eo-zero-results).
+
+## Rule conflict resolution
+
+Sometimes, rules created in the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor) and Experience Optimizer conflict with each other. For example, if you have three rules to boost, bury, and block a document, Experience Optimizer highlights these conflicting rules so you can address them.
+
+To highlight conflicting rules, the **Rules Fired** section displays a red warning icon next to the dominant rule and a red flag on the conflicting rules.
+
+Click the **Edit** button to view the details of the conflicting rules and resolve the conflict.
+
+The details of the conflicting rules affecting specific documents are found in the Document Details panel. Click the **Start Task** button, and then click the **Document Details** button.

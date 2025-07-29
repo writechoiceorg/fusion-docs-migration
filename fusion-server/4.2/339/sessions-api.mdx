@@ -1,0 +1,111 @@
+---
+title: "Sessions API"
+permalink: "339"
+---
+
+The Sessions API provides a way for clients to manage Fusion sessions and cookies. When a client successfully authenticates, Fusion will create a unique identifier for the session. This identifier becomes the session key and is mapped to the client. The authentication response contains an HTTP cookie, which is typically stored by the client for later use. By sending this cookie back to Fusion, a client can securely access Fusion without having to re-authenticate.
+
+By default, sessions time out after 1 hour of no activity. A default maximum limit of 8 hours ensures that sessions are cleared, regardless of activity. Once a session times out, clients must re-authenticate to receive a new session cookie.
+
+The following properties control session timeouts ***in seconds***:
+
+* `com.lucidworks.apollo.admin.session.timeout` - Maximum amount of time before a session, active or otherwise, expires.
+* `com.lucidworks.apollo.admin.session.idle.timeout` - Maximum amount of time before an idle session expires.
+
+To set these values for the Fusion proxy, please edit `fusion.properties` and add them to the `proxy.jvmOptions` variable. Each value must be added with a `-D` prefix. For example, to set the session timeout to 4 hours and the idle timeout to 10 minutes, use the following:
+
+To set these values for the Fusion proxy, please edit `fusion.properties` and add them to the `proxy.jvmOptions` variable. Each value must be added with a `-D` prefix. For example, to set the session timeout to 4 hours and the idle timeout to 10 minutes, use the following:
+
+```
+proxy.jvmOptions = -Xmx512m -Dcom.lucidworks.apollo.admin.session.timeout=14400 -Dcom.lucidworks.apollo.admin.session.idle.timeout=600
+```
+
+## Create a Session
+
+The path for this request is:
+
+`/api/session?realmName=<realmName>`
+
+where the query parameter *realmName* takes as its value the name of a realm to authenticate against.
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion-server/4.2/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+### Input
+
+| Parameter | Description |
+| --- | --- |
+| username  *Required* | The username to use in authentication. |
+| password  *Required* | The password to use in authentication. |
+
+### Output
+
+The output will include a cookie ID in the HTTP response header. This can be saved to a file and re-used with subsequent REST API requests.
+
+### Examples
+
+*Create a session against an LDAP server and store it in a file named 'cookies':*
+
+**REQUEST**
+
+```bash
+curl -c cookies -i -H "content-type:application/json" -X POST -d '{"username":"USERNAME", "password":"PASSWORD"}' https://FUSION_HOST:8764/api/session?realmName=REALM_NAME
+```
+
+**RESPONSE**
+
+```
+HTTP/1.1 201 Created
+Set-Cookie: id=840a33d4-b650-49f2-87a4-85412e99b37c;HttpOnly;Path=/api
+Content-Length: 0
+Server: Jetty(9.1.4.v20140401)
+```
+
+<Note>
+In this case, we got a response because we set `curl` to include the HTTP in the output. Otherwise, we would not know for sure the session was created.
+</Note>
+
+*Use the cookie in another cURL request to see all collections:*
+
+```bash
+curl -b cookies https://FUSION_HOST:8764/api/collections
+```
+
+## View Session Details
+
+To view session details, including the current user record, all roles directly assigned to that user, and all roles inherited from the realm by that user, use the following path for the request:
+
+`/api/session`
+
+### Examples
+
+**REQUEST**
+
+```bash
+curl 'https://FUSION_HOST:8764/api/session' -H 'Cookie: id=416925d6-6d26-4afd-b31d-ced61714d287'
+```
+
+**RESPONSE**
+
+```json
+{
+  "user": {
+    "id": "abc123",
+    "username": "foo"
+  },
+  "roles": [
+    {"name": "bar"}
+  ]
+}
+```
+
+## End a Session
+
+The path for this request is:
+
+`/api/session`
+
+### Examples
+
+Sessions can be ended automatically in the Fusion UI by clicking **Account Settings** <Frame>![Account Settings](/assets/images/4.0/icons/workspace-account.png)</Frame> **> Log out**.

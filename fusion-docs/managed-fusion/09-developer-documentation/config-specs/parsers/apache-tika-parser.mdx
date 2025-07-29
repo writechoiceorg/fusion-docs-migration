@@ -1,0 +1,32 @@
+---
+title: "Apache Tika"
+description: "Parser stage configuration specifications"
+permalink: "l6hig6"
+---
+
+<Note>
+**Deprecation and removal notice**
+
+This parser is deprecated as of Managed Fusion 5.8.0 and is expected to be removed in a later version. Use the asynchronous Tika parsing method instead. For more information, see [Asynchronous Tika Parsing](/managed-fusion/5.9/ve1qvp/asynchronous-tika-parsing).
+</Note>
+
+Apache Tika is a versatile parser that supports many types of unstructured document formats, such as HTML, PDF, Microsoft Office, OpenOffice, RTF, audio, video, images, and more. A complete list of supported formats is available at [Apache Tika](http://tika.apache.org/).
+
+This stage is not compatible with asynchronous Tika parsing.
+
+<Note>
+**Important**
+
+To perform image text extraction when **Include images** is enabled, contact your Lucidworks representative for details.
+</Note>
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+Parse Office documents (ppt/docx/pdf), HTML files, images (jpeg/tiff), and more. See "Supported Formats" at https://tika.apache.org/ for a full list. This stage is deprecated. Use 'Apache Tika Container Parser' instead. This stage doesn't work with async-parsing.
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/parsers/apache-tika-deprecated-.mdx";
+
+<SchemaParamFields schema={schema}/>

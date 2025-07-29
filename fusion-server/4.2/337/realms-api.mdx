@@ -1,0 +1,103 @@
+---
+title: "Realms API"
+permalink: "337"
+---
+
+Realms are used to authenticate users across several different user access control systems.
+
+There are two types of realms currently supported: native, which uses Fusion itself to manage users and passwords, and LDAP, which uses an LDAP server as the source of truth for usernames and passwords.
+
+Authenticating users with an LDAP system creates a user record in Fusion, which includes a property for the realm the user belongs to. This Fusion user record is used by administrators to grant users access permissions for the UI or REST API services.
+
+## Create, Update, Delete or List Realms
+
+The path for this request is:
+
+`/api/realm-configs/<id>`
+
+where *\<id>* is the ID of a realm. The ID is optional for a GET request and omitted from a POST request.
+
+A GET request returns the configured realms. If ID is omitted, all realms will be returned.
+
+A POST request creates a new realm. If the request is successful, a new ID will be generated.
+
+<Note>
+In order to see this object within the [Fusion UI](/fusion-server/4.2/121/object-explorer), it **must** be associated with an app. To do this, create the object using the `/apps` endpoint.
+</Note>
+
+A PUT request updates a realm.
+
+A DELETE request removes the realm.
+
+### Input
+
+| Parameter | Description |
+| --- | --- |
+| name  *Required* | The name of the realm. This name will appear on the login screen of the UI, and will appear in user records to identify the realm they belong to. |
+| enabled  *Required* | If **true**, the realm is available for users to use with system authentication. |
+| realmType  *Required* | String value for realm type. |
+
+Native realms store users in the Fusion database.
+
+LDAP realms connect to an LDAP server to verify the user’s ID and password.
+Configuration requires the following additional properties:
+
+| Parameter | Description |
+| --- | --- |
+| host | The hostname of the LDAP server. |
+| port | The port to use when connecting to the LDAP server. |
+| ssl | If **true**, SSL will be used when connecting to the LDAP server. |
+| bindDN | A string consisting of the LDAP server DN (Distinguished Name) and a single pair of curly braces (`{}`) which is a placeholder for the username. |
+
+### Output
+
+When creating a new realm, the output will include the properties for the realm just created, or an error to indicate a problem with the entry.
+
+For a GET request, the output will include all defined properties of the realm.
+
+For a DELETE or a PUT request, no output will be returned.
+
+### Examples
+
+*Get details of the default 'native' realm:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://FUSION_HOST:8764/api/realm-configs/86df9b5b-4a1c-4b0b-bc10-25aee55fef63
+```
+
+**RESPONSE**
+
+```json
+{
+    "enabled": true,
+    "id": "86df9b5b-4a1c-4b0b-bc10-25aee55fef63",
+    "name": "native",
+    "realmType": "native"
+}
+```
+
+*Create a realm to support LDAP authentication:*
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{"realmType":"ldap", "name":"dev-ldap", "enabled":true, "config":{"host":"fusion-host", "port":10636 , "ssl":true, "bindDn":"uid={},ou=users,dc=security,dc=example,dc=com"} }' https://FUSION_HOST:8764/api/realm-configs
+```
+
+**RESPONSE**
+
+```json
+{
+   "realmType":"ldap",
+   "name":"dev-ldap",
+   "enabled":true,
+   "config":{
+      "bindDn":"uid={},ou=users,dc=security,dc=example,dc=com",
+      "ssl":true,
+      "port":10636,
+      "host":"fusion-host"
+   }
+}
+```

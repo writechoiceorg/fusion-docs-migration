@@ -1,0 +1,23 @@
+---
+title: "Row tag"
+permalink: "3097"
+---
+
+The Table Row tag specifies how rows of the results table should be formatted. The tag must be nested within a [Table Body tag](/fusion/5.9/3099/table-body-tag).
+
+## Usage
+
+Place the Row tag inside the body of a [Table Body tag](/fusion/5.9/3099/table-body-tag). It contains nested [Cell tags](/fusion/5.9/3098/cell-tag), one for every table column.
+
+```xml
+<table:result-list response="response">
+    ...
+    <table:body>
+        <table:row>
+            <table:cell name="full_name" query="query"></table:cell>
+            <table:cell name="address"></table:cell>
+            <table:cell name="dob" date-format="dd/MM/yyyy"></table:cell>
+        </table:row>
+    </table:body>
+</table:result-list>
+```

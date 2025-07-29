@@ -1,0 +1,184 @@
+---
+title: "content:form"
+permalink: "1111"
+---
+
+## Description
+
+Creates a form, all inputs into the form are attached to a variable
+called model.
+
+Adding a platform to the form will send the request to the
+[Platform Store
+API](http://dev.twigkit.net/docs/modules/Webservices/Store/) and create the model as a new result .
+
+## Usage
+
+as element:
+
+```xml
+<content:form
+       [platform="{string}"]
+       [legend="{string}"]
+       [action="{string}"]
+       [content="{Object}"]>
+</content:form>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform  *(optional)* | **string** | The platform to post the data to. |
+| legend  *(optional)* | **string** | Text to display in the legend of the form. |
+| action  *(optional)* | **string** | Whether the form should be creating a new record (`store`) or updating an existing record (`update`). Default:`store`, options `store` or `update` |
+| content  *(optional)* | **Object** | Key value pair object or result to map the form data to. |
+
+## Events
+
+### contentFormPostError
+
+When the content form is posted to the API unsuccessfully this event
+will be broadcasted with the error received from the API.
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope
+
+### contentFormPostSuccess
+
+When the content form is posted to the API successfully this event will
+be broadcasted with the model sent to the API.
+
+#### Type:
+
+broadcast
+
+#### Target:
+
+root scope
+
+## Example
+
+#### Source
+
+```xml
+<div ng-controller="ExampleController">
+<search:platform var="platform" conf="platform.test"></search:platform>
+<layout:grid>
+    <layout:block md="1-1">
+        <h3 id="example_styling">Styling</h3>
+    </layout:block>
+    <layout:block md="1-2">
+        <h4 id="example_styling">(form-aligned)</h4>
+        <content:form styling="form-aligned" platform="platform">
+            <content:input label="id" field="id" value="123456" hidden="true"></content:input>
+            <content:input label="Name" field="name" required="true"></content:input>
+            <content:textarea label="Address" field="Address" required="true"></content:textarea>
+            <content:submit></content:submit>
+        </content:form>
+    </layout:block>
+    <layout:block md="1-2">
+        <h4 id="example_styling">(form-stacked)</h4>
+        <content:form styling="form-stacked" content="model1" platform="platform">
+            <content:input label="id" field="id" value="12345" hidden="true"></content:input>
+            <content:input label="Name" field="name" required="true"></content:input>
+            <content:textarea label="Address" field="Address"></content:textarea>
+            <content:submit></content:submit>
+        </content:form>
+    </layout:block>
+</layout:grid>
+<hr/>
+<h3 id="example_attributes">Attributes</h3>
+<h4 id="example_attributes_legend">Legend</h4>
+<content:form legend="Please complete the form." content="result">
+    <content:input label="id" field="id" value="1234" hidden="true"></content:input>
+    <content:input label="Name" field="name" required="true"></content:input>
+    <content:textarea label="Address" field="Address"></content:textarea>
+    <content:submit></content:submit>
+</content:form>
+<hr/>
+<h4 id="example_attributes_content">Content</h4>
+<button styling="button" ng-click="changeModel()">Update Content Model</button>
+<layout:grid>
+    <layout:block md="1-1">
+        <p>Click update content model button to update the values in the inputs.</p>
+        <content:form styling="form-stacked" content="model1" platform="platform">
+            <strong>Form Model</strong>
+            <pre>{{$parent.model}}</pre>
+            <content:input label="id" field="id" value="12345" hidden="true"></content:input>
+            <content:input label="Name" field="name" required="true"></content:input>
+            <content:textarea label="Address" field="Address"></content:textarea>
+            <content:submit></content:submit>
+        </content:form>
+    </layout:block>
+    <layout:block md="1-1">
+        <p>To only initiated the form with the values from a result or scope object use <code>content="::myModelObject"</code>.
+        If you click update content model the values of this form will not change.
+        (see <a href="https://docs.angularjs.org/guide/expression#one-time-binding" target="_blank">one time bindings</a>)</p>
+        <content:form styling="form-stacked" content="::model1" platform="platform">
+            <strong>Form Model</strong>
+            <pre>{{$parent.model}}</pre>
+            <content:input label="id" field="id" value="12345" hidden="true"></content:input>
+            <content:input label="Name" field="name" required="true"></content:input>
+            <content:textarea label="Address" field="Address"></content:textarea>
+            <content:submit></content:submit>
+        </content:form>
+    </layout:block>
+</layout:grid>
+</div>
+```
+
+```js
+angular.module('lightning')
+.controller('ExampleController', ['$scope', function($scope) {
+        $scope.model1 = {
+            name:'foo',
+            Address:'bar'
+        }
+
+        function generateRandomString(size){
+            var text = "";
+            var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+
+            for( var i=0; i < size; i++ )
+                text += possible.charAt(Math.floor(Math.random() * possible.length));
+
+            return text;
+        }
+
+        $scope.changeModel = function(){
+        $scope.model1 = {
+            name:generateRandomString(4),
+            Address:generateRandomString(3)
+        }
+        };
+
+
+
+        $scope.result ={
+        result: {
+            fields: {
+            name:{
+                val:'George',
+            } ,
+            Address:{
+                val:'123 George Way',
+            },
+            }
+        },
+        }
+}]);
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/contentForm.png)</Frame>

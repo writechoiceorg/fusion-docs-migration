@@ -1,0 +1,453 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Trains QnA model on a supervised basis with with pre-trained or trained embeddings and deploys the trained model to the ML Model Service",
+  "properties": {
+    "aMaxLen": {
+      "description": "Average length of question by number of tokens",
+      "title": "Answer length",
+      "type": "integer"
+    },
+    "answerColName": {
+      "description": "Name of the field containing answers",
+      "minLength": 1,
+      "title": "Answer Field",
+      "type": "string"
+    },
+    "baseLR": {
+      "description": "Base learning rate used in cyclical training",
+      "title": "Base learning rate",
+      "type": "number"
+    },
+    "cudnn": {
+      "default": false,
+      "description": "Use GPU for training if available (recommended NVIDIA GPU with 8Gb or more memory)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "GPU available",
+      "type": "boolean"
+    },
+    "deployModelName": {
+      "description": "Name of the model to be used for deployment (must be a valid DNS subdomain with no underscores)",
+      "maxLength": 30,
+      "pattern": "[a-zA-Z][\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Model Deployment Name",
+      "type": "string"
+    },
+    "embSPDP": {
+      "default": 0.15,
+      "description": "Fraction of input to drop with Dropout layer (from 0-1)",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Dropout ratio",
+      "type": "number"
+    },
+    "epochs": {
+      "title": "Number of epochs to be used in training",
+      "type": "integer"
+    },
+    "extraTrainingArgs": {
+      "description": "Add any additional arguments for the Python training scripts in this field",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Extra training args for Python scripts",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "infBatch": {
+      "description": "Batch size during validation. If left blank, this will be set automatically based on the input data",
+      "title": "Inference batch size used in validation",
+      "type": "integer"
+    },
+    "kList": {
+      "default": "[1,3,5]",
+      "description": "The k retrieval position that will be used to compute for each metric",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics@k list",
+      "type": "string"
+    },
+    "lowerCases": {
+      "default": false,
+      "description": "Whether to lower case all words in training, i.e. whether to treat upper case and lower case words equally.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Lower case all words",
+      "type": "boolean"
+    },
+    "maxLR": {
+      "description": "Maximum learning rate used in cyclical training",
+      "title": "Maximum learning rate",
+      "type": "number"
+    },
+    "maxTokensNum": {
+      "default": 5000,
+      "description": "Drop document if the total words is greater than this value",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Maximum number of words in doc",
+      "type": "integer"
+    },
+    "maxVocabSize": {
+      "default": 100000,
+      "description": "Maximum number of words in vocabulary, words will be trimmed if frequency is too low",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Maximum vocabulary size",
+      "type": "integer"
+    },
+    "minTokensNum": {
+      "default": 1,
+      "description": "Drop document if the total words is lower than this value",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 1,
+      "title": "Minimum number of words in doc",
+      "type": "integer"
+    },
+    "modelReplicas": {
+      "default": 1,
+      "description": "How many replicas of the model should be deployed by Seldon Core",
+      "title": "Model replicas",
+      "type": "integer"
+    },
+    "monitorMetric": {
+      "default": "mrr@3",
+      "description": "The metric that is chosen among all possible metrics at k to be used to decide when to stop training",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Monitor metric",
+      "type": "string"
+    },
+    "monitorMetricsList": {
+      "default": "[\"map\", \"mrr\", \"precision\", \"recall\", \"roc_auc\"]",
+      "description": "List of evaluation metrics on validation data that will be printed in the log at the end of each epoch",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Metrics list",
+      "type": "string"
+    },
+    "monitorPatience": {
+      "description": "Stop training if no improvement in metrics by this number of epochs",
+      "title": "Monitor patience",
+      "type": "integer"
+    },
+    "numClusters": {
+      "description": "Number of clusters to be used for fast dense vector retrieval. Note no clustering will be applied if this is set to 0. If left blank, cluster count will be inferred by the job depending on the data",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Number of clusters",
+      "type": "integer"
+    },
+    "numNeg": {
+      "default": 15,
+      "description": "Number of non-matching answers randomly sampled for each question to be used as negative examples when constructing",
+      "hints": [
+        "advanced"
+      ],
+      "title": " Number of negative QA pairs",
+      "type": "integer"
+    },
+    "numPos": {
+      "default": 5,
+      "description": "Number of answers to be used for each question when constructing validation data",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Number of positive QA pairs",
+      "type": "integer"
+    },
+    "qMaxLen": {
+      "description": "Average length of question by number of tokens",
+      "title": "Question length",
+      "type": "integer"
+    },
+    "questionColName": {
+      "description": "Name of the field containing questions",
+      "minLength": 1,
+      "title": "Question Field",
+      "type": "string"
+    },
+    "rnnNamesList": {
+      "description": "List of layers of RNNs can be used, with possible values of lstm, gru. E.g. [\"lstm\", \"lstm\"]. This value will be automatically decided based on data if left blank",
+      "title": "RNN function list",
+      "type": "string"
+    },
+    "rnnUnitsList": {
+      "description": "List of RNN layer units numbers, corresponding to RNN function list. E.g. 150, 150. This value will be automatically decided based on data if left blank",
+      "title": "RNN function units list",
+      "type": "string"
+    },
+    "samplingProportion": {
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1. Leave blank for no sampling",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Sampling proportion",
+      "type": "number"
+    },
+    "scaleOnly": {
+      "default": false,
+      "description": "Run job but only adjust Seldon Core replica count (no training)",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Scale Seldon Core Replica Deployment Only",
+      "type": "boolean"
+    },
+    "seed": {
+      "default": 12345,
+      "description": "The proportion of data to be sampled from the full dataset. Use a value between 0 and 1 for a proportion (e.g. 0.5 for 50%), or for a specific number of examples, use an integer larger than 1",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Seed",
+      "type": "integer"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "testMode": {
+      "default": false,
+      "description": "If set to true, then the training will exit after the first iteration. Useful for ensuring that the end-to-end pipeline is working",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Test Mode",
+      "type": "boolean"
+    },
+    "topKClusters": {
+      "default": 10,
+      "description": "How many closest clusters the model can find for each query. At retrieval time, all answers in top k nearest clusters will be returned and reranked",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Top k of clusters to return",
+      "type": "integer"
+    },
+    "trainBatch": {
+      "description": "Batch size during training. If left blank, this will be set automatically based on the input data",
+      "title": "Training batch size",
+      "type": "integer"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing question and answer pairs",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "type": {
+      "default": "argo-qna-supervised",
+      "enum": [
+        "argo-qna-supervised"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "unidecode": {
+      "default": true,
+      "description": "Use Unidecode library to transform Unicode input into ASCII transliterations",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Apply unicode decoding",
+      "type": "boolean"
+    },
+    "useAutoML": {
+      "default": false,
+      "description": "Automatically tune hyperparameters (will take longer to train)",
+      "title": "Perform auto hyperparameter tuning",
+      "type": "boolean"
+    },
+    "useCustomEmbeddings": {
+      "default": false,
+      "description": "Choose this option when there are many uncommon words or jargons in data. NOTE: please look at log for warning about percentage of covered vocabulary words, if this proportion is less than 80%, please set this parameter to true and do not use the pre-trained embeddings shipped with our package",
+      "title": "Use custom embeddings",
+      "type": "boolean"
+    },
+    "valSize": {
+      "default": 0.1,
+      "description": "Proportion of the original data to be used as validation sample",
+      "exclusiveMinimum": false,
+      "hints": [
+        "advanced"
+      ],
+      "minimum": 0.001,
+      "title": "Validation sample size",
+      "type": "number"
+    },
+    "w2vEpochs": {
+      "default": 15,
+      "description": "Number of epochs to train custom word2vec embeddings",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Word2Vec training epochs",
+      "type": "integer"
+    },
+    "w2vTextColumns": {
+      "description": "Which fields in the Word2Vec training collection to use in Word2Vec vocabulary embedding training. If multiple fields, please separate them by comma, e.g. description_t,title_t.",
+      "title": "Word2Vec training fields",
+      "type": "string"
+    },
+    "w2vTextsCollection": {
+      "description": "Name of the collection which contains the documents that will be used to train Word2Vec if pre-trained word2vec embeddings won't be used.",
+      "title": "Word2Vec training collection",
+      "type": "string"
+    },
+    "w2vVectorSize": {
+      "default": 150,
+      "description": "Word-vector dimensionality to represent text (suggested dimension ranges: 100~150",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Size of word vectors",
+      "type": "integer"
+    },
+    "w2vWindowSize": {
+      "default": 8,
+      "description": "The window size (context words from [-window, window]) for Word2Vec",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Word2Vec window size",
+      "type": "integer"
+    },
+    "weightDecay": {
+      "default": 0.0001,
+      "description": "L2 penalty used in Adam optimization. Bigger values will provide stronger regularization",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Weight decay",
+      "type": "number"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "questionColName",
+        "answerColName",
+        "deployModelName",
+        "modelReplicas",
+        "testMode",
+        "seed",
+        "valSize"
+      ]
+    },
+    {
+      "label": "Data Preprocessing",
+      "properties": [
+        "samplingProportion",
+        "minTokensNum",
+        "maxTokensNum",
+        "lowerCases",
+        "unidecode",
+        "maxVocabSize"
+      ]
+    },
+    {
+      "label": "Word2Vec Initialization",
+      "properties": [
+        "useCustomEmbeddings",
+        "withTexts",
+        "w2vTextsCollection",
+        "w2vTextColumns",
+        "w2vEpochs",
+        "w2vVectorSize",
+        "w2vWindowSize",
+        "w2vSamplingProportion"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "cudnn",
+        "numPos",
+        "numNeg",
+        "qMaxLen",
+        "aMaxLen",
+        "kList",
+        "monitorMetricsList",
+        "monitorMetric",
+        "numClusters",
+        "topKClusters"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters (used with no auto-hyperparameter tuning)",
+      "properties": [
+        "extraTrainingArgs",
+        "embSPDP",
+        "infBatch",
+        "trainBatch",
+        "rnnNamesList",
+        "rnnUnitsList",
+        "epochs",
+        "weightDecay",
+        "monitorPatience",
+        "baseLR",
+        "maxLR"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "questionColName",
+    "answerColName",
+    "deployModelName",
+    "type"
+  ],
+  "title": "QnA Supervised Training",
+  "type": "object"
+}

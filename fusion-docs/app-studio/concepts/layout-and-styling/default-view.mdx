@@ -1,0 +1,91 @@
+---
+title: "Layout of the Default View"
+permalink: "995"
+---
+
+This topic explores the elements that compose the default App Studio view.
+
+The default view looks like this:
+
+<Frame>![Default view](/assets/images/app-studio/4.2/anatomy0.png)</Frame>
+
+As we explore the components of the page, we will highlight each area in turn.
+
+## Include a partial file
+
+The header of the default view is a partial file that is included with the `layout:include` tag:
+
+```xml
+<layout:include file="views/partials/header.tpl.html" action="search"></layout:include>
+```
+
+<Frame>![Included header file](/assets/images/app-studio/4.2/anatomy1.png)</Frame>
+
+The `header.tpl.html` file, in turn, contains a number of `layout` tags, plus the important [`search:box`](/fusion/5.9/1058/search-box) tag.
+
+## Sidebar with facet list
+
+The sidebar is rendered using the simple [`layout:sidebar`](/fusion/5.9/1182/layout-sidebar) tag. Within the sidebar, the [`search:facet-list`](/fusion/5.9/1061/search-facet-list) and [`search:facet`](/fusion/5.9/1068/search-facet) tags contain the parameters that configure the facet fields and their display.
+
+<Frame>![Sidebar with facets](/assets/images/app-studio/4.2/anatomy2.png)</Frame>
+
+```xml
+<layout:block md="1-3" lg="1-4" drawer="left" id="sidebar" styling="blocksidebar-light">
+    <layout:sidebar>
+        <layout:box>
+
+            <!-- List facets and give them intuitive labels -->
+            <search:facet-list facet-names="genres_ss" response="response" platform="platform" query="query" styling="facet-list facet-list-wrappedheader">
+              <search:facet when-field="genres_ss" show="10" search-enabled="true" platform="platform" query="query" max-characters="40" show="12" show-more="24" collapsible="true"></search:facet>
+              <search:facet show="10" max-characters="40" show="12" show-more="24" collapsible="true"></search:facet>
+            </search:facet-list>
+
+        </layout:box>
+    </layout:sidebar>
+</layout:block>
+```
+
+## Search statistics and results list
+
+In the content area, `layout` tags are used again to construct the grid layout. For brevity, we will omit those from the code samples below.
+
+<Frame>![Content area](/assets/images/app-studio/4.2/anatomy3.png)</Frame>
+
+The [`search:response-statistics`](/fusion/5.9/1066/search-response-statistics) tag displays the number of search results, and a `{{ response.time }}` variable displays the number of milliseconds Fusion took to respond:
+
+```xml
+<search:response-statistics response="response"></search:response-statistics>
+<p class="response-statistics">(Fusion took {{ response.time }}ms)</p>
+```
+
+Then, the [`search:result-list`](/fusion/5.9/1200/search-result-list) tag lays out the grid of search results:
+
+```xml
+<search:result-list response="response" styling="cards-sm-1 cards-lg-2 cards-xl-2" platform="platform" query="query" instant-results="true">
+  ...
+</search:result-list>
+```
+
+## Individual results
+
+The [`search:result`](/fusion/5.9/1085/search-result) and [`search:field`](/fusion/5.9/1078/search-field) tags configure which fields are displayed with each individual search result. A field can be styled as the title or description, and any additional fields can have a variety of styles.
+
+<Frame>![Search result](/assets/images/app-studio/4.2/search-result.png)</Frame>
+
+```xml
+<search:result>
+  <search:field name="title_txt" styling="title" urlfield></search:field>
+  <search:field name="year_i" styling="description" max-characters="150"></search:field>
+  <search:field name="genres_ss" styling="label-left"></search:field>
+</search:result>
+```
+
+## Null search results
+
+In the case of no search results, the `search:no-results` tag displays a default message:
+
+```xml
+<search:no-results response="response"></search:no-results>
+```
+
+<Frame>![No results](/assets/images/app-studio/4.2/no-results.png)</Frame>

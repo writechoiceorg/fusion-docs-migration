@@ -1,0 +1,50 @@
+---
+title: "Jive V1"
+description: "Connector Configuration Reference"
+permalink: "76"
+---
+
+Compatible with Fusion version: 4.0.0 through 5.12.0
+
+Retrieve content from a [Jive](https://www.jivesoftware.com/) instance.
+
+<Tip>
+**Important**
+
+V1 deprecation and removal notice
+
+Starting in Fusion 5.12.0, all V1 connectors are deprecated. This means they are no longer being actively developed and will be removed in Fusion 5.13.0.
+
+The replacement for this connector is in active development at this time and will be released at a future date.
+
+If you are using this connector, you must migrate to the replacement connector or a supported alternative before upgrading to Fusion 5.13.0. We recommend migrating to the replacement connector as soon as possible to avoid any disruption to your workflows.
+
+</Tip>
+
+
+
+If security trimming is enabled, the Jive connector uses the `visibility` field while indexing permission metadata on content. This data is stored in the `acl_ss` field for each document.
+
+The value of the `visibility` field determines the permissions assigned to a document. The following table describes how the types of permissions found in the `visibility` field of a document are used.
+
+| Permission type | Notes |
+| --- | --- |
+| All | The value stored in the `acl_ss` field is "all". |
+| People | The document includes a list of users who are authorized to view the content. This list is stored in the `acl_ss` field as user email addresses. |
+| Place | A request is made to determine the type of group. The group type determines the permissions stored. |
+| Open or Members Only | The value stored in the `acl_ss` field is "all". |
+| Private or Secret | The value stored in the `acl_ss` field is the name of the group. |
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/connectors/connectors-jive.mdx";
+
+<SchemaParamFields schema={schema}/>
+

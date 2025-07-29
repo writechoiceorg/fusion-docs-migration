@@ -1,0 +1,64 @@
+export const schema = {
+  "type": "object",
+  "title": "Delete Seldon Core Model Deployment",
+  "description": "Removes a Seldon Core deployment from the cluster",
+  "required": [
+    "id",
+    "modelName",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Job ID",
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Additional parameters",
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "modelName": {
+      "type": "string",
+      "title": "Model name",
+      "description": "The model name of the Seldon Core deployment to delete",
+      "maxLength": 30,
+      "pattern": "^[A-Za-z0-9_\\-]+$"
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "argo-delete-model"
+      ],
+      "default": "argo-delete-model",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

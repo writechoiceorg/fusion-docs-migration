@@ -1,0 +1,38 @@
+---
+title: "geo:heatmap"
+permalink: "1117"
+---
+
+## Description
+
+The heatmap directive
+
+## Usage
+
+as element:
+
+```xml
+<geo:heatmap
+       response="{string}"
+       facet-name="{string}"
+       [height="{string}"]
+       [width="{string}"]
+       [scroll-to-zoom="{boolean}"]
+       [options="{object}"]>
+</geo:heatmap>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| response | **string** | Name of the response. |
+| facet-name | **string** | Facet containing the data. |
+| height  *(optional)* | **string** | The height of the map container. Default is 400px. |
+| width  *(optional)* | **string** | The width of the map container. Default is 100%. |
+| scroll-to-zoom  *(optional)* | **boolean** | Whether the scroll wheel should control the map zoom. Disabled by default. |
+| options  *(optional)* | **object** | Extend the current options for the Google Map [(Options Here)](https://developers.google.com/maps/documentation/javascript/reference#MapOptions) |

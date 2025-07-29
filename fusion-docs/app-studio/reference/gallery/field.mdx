@@ -1,0 +1,31 @@
+---
+title: "Field"
+permalink: "1038"
+---
+
+<Frame>![Example](/assets/images/app-studio/as-examples/gallery/field01.png)</Frame>
+
+```xml
+<search:result result="response | result:5">
+    <!-- Title field styling-->
+    <search:field name="full_name" styling="title"></search:field>
+    <!-- Default - label left -->
+    <search:field name="year"></search:field>
+
+    <!-- Inline labels -->
+    <search:field name="gender" label="Gender" styling="label-inline"></search:field>
+    <search:field name="age" label="Age" styling="label-inline" show="1"></search:field>
+    <search:field name="facialhair" label="Facial Hair" styling="label-inline"></search:field>
+
+    <br>
+
+    <!-- Label left that moves on top for smaller screens -->
+    <search:field name="Country of birth" styling="label-left"></search:field>
+
+    <!-- Label is always above the field -->
+    <search:field name="Prize Category" styling="label-above"></search:field>
+
+    <!-- Description styling, ideal for blocks of text that don't require a label -->
+    <search:field name="motivation" styling="description"></search:field>
+</search:result>
+```

@@ -1,0 +1,88 @@
+---
+title: "REST V2 connector"
+permalink: "e8bakk"
+---
+
+The REST V2 connector enables users to crawl content by exposing its data through a REST API. It can be configured to communicate with a wide selection of external datasources by making API calls and indexing the responses. As an out-of-the-box V2 connector, it provides a low-code user experience for indexing data from REST API-compatible sources.
+
+This connector is the alternative solution for various deprecated and removed V1 connectors.
+
+See the [reference page](/fusion-connectors/2fe4q4/rest-v-2) for basic configuration details.
+
+Key concepts:
+
+* The REST V2 connector is a new approach to Fusion connectors: one connector that can index data from many different datasources.
+* The connector is powered by recipes, which are JSON configurations for the REST V2 connector that are customized for a specific datasource.
+* A supported datasource will have a corresponding recipe.
+* Over time, the deprecated V1 connectors may be replaced by comparable REST V2 connector recipes.
+
+REST V2 connector features:
+
+* Indexes REST API-compatible datasources for data integration.
+* Supports initial full crawl and re-full crawl and object mapping.
+* Remote framework and pagination are supported.
+* Supports basic and OAuth authentication methods.
+* Enhances the datasource retrieval capability with a globally standardized format connector.
+* Saves DevOps time by using a preconfigured connector.
+
+## How REST V2 is different from other connectors
+
+Most connectors are developed solely for a specific datasource. The REST V2 connector is able to work any datasources that has a supported recipe. This gives the REST V2 connector a great amount of flexibility and enhances its usefulness as part of the Lucidworks connectors offerings.
+
+Lucidworks no longer updates, maintains, or releases V1 connectors. A benefit of using this remote V2 connector over the classic V1 connectors is this V2 connector is regularly improved and updated, while the classic connectors are not. The REST V2 connector is replacing V1 connectors using comparable recipes. You can learn more about the benefits of V2 connectors by reading the [differences between V1 and V2 connectors](/fusion-connectors/331vyj/v-1-and-v-2-connectors).
+
+## Recipes
+
+Recipes are preconfigured [datasource configurations](/fusion-connectors/h9szba/recipes#json-guide) that can be loaded into Fusion for quicker testing and setup of connectors. Parameter values are already entered into recipes for quick population of the required fields. Recipes are created in a JSON format and contain all of the parameters required to get a connector up and running. You can configure a connector using a recipe by issuing a POST request with the JSON as the body. Any minor adjustments required can be made directly in the JSON and sent to Fusion, where it will show in the UI. After the recipe has been sent to Fusion, you can also go into the Fusion UI and make changes.
+
+## Recipe repository
+
+The REST V2 connector uses a [public GitHub repository](https://github.com/lucidworks/rest-configurations) to store recipes. Here you will find all of the recipes that have been created and ready for use. The recipes are JSON files that can be added as the body in Postman requests or appended as the body in cURL calls. The parameter values can then be changed as necessary to match the data in the way you want it to be indexed.
+
+The repository is public and treated as an open source resource where everyone is welcome to contribute. Recipes are not considered a standard Lucidworks product. As such, Lucidworks does not guarantee that a recipe will be maintained or updated after it is created. If you encounter any issues or bugs, please [report them in GitHub](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue#creating-an-issue-from-a-repository) with detailed information to aid in troubleshooting.
+
+## Additional resources
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Microlearning** for **The REST V2 Connector** focuses on how to use the REST V2 connector and its recipes:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/the-rest-v2-connector" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/rest-v2-connector.png" alt="The REST V2 Connector" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Quick Learning** for **Using the REST V2 Connector** focuses on how to ingest a datasource using REST V2 connector recipes:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/using-the-rest-v2-connector" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/rest-v2-connector-ql.png" alt="Using the REST V2 Connector" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+

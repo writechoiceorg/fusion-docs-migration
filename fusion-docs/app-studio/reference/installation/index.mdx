@@ -1,0 +1,55 @@
+---
+title: "Installation"
+permalink: "3137"
+---
+
+This section contains various articles on the installation, system requirements, and supported environments of App Studio.
+
+Appkit is most commonly run as a lightweight Java web application that can be deployed in any [Java Servlet Container](http://en.wikipedia.org/wiki/Java_Servlet#Container_servers) (application server) such as [Tomcat](http://tomcat.apache.org/), [Glassfish](http://glassfish.java.net/), [Jetty](http://www.eclipse.org/jetty/) depending on your preferences or IT standards. The Appkit application is designed to be [stateless](http://en.wikipedia.org/wiki/Stateless_protocol), making deployment and scaling (for example, with [load balancers](http://en.wikipedia.org/wiki/Load_balancing_(computing)) a straightforward exercise.
+
+## Requirements
+
+App Studio is a standalone application with the following requirements:
+
+* [Oracle Java JDK](https://www.oracle.com/technetwork/java/javase/downloads/index.html) 1.8
+* A running instance of [Fusion](/fusion/5.9/6764/fusion), with one or more collections of indexed data
+
+## Installation
+
+1. [Download App Studio Enterprise](/fusion/5.9/992/app-studio-enterprise-downloads).
+2. Copy the App Studio Enterprise zip file to any convenient path.
+3. Unzip the file, and follow the instructions provided in the `README.md` file.
+
+<Note>
+Starting in Fusion 5.0, App Studio is no longer included in the Fusion UI. However, you can use App Studio Enterprise (ASE) to create apps in Fusion 5 *and* Fusion 4. See [How to Deploy App Studio Enterprise](/how-to/605/deploy-app-studio) for instructions.
+</Note>
+
+### Configuring the application server
+
+For development and testing purposes you can deploy the Appkit web application in any modern servlet container and it will run and serve queries as long as the computer has network access to the underlying search engine. This is a non-exhaustive list of servers that have been used to run Appkit applications:
+
+* Tomcat 6+
+* JBoss 8+
+* Jetty 6+
+* GlassFish 4+
+
+### Java runtime environment
+
+Appkit requires Java JDK 1.8 to be installed on the application server. Java EE is not needed.
+
+#### Memory allocation
+
+You must make sure that the servlet container is configured with access to an adequate amount of memory and heap space. The standard Appkit application does not have specific requirements but specific modules (for example, the [Social Module](/fusion/5.9/3155/social-and-collaboration-tools) have a larger footprint. See the [Troubleshooting page](/how-to/2974/troubleshooting-appkit-app-builds-and-deployments) for more information.
+
+### Typical production setup
+
+Your production setup will be a matter of preference because Appkit imposes no specific requirements in terms of topology or infrastructure. Some organisations choose to front the application server (servlet container) with either Apache or another webserver. In a public-facing scenario, this can yield some gains when serving static content and creates a buffer between the outside world and the execution environment.
+
+### Using Windows Integrated Authentication for internal applications
+
+If you would like to take advantage of [Integrated Windows Authentication](http://en.wikipedia.org/wiki/Integrated_Windows_Authentication) for [single sign on](http://en.wikipedia.org/wiki/Single_sign-on) in your search application, the typical pattern is to front the servlet container (for example, Tomcat) with Microsoft [Internet Information Services](http://www.iis.net/). In this pattern IIS handles the authentication with Active Directory and then forwards the request to Tomcat where it is picked up by Appkit and used by our [Security Module](/fusion/5.9/3162/authentication) for user information, authorization or personalization.
+
+## Related articles
+
+* [Building from Source](/fusion/5.9/3140/building-from-source)
+* [Deploying a WAR File](/how-to/3073/deploying-a-war-file)

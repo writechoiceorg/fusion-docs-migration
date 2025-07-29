@@ -1,0 +1,88 @@
+export const schema = {
+  "type": "object",
+  "title": "Text Processing",
+  "description": "This stage processes text according to the transformations applied per field",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "rules": {
+      "type": "array",
+      "title": "Transformation Rules",
+      "description": "The rules follow this pattern :(source as a regexp field matcher - the pattern can match multiple fields, the results will be concatenated) -> Transformation -> (target as a single field name); Some transformations can accept arguments. If multiple rules point to the same target, then each subsequent rule will use the output from the preceding one instead of using its configured source.",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "transformation"
+        ],
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source Field",
+            "format": "regex"
+          },
+          "target": {
+            "type": "string",
+            "title": "Target Field"
+          },
+          "transformation": {
+            "type": "string",
+            "title": "Transformation",
+            "description": "Choose transformation to apply. Available options: FIRST_N_CHARACTERS - leave only the first N characters of the text. Requires one argument - the N as an integer, LAST_N_CHARACTERS - similar, but leaves the last N characters instead of the first, COLLAPSE_WHITESPACE - replace groups of whitespace characters (space, newline, etc.) with just a single one, LOWERCASE - lowercase the text, UPPERCASE - uppercase the text, FILTER_NON_ASCII - replace characters that are not present in ASCII set with their ASCII equivalent or remove them if they do not have an equivalent, URL_DECODE - decode URL encoded characters to plain text.",
+            "enum": [
+              "first_n_characters",
+              "last_n_characters",
+              "collapse_whitespace",
+              "lowercase",
+              "uppercase",
+              "filter_non_ascii",
+              "url_decode"
+            ],
+            "default": "lowercase",
+            "hints": [
+              "advanced"
+            ]
+          },
+          "transformationConfig": {
+            "type": "string",
+            "title": "Transformation config",
+            "description": "Add necessary parameters for transformation. For example, a FIRST_N_CHARS needs to have the number of characters configured",
+            "hints": [
+              "advanced"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "category": "Field Transformation",
+  "categoryPriority": 7,
+  "unsafe": false
+}

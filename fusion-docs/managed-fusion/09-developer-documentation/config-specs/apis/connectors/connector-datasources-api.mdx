@@ -1,0 +1,179 @@
+---
+title: "Connector Datasources API"
+description: "Managed Fusion Connectors APIs"
+permalink: "kwpz3n"
+---
+
+Use the Connector Datasources API to create and configure datasources and examine or clear items and tables from the [crawl database](https://support.lucidworks.com/hc/en-us/articles/360049671493-What-is-Fusion-CrawlDB-and-what-can-it-be-used-for-).
+
+For more information, [view the API specification.](?open-api=true)
+
+See [Lucidworks Connectors](/fusion-connectors/2/fusion-connectors) and [Datasources](/managed-fusion/5.9/p36ivh/datasources) for related information.
+
+## Working with the crawl database
+
+Some connectors use a crawl database to track documents that have been seen by prior crawls and are able to use this information to understand which documents are new or have been updated or removed and take appropriate action in the index. The `/api/connectors/datasources/DATASOURCE_ID/db` endpoints allow [dropping tables](#drop-tables-from-a-crawldb) or [clearing the database](#delete-items-from-a-crawldb).
+
+All V2 connectors support the crawl database as well as some V1 connectors, like the [Lucid.fs](/fusion-connectors/75/lucid-fs-connector-framework) connector. The [Lucid.anda](/fusion-connectors/57/lucid-anda-connector-framework) connector also uses a crawl database, but it is not the same database, and does not have a REST API or other interface to access it.
+
+### Drop tables from a crawlDB
+
+The output from a DELETE request to `/api/connectors/datasources/DATASOURCE_ID/db/<table>` will be empty. When dropping the database, note that no documents will be removed from the index. However, the crawl database will be empty, so on the next datasource run, all documents will be treated as though they were never seen by the connectors.
+
+When dropping tables, be aware that the `items` table does not delete documents from the index, but instead changes the database so database considers them new documents. When dropping other tables, such as the `errors` table, it will merely clear out old error messages.
+
+### Delete items from a crawlDB
+
+A DELETE request to `/api/connectors/datasources/DATASOURCE_ID/db` removes the information *from the Crawl Database only.* Note that this does not affect the Solr Index.
+
+## Examples
+
+Get datasources assigned to the "demo" collection:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/connectors/datasources?collection=demo
+
+```
+
+**RESPONSE**
+
+```json
+[ {
+  "id" : "database",
+  "created" : "2014-05-04T19:47:22.867Z",
+  "modified" : "2014-05-04T19:47:22.867Z",
+  "connector" : "lucid.jdbc",
+  "type" : "jdbc",
+  "description" : null,
+  "pipeline" : "conn_solr",
+  "properties" : {
+    "db" : null,
+    "commit_on_finish" : true,
+    "verify_access" : true,
+    "sql_select_statement" : "select CONTENTID as id from CONTENT;",
+    "debug" : false,
+    "collection" : "demo",
+    "password" : "password",
+    "url" : "jdbc:postgresql://FUSION_HOST:5432/db",
+    "nested_queries" : null,
+    "clean_in_full_import_mode" : true,
+    "username" : "user",
+    "delta_sql_query" : null,
+    "commit_within" : 900000,
+    "primary_key" : null,
+    "driver" : "org.postgresql.Driver",
+    "max_docs" : -1
+  }
+} ]
+
+```
+
+Create a datasource to index Solr-formatted XML files:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X POST -H 'Content-type: application/json' -d '{
+  "id":"SolrXML",
+  "connector":"lucid.solrxml",
+  "type":"solrxml",
+  "properties":{
+    "path":"/Applications/solr-4.10.2/example/exampledocs", "generate_unique_key":false, "collection":"MyCollection"
+  }
+}' https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/connectors/datasources
+
+```
+
+**RESPONSE**
+
+```json
+{
+  "id" : "SolrXML",
+  "created" : "2015-05-18T15:47:51.199Z",
+  "modified" : "2015-05-18T15:47:51.199Z",
+  "connector" : "lucid.solrxml",
+  "type" : "solrxml",
+  "properties" : {
+    "commit_on_finish" : true,
+    "verify_access" : true,
+    "generate_unique_key" : false,
+    "collection" : "MyCollection",
+    "include_datasource_metadata" : true,
+    "include_paths" : [ ".*\\.xml" ],
+    "initial_mapping" : {
+      "id" : "a35c9ff3-dbb6-434b-af40-597722c2986a",
+      "skip" : false,
+      "label" : "field-mapping",
+      "type" : "field-mapping"
+    },
+    "path" : "/Applications/apache-repos/solr-4.10.2/example/exampledocs",
+    "exclude_paths" : [ ],
+    "url" : "file:/Applications/apache-repos/solr-4.10.2/example/exampledocs/",
+    "max_docs" : -1
+  }
+}
+
+```
+
+Change the `max_docs` value for the above datasource:
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X PUT -H 'Content-type: application/json' -d '{
+  "id":"SolrXML",
+  "connector":"lucid.solrxml",
+  "type":"solrxml",
+  "properties":{
+    "path":"/Applications/solr-4.10.2/example/exampledocs",
+    "max_docs":10
+  }
+}' https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/connectors/datasources/SolrXML
+
+```
+
+**RESPONSE**
+
+```
+true
+
+```
+
+Delete the datasource named 'database':
+
+**REQUEST**
+
+```bash
+curl -u USERNAME:PASSWORD -X DELETE https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/connectors/datasources/database
+
+```
+
+**RESPONSE**
+
+If successful, no response.
+
+Clear a datasource
+
+You can use both of these APIs in order to fully clear the data:
+
+**REQUEST**
+
+```bash
+curl -X POST 'http://EXAMPLE_COMPANY.b.lucidworks.cloud/api/solr/COLLECTION_NAME/update?commit=true' -H 'Content-Type: application/json' --data-binary '{"delete":{"query":"_lw_data_source_s:DATASOURCENAME"}}'
+
+`curl -X DELETE -u USERNAME:PASSWORD 'http://EXAMPLE_COMPANY.b.lucidworks.cloud/api/connectors/datasources/DATASOURCENAME/db' `
+```
+
+The first clears the data from the datasource but does not clear the crawlDB. So if you attempt to index the same document set again, indexing will skip the documents because they are still in the crawl DB. If you send the command to delete the crawlDB afterward, you can then reload the docs.
+
+<Danger>
+
+The `validate=true` element in the create datasource command only validates the datasource. It does *not* automatically save the datasource. An example using this element is:
+
+`https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME/datasources?validate=true`
+
+The `POST /datasources` section of the API specification allows you to set the `validate` element for testing and use.
+
+</Danger>

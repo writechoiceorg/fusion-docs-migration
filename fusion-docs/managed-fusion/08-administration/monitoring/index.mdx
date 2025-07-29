@@ -1,0 +1,65 @@
+---
+title: "Monitoring"
+permalink: "tfhq50"
+---
+
+## Managed Fusion and third-party monitoring tools
+
+Managed Fusion provides built in functions for observability and monitoring. In addition to using Managed Fusion’s tools, you can use third-party monitoring tools.
+
+Information from metrics includes:
+
+* Consumption Dashboard displays your request and record usage as it relates to the defined consumption limit for your Managed Fusion license. For more information, see [Consumption dashboard](/managed-fusion/5.9/by1c84/consumption-dashboard).
+* Prometheus is a solution that is installed during the Managed Fusion installation. Prometheus records metrics, stores them in a time series datastore, and then uses queries to return data for visualizationa and alerts. For more information, see the [Prometheus documentation](https://prometheus.io/docs).
+* Grafana is a tool installed during the Managed Fusion installation. Grafana provides visualizations of multiple datasources and connects to Prometheus, which lets you access your Managed Fusion data when view the Grafana dashboards. Managed Fusion provides pre-configured Grafana dashboards. However, Managed Fusion does not provide the ability to create and use custom Grafana dashboards. For more information, see the [Grafana documentation](https://grafana.com/docs).
+* Loki is an optional, additional tool that stores, aggregates, and queries logs. You can filter logs based on keywords from specific Managed Fusion namespaces, services, and other elements. For more information, see the [Grafana’s Loki documentation](https://grafana.com/docs/loki).
+* System and query performance metrics.
+
+## Managed Services monitoring
+
+<Note>
+This section provides general information about monitoring Managed Fusion jobs that are scheduled in the Job Scheduler. The investigation and resolution process for issues on your site may vary based on your contractual agreements with Lucidworks.
+</Note>
+
+New Managed Fusion clients are supported by Lucidworks Professional Services, other teams, and partners. After initial configuration and onboarding, the Lucidworks Managed Services team provides support in specific areas.
+
+One of the areas of Managed Services support is the process to identify and monitor Managed Fusion jobs scheduled in the Job Scheduler. New jobs with a scheduler configured are automatically discovered and monitored. Jobs that are not scheduled in the Job Scheduler are not monitored.
+
+Monitoring is automated, and the scripts periodically check the processing status of jobs associated with all datasource types, and generate alerts if certain issues occur. Managed Services is notified of the alerts described in this section, as well as other job-related issues.
+
+<Note>
+**Important**
+
+Managed Services is on call on weekends and holidays to respond to severity level (S1) incidents. Jobs that generate alerts for other severity levels are not necessarily reviewed or investigated at those times.
+</Note>
+
+### Job failure
+
+The system generates an alert when the job API reports a status of FAILED. Incidents that cause a job failure are not typically considered to be a S1 situation.
+
+### Job does not start at scheduled time
+
+The system generates this alert when the Job Scheduler does not start a job at the scheduled time. This can occur for multiple reasons:
+
+* The job is not configured appropriately.
+* A previous run of the job has not yet completed because of performance issues.
+* A previous run of the job displays as running, but has stopped processing for some reason.
+
+### Job schedule is disabled
+
+The system generates an alert if the job is disabled. Because jobs can be disabled manually, it is possible that the job was not manually re-enabled when appropriate.
+
+An alert is also generated for certain types of pod failures that cause jobs to become disabled and not display in the Job Scheduler.
+
+## Guidelines to resolve issues
+
+Managed Services investigates alerts and troubleshoots potential resolutions.
+
+If Managed Services determines that the issue in the alert:
+
+* Requires further investigation, Managed Services creates a Jira ticket in its team project and continues to research to determine a solution.
+* Is infrastructure-related and requires intervention, Managed Services creates a ticket for the Lucidworks Cloud Operations team.
+* Requires client intervention to resolve or cannot be resolved by a pod restart, adding more memory, or a simple configuration change, Managed Services:
+
+  + May notify Lucidworks Client Services.
+  + Creates a Zendesk ticket to notify the client about the issue.

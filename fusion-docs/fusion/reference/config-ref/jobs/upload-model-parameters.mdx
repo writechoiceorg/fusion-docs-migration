@@ -1,0 +1,18 @@
+---
+title: "Upload Model Parameters to Cloud Job"
+permalink: "3xcen9"
+---
+
+The Upload Model Parameters to Cloud job allows you to take a trained model and store its training to a blob in cloud storage, such as Google Cloud Storage (GCS), Amazon S3 (S3), or Azure Blob Storage.
+
+See [Creating the Upload Model Parameters to Cloud Job](/how-to/6o129t/creating-upload-model-parameters-job) for more information on creating the job and deploying a model with it.
+
+<Tip>
+With the release of Fusion 5.4, the [**Create Seldon Core Model Deployment**](/fusion/5.9/564/create-seldon-core-model-deployment) job has been updated in conjunction so that it can pull down the saved model blobs and use them in deploying a new instance of the model, allowing for easier transference and versioning of trained models for rollback and testing.
+</Tip>
+
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/upload-model-parameters-to-cloud.mdx";
+
+<SchemaParamFields schema={schema}/>

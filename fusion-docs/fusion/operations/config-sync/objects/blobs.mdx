@@ -1,0 +1,40 @@
+---
+title: "Blobs"
+permalink: "kslobm"
+---
+
+When you add a blob to the [blob store](/fusion/5.9/153/blob-storage) in Fusion, extra information is needed:
+
+* **Resource type**: This tells Fusion what kind of file or data you’re adding.
+* **Content type**: This is about the file format, such as JPEG, JavaScript, and so on.
+
+  You can find more about these types in the [Blob Store API](/fusion/5.9/305/blob-store-api#blob-types).
+
+## How ConfigSync handles blob metadata
+
+ConfigSync handles this extra information with a special `.metadata` file.
+This file has the same name as your blob but is stored in a different location.
+
+For example, if your blob’s path is `app/blobs/some-folder/blob.txt`, then your metadata file’s path should be `APP/.metadata/blobs/FOLDER_NAME/blob.txt`.
+
+## Metadata file structure
+
+This `.metadata` file is a JSON file that looks like this:
+
+```json
+{
+  "contentType": "text/javascript",
+  "resourceType": "file:js-index"
+}
+```
+
+### Rules for using meta-files
+
+* You only need to include the metadata file when adding new blobs.
+  Existing blobs should already have metadata files.
+* If you ever need to change the `resourceType` or `contentType` of a blob, update and commit the meta-file.
+  No need to re-upload the blob unless it has also changed.
+
+### Metadata for system blobs
+
+The `_lw_system` folder stores custom connectors or JDBC drivers which do not require separate metadata files.

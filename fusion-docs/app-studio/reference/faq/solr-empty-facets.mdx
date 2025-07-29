@@ -1,0 +1,14 @@
+---
+title: "Empty Facets in Solr"
+permalink: "3134"
+---
+
+## How do I avoid displaying empty facet values in my Appkit visualization?
+
+By default Solr will return all the facet values for a given facet field, regardless of whether they match any documents in the result sets.
+
+This behavior is controlled by the Solr [facet.mincount configuration parameter](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Thefacet.mincountParameter) which defaults to `0`.
+
+Setting the facet.mincount parameter to `1` will ensure that only values which match at least one document will be returned in the facet list.
+
+This can be done by adding a custom parameter at query time or by modifying the [search handler](https://cwiki.apache.org/confluence/display/solr/RequestHandlers+and+SearchComponents+in+SolrConfig#RequestHandlersandSearchComponentsinSolrConfig-SearchHandlers) in the `solrconfig.xml` file for the relevant collection.

@@ -1,0 +1,33 @@
+---
+title: "ttest"
+permalink: "3259"
+---
+
+The `ttest` function performs a two sided t-test on two random samples drawn from two queries. The `ttest` function takes four parameters:
+
+1. the numeric field on which to perform the t-test
+2. the query for drawing the first sample
+3. the query for drawing the second sample
+4. the sample size for both samples
+
+## Sample syntax
+
+```sql
+select ttest(sepal_width_d, "species_s:versicolor", "species_s:virginica", 150) as t,
+       p_value
+from iris
+```
+
+## Result set
+
+The result set for the ttest function contains one row with the results of the ttest. The ttest function returns the t statistic. The p_value field can be selected to return the p-value for the ttest.
+
+Sample result set in Apache Zeppelin:
+
+<Frame>![Sample result](/assets/images/5.2/udf/ttest1.png)</Frame>
+
+## Visualization
+
+Sample visualization of the ttest function using the Apache Zeppelin number visualization:
+
+<Frame>![Sample visualization](/assets/images/5.2/udf/ttest2.png)</Frame>

@@ -1,0 +1,42 @@
+---
+title: "SolrXML Connector"
+permalink: "13"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.x.
+
+</Note>
+
+
+
+The SolrXML connector indexes XML files formatted according to Solr’s XML structure.
+It is not a generic XML file crawler; it can only index SolrXML-formatted documents.
+
+Per the Solr standard, all XML files must include the `<add>` tag in order for the documents to be added to the Fusion index.
+
+## The SolrXML Format
+
+As described in the Solr Reference Guide [section on using Solr’s updateHandlers](https://cwiki.apache.org/confluence/display/solr/Uploading+Data+with+Index+Handlers#UploadingDatawithIndexHandlers-XMLFormattedIndexUpdates), an XML document formatted for Solr must conform to a very specific structure. There are three general elements that are used:
+
+* `<add>` introduces one or more documents to be added to the index.
+* `<doc>` introduces the fields that make up a single document.
+* `<field>` defines the content for each field of the document.
+
+For example, this is very simple XML including only one document:
+
+```xml
+<add>
+  <doc>
+   <field name="id">doc1</field>
+   <field name="title">My Solr Document</field>
+   <field name="body">This is the body of my document.</field>
+  </doc>
+</add>
+
+```
+
+The fields can be any field that is defined in your schema, or you can use dynamic field rules to create fields during indexing.
+
+The elements can take some attributes to define document overwrites, commit rules and field or document boosts. See the Solr Reference Guide [section on XML-formatted updates](https://cwiki.apache.org/confluence/display/solr/Uploading+Data+with+Index+Handlers#UploadingDatawithIndexHandlers-XMLFormattedIndexUpdates) for more details.

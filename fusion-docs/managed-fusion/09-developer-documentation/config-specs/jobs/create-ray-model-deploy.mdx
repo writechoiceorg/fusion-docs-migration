@@ -1,0 +1,28 @@
+---
+title: "Create Ray Model Deployment"
+description: "Job configuration specifications"
+permalink: "kqmqh1"
+---
+
+Managed Fusion 5.9.12 uses Ray to deploy machine learning (ML) models into production.
+
+This job deploys a Ray deployment into the Managed Fusion cluster.
+
+To create the job, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** and in the Model Deployment Jobs section, select **Create Ray Model Deployment**.
+
+You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job. To enter advanced parameters in the UI, click **Advanced**.
+
+For detailed information to deploy available Managed Fusion Ray models, see the:
+
+* [sentiment-general model](/how-to/dtwf5k/deploy-the-sentiment-general-model). This model is a general purpose sentiment prediction model that is trained on short sentences and text for intent prediction. For more information, see [Sentiment analysis and prediction](/managed-fusion/5.9/rn3h18/sentiment-analysis-and-prediction).
+* [sentiment-reviews model](/how-to/qityrh/deploy-the-sentiment-reviews-model). This model is trained on customer reviews and longer text. The model also supports attention weights output that can be used for highlighting the tokens that provide stronger sentiment. For more information, see [Sentiment analysis and prediction](/managed-fusion/5.9/rn3h18/sentiment-analysis-and-prediction).
+* [Pretrained scispaCy model](/how-to/ih3rl9/deploy-a-pre-trained-scispa-cy-model). This model is trained on biomedical text.
+* [qna-coldstart-large model](/how-to/gv3jta/set-up-a-pre-trained-cold-start-model-for-smart-answers). This model is trained on a variety of corpuses and tasks. For more information, see [Smart answers](/managed-fusion/5.9/mwqude/smart-answers).
+* [qna-coldstart-mulitlingual model](/how-to/gv3jta/set-up-a-pre-trained-cold-start-model-for-smart-answers). This model is trained on a variety of corpuses and tasks that supports 16 languages. For more information, see [Smart answers](/managed-fusion/5.9/mwqude/smart-answers).
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/create-ray-model-deployment.mdx";
+
+<SchemaParamFields schema={schema}/>

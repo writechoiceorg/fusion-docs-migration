@@ -1,0 +1,44 @@
+---
+title: "Content-Based Recommender Jobs (Experimental)"
+permalink: "8807"
+---
+
+Use this job when you want to compute item similarities based on their content, such as product descriptions.
+
+|  |  |
+| --- | --- |
+| **Default job name** | `COLLECTION_NAME_content_recs` |
+| **Input** | Searchable content from the primary collection. |
+| **Output** | [Items-for-item recommendations](/fusion/5.9/476/items-for-item-recommendations) (the `COLLECTION_NAME_content_recs` collection by default) |
+
+First, item content is vectorized; different vectorization methods are available. Then, similar items are selected based on cosine similarity ("nearest neighbor") between their vectors.
+
+At a minimum, you must specify these:
+
+* An ID for this job
+* The name of the training collection, that is, the collection with your content
+* An output collection; create a separate collection for this
+* The name of the ID field for documents in the training collection, such as `item_id_s`
+* The names of one or more content fields in the training collection
+
+Content-based recommendations dataflow
+
+<Frame>![Content-based recommendations dataflow](/assets/images/5.2/content-rec-dataflow-diagram.png)</Frame>
+
+## Tuning tips
+
+* Configure **Metadata fields for item-item evaluation** to use those fields during evaluation to determine whether pairs belong to the same category.
+* **Perform approximate nearest neighbor search** is enabled by default to significantly reduce the job’s running time, with a small decrease in accuracy. If your training dataset is very small, then you can disable this option.
+* If your content contains a lot of domain-specific jargon, enable **Use Word2Vec for vectorization**.
+* If your documents are too short or too long, enable **Use TF-IDF for vectorization**.
+
+## Query pipeline setup
+
+[Download the `APPName_item_item_rec_pipelines_content.json`](/assets/attachments/pipelines/APPName_item_item_rec_pipelines_content.json) file and [import it](/how-to/0imnej/migrate-fusion-objects#import-objects-into-an-app) to create the query pipeline that consumes this job’s output. See [Fetch Content-Based Items-for-Item Recommendations](/how-to/3299/fetch-items-for-item-recommendations-content-based-method) for details.
+
+## Configuration properties
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/spark-jobs/content-based-recommender.mdx";
+
+<SchemaParamFields schema={schema}/>

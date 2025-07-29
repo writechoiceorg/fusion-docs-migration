@@ -1,0 +1,41 @@
+---
+title: "Text Tagger Stage"
+permalink: "264"
+---
+
+This stage uses the [SolrTextTagger](/solr-reference-guide/1599/the-tagger-handler) handler to identify known entities in the query by searching either of the following:
+
+* `_query_rewrite` collection. See [Manage Collections in the Fusion UI](/how-to/812/manage-collections-in-the-fusion-ui) for more information.
+* `_query_rewrite_staging` collection in the case of the Fusion AI query rewriting [Simulator](/fusion-ai/4.2/484/simulator).
+
+To perform [query rewriting](/fusion-ai/4.2/489/query-rewriting), this stage searches for matching instances of:
+
+* [spelling corrections](/fusion-ai/4.2/488/misspelling-detection)
+* [phrase boosts](/fusion-ai/4.2/487/phrase-detection)
+* [underperforming query improvements](/fusion-ai/4.2/486/underperforming-queries)
+* [synonym expansions](/fusion-ai/4.2/485/synonym-detection)
+
+When the query rewrite entails boosting, the boosting is applied later in the pipeline, during the [Solr Query stage](/fusion-server/4.2/265/solr-query-stage).
+
+The below diagram shows the process flow for the Text Tagger Stage:
+
+<Frame>![Text Tagger Stage Process](/assets/images/5.4/stage-text-tagger-flow.png)</Frame>
+
+<Danger>
+The underlying SolrTextTagger currently only supports *single-shard collections*. Fusion users should ensure their `_query_rewrite` collection, or whatever collection the Text Tagger stage is configured to use, is single-sharded before enabling this stage.
+</Danger>
+
+<Note>
+Although this stage is available without a Fusion AI license, it is only effective after running Fusion AI jobs or creating Fusion AI rules. See [Query Rewriting](/fusion-ai/4.2/489/query-rewriting) for details.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/text-tagger.mdx";
+
+<SchemaParamFields schema={schema}/>

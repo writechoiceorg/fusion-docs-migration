@@ -1,0 +1,116 @@
+export const schema = {
+  "type": "object",
+  "title": "Query Fields",
+  "description": "Configure query parameters for Solr search",
+  "properties": {
+    "skip": {
+      "type": "boolean",
+      "title": "Skip This Stage",
+      "description": "Set to true to skip this stage.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A unique label for this stage.",
+      "hints": [
+        "advanced"
+      ],
+      "maxLength": 255
+    },
+    "condition": {
+      "type": "string",
+      "title": "Condition",
+      "description": "Define a conditional script that must result in true or false. This can be used to determine if the stage should process or not.",
+      "hints": [
+        "code",
+        "code/javascript",
+        "advanced"
+      ]
+    },
+    "rows": {
+      "type": "integer",
+      "title": "Number of Results",
+      "default": 10
+    },
+    "start": {
+      "type": "integer",
+      "title": "Result Offset",
+      "default": 0
+    },
+    "sort": {
+      "type": "string",
+      "title": "Sort Order (Deprecated)"
+    },
+    "sortOrder": {
+      "type": "array",
+      "title": "Results Sort Order",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "title": "Sort Type",
+            "enum": [
+              "field",
+              "expression",
+              "relevancy",
+              "query"
+            ]
+          },
+          "value": {
+            "type": "string",
+            "title": "Field Name or Expression"
+          },
+          "order": {
+            "type": "string",
+            "title": "Sort Order",
+            "enum": [
+              "asc",
+              "desc"
+            ]
+          }
+        }
+      }
+    },
+    "queryFields": {
+      "type": "array",
+      "title": "Search Fields",
+      "items": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "title": "Field Name"
+          },
+          "boost": {
+            "type": "number",
+            "title": "Field Boost"
+          }
+        }
+      }
+    },
+    "returnFields": {
+      "type": "array",
+      "title": "Return Fields",
+      "items": {
+        "type": "string"
+      }
+    },
+    "returnScore": {
+      "type": "boolean",
+      "title": "Return Score",
+      "default": true
+    },
+    "minimumMatch": {
+      "type": "string",
+      "title": "Minimum Should Match"
+    }
+  },
+  "category": "Set Up",
+  "categoryPriority": 8,
+  "unsafe": false
+}

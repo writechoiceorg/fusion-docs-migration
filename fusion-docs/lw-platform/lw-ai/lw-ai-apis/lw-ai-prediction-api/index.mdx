@@ -1,0 +1,214 @@
+---
+title: "Prediction API"
+description: "Lucidworks AI"
+permalink: "8bx4m9"
+---
+
+View API specification
+
+The LWAI Prediction API is used to send synchronous API calls that run predictions from pre-trained models or custom models.
+
+The LWAI Prediction API supports models hosted by Lucidworks and specific third-party models. The [Lucidworks AI Use Case API](/lw-platform/ai/0stpyb/use-case-api) returns a list of all supported models. For more information about supported models, see [Generative AI models](/lw-platform/ai/r7ai90/generative-ai#generative-ai-models).
+
+You can enter the values returned in the Lucidworks AI Use Case API for the `USE_CASE` and `MODEL_ID` fields in the `/prediction` use case requests.
+
+The generic path for the Prediction API is [`/ai/prediction/USE_CASE/MODEL_ID`](#prediction-use-case-by-modelid).
+
+<Note>
+
+To view the full configuration specification for an API, click the **View API specification** button.
+
+<Frame>![view api spec](/assets/images/view-api-spec.png)</Frame>
+
+Alternatively, [click here to open the API spec](?open-api=true).
+
+</Note>
+
+
+
+## Prerequisites
+
+To use this API, you need:
+
+* The unique `APPLICATION_ID` for your Lucidworks AI application. For more information, see [credentials to use APIs](/lw-platform/platform/oqzogo/index#credentials).
+* A bearer token generated with a scope value of `machinelearning.predict`. For more information, see [Authentication API](/lw-platform/ai/oa96k5/authentication-api).
+* Other required fields specified in each individual use case.
+
+## Common parameters and fields
+
+Some parameters in the `/ai/async-prediction/USE_CASE/MODEL_ID` request are common to all of the generative AI (GenAI) use cases, such as the `modelConfig` parameter.
+Also referred to as hyperparameters, these fields set certain controls on the response.
+Refer to the [API spec](?open-api=true) for more information.
+
+## Prediction use case by modelId
+
+The `/ai/prediction/USE_CASE/MODEL_ID` request returns predictions for pre-trained or custom models in the specified use case format for the `modelId` in the request.
+
+<Tip>
+**Important**
+
+
+Unique fields and values in the request are described in each [use case](#prediction-api-use-cases).
+</Tip>
+
+
+
+### Example request
+
+```bash
+curl --request POST \
+  --url https://APPLICATION_ID.applications.lucidworks.com/ai/prediction/USE_CASE/MODEL_ID \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer ACCESS_TOKEN'
+  --data '{
+  "batch": [
+    {
+      "text": "Content for the model to analyze."
+    }
+  ],
+  "modelConfig": [
+    {
+      "temperature": 0.8,
+      "topP": 1,
+      "presencePenalty": 2,
+      "frequencyPenalty": 1,
+      "maxTokens": 1
+    }
+  ]
+}'
+
+```
+
+The response varies based on the specific use case and the fields included in the request.
+
+## Prediction API use cases
+
+The use cases available in the Lucidworks AI Prediction API are detailed in the following topics:
+
+* [Embedding use cases](/lw-platform/ai/dyl5lt/embedding-use-cases)
+* [Classification use case](/lw-platform/ai/u4a59o/classification-use-case)
+* [Pass-through use case](/lw-platform/ai/aimylh/pass-through-use-case)
+* [Retrieval augmented generation (RAG) use case](/lw-platform/ai/fi9pn6/retrieval-augmented-generation-rag-use-case)
+* [Standalone query rewriter use case](/lw-platform/ai/2u3u6l/standalone-query-rewriter-use-case)
+* [Summarization use case](/lw-platform/ai/0jjlk7/summarization-use-case)
+* [Keyword extraction use case](/lw-platform/ai/93lcdr/keyword-extraction-use-case)
+* [Named entity recognition (NER) use case](/lw-platform/ai/0iwbnj/named-entity-recognition-use-case)
+
+## Example POST requests for Prediction API use cases
+
+The topic for every [use case](#prediction-api-use-cases) contains detailed information about prerequisites and parameters along with example requests and responses. This section provides an overview of Prediction API requests.
+
+### Generic use case Prediction API POST request
+
+When submitting a POST request for a generic use case, use the following format:
+
+`https://{APPLICATION_ID}.applications.lucidworks.com/ai/prediction/{USE_CASE}/{MODEL_ID}`
+
+This example uses `APPLICATION_ID` of `b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e`. Replace the placeholder for `ACCESS_TOKEN` with the token generated in the [Authentication API](/lw-platform/ai/oa96k5/authentication-api) response.
+
+```bash
+curl --request POST \
+  --url https://b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e.applications.lucidworks.com/ai/prediction/{USE_CASE}/{MODEL_ID} \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {ACCESS_TOKEN}' \
+  --data '{
+  "batch": [
+    "text": "Content for the model to analyze."
+  ]
+}'
+
+```
+
+### Custom embedding use case Prediction API POST request
+
+When submitting a POST request for a custom embedding use case, use the following format:
+
+`https://{APPLICATION_ID}.applications.lucidworks.com/ai/prediction/embedding/{DEPLOYMENT_ID}`
+
+This use case request requires `APPLICATION_ID` and `DEPLOYMENT_ID`.
+
+The `DEPLOYMENT_ID` is generated when the custom embedding model is deployed. For information, see [Deployment details](/lw-platform/ai/6bb9s5/custom-model-training-user-interface#deployment-details).
+
+The custom `MODEL_ID` can also be obtained using the API as described in the following topics:
+
+* [Models API](/lw-platform/ai/e63rmi/models-api)
+* [Use Case API](/lw-platform/ai/0stpyb/use-case-api)
+
+This example uses `APPLICATION_ID` of `b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e` and a `DEPLOYMENT_ID` of `4f10a8a7-52a4-440d-a015-70d00483ac5e`. Replace the placeholder for `ACCESS_TOKEN` with the token generated in the Authentication API response.
+
+```bash
+curl --request POST \
+  --url https://b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e.applications.lucidworks.com/ai/prediction/embedding/4f10a8a7-52a4-440d-a015-70d00483ac5e \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {ACCESS_TOKEN}' \
+  --data '{
+  "batch": [
+    "text": "Content for the model to vectorize."
+  ]
+}'
+
+```
+
+### Pre-trained embedding use case Prediction API POST request
+
+When submitting a POST request for a pre-trained embedding use case, use the following format:
+
+`https://{APPLICATION_ID}.applications.lucidworks.com/ai/prediction/embedding/{MODEL_ID}`
+
+This use case request requires `APPLICATION_ID` and `MODEL_ID`.
+
+The pre-trained `MODEL_ID` can also be obtained using the API as described in the following topics:
+
+* [Pre-trained embedding models](/lw-platform/ai/3vqfxe/pre-trained-embedding-models)
+* [Models API](/lw-platform/ai/e63rmi/models-api)
+* [Use Case API](/lw-platform/ai/0stpyb/use-case-api)
+
+This example uses `APPLICATION_ID` of `b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e` and a `MODEL_ID` of `gte-small`. Replace the placeholder for `ACCESS_TOKEN` with the token generated in the Authentication API response.
+
+```bash
+curl --request POST \
+  --url https://b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e.applications.lucidworks.com/ai/prediction/embedding/gte-small \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {ACCESS_TOKEN}' \
+  --data '{
+  "batch": [
+    "text": "Content for the model to vectorize."
+  ]
+}'
+
+```
+
+### Generative AI use case Prediction API POST request
+
+When submitting a POST request for a generative AI use case, use the following format:
+
+`https://{APPLICATION_ID}.applications.lucidworks.com/ai/prediction/{USE_CASE}/{MODEL_ID}`
+
+This use case request requires `APPLICATION_ID` and `MODEL_ID`.
+
+For information about GenAI use cases and models, see:
+
+* [Generative AI](/lw-platform/ai/r7ai90/generative-ai)
+* [Use Case API](/lw-platform/ai/0stpyb/use-case-api)
+
+This example uses `APPLICATION_ID` of `b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e`, a `USE_CASE` of `passthrough` and a `MODEL_ID` of `llama-3-8b-instruct`. Replace the placeholder for `ACCESS_TOKEN` with the token generated in the Authentication API response.
+
+```bash
+curl --request POST \
+  --url https://b7bcb5a5-4b6a-4fb5-b6bc-9f8cc6ab234e.applications.lucidworks.com/ai/prediction/passthrough/llama-3-8b-instruct \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --header 'Authorization: Bearer {ACCESS_TOKEN}' \
+  --data '{
+  "batch": [
+        {
+            "text": "You are a helpful utility program instructed to accomplish a word correction task. Provide the most likely suggestion to the user without a preamble or elaboration.\nPOSSIBLE_MISSPELLING: swerdfish"
+        }
+    ],
+}'
+
+```

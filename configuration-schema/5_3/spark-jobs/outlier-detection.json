@@ -1,0 +1,396 @@
+{
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job when you want to find outliers from a set of documents and attach labels for each outlier group.",
+  "properties": {
+    "analyzerConfig": {
+      "default": "{ \"analyzers\": [{ \"name\": \"StdTokLowerStop\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"standard\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"KStem\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"fusionstop\", \"ignoreCase\": \"true\", \"format\": \"snowball\", \"words\": \"org/apache/lucene/analysis/snowball/english_stop.txt\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"StdTokLowerStop\" } ]}",
+      "description": "LuceneTextAnalyzer schema for tokenization (JSON-encoded)",
+      "hints": [
+        "lengthy",
+        "code/json"
+      ],
+      "minLength": 1,
+      "title": "Lucene Analyzer Schema",
+      "type": "string"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "minLength": 1,
+      "title": "Data format",
+      "type": "string"
+    },
+    "dataOutputFormat": {
+      "default": "solr",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Data output format",
+      "type": "string"
+    },
+    "distToCenterField": {
+      "default": "dist_to_center",
+      "description": "Output field name for doc distance to its corresponding cluster center (measure how representative the doc is).",
+      "title": "Output Field Name for doc distance to its cluster center",
+      "type": "string"
+    },
+    "fieldToVectorize": {
+      "description": "Solr field containing text training data. Data from multiple fields with different weights can be combined by specifying them as field1:weight1,field2:weight2 etc.",
+      "minLength": 1,
+      "title": "Field to Vectorize",
+      "type": "string"
+    },
+    "freqTermField": {
+      "default": "freq_terms",
+      "description": "Output field name for top frequent terms in each cluster. These may overlap with other clusters.",
+      "title": "Top Frequent Terms Field Name",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "maxDF": {
+      "default": 0.75,
+      "description": "Max number of documents the term can show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "title": "Max Doc Support",
+      "type": "number"
+    },
+    "minDF": {
+      "default": 5,
+      "description": "Min number of documents the term has to show up. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "title": "Min Doc Support",
+      "type": "number"
+    },
+    "modelId": {
+      "description": "Identifier for the model to be trained; uses the supplied Spark Job ID if not provided.",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Model ID",
+      "type": "string"
+    },
+    "norm": {
+      "default": 2,
+      "description": "p-norm to normalize vectors with (choose -1 to turn normalization off)",
+      "enum": [
+        -1,
+        0,
+        1,
+        2
+      ],
+      "hints": [
+        "advanced"
+      ],
+      "title": "Vector normalization",
+      "type": "integer"
+    },
+    "numKeywordsPerLabel": {
+      "default": 5,
+      "description": "Number of Keywords needed for labeling each cluster.",
+      "title": "Number of Keywords for Each Cluster",
+      "type": "integer"
+    },
+    "outlierGroupIdField": {
+      "default": "outlier_group_id",
+      "description": "Output field name for unique outlier group id.",
+      "title": "Output Field Name for Outlier Group Id",
+      "type": "string"
+    },
+    "outlierGroupLabelField": {
+      "default": "outlier_group_label",
+      "description": "Output field name for top frequent terms that are (mostly) unique for each outlier group as computed based on TF-IDF and group Id.",
+      "title": "Top Unique Terms Field Name",
+      "type": "string"
+    },
+    "outlierK": {
+      "default": 10,
+      "description": "Number of clusters to help find outliers.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Number of outlier groups",
+      "type": "integer"
+    },
+    "outlierThreshold": {
+      "default": 0.01,
+      "description": "Identify as outlier group if less than this percent of total documents. value<1.0 denotes a percentage, value=1.0 denotes 100%, value>1.0 denotes the exact number.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Outlier cutoff",
+      "type": "number"
+    },
+    "outputCollection": {
+      "description": "Solr Collection to store model-labeled data to",
+      "minLength": 1,
+      "title": "Output Collection",
+      "type": "string"
+    },
+    "outputOutliersOnly": {
+      "default": false,
+      "description": "If true, only outliers are saved in the output collection, otherwise, the whole dataset is saved.",
+      "title": "Only save outliers?",
+      "type": "boolean"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "partitionCols": {
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Partition fields",
+      "type": "string"
+    },
+    "randomSeed": {
+      "default": 1234,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "sparkSQL": {
+      "default": "SELECT * from spark_input",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Spark SQL filter query",
+      "type": "string"
+    },
+    "stopwordsList": {
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "List of stopwords",
+      "type": "array"
+    },
+    "trainingCollection": {
+      "description": "Solr Collection containing documents to be clustered",
+      "minLength": 1,
+      "title": "Training Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to use when loading training data if using Solr",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Training data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "outlier_detection",
+      "enum": [
+        "outlier_detection"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "uidField": {
+      "default": "id",
+      "description": " Field containing the unique ID for each document.",
+      "minLength": 1,
+      "title": "ID Field Name",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed",
+        "outputOutliersOnly"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "uidField",
+        "outlierGroupIdField",
+        "outlierGroupLabelField",
+        "freqTermField",
+        "distToCenterField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "outlierK",
+        "outlierThreshold",
+        "maxDF",
+        "minDF",
+        "norm",
+        "numKeywordsPerLabel"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfig"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "modelId"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "uidField",
+    "outputCollection",
+    "type"
+  ],
+  "title": "Outlier Detection",
+  "type": "object"
+}

@@ -1,0 +1,23 @@
+---
+title: "Table Body tag"
+permalink: "3099"
+---
+
+The Table Body tag contains the main body of the results table. The tag must be nested within a [Result List tag](/fusion/5.9/3095/result-list-tag).
+
+## Usage
+
+Place the Body tag inside the body of a [Result List tag](/fusion/5.9/3101/results-table). It contains a [Row tag](/fusion/5.9/3097/row-tag), to specify the format of the table rows.
+
+```xml
+<table:result-list response="response">
+    ...
+    <table:body>
+        <table:row>
+            ...
+        </table:row>
+    </table:body>
+</table:result-list>
+```
+
+For a complete list of attributes, see the [`table:body`](/fusion/5.9/1176/table-body) tag doc.

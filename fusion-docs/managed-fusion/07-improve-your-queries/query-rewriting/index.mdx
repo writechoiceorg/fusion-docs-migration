@@ -1,0 +1,280 @@
+---
+title: "Query rewriting"
+permalink: "tw7rlx"
+---
+
+Query rewriting is a strategy for improving relevancy using AI-generated data. Many of Managed Fusion’s features can be used to rewrite incoming queries prior to submitting them to Managed Fusion’s Solr core. These rewrites produce more relevant search results with higher conversion rates.
+
+For example, when spelling corrections are used for query rewriting, a misspelled query can return the same search results as a correctly-spelled query, instead of returning irrelevant results or no results. Spelling corrections are one of several available [query rewriting strategies](#strategies). Apply all available strategies for best results.
+
+See also the [Query Rewriting API](/managed-fusion/5.9/8ee4m8/query-rewrite-api).
+
+Managed Fusion can also rewrite Solr’s responses before returning them to the search application; see [Response Rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting).
+
+## Query rewriting strategies
+
+Managed Fusion provides a variety of query rewriting strategies to improve relevancy:
+
+* [Business rules](#rules)
+* [Underperforming query rewriting](#head-tail)
+* [Misspelling detection](#spelling)
+* [Phrase detection](#phrases)
+* [Synonym detection](#synonyms)
+* [Remove Words](#remove-words)
+
+With the exception of business rules, which are always manually created, these strategies correspond to certain [Spark jobs](#spark-jobs). Lucidworks recommends configuring and scheduling all of these jobs for best results. You can also train the jobs by manually adding documents to their output. Manually-added documents are used for machine learning and are never overwritten by new job output.
+
+Query rewriting strategies are applied in the following order:
+
+1. **Business rules** - If a query triggers a business rule, then the business rule overrides any query rewriting strategies that conflict with it.
+2. **Query rewrites**
+
+   1. **Underperforming query rewriting** - If a query triggers an underperforming query rewrite, then this strategy overrides all subsequent query rewriting strategies.
+   2. **Remove words** - To help increase the number of results returned, Remove Words query rewrites removes words from the users' search.
+3. **Synonym detection**
+4. **Misspelling detection *and* phrase detection** - The query rewriting results from both of these strategies are applied together. To use only the strategy with the longest surface form, you can configure the Text Tagger query stage with **Overlapping Tag Policy** set to "LONGEST_DOMINANT_RIGHT".
+
+### Business rules
+
+Business rules are manually-created formulas for rewriting queries. This is the most versatile strategy for creating custom query rewrites. It supports a variety of conditions and actions to address a wide range of use cases. When you need a very specific query rewrite, this is the best strategy.
+
+Business rules are applied in the [Apply Rules stage](/managed-fusion/5.9/yx85m4/apply-rules-stage) of the query pipeline.
+
+See [Business Rules](/managed-fusion/5.9/03vd0y/business-rules) to learn how to create, edit, and publish business rules.
+
+### Underperforming query rewriting
+
+Head/tail analysis is:
+
+* Also known as the Underperforming Query Rewriting feature
+* Uses signals data to identify underperforming queries
+* Suggests improved queries that could produce better conversion rates
+
+When an incoming query contains a matching underperforming query, the original query is replaced by an improved query.
+These improvements can be:
+
+* Suggested by the [Head/Tail Analysis Spark job](/managed-fusion/5.9/14bjqz/head-tail-analysis-jobs) operating on your signals data
+* Created manually using the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor) or underlying API
+
+Query improvements are applied in the [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) of the query pipeline.
+
+See [Head/Tail Analysis (Underperforming Query Rewriting)](/managed-fusion/5.9/a024os/underperforming-queries) to learn how to review, edit, create, and publish query improvements.
+
+### Misspelling detection
+
+The Misspelling detection feature maps misspellings to their corrected spellings. When Managed Fusion receives a query containing a known misspelling, it rewrites the query using the corrected spelling in order to return relevant results instead of an empty or irrelevant results set.
+
+Spelling corrections are applied in the [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) of the query pipeline.
+
+<Tip>
+Misspelled terms are completely replaced by their corrected terms. If you want to expand the query to include all alternative terms, set the synonyms to bi-directional. See [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection) for more information.
+</Tip>
+
+See:
+
+* [Misspelling Detection](/managed-fusion/5.9/231w02/misspelling-detection) for general information
+* [Use Misspelling Detection](/how-to/1lppeb/use-misspelling-detection) for information about how to review, edit, create, and publish spelling corrections
+
+### Phrase detection
+
+Phrase detection identifies phrases in your signals so that results with matching phrases can be boosted. This helps compensate for queries where phrases are not distinguished with quotation marks. For example, the query `ipad case` is rewritten as `“ipad case”~10^2`, meaning if `ipad` and `case` appear **within 10** terms (whitespace-delimited tokens) of each other, then boost the result by a factor of **2**.
+
+Phrases are applied in the [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) of the query pipeline.
+
+See:
+
+* [Phrase Detection](/managed-fusion/5.9/olq4c4/phrase-detection) for general information
+* [Use Phrase Detection](/how-to/24ir0v/use-phrase-detection) for information about how to review, edit, create, and publish spelling corrections
+
+### Synonym detection
+
+The Synonym Detection feature generates pairs of synonyms and pairs of similar queries. Two words are considered potential synonyms when they are used in a similar context in similar queries. A query that contains a matching term is expanded to include all of its synonyms, with the original term boosted by a factor of two.
+Synonyms are applied in the [Text Tagger stage](/managed-fusion/5.9/74ygo4/text-tagger-stage) of the query pipeline.
+
+See:
+
+* [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection) for general information
+* [Use Synonym Detection](/how-to/swedwo/use-synonym-detection) for information about how to review, edit, create, and publish synonym corrections
+
+### Remove words
+
+Use a Remove Words query rewrite to remove particular phrases from queries. Unlike other rewrites, Remove Words rules are entered manually and aren’t generated by a job.
+
+You can create a Remove Words query rewrite to remove words from a query. This query rewrite is helpful when a word in the search query does not add value to the search results.
+
+For example, you can rewrite a search query for `case study examples` to remove `examples` and then display results for `case study`.
+
+See [Remove Words](/managed-fusion/5.9/k03fvq/remove-words) to learn how to remove words from your users' searches.
+
+## Rules Editor
+
+The Rules Editor allows you to view, edit, create, approve, enable, and publish rules powered by Managed Fusion. Access the Rules Editor from the Managed Fusion UI by navigating to **Relevance** > **Rules**:
+
+<Frame>![Access the Rules Editor](/assets/images/5.6/access-rules-ui-56.png)</Frame>
+
+Read more about the [Rules Editor](/managed-fusion/5.9/nxpfuh/rules-editor).
+
+## Query rewrite collections
+
+<Note>
+
+For detailed information about query rewriting, see:
+
+* [Manage Collections in the Managed Fusion UI](/how-to/ekv6jt/manage-collections-in-the-managed-fusion-ui)
+* [Collections](/managed-fusion/5.9/n8oj99/collections)
+
+</Note>
+
+For each app, two [auxiliary collections](/managed-fusion/5.9/n8oj99/collections#auxiliary-collections) are dedicated to documents used for query rewriting:
+
+* `COLLECTION_NAME_query_rewrite_staging`
+
+  [Certain Spark jobs](#spark-jobs) send their output to this collection. [Rules](#rules) are also written to this collection initially.
+
+  Some of the content in this collection requires manual review before it can be migrated to the `COLLECTION_NAME_query_rewrite`, where query pipelines can read it. See below for details.
+* `COLLECTION_NAME_query_rewrite`
+
+  This collection is optimized for high-volume traffic. Query pipelines can read from this collection to find rules, synonyms, spelling corrections, and more with which to rewrite queries and responses.
+
+Each app contains exactly one of each of these collections, associated with the app’s default collection. They are not created again for additional collections created within the same app.
+
+Documents move from `COLLECTION_NAME_query_rewrite_staging` to the `COLLECTION_NAME_query_rewrite` collection only when they are approved (either automatically on the basis of their confidence scores or manually by a human reviewer) *and* a Managed Fusion user clicks **Publish**. The `review` field value indicates whether a document will be published when the user clicks **Publish**:
+
+|  |  |
+| --- | --- |
+| `review=auto` | A job-generated document has a sufficiently high confidence score and is automatically approved for publication. |
+| `review=pending` | A job-generated document has an ambiguous confidence score and must be reviewed by a Managed Fusion user. |
+| `review=approved` | A Managed Fusion user has reviewed the document and approved it for publication. |
+| `review=denied` | A job-generated document has a low confidence score, or a Managed Fusion user has reviewed and denied it for publication. |
+
+<Tip>
+In the query rewriting UI, the value of the `review` field appears in the **Status** column.
+</Tip>
+
+You can review and approve or deny documents using the query rewriting UI. You can also change a document’s status to "pending" to save it for later review.
+
+## Rules Simulator query profile
+
+<Note>
+**Important**
+
+Rules Simulator is only available for Managed Fusion organizations that do *not* have a valid Predictive Merchandiser or Experience Optimizer license.
+</Note>
+
+The [Rules Simulator](/fusion-ai/4.2/484/simulator) allows product owners to experiment with rules and other query rewrites in the `COLLECTION_NAME_query_rewrite_staging` collection before deploying them to the `COLLECTION_NAME_query_rewrite` collection.
+
+Each app has a `COLLECTION_NAME_rules_simulator` query profile, configured to use the `COLLECTION_NAME_query_rewrite_staging` collection for query rewrites instead of the `COLLECTION_NAME_query_rewrite` collection. This profile is created automatically whenever a new app is created.
+
+See [Configure the Rules Simulator Query Profile](/how-to/r93mff/configure-the-rules-simulator-query-profile) for more information about configuration.
+
+## Query pipeline stages for query rewriting
+
+These query rewriting stages are part of any default query pipeline:
+
+* [Apply Rules query stage](/managed-fusion/5.9/yx85m4/apply-rules-stage)
+
+  This stage looks up rules that have been deployed to the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/tw7rlx/query-rewriting#collections) and matches them against the query. Matching rules that perform [query rewriting](/managed-fusion/5.9/tw7rlx/query-rewriting) are applied at this stage, while matching rules that perform [response rewriting](/managed-fusion/5.9/tsjj9g/response-rewriting) are applied by the [Modify Response with Rules](/managed-fusion/5.9/33huzc/modify-response-with-rules-stage) stage later in the pipeline.
+
+<Note>
+To trigger a rule that contains a tag, specify the tagname in the request URL of the user search app. See [Easily define triggers in tags](/managed-fusion/5.9/oitb8y/general-configurations#tags) for more information.
+</Note>
+
+* [Text Tagger query pipeline stage](/managed-fusion/5.9/74ygo4/text-tagger-stage)
+
+  This stage uses the SolrTextTagger handler to identify known entities in the query by searching the [`COLLECTION_NAME_query_rewrite` collection](/managed-fusion/5.9/n8oj99/collections#auxiliary-collections).
+
+  <Note>
+  For Managed Fusion organizations that do *not* have a Predictive Merchandiser license, the Solr Text Tagger handler also searches the `COLLECTION_NAME_query_rewrite_staging` collection in the case of the Managed Fusion query rewriting [Simulator](/fusion-ai/4.2/484/simulator)).
+  </Note>
+
+  The purpose of the search is to perform query rewriting using matches from the following items:
+
+  + [Spelling corrections](/managed-fusion/5.9/231w02/misspelling-detection)
+  + [Phrase boosts](/managed-fusion/5.9/olq4c4/phrase-detection)
+  + [Head/Tail Analysis (Underperforming query improvements)](/managed-fusion/5.9/a024os/underperforming-queries)
+  + [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection)
+
+## Spark jobs for query rewriting
+
+This section describes how Spark jobs support query rewriting. These jobs read from the signals collection and write their output to the `COLLECTION_NAME_query_rewrite_staging` collection. High-confidence results are automatically migrated from there to the `COLLECTION_NAME_query_rewrite` collection, while ambiguous results remain in the staging collection until they are reviewed and approved. You can review job results in the Query Rewriting UI.
+
+* [Daily query rewriting jobs](#daily-jobs) are created and scheduled automatically when you create a new app.
+* [Additional query rewriting jobs](#more-jobs) can be created manually.
+
+<Tip>
+For best relevancy, enable all of these jobs.
+</Tip>
+
+### Daily query rewriting jobs
+
+When a new app is created, the jobs below are also created and scheduled to run daily, beginning 15 minutes after app creation, in the following order:
+
+1. [Token and Phrase Spell Correction job](/managed-fusion/5.9/9pf532/token-and-phrase-spell-correction-job)
+
+   Detect misspellings in queries or documents using the numbers of occurrences of words and phrases.
+2. [Phrase Extraction job](/managed-fusion/5.9/xzyz7w/phrase-extraction-jobs)
+
+   Identify multi-word phrases in signals.
+3. [Synonym Detection](/managed-fusion/5.9/a2jy7t/synonym-detection)
+
+   Use this job to generate pairs of synonyms and pairs of similar queries. Two words are considered potential synonyms when they are used in a similar context in similar queries.
+
+#### Process flow
+
+The first and second jobs can provide input to improve the Synonym job’s output:
+
+* Token and Phrase Spell Correction job results can be used to avoid finding mainly misspellings, or mixing synonyms with misspellings.
+* Phrase Extraction job results can be used to find pairs of synonyms with multiple tokens, such as "lithium ion"/"ion battery".
+
+The Phrase Extraction and Synonym Detection jobs are triggered by the success of the previous job: the phrase detection job runs only if the spell correction job succeeds, and the synonym job runs only if the phrase detection job succeeds.
+
+### Additional query rewriting jobs
+
+These jobs also produce results that are used for query rewriting, but must be created manually:
+
+* [Head/Tail Analysis job](/managed-fusion/5.9/14bjqz/head-tail-analysis-jobs)
+
+  Perform head/tail analysis of queries from collections of raw or aggregated signals, to identify underperforming queries and the reasons. This information is valuable for improving overall conversions, Solr configurations, auto-suggest, product catalogs, and SEO/SEM strategies, in order to improve conversion rates.
+* [Ground Truth job](/managed-fusion/5.9/z7fcuq/ground-truth-jobs)
+
+  Ground truth or gold standard datasets are used in the ground truth jobs and query relevance metrics to define a specific set of documents.
+
+Ground truth jobs estimate ground truth queries using click signals and query signals, with document relevance per query determined using a click/skip formula.
+
+Use this job along with the [Ranking Metrics job](/managed-fusion/5.9/ufm17z/ranking-metrics-jobs) to calculate relevance metrics, such as Normalized Discounted Cumulative Gain (nDCG).
+
+To create a ground truth job, sign in to Managed Fusion and click **Collections > Jobs**. Then click **Add+** and in the Experiment Evaluation Jobs section, select **Ground Truth**. You can enter basic and advanced parameters to configure the job. If the field has a default value, it is populated when you click to add the job.
+
+## Basic parameters
+
+<Note>
+To enter advanced parameters in the UI, click **Advanced**. Those parameters are described in [the advanced parameters section](#advanced-parameters).
+</Note>
+
+* **Spark job ID.** The unique ID for the Spark job that references this job in the API. This is the `id` field in the configuration file. Required field.
+* **Input/Output Parameters.** This section includes the **Signals collection** field, which is the Solr collection that contains click signals and its associated search log identifier. This is the `signalsCollection` field in the configuration file. Required field.
+
+## Advanced parameters
+
+If you click the **Advanced** toggle, the following optional fields are displayed in the UI.
+
+* **Spark Settings.** This section lets you enter `parameter name:parameter value` options to use in this job. This is the `sparkConfig` field in the configuration file.
+* **Additional Options.** This section includes the following options:
+
+  + **Search logs pipeline.** The pipeline ID associated with search log entries. This is the `searchLogsPipeline` field in the configuration file.
+  + **Join key (query signals).** The common key that joins the query signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Join key (click signals).** The common key that joins the click signals in the signals collection. This is the `joinKeySignals` field in the configuration file.
+  + **Search logs and options.** This section lets you enter `property name:property value` options to when loading the search logs collection. This is the `searchLogsAddOpts` field in the configuration file.
+  + **Additional signals options.** This section lets you enter `property name:property value` options when loading the signals collection. This is the `signalsAddOpts` field in the configuration file.
+  + **Filter queries.** The `array[string]` filter query to apply when selecting top queries from the query signals in the signals collection. This is the `filterQueries` field in the configuration file.
+  + **Top queries limit.** The total number of queries to select for ground truth calculations when this job is run. This is the `topQueriesLimit` field in the configuration file.
+
+For more information, see [Ground truth query rewrite API configurations](/managed-fusion/5.9/ixq6py/ground-truth-query-rewrite-api-configurations).
+
+### "rules" role for query rewriting users
+
+The "rules" [role](/managed-fusion/5.9/ydvorx/roles) provides permissions to access query rewriting features for all Managed Fusion apps. A Managed Fusion admin can create a user account with this role to give a business user access to the Query Rewriting UI.
+
+## Query rewrite jobs post-processing cleanup
+
+To perform more extensive cleanup of query rewrites, complete the procedures in [Query rewrite jobs post-processing cleanup](/how-to/5017lo/query-rewrite-jobs-post-processing-cleanup).

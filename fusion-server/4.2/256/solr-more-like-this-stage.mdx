@@ -1,0 +1,26 @@
+---
+title: "Solr MoreLikeThis Stage"
+permalink: "256"
+---
+
+This stage uses the content of the current document to query for similar documents, using [Solr’s MoreLikeThis component](/solr-reference-guide/9110/more-like-this).
+
+This stage provides content-based recommendations. For collaborative recommendations, use the [Recommend Items for Item stage](/fusion-ai/4.2/514/recommend-items-for-item-stage).
+
+See [Recommendations and Boosting](/fusion-ai/4.2/482/recommendations-and-boosting) for more information.
+
+## Tips
+
+* The incoming query must include an `id` field in order to get recommendations from this stage. The stage returns documents similar to the one specified by this field.
+* Since these secondary queries tend to be large, this stage can impact search performance. You can improve performance by first [clustering your documents](/fusion-ai/4.2/582/document-clustering-jobs), then configuring this stage to query a specific document cluster instead of all documents.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/4_2/query-stages/solr-morelikethis.mdx";
+
+<SchemaParamFields schema={schema}/>

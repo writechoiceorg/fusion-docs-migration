@@ -1,0 +1,48 @@
+---
+title: "Custom JavaScript Stages Variables and Parameters"
+permalink: "3wzuy5"
+---
+
+## JavaScript Stages Variables and Parameters
+
+[JavaScript](http://en.wikipedia.org/wiki/JavaScript) is a lightweight scripting language.
+The JavaScript in a JavaScript stage is standard [ECMAScript](http://en.wikipedia.org/wiki/ECMAScript).
+What a JavaScript program can do depends on the container in which it runs.
+For a JavaScript Query stage, the container is a Fusion query pipeline.
+The following global pipeline variables are available:
+
+| Name | Type | Description |
+| --- | --- | --- |
+| `request` | [Request](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/query/request) | The Solr query information. |
+| `response` | [Response](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/query/response) | The Solr response information. |
+| `ctx` | [Context](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/context) | A reference to the container which holds a map over the pipeline properties. Used to update or modify this information for downstream pipeline stages. |
+| `collection` | String | The name of the Fusion collection being indexed or queried. |
+| `solrServer` | [BufferingSolrServer](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/component/bufferingsolrserver) | The Solr server instance that manages the pipeline’s default Fusion collection. All indexing and query requests are done by calls to methods on this object. See [SolrClient](https://lucene.apache.org/solr/5_2_1/solr-solrj/org/apache/solr/client/solrj/SolrClient.html) for details. |
+| `solrServerFactory` | [SolrClientFactory](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/component/solrclientfactory) | The SolrCluster server used for lookups by collection name which returns a Solr server instance for a that collection. For example:  `var productsSolr = solrServerFactory.getSolrServer("products");`. |
+| `QueryRequestAndResponse` | [QueryRequestAndResponse](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/query/queryrequestandresponse) | Returns list of info as a string. |
+
+### Syntax Variants
+
+JavaScript stages are written using ***function syntax***, which passes variables as function parameters.
+
+#### Function Syntax
+
+```javascript
+function(request,response) {
+   request.addParam("foo", "bar");
+}
+```
+
+<Tip>
+**Important**
+
+*Function syntax* is used for the examples in this document.
+</Tip>
+
+### Global variable `logger`
+
+The global variable named `logger` writes messages to the log file of the server running the pipeline.
+This variable is truly global and does not need to be declared as part of the function parameter list.
+
+There are 5 methods available, which each take either a single argument (the string message to log) or two arguments (the string message and an exception to log).
+The five methods are, "debug", "info", "warn", and "error".

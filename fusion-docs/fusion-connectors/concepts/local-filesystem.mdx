@@ -1,0 +1,27 @@
+---
+title: "Local Filesystem Connector"
+permalink: "29"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.x through Fusion 5.1.5.
+
+</Note>
+
+
+
+This connector traverses a network file system (NFS), where a shared drive is mounted to the same location on all hosts in the cluster that are running this connector.
+
+The crawler captures information about the node, such as filename, permissions, date of creation, last modification, and last access, as well as the contents of the nodes. The extent of the network of nodes to be traversed is discovered during the crawl, when each node (such as a Unix file directory) provides information about its child nodes (such as the files in that directory) or references other nodes (such as links in an HTML document).
+
+The connector provides rules to limit the crawl and recrawling.
+These rules use datasource configuration properties to limit the extent of the network (depth of nodes to explore) as well as limiting processing to a subset of files based on file names and file size.
+An overall limit can be set on number of files retrieved during a crawl.
+
+<Tip>
+**Important**
+
+As of Fusion version 4.1.1, Fusion comes bundled with the V2 Local Filesystem Connector. The [V1 Local Filesystem Connector](/fusion-connectors/42/local-filesystem-connector-v-1-configuration-reference) for Fusion 4.x can be downloaded from [Fusion 4.x V1 Connector Downloads](/fusion-connectors/5e5d7o/fusion-4-x-v-1-connector-downloads).
+</Tip>
+

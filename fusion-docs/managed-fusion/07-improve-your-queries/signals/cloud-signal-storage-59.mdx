@@ -1,0 +1,81 @@
+---
+title: "Cloud signal storage"
+permalink: "vcpe1e"
+---
+
+By default, Managed Fusion stores signals in Solr. Alternatively, you can choose to store signals in Google Cloud Storage or Amazon S3.
+
+Storing signals in the cloud reduces the amount of data stored on a Solr cluster. Signals data files are periodically compacted into larger files to save storage space, improve performance, and make it easier to manage the files.
+
+<Note>
+This feature is only available in Managed Fusion 5.9.x for versions 5.9.6+.
+</Note>
+
+Cloud signal storage is enabled at the time of deployment. To enable cloud signal storage for a new Managed Fusion deployment, you must configure this feature in the deployment options.
+
+All signal types are supported, including custom signal types. The default signal schema can be customized.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Cloud Signal Storage** focuses on how to use cloud signal storage in Fusion to enhance your data storage efficiency:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/cloud-signal-storage" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/cloud-signal-storage.jpg" alt="Cloud Signal Storage" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+<Tip>
+**FAQ**
+
+Can I migrate existing signals to cloud signal storage?
+
+Currently, there is no migration path from default signal storage in Solr to cloud signal storage. This improvement is planned for a future release. To use cloud signal storage, start with a new deployment.
+
+</Tip>
+
+## Data flow
+
+<Frame>![Cloud signal storage flow](/assets/images/cloud-signals.png)</Frame>
+
+**Kafka**
+    Both internally and externally originated signals flow through the signals indexing pipeline. In contrast to default signals storage, when cloud signal storage is enabled, signals are not sent to Solr. Instead, signals are sent to the fusion.system.cloud-signals Kafka topic, the message system used by Managed Fusion clouds signals to buffer signals before they are written to cloud storage.
+
+**Signals consumer**
+    A signals consumer, which runs within a Kubernetes pod, polls the Kafka topic frequently and writes signals data files in Parquet format to a stable, temporary cloud storage location. Due to the write frequency, this results in a large number of small files.
+
+**Signals compactor**
+    A signals compactor, which also runs within a Kubernetes pod, periodically compacts the signals data files sent by the signals consumer and writes them to a smaller number of large files. In contrast to aggregation, compaction does not change the data itself.
+
+The compacted signals data files are stored separately from the uncompacted signals data files. The compaction frequency is configurable, to meet the needs of your use case.
+
+**Spark SQL aggregations**
+    Managed Fusion Distributed Compute schedules and runs Spark jobs, which operate over the compacted Parquet partitions written by the signals compactor. The output is written to Solr for use at query time for boosting and recommendations.
+
+## Cloud signal schema
+
+Signals are stored in [Apache Parquet](https://parquet.apache.org/) file format, which is designed to handle flat, column-oriented data.
+
+## Known issues
+
+Some features in Managed Fusion rely on signals data stored in Solr, not cloud signal storage. The following list contains features that are not supported:
+
+* [Experiments analytics](/managed-fusion/5.9/mykfo7/experiments)
+* [Predictive Merchandiser analytics](/managed-fusion/5.9/74h98q/predictive-merchandiser)
+* [Login signals](/managed-fusion/5.9/lvj31z/signals-types-and-structures#login)
+* [Query-to-Query Session Based Similarity](/managed-fusion/5.9/6e6pkd/query-to-query-session-based-similarity)
+* [Ground Truth](/managed-fusion/5.9/z7fcuq/ground-truth)
+* [Ranking Metrics](/managed-fusion/5.9/ufm17z/ranking-metrics)
+
+Other features not listed here may be impacted.

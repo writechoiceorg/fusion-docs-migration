@@ -1,0 +1,365 @@
+---
+title: "Field Processors"
+permalink: "3182"
+---
+
+Field response processors include ones to perform these operations:
+
+* Capitalise the display value of the given field names.
+* Add Highlighting to Fields.
+* Tag a document with classifications based on field values.
+* Format a date object, replacing the original date value with another.
+* Parse dates out of field values.
+* Set the value of a field that is missing a value, based on the value of a different field.
+* Parse the String value of the specified fields into an Object representation.
+* Create a multivalued field from a single field value by using a separator.
+* Extract the hostname from URLs and place it in a field named 'site'.
+* Process fully qualified URLs in field values and markup, and add anchor tags for active links in the display values.
+* Statically add metadata to documents that match a given regular expression.
+* Replace field values (actual, display, or both) that are HTML or URL encoded with decoded values.
+* Replace field values (actual, display, or both) that match a given regular expression with a different value.
+* Make Twitter users and hashtags clickable in the display value.
+* Duplicate a field, creating two separate instances.
+* Create a new field by joining multiple existing fields using a pattern expression.
+* Localize the values of a field using a specified bundle.
+
+### twigkit.search.processors.response.CapitaliseFieldValuesProcessor
+
+Capitalise the display value of the given field names.
+
+```
+name: twigkit.search.processors.response.CapitaliseFieldValuesProcessor
+fields: firstName,lastName
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.HighlightFieldValuesProcessor
+
+Add Highlighting to Fields. For a more detailed overview, see [the highlighting page](/fusion/5.9/3200/lucidworks-fusion#hit-highlighting).
+
+### twigkit.search.processors.response.FieldEntityExtractor
+
+Tag a document with classifications based on field values. Using the specified fields, look for patterns provided in a properties file and add classifications to a given field if the value matches.
+
+```
+name: twigkit.search.processors.response.FieldEntityExtractor
+fields: issues
+classificationField: categorizedIssues
+bundle: my-issues
+```
+
+With:
+
+```
+#my-issues_en.properties in /resources/conf
+Foo
+Bar
+Bam
+```
+
+This can be used to pull out keywords from a given field into a new field for display. If the Example above had a field named 'issues' with 'The problem is Foo something else' as value, then the FieldEntityExtractor would match on Foo, and stick 'Foo' into a new categorizedIssues field. This can be used to create new metadata fields, or even filter fields with sensitive data, to just pull out what you want to show.
+
+- `bundle (java.lang.String)`
+    A properties file containing entities to extract and an optional replacement value when found (for example, IBM = International Business Machines where the latter would be stored as the match for IBM).
+    These are expressed as regular expressions (regex) so as well as simple matching based on whether the value was found within a field, entities can be recognized based on a specific pattern within the text of the chosen fields.
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be used to search for matches in order to classify the document.
+
+- `classificationField (java.lang.String)`
+    The field in which to store the classification values. The flexible pattern based approach used allows a document to be tagged with multiple classifications if several matches are found.
+
+### twigkit.search.processors.response.DatePartExtractor
+
+Format a date object, replacing the original date value with another. *Use on fields that are already date objects*.
+
+```
+name: twigkit.search.processors.response.DatePartExtractor
+fields: issues
+pattern: dd MMM yyyy
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `pattern (java.lang.String)`
+    Format a Date object according to this Date pattern. Use [Java’s SimpleDateFormat](http://docs.oracle.com/javase/7/docs/api/java/text/SimpleDateFormat.html) syntax. In the examples, for example, you will see that `pattern="EEE, MMM d, ''yy"` results in `Wed, Jul 4, '01`.
+
+### twigkit.search.processors.response.FieldDateParser
+
+Parse dates out of field values. To convert String data into Date objects.
+
+```
+name: twigkit.search.processors.response.FieldDateParser
+fields: issues
+pattern: dd MMM yyyy
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `pattern (java.lang.String)`
+    The pattern to use when parsing the String value to a Date.
+
+### twigkit.search.processors.response.FallbackFieldValue
+
+Set the value of a field that is missing a value, based on the value of a different field.
+
+```
+name: twigkit.search.processors.response.FallbackFieldValue
+field: phoneNumber
+fallback: mainPhoneNumber
+pattern:
+values: display
+decode: false
+```
+
+- `field (java.lang.String)`
+    Field that should be affected by this processor.
+
+- `fallback (java.lang.String)`
+    Field to use for the fallback values.
+
+- `pattern (java.lang.String)`
+    Regex pattern to use to extract a value from the fallback field
+
+- `values (java.lang.String)`
+    Which forms of the value to check for emptiness - 'display', 'actual', or 'either'
+
+- `decode (java.lang.Boolean)`
+    Whether to perform URL decoding on the fallback values
+
+### twigkit.search.processors.response.FieldValueParser
+
+Parse the String value of the specified fields into an Object representation.
+
+```
+name: twigkit.search.processors.response.FieldValueParser
+fields: amount
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.FieldToMultiValueFieldProcessor
+
+Create a multivalued field from a single field value by using a separator.
+
+```
+name: twigkit.search.processors.response.FieldToMultiValueFieldProcessor
+field: cities
+separator: ,
+```
+
+- `field (java.lang.String)`
+    The name of the field containing the value to be split.
+
+- `separator (java.lang.String)`
+    The separator to use when splitting the value.
+
+### twigkit.search.processors.response.HostNameExtractor
+
+Extract the hostname from URLs and place it in a field named 'site'.
+
+```
+name: twigkit.search.processors.response.HostNameExtractor
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.LinkMarkupProcessor
+
+Process fully qualified URLs in field’s 'actual' value, and markup with anchor tags for active links in display value.
+
+```
+name: twigkit.search.processors.response.LinkMarkupProcessor
+fields: url
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.RegExFieldValueTaggerProcessor
+
+Statically add metadata to documents that match a given regular expression (in one or more fields).
+
+```
+name: twigkit.search.processors.response.RegExFieldValueTaggerProcessor
+fields: path
+classificationField: type
+pattern: [\w]+
+```
+
+The example above looks at a field named path for example, "foo/bar/bam", and breaks all words into a multivalued field named type with multiple values foo, bar and bam using a regex pattern.
+
+If you want to change data rather than just use it, use a ReplaceFieldValue processor.
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `classificationField (java.lang.String)`
+    The field that should contain the metadata classificationValue if the pattern matches.
+
+- `pattern (java.lang.String)`
+    The pattern to match to the values in the fields defined with the fields parameter.
+
+### twigkit.search.processors.response.DecodeFieldValueProcessor
+
+Replace field values (actual, display, or both) that are HTML or URL encoded with decoded values. A use case might be to replace the display value of a URL field. Example usage:
+
+```
+name: twigkit.search.processors.response.DecodeFieldValueProcessor
+fields: url_display
+encoding: url
+values: display
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `values (java.lang.String)`
+    Whether to replace 'actual', 'display' or 'both' values.  
+    Default: 'both'
+
+- `encoding (java.lang.String)`
+    The encoding of the value to be decoded; 'url' or 'html'.  
+    Default: 'url'
+
+### twigkit.search.processors.response.ReplaceFieldValue
+
+Replace field values (actual, display, or both) that match a given regular expression with a different value. The replacement value can contain back-references to matches. A common use case for this is to use a CopyFieldProcessor first, then make changes. Example:
+
+```
+name: twigkit.search.processors.response.ReplaceFieldValue
+fields: folder
+replace: ^(.*/).*$
+with: $1
+```
+
+The example above strips off a file name from the end of a folder path to leave just the path using capture expressions and back-references [regular expressions](http://www.regexplanet.com/advanced/java/index.html).
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `replace (java.lang.String)`
+    The pattern to replace (can contain regular expressions).
+
+- `with (java.lang.String)`
+    The replacement (can contain backreferences to the regular expression pattern).
+
+- `values (java.lang.String)`
+    Whether to replace 'actual', 'display' or 'both' values.
+    Default: 'both'
+
+- `ignoreCase (java.lang.Boolean)`
+    Whether to ignore case during pattern matching.
+    Default: false
+
+### twigkit.search.processors.response.TweetMarkupProcessor
+
+Make Twitter users and hashtags clickable in the display value.
+
+```
+name: twigkit.search.processors.response.TweetMarkupProcessor
+fields: twitter_user
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+### twigkit.search.processors.response.CopyFieldProcessor
+
+Duplicate a field, creating two separate instances.
+
+```
+name: twigkit.search.processors.response.CopyFieldProcessor
+from: url
+to: my_url
+```
+
+- `from (java.lang.String)`
+    Name of field to copy (clone).
+
+- `to (java.lang.String)`
+    Name to assign to the new field.
+
+### twigkit.search.processors.response.ConcatenateFields
+
+Create a new field by joining multiple existing fields using a pattern expression.
+
+- `expression (java.lang.String)`
+    Concatenated field pattern defined using double curly braces (see below)
+
+- `target (java.lang.String)`
+    Name of the new field to create in the response
+
+```
+name: twigkit.search.processors.response.ConcatenateFields
+expression: {{MemberStreet1}} {{MemberStreet2}} {{MemberCity}} {{MemberState}} {{MemberZipCode}} {{MemberCountry}}
+target: compositeAddress
+```
+
+Or create a new image field that uses a field value as part of an expression:
+
+```
+name: twigkit.search.processors.response.ConcatenateFields
+expression: http://your/custom/path/{{MemberCity}}.jpg
+target: image_url
+```
+
+Then use a `<media:image>` tag to output the image field in the result output:
+
+```
+<media:image field-name="image_url" width="156" height="156" ... >
+```
+
+### twigkit.search.processors.response.LocaliseFieldValueProcessor
+
+Localize the values of a field using a specified bundle. For example:
+
+```
+name: twigkit.search.processors.response.LocaliseFieldValueProcessor
+bundle: languages
+locale: en
+fields: language
+```
+
+As an example, add a file named languages_en.properties to your class path (for example, to src/main/resources) and containing these key-value pairs (truncated):
+
+```
+aa = Afrikaans
+ab = Abkhaz
+am = Amharic
+ar = Arabic
+az = Azerbaijani
+ba = Bashkir
+be = Belarusian
+bg = Bulgarian
+bm = Bamanankan
+bn = Bengali
+bo = Tibetan
+br = Breton
+bs = Bosnian
+ca = Catalan
+co = Corsican
+cr = Cree
+cs = Czech
+cy = Welsh
+etc.
+```
+
+- `fields (java.lang.String)`
+    Comma-separated list of fields that should be affected by this processor.
+
+- `values (java.lang.String)`
+    Whether to replace 'actual', 'display' or 'both' values.
+    Default: `both`
+
+- `bundle (java.lang.String)`
+    The bundle to use.
+
+- `locale(java.lang.String)`
+    The locale to use.

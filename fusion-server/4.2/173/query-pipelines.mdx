@@ -1,0 +1,70 @@
+---
+title: "Query Pipelines"
+permalink: "173"
+---
+
+A Query Pipeline transforms a set of inputs into a Solr query request and it can execute requests and manipulate the Solr response as well, via a set of modularized operations called [Query Stages](/fusion-server/4.2/169/query-pipeline-stages). The objects sent from stage to stage are Request objects and Response objects.
+
+Fusion stores pipeline names and definitions, allowing a pipeline to be reused across applications. Pipeline definitions can be modified, so that as an application evolves, the pipelines used by that application can evolve accordingly. During application development, the Fusion UI can be used to develop and debug a Query Pipeline.
+
+The available stage types allow setting specific parameters for the query, such as the number of results to return or the query parser to use. You can also define facets and recommendations to be returned with the results. If Access Control Lists (ACLs) are in use, you can apply a security-trimming stage to apply user access restrictions to the results.
+
+For details about the available REST APIs, see [Query Pipelines API](/fusion-server/4.2/360/query-pipelines-api) and [Query Stages API](/fusion-server/4.2/362/query-stages-api).
+
+## Default Query Pipelines
+
+When you create a new app with a default collection, the collection includes a default query pipeline. When you create a new collection in an existing app, Fusion also creates a default query pipeline for the new collection. The pipeline name is the same as the collection name.
+
+The default query pipeline has the following pre-configured stages:
+
+* [Text Tagger](/fusion-server/4.2/264/text-tagger-stage)
+
+  This stage uses the [SolrTextTagger](/solr-reference-guide/1599/the-tagger-handler) handler to identify known entities in the query by searching either of the following:
+* `_query_rewrite` collection. See [Manage Collections in the Fusion UI](/how-to/812/manage-collections-in-the-fusion-ui) for more information.
+* `_query_rewrite_staging` collection in the case of the Fusion AI query rewriting [Simulator](/fusion-ai/4.2/484/simulator).
+
+To perform [query rewriting](/fusion-ai/4.2/489/query-rewriting), this stage searches for matching instances of:
+
+* [spelling corrections](/fusion-ai/4.2/488/misspelling-detection)
+* [phrase boosts](/fusion-ai/4.2/487/phrase-detection)
+* [underperforming query improvements](/fusion-ai/4.2/486/underperforming-queries)
+* [synonym expansions](/fusion-ai/4.2/485/synonym-detection)
+* [Boost with Signals](/fusion-ai/4.2/511/boost-with-signals-stage)
+
+  The Boost with Signals query pipeline stage uses [aggregated signals](/fusion-ai/4.2/473/aggregations) to selectively boost items in the set of search results.
+* [Query Fields](/fusion-server/4.2/289/query-fields-stage)
+
+  The Query Fields query pipeline stage defines common Solr query parameters for the [edismax query parser](https://cwiki.apache.org/confluence/display/solr/The+Extended+DisMax+Query+Parser). If using a less-than sign (\<) with DisMax, it must be escaped using a backslash.
+  An alternative to this stage is the
+  [Additional Query Parameters stage](/fusion-server/4.2/294/additional-query-parameters-stage).
+* [Field Facet](/fusion-server/4.2/252/field-facet-stage)
+
+  The Field Facet query pipeline stage is used to add a
+  link:[Solr Field Facet query](https://cwiki.apache.org/confluence/display/solr/Faceting#Faceting-Field-ValueFacetingParameters)
+  to the search query pipeline.
+* [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+* A [Solr Query](/fusion-server/4.2/265/solr-query-stage)
+
+  The Solr Query stage transforms the Fusion query pipeline
+  [Request](/fusion-pipeline-javadocs/4.2/com/lucidworks/apollo/pipeline/query/request)
+  object into a Solr query and sends it to Solr.
+* [Modify Response with Rules](/fusion-server/4.2/295/modify-response-with-rules-stage)
+
+  Most rules operate on the request, but some [rule types](/fusion-ai/4.2/489/query-rewriting#strategies), such as banner rules or redirect rules, do their work when the response comes back. The Modify Response with Rules stage applies those rules to the response. For example, a banner rule can add a banner URL to the response before returning it to the client.
+
+## Custom Query Pipelines
+
+Using the [Query Workbench](/fusion-server/4.2/167/query-workbench) or the [REST API](/fusion-server/4.2/360/query-pipelines-api), you can develop custom pipelines to suit any search application. Start with any of Fusion’s built-in query pipelines, then add, remove, and re-order the [pipeline stages](/fusion-server/4.2/169/query-pipeline-stages) as needed to produce the appropriate query results.
+
+## Asynchronous query pipeline processing
+
+Query pipeline processing performance can be improved by enabling asynchronous processing for certain stages that make requests to secondary collections, external databases, and so on. The following stages support asynchronous processing:
+
+* [Active Directory Security Trimming](/fusion-server/4.2/296/active-directory-security-trimming-stage)
+* [Apply Rules](/fusion-server/4.2/292/apply-rules-stage)
+* [Boost with Signals](/fusion-server/4.2/248/boost-with-signals-stage)
+* [JDBC Lookup](/fusion-server/4.2/260/jdbc-lookup-stage)
+* [Security Trimming](/fusion-server/4.2/272/security-trimming-stage)
+* [Solr Subquery](/fusion-server/4.2/297/solr-subquery-stage)
+
+This feature uses the fork-and-join model, where any of the stages above can create a fork on the pipeline. The parallel processes are joined again using the [Merge Async Results stage](/fusion-server/4.2/266/merge-async-results-stage) at a later point in the pipeline.

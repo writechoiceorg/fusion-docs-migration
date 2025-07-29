@@ -1,0 +1,302 @@
+export const schema = {
+  "type": "object",
+  "title": "Parallel Bulk Loader",
+  "description": "Use this job when you want to load data into Fusion from a SparkSQL compliant datasource, and send this data to any Spark supported datasource (Solr/Index Pipeline/S3/GCS/...).",
+  "required": [
+    "id",
+    "format",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Spark Job ID",
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?"
+    },
+    "sparkConfig": {
+      "type": "array",
+      "title": "Spark Settings",
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "format": {
+      "type": "string",
+      "title": "Format",
+      "description": "Specifies the input data source format; common examples include: parquet, json, textinputformat"
+    },
+    "path": {
+      "type": "string",
+      "title": "Path",
+      "description": "Path to load; for data sources that support multiple paths, separate by commas"
+    },
+    "streaming": {
+      "type": "object",
+      "title": "Streaming",
+      "required": [
+        "enableStreaming"
+      ],
+      "properties": {
+        "enableStreaming": {
+          "type": "boolean",
+          "title": "Enable Streaming",
+          "description": "Stream data from input source to output Solr collection"
+        },
+        "outputMode": {
+          "type": "string",
+          "title": "Output mode",
+          "description": "Specifies the output mode for streaming. E.g., append (default), complete, update",
+          "enum": [
+            "append",
+            "complete",
+            "update"
+          ],
+          "default": "append"
+        }
+      }
+    },
+    "readOptions": {
+      "type": "array",
+      "title": "Read Options",
+      "description": "Options passed to the data source to configure the read operation; options differ for every data source so refer to the documentation for more information.",
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "outputCollection": {
+      "type": "string",
+      "title": "Output Collection",
+      "description": "Solr Collection to send the documents loaded from the input data source."
+    },
+    "outputIndexPipeline": {
+      "type": "string",
+      "title": "Send to Index Pipeline",
+      "description": "Send the documents loaded from the input data source to an index pipeline instead of going directly to Solr."
+    },
+    "outputParser": {
+      "type": "string",
+      "title": "Send to Parser",
+      "description": "Parser to send the documents to while sending to index pipeline. (Defaults to same as index pipeline)",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "defineFieldsUsingInputSchema": {
+      "type": "boolean",
+      "title": "Define Fields in Solr?",
+      "description": "If true, define fields in Solr using the input schema; if a SQL transform is defined, the fields to define are based on the transformed DataFrame schema instead of the input.",
+      "default": true,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "atomicUpdates": {
+      "type": "boolean",
+      "title": "Send as Atomic Updates?",
+      "description": "Send documents to Solr as atomic updates; only applies if sending directly to Solr and not an index pipeline.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "timestampFieldName": {
+      "type": "string",
+      "title": "Timestamp Field Name",
+      "description": "Name of the field that holds a timestamp for each document; only required if using timestamps to filter new rows from the input source.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "clearDatasource": {
+      "type": "boolean",
+      "title": "Clear Existing Documents",
+      "description": "If true, delete any documents indexed in Solr by previous runs of this job. Default is false.",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "outputPartitions": {
+      "type": "integer",
+      "title": "Output Partitions",
+      "description": "Partition the input DataFrame into partitions before writing out to Solr or Fusion",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "optimizeOutput": {
+      "type": "integer",
+      "title": "Optimize",
+      "description": "Optimize the Solr collection down to the specified number of segments after writing to Solr.",
+      "hints": [
+        "advanced"
+      ]
+    },
+    "cacheAfterRead": {
+      "type": "boolean",
+      "title": "Cache After Read",
+      "description": "Cache input data in memory (and disk as needed) after reading; default is false, setting to true may help stability of the job by reading all data from the input source first before transforming or writing to Solr. This could make the job run slower as it adds an intermediate write operation.",
+      "default": false,
+      "hints": [
+        "hidden"
+      ]
+    },
+    "writeOptions": {
+      "type": "array",
+      "title": "Write Options",
+      "description": "Options used when writing output. For output formats other than solr or index-pipeline, format and path options can be specified here",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "transformScala": {
+      "type": "string",
+      "title": "Transform Scala",
+      "description": "Optional Scala script used to transform the results returned by the data source before indexing. You must define your transform script in a method with signature: def transform(inputDF: Dataset[Row]) : Dataset[Row]",
+      "hints": [
+        "advanced",
+        "lengthy",
+        "code/scala"
+      ]
+    },
+    "mlModelId": {
+      "type": "string",
+      "title": "Spark ML PipelineModel ID",
+      "description": "The ID of the Spark ML PipelineModel stored in the Fusion blob store.",
+      "hints": [
+        "advanced"
+      ],
+      "reference": "blob",
+      "blobType": "model:ml-model"
+    },
+    "transformSql": {
+      "type": "string",
+      "title": "Transform SQL",
+      "description": "Optional SQL used to transform the results returned by the data source before indexing. The input DataFrame returned from the data source will be registered as a temp table named '_input'. The Scala transform is applied before the SQL transform if both are provided, which allows you to define custom UDFs in the Scala script for use in your transformation SQL.",
+      "hints": [
+        "advanced",
+        "lengthy",
+        "code/sql"
+      ]
+    },
+    "shellOptions": {
+      "type": "array",
+      "title": "Spark Shell Options",
+      "description": "Additional options to pass to the Spark shell when running this job.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "templateParams": {
+      "type": "array",
+      "title": "Interpreter Params",
+      "description": "Bind the key/values to the script interpreter",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "type": "object",
+        "required": [
+          "key"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Parameter Name"
+          },
+          "value": {
+            "type": "string",
+            "title": "Parameter Value"
+          }
+        }
+      }
+    },
+    "continueAfterFailure": {
+      "type": "boolean",
+      "title": "Continue after index failure",
+      "description": "If set to true, when a failure occurs when sending a document through an index pipeline, the job will continue onto the next document instead of failing",
+      "default": false,
+      "hints": [
+        "advanced"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "title": "Spark Job Type",
+      "enum": [
+        "parallel-bulk-loader"
+      ],
+      "default": "parallel-bulk-loader",
+      "hints": [
+        "readonly"
+      ]
+    }
+  },
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1
+}

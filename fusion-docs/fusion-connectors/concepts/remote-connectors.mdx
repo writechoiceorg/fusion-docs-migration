@@ -1,0 +1,50 @@
+---
+title: "Remote Connectors"
+permalink: "22"
+---
+
+The Fusion connector architecture is designed to be scalable. Depending on whether the connector is a V1 or a V2 (SDK) connector, jobs can be scaled by adding new instances of just the connector. The fetching process for these connectors also supports distributed fetching, so that many instances can contribute to the same job.
+
+SDK connectors can be hosted within Fusion Server, or can run remotely. In the hosted case, these connectors are cluster aware.
+This means that when a new instance of Fusion starts up, the connectors on other Fusion nodes become aware of the new connector, and vice versa.
+This makes scaling connector jobs simple.
+
+In the remote case, a connector becomes a client of Fusion. This remote client runs a lightweight process and communicates to Fusion using an efficient messaging format.
+This option makes it possible to put the connector wherever the data lives. This can be done for performance reasons, or for security or access reasons.
+
+The default SDK connector service is `connectors-rpc`. By default, `connectors-rpc` runs on port 8771. This service handles connector registration, configuration management, job management, and cluster coordination.
+Like other Fusion services, it also provides access to non-connector clients.
+
+## The connector client
+
+Fusion comes with a connector client that remote connectors can use to communicate with Fusion. It is located at `FUSION_HOME/apps/connectors/connectors-rpc/client/connector-plugin-client-{fusionVersion}.x-uberjar.jar`.
+
+To run the connector client, you must have a `.zip` file containing exactly one connector plugin. Download the connector zip file from [Fusion 4.x V1 Connector Downloads](/fusion-connectors/5e5d7o/fusion-4-x-v-1-connector-downloads).
+
+### Basic connector client usage
+
+To start a connector client, on the remote node (for example, the datasource), do the following:
+
+1. Copy the connector uberjar from Fusion Server onto the remote node. The connector uberjar is at the following location:
+
+   ```bash
+   FUSION_HOME/apps/connectors/connectors-rpc/client/connector-plugin-client-{fusionVersion}-uberjar.jar
+   
+   ```
+2. On the remote node, run:
+
+   ```bash
+   java -jar path/to/uberjar/connector-plugin-client-{fusionVersion}-uberjar.jar path/to/connector/file.zip
+   
+   ```
+
+## Known Issues
+
+* Registering a plugin instance during crawl could result in errors. Only connect plugins when no jobs are running.
+
+* In order to connect a plugin from a remote instance, you are required to manually set the `default.address` value in Fusion. This host value is used with the property `com.lucidworks.fusion.plugin.hosts`. For example, where `10.10.10.10` is the host value in the `FUSION_HOME/conf/fusion.properties` file:
+
+```bash
+java -Dcom.lucidworks.fusion.plugin.hosts=10.10.10.10:8771 -jar path/to/uberjar/connector-plugin-client-FUSION_VERSION-uberjar.jar path/to/connector/file.zip
+
+```

@@ -1,0 +1,130 @@
+---
+title: "Templates"
+permalink: "3289"
+---
+
+import {InlineImage} from "/snippets/InlineImage.mdx";
+
+The Templates screen in the Rules Editor allows you to design, test, and implement a wide variety of search experiences. Results are conditionally delivered from multiple different query pipelines, enabling you to use Fusion’s search, browse, and AI-driven functionality throughout your site.
+
+<Frame>![Template Manager](/assets/images/predictive-merchandiser/templates/template-manager-510.png)</Frame>
+
+Access Templates from the [Rules Editor](/fusion/5.9/491/rules-editor) by navigating to **Relevance > Rules > Templates**. See [Use Predictive Merchandiser Templates](/how-to/3293/use-predictive-merchandiser-templates) for instructions on using Templates.
+
+Templates are only available with a valid license for [Predictive Merchandiser](/fusion/5.9/591/predictive-merchandiser). If available, you will see the templates icon in the left navigation panel: <InlineImage src="/assets/images/predictive-merchandiser/templates/icon-templates.png"/>
+
+For configuration information, see [Templates UI Configurations Reference](/fusion/5.9/8857/templates-ui-configuration-options) and the [Templating API Configuration Reference](/fusion/5.9/wm0epz/templating-api).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **Predictive Merchandiser: Template Manager** focuses on how to use the templates included in Predictive Merchandiser and create your own custom templates:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/predictive-merchandiser-template-manager" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/pm-template-manager.jpeg" alt="Predictive Merchandiser: Template Manager" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+
+</Note>
+
+
+
+## Templates
+
+Templates are comprised of two primary elements, the [template](#templates) itself and its associated [zones](#zones). A variety of conditions, or *triggers*, determine which template is shown to the customer. These triggers can include whether the template is active, the template’s precedence over other templates, the customer’s query, and whether the template is triggered within a specific date range (if set).
+
+### Default templates
+
+A new app starts with built-in templates: Detail Page, Search Results, and Typeahead. The Detail Page and Search Results Page templates are immediately available in the **Templates** screen.
+
+Detail Page
+:   The Detail Page defines what a customer sees when they view the details of a product. It can be configured in the **Templates** screen or by hovering over a product in the **Predictive Merchandiser** screen and clicking the **Detail Page** button that appears.
+
+Search Results page
+:   The Search Results Page defines what a customer sees when they reach a search results page. This template can also be configured in the **Template** screen. Alternatively, you can click **Merchandiser > Start Task > Edit Template**.
+
+Typeahead Template
+:   The Typeahead Template allows you to configure what is displayed when query terms are typed into the search bar. To add this template, click **Merchandiser > Start Task > enter a search query term**. When the system displays "Typeahead not created. Do you want to create a new typeahead template?", click **New** to create the typeahead template.
+
+### Custom templates
+
+In some cases, you may want to create custom template types to add more options for curating pages in your search application. You can create a custom template type in the **Template** screen by following the steps in [Create a Custom Predictive Merchandiser Template Type](/how-to/kdwssa/create-a-custom-predictive-merchandiser-template-type).
+
+### Hierarchical template triggers
+
+Hierarchical template triggers allow you to fire a search configuration template or rules at a parent or child level in a hierarchy, and even at a faceted level.
+
+**Ways to use hierarchical templates:**
+
+* For a sale on "Winter Coats," you can fire a template at the "Outerwear" level or at any of its children.
+* For an overstock on a particular clothing size, you could fire a template directly at the “Women’s Outerwear, Size Small” filter.
+* When rolling out a new company policy, you could fire a zone on all pages from the homepage down so everyones sees the most important links and documents for the new policy.
+
+#### Hierarchical fields settings
+
+To configure hierarchical fields settings:
+
+1. Access the application and click **Relevance > Rules > Templates**.
+2. Click the three vertical dots to the right of the application name to display the Hierarchical fields settings section.
+
+   <Frame>![Hierarchical fields settings](/assets/images/predictive-merchandiser/templates/template-manager-hierarchical.png)</Frame>
+3. Complete one of the following:
+
+   * To add a new field, click **+ Add**. Enter values in the **Field** and **Delimiter** fields and click **Apply**.
+
+     <Note>
+     Any symbol can be used as a delimiter.
+     </Note>
+
+
+   * To edit an existing field, click **Field** and select the value to edit. Enter the appropriate value in the **Delimiter** field and click **Apply**.
+   * To delete a field setting, select the value in **Field**, click **X**, and then click **Apply**.
+   * To cancel any changes before you apply them, click **Cancel**.
+
+#### Hierarchical trigger settings
+
+To configure hierarchical trigger settings:
+
+1. Access the application and click **Relevance > Rules > Templates**.
+2. Click to open a template.
+3. In the Triggering section, click the trigger to display the settings. You can also click **+ Trigger** to add a new trigger.
+4. Enter values in the **Search terms** and **Match mode** fields.
+5. In the Filters section of the Edit Trigger screen (or New Trigger screen), click **+ Add** to add a new filter.
+6. Enter values in the **Field name** and **Field value** fields.
+7. Click the **Apply to Descendant** option to apply the trigger at child levels of the hierarchy.
+
+   <Note>
+   The **Apply to Descendant** function only applies to fields that are configured as hierarchical.
+   </Note>
+
+
+8. Click **Exact** to enable exact filter matches.
+9. Save the configuration. To close the window without saving changes click **X** or **Cancel**.
+
+<Note>
+The URL Content tab fields and values do not apply to hierarchical trigger functions.
+</Note>
+
+
+
+## Zones
+
+Zones enable Fusion users to create rules designed for specific query profiles. Combined with templates, this allows a search application to display results from multiple query profiles in the same view.
+
+For example, if a customer searches for `climbing`, one zone can fetch results for climbing apparel, and another zone can fetch blog posts about climbing. The same zone can be used in multiple templates, and changes to a zone will be made on all templates that zone is used in.
+
+<Frame>![Templates backend example](/assets/images/5.2/templates/zones-example-10.png)</Frame>
+
+In the example above, a unique template is fired for the query `cyber monday`. This template has two zones:
+
+* <InlineImage src="/assets/images/5.2/templates/zones-indic-1.png"/> **Promoted** - Display advertised products.
+* <InlineImage src="/assets/images/5.2/templates/zones-indic-2.png"/> **Main Results List** - Display general search results.

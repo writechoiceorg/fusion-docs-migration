@@ -1,0 +1,67 @@
+---
+title: "Experiments API"
+permalink: "328"
+---
+
+
+Use the Experiments API to compare different configuration variants and determine which ones are most successful. For example, configure different variants that use different query pipelines, and then analyze and compare search activity to see which variant best meets your goals.
+
+Experiments let you evaluate multiple *variants* which can differ from each other by pipeline, collection, search handler, request parameters, or some combination of those. An experiment uses one or more metrics to measure the performance of each variant, so they can be compared quantitatively.
+
+Experiments are also available through the [Experiments UI](/fusion-ai/4.2/460/experiments) in the Fusion UI.
+
+<Note>
+This API requires a [Fusion AI license](/fusion-ai/4.2/505/licensing).
+</Note>
+
+## Experiment types
+
+The Experiments API supports A/B (or A/B/n) tests.
+
+### A/B testing
+
+The Experiments API in Fusion lets you set up straightforward A/B (or A/B/n) tests. An A/B test is a two-sample hypothesis test with two variants. In A/B/n testing, variant A (the first variant that is defined) is compared with B, and with each of the other variants. For example, with an A/B/C/D test, the comparisons are A/B, A/C, and A/D.
+
+The simplest setup is to create just two variants (A and B). Variant A is customarily considered the “control” configuration, and variant B is the test configuration or “treatment” to compare with the control configuration.
+
+It is also common to perform A/A testing, that is, to create a separate variant with exactly the same configuration as the control. A/A testing is useful for detecting any systemic errors.
+
+You can perform both A/B and A/A testing as a part of the same experiment. To do this, create three variants: one variant that is the control (A1), a second variant with the same configuration as the control (A2), and a third variant with the treatment configuration (B). The comparisons are A1/A2 and A1/B.
+
+For example, the following experiment definition creates an experiment with 3 variants. The first two are identical, while the third uses a different query pipeline, called `with-recommendations`:
+
+```json
+{
+    "id": "sample-experiment",
+    "uniqueIdParameter": "userId",
+    "baseSignalsCollection": "bestbuy",
+    "variants": [
+        {
+            "name": "control-a1",
+        },
+        {
+            "name": "control-a2",
+        },
+        {
+            "name": "b",
+            "queryPipeline": "with-recommendations",
+        }
+    ],
+    "enabled": true,
+    "metrics": [
+        {
+            "type": "ctr",
+            "name": "CTR",
+            "primary": true
+        },
+        {
+            "type": "conversion-rate",
+            "name": "purchase rate",
+            "signalType": "purchase",
+        }
+    ]
+}
+```
+
+As users interact with this experiment, we expect the results of metrics for the first two variants to be quite similar, since they are configured identically. With a small sample size, metrics could vary somewhat based on random chance but, as more users interact with the experiment, we expect the metrics to converge on identical results. The third variant, however, will likely perform differently, and its performance will tell us whether we should be using the `with-recommendations` pipeline for all search traffic.
+

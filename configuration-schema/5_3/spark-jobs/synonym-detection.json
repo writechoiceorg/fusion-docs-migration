@@ -1,0 +1,425 @@
+{
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Use this job to generate synonym and similar query pairs.",
+  "properties": {
+    "analyzerConfigQuery": {
+      "default": "{ \"analyzers\": [ { \"name\": \"LetterTokLowerStem\",\"charFilters\": [ { \"type\": \"htmlstrip\" } ],\"tokenizer\": { \"type\": \"letter\" },\"filters\": [{ \"type\": \"lowercase\" },{ \"type\": \"length\", \"min\": \"2\", \"max\": \"32767\" },{ \"type\": \"KStem\" }] }],\"fields\": [{ \"regex\": \".+\", \"analyzer\": \"LetterTokLowerStem\" } ]}",
+      "description": "LuceneTextAnalyzer schema for tokenizing queries (JSON-encoded)",
+      "hints": [
+        "lengthy",
+        "advanced",
+        "code/json"
+      ],
+      "minLength": 1,
+      "title": "Lucene Analyzer Schema",
+      "type": "string"
+    },
+    "countField": {
+      "default": "aggr_count_i",
+      "description": "Solr field containing number of events (e.g., number of clicks). Change to count_i when running against raw signals",
+      "title": "Event Count Field Name",
+      "type": "string"
+    },
+    "dataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format that contains training data (like 'solr', 'parquet', 'orc' etc)",
+      "minLength": 1,
+      "title": "Data format",
+      "type": "string"
+    },
+    "dataOutputFormat": {
+      "default": "solr",
+      "description": "Spark-compatible output format (like 'solr', 'parquet', etc)",
+      "hints": [
+        "advanced"
+      ],
+      "minLength": 1,
+      "title": "Data output format",
+      "type": "string"
+    },
+    "docIdField": {
+      "default": "doc_id_s ",
+      "description": "Solr field containing document id that user clicked. Change to doc_id for raw signal collection",
+      "title": "Document id Field Name",
+      "type": "string"
+    },
+    "enableAutoPublish": {
+      "default": false,
+      "description": "If true, automatically publishes rewrites for rules. Default is false to allow for initial human-aided reviewing",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Enable auto-publishing",
+      "type": "boolean"
+    },
+    "fieldToVectorize": {
+      "default": "query_s",
+      "description": "Field containing queries. Change to query to use against raw signals",
+      "minLength": 1,
+      "title": "Query Field Name",
+      "type": "string"
+    },
+    "id": {
+      "description": "The ID for this Spark job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_). Maximum length: 63 characters.",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Spark Job ID",
+      "type": "string"
+    },
+    "keyPhraseCollection": {
+      "description": "Solr collection containing reviewed result of Phrase extraction job. Defaults to the query_rewrite_staging collection for the app.",
+      "title": "Phrase Extraction Job Result Collection",
+      "type": "string"
+    },
+    "keyPhraseFilterQuery": {
+      "default": "type:phrase",
+      "description": "Solr query to additionally filter the phrase extraction results. Defaults to reading all approved phrases.",
+      "title": "Phrase Extraction Job Result Filter Query",
+      "type": "string"
+    },
+    "keywordsBlobName": {
+      "blobType": "file:spark",
+      "description": "Name of the keywords blob resource. Typically, this should be a csv file uploaded to blob store in a specific format. Check documentation for more details on format and uploading to blob store.",
+      "reference": "blob",
+      "title": "Keywords Blob Store",
+      "type": "string"
+    },
+    "minQueryCount": {
+      "default": 5,
+      "description": "The min number of clicked documents needed for comparing queries.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Query Clicks Threshold",
+      "type": "integer"
+    },
+    "misspellingCollection": {
+      "description": "Solr collection containing reviewed result of Token and phrase spell correction job. Defaults to the query_rewrite_staging collection for the app.",
+      "title": "Misspelling Job Result Collection",
+      "type": "string"
+    },
+    "misspellingSQL": {
+      "default": "SELECT surface_form AS misspelling_s, output AS correction_s FROM spell_input WHERE doc_type  = 'query_rewrite' AND type = 'spell' AND review IN ('approved' OR 'auto')",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spell_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Spark SQL filter query for misspelling data",
+      "type": "string"
+    },
+    "misspellingSQLDataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format that contains spelling data (like 'solr', 'parquet', 'orc' etc)",
+      "minLength": 1,
+      "title": "Misspelling Data format",
+      "type": "string"
+    },
+    "misspellingsFilterQuery": {
+      "default": "type:spell",
+      "description": "Solr query to additionally filter the misspelling results. Defaults to reading all approved spell corrections.",
+      "title": "Misspelling Job Result Filter Query",
+      "type": "string"
+    },
+    "outputCollection": {
+      "description": "Collection to store synonym and similar query pairs.",
+      "hints": [
+        "dummy"
+      ],
+      "title": "Output Collection",
+      "type": "string"
+    },
+    "overlapThreshold": {
+      "default": 0.5,
+      "description": "The threshold above which query pairs are consider similar. We can get more synonym pairs if increase this value but quality may get reduced.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Query Similarity Threshold",
+      "type": "number"
+    },
+    "overwriteOutput": {
+      "default": true,
+      "description": "Overwrite output collection",
+      "hints": [
+        "hidden",
+        "advanced"
+      ],
+      "title": "Overwrite Output",
+      "type": "boolean"
+    },
+    "partitionCols": {
+      "description": "If writing to non-Solr sources, this field will accept a comma-delimited list of column names for partitioning the dataframe before writing to the external output ",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Partition fields",
+      "type": "string"
+    },
+    "phraseSQL": {
+      "default": "SELECT surface_form AS phrases_s, coalesce(confidence, lit(1d)) AS likelihood_d, coalesce(word_count, lit(1d)) AS word_num_i FROM phrase_input WHERE doc_type  = 'query_rewrite' AND type = 'phrase' AND review IN ('approved' OR 'auto')",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as phrase_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Spark SQL filter query for phrase data",
+      "type": "string"
+    },
+    "phraseSQLDataFormat": {
+      "default": "solr",
+      "description": "Spark-compatible format that contains phrase data (like 'solr', 'parquet', 'orc' etc)",
+      "minLength": 1,
+      "title": "Phrase Data format",
+      "type": "string"
+    },
+    "randomSeed": {
+      "default": 1234,
+      "description": "For any deterministic pseudorandom number generation",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Random seed",
+      "type": "integer"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "similarityThreshold": {
+      "default": 0.01,
+      "description": "The threshold above which synonym pairs are consider similar. We can get more synonym pairs if increase this value but quality may get reduced.",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Synonym Similarity Threshold",
+      "type": "number"
+    },
+    "sourceFields": {
+      "description": "Solr fields to load (comma-delimited). Leave empty to allow the job to select the required fields to load at runtime.",
+      "hints": [
+        "hidden"
+      ],
+      "title": "Fields to Load",
+      "type": "string"
+    },
+    "sparkConfig": {
+      "description": "Spark configuration settings.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Spark Settings",
+      "type": "array"
+    },
+    "sparkPartitions": {
+      "default": 200,
+      "description": "Spark will re-partition the input to have this number of partitions. Increase for greater parallelism",
+      "hints": [
+        "advanced"
+      ],
+      "title": "Set minimum Spark partitions for input",
+      "type": "integer"
+    },
+    "sparkSQL": {
+      "default": "SELECT * from spark_input",
+      "description": "Use this field to create a Spark SQL query for filtering your input data. The input data will be registered as spark_input",
+      "hints": [
+        "code/sql",
+        "advanced"
+      ],
+      "title": "Spark SQL filter query",
+      "type": "string"
+    },
+    "stopwordsList": {
+      "description": "Stopwords defined in Lucene analyzer config",
+      "hints": [
+        "readonly",
+        "hidden"
+      ],
+      "items": {
+        "blobType": "file:spark",
+        "minLength": 1,
+        "reference": "blob",
+        "type": "string"
+      },
+      "title": "List of stopwords",
+      "type": "array"
+    },
+    "synonymBlobName": {
+      "blobType": "file:spark",
+      "description": "Name of the custom synonym blob resource. This is a Solr synonym file that will be used in the synonym detection job and will override any generated synonyms (indicated by a 'supplied' field in the Rules UI).",
+      "hints": [
+        "advanced"
+      ],
+      "reference": "blob",
+      "title": "Custom Synonym Blob Store",
+      "type": "string"
+    },
+    "trainingCollection": {
+      "description": "Collection containing queries, document id and event counts. Can be either signal aggregation collection or raw signals collection.",
+      "minLength": 1,
+      "title": "Input Collection",
+      "type": "string"
+    },
+    "trainingDataFilterQuery": {
+      "default": "*:*",
+      "description": "Solr query to use when loading training data if using Solr, Spark SQL expression for all other data sources",
+      "hints": [
+        "dummy"
+      ],
+      "title": "Data filter query",
+      "type": "string"
+    },
+    "trainingDataFrameConfigOptions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Additional spark dataframe loading configuration options",
+      "hints": [
+        "advanced"
+      ],
+      "properties": {},
+      "title": "Dataframe Config Options",
+      "type": "object"
+    },
+    "trainingDataSamplingFraction": {
+      "default": 1,
+      "description": "Fraction of the training data to use",
+      "exclusiveMaximum": false,
+      "hints": [
+        "advanced"
+      ],
+      "maximum": 1,
+      "title": "Training data sampling fraction",
+      "type": "number"
+    },
+    "type": {
+      "default": "synonymDetection",
+      "enum": [
+        "synonymDetection"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "propertyGroups": [
+    {
+      "label": "Input/Output Parameters",
+      "properties": [
+        "trainingCollection",
+        "outputCollection",
+        "dataFormat",
+        "trainingDataFilterQuery",
+        "readOptions",
+        "writeOptions",
+        "trainingDataFrameConfigOptions",
+        "trainingDataSamplingFraction",
+        "randomSeed"
+      ]
+    },
+    {
+      "label": "Field Parameters",
+      "properties": [
+        "fieldToVectorize",
+        "sourceFields",
+        "countField"
+      ]
+    },
+    {
+      "label": "Model Tuning Parameters",
+      "properties": [
+        "overlapThreshold"
+      ]
+    },
+    {
+      "label": "Featurization Parameters",
+      "properties": [
+        "analyzerConfigQuery"
+      ]
+    },
+    {
+      "label": "Misc. Parameters",
+      "properties": [
+        "keywordsBlobName"
+      ]
+    }
+  ],
+  "required": [
+    "id",
+    "trainingCollection",
+    "fieldToVectorize",
+    "dataFormat",
+    "misspellingSQLDataFormat",
+    "phraseSQLDataFormat",
+    "countField",
+    "docIdField",
+    "type"
+  ],
+  "title": "Synonym Detection",
+  "type": "object"
+}

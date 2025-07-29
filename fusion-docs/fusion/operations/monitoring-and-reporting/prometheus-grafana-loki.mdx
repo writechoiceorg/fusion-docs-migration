@@ -1,0 +1,40 @@
+---
+title: "Prometheus, Grafana, and Loki in Fusion"
+permalink: "131"
+---
+
+Fusion 5.6 and later utilizes Prometheus, Grafana, and Loki for metrics and log analytics.
+
+## Prometheus
+
+Prometheus provides a powerful solution for recording metrics, persisting them to a pluggable time series datastore, and querying them for both visualizations and alerting purposes. Metrics data is pulled from Fusion and stored in a time series datastore.
+
+For more information, see the [Prometheus documentation](https://prometheus.io/docs).
+
+## Grafana
+
+Grafana provides an industry-standard metric visualization tool that supports complex visualizations over any number of different pluggable data sources, organized into panels and managed dashboards. Grafana connects Prometheus, allowing you to access your Fusion data when creating or editing panels in your dashboards.
+
+Pre-configured Grafana dashboards are provided with Fusion deployments. However, custom dashboards extend your metrics analysis capabilities.
+
+<Note>
+Managed Fusion offers read-only access for Grafana. If you are a Managed Fusion customer, you cannot create custom dashboards.
+</Note>
+
+For more information, see the [Grafana documentation](https://grafana.com/docs).
+
+## Loki
+
+Loki is a log aggregation system designed to store and query logs. With Loki, you can define a log stream from Fusion’s namespaces, services, pods, and more. Then, you can filter the log stream for key data, such as keyword matches for "error."
+
+For more information, see the [Grafana’s Loki documentation](https://grafana.com/docs/loki).
+
+## Setup and configuration
+
+Prometheus and Grafana are enabled during Fusion installation, and Loki is an optional addition to the Prometheus and Grafana integration.
+
+For more information, see:
+
+* [Configure Grafana, Prometheus, Promtail, and Loki in Fusion](/how-to/jpemcg/configure-grafana-prometheus-promtail-and-loki-in-fusion)
+
+* [Grafana Loki for log exploration](/fusion/5.9/0b1k93/grafana-loki-for-log-exploration)

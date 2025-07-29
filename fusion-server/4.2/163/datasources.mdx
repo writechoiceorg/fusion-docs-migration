@@ -1,0 +1,16 @@
+---
+title: "Datasources"
+permalink: "163"
+---
+
+A [collection](/fusion-server/4.2/166/collections) includes one or more datasources. A datasource is a configuration that manages the import and indexing of data into the collection.
+
+The [Index Workbench](/fusion-server/4.2/158/index-workbench) provides a development environment for creating, configuring, and testing a datasource configuration. Every datasource configuration includes the following:
+
+* Connector configuration, specifying the source and format of the incoming data.
+* Parser configuration, describing a series of conditional parsing stages to transform the incoming data into PipelineDocument objects.
+* Index pipeline configuration, consisting of stages that transform PipelineDocument objects into Solr documents to be indexed.
+
+<Frame>![ingest](/assets/images/common/ingest.png)</Frame>
+
+Collections and datasources can also be managed through the [REST API](/fusion-server/4.2/324/rest-ap-is).

@@ -1,0 +1,159 @@
+export const schema = {
+  "additionalProperties": true,
+  "category": "Other",
+  "categoryPriority": 1,
+  "description": "Creates indexes for specified collections in Milvus",
+  "properties": {
+    "id": {
+      "description": "The ID for this job. Used in the API to reference this job. Allowed characters: a-z, A-Z, dash (-) and underscore (_)",
+      "maxLength": 63,
+      "pattern": "[a-zA-Z][_\\-a-zA-Z0-9]*[a-zA-Z0-9]?",
+      "title": "Job ID",
+      "type": "string"
+    },
+    "indexes-list": {
+      "description": "List of the indexes that should be created with corresponding params.",
+      "items": {
+        "properties": {
+          "indexParams": {
+            "description": "Parameters to be used to create index in Milvus. Specific to the chosen IndexType. For example it can be nlist=4096 for IVF indexes or [M=36, efConstruction=500] for HNSW index.",
+            "items": {
+              "properties": {
+                "key": {
+                  "description": "The name of the Milvus index param like nlist for IVF indexes or M / efConstruction for HNSW",
+                  "title": "Milvus Index Param",
+                  "type": "string"
+                },
+                "value": {
+                  "description": "Index param value. For example it can be 4096 for nlist or 36 / 500 for M / efConstruction",
+                  "title": "Value",
+                  "type": "integer"
+                }
+              },
+              "type": "object"
+            },
+            "title": "Index Parameters",
+            "type": "array"
+          },
+          "indexType": {
+            "default": "HNSW",
+            "description": "Index type which should be create for specified collection",
+            "enum": [
+              "FLAT",
+              "IVFLAT",
+              "IVF_SQ8",
+              "RNSG",
+              "IVF_SQ8H",
+              "IVF_PQ",
+              "HNSW",
+              "ANNOY"
+            ],
+            "title": "Index Type",
+            "type": "string"
+          },
+          "milvusCollectionName": {
+            "description": "Name of the collection in Milvus in which index should be created",
+            "title": "Collection Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "milvusCollectionName",
+          "indexType"
+        ],
+        "type": "object"
+      },
+      "title": "Indexes",
+      "type": "array"
+    },
+    "readOptions": {
+      "description": "Options used when reading input from Solr or other sources.",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Read Options",
+      "type": "array"
+    },
+    "sparkConfig": {
+      "description": "Provide additional key/value pairs to be injected into the training JSON map at runtime. Values will be inserted as-is, so use \" to surround string values",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Additional parameters",
+      "type": "array"
+    },
+    "type": {
+      "default": "argo-milvus-create-indexes",
+      "enum": [
+        "argo-milvus-create-indexes"
+      ],
+      "hints": [
+        "readonly"
+      ],
+      "title": "Spark Job Type",
+      "type": "string"
+    },
+    "writeOptions": {
+      "description": "Options used when writing output to Solr or other sources",
+      "hints": [
+        "advanced"
+      ],
+      "items": {
+        "properties": {
+          "key": {
+            "title": "Parameter Name",
+            "type": "string"
+          },
+          "value": {
+            "title": "Parameter Value",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "title": "Write Options",
+      "type": "array"
+    }
+  },
+  "required": [
+    "id",
+    "type"
+  ],
+  "title": "Create Indexes in Milvus",
+  "type": "object"
+}

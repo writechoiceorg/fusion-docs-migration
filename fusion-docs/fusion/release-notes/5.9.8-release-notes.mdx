@@ -1,0 +1,158 @@
+---
+title: "Fusion 5.9.8"
+permalink: "en43zu"
+---
+
+Released on January 7, 2025, Fusion 5.9.8 brings powerful enhancements to streamline your workflows and prepare your systems for future innovations. This release enables seamless synchronization of Fusion configurations across environments, provides compatibility with upcoming solutions, and resolves key issues to ensure a smoother experience.
+
+Upgrading to the latest version of Fusion 5.9 offers several key benefits:
+
+* **Access to latest features:** Stay current with the latest features and functionality to ensure compatibility and optimal performance.
+* **Simplified process:** Fusion 5.9.5 and later use an in-place upgrade strategy, making upgrades easier than ever.
+* **Extended support:** Upgrading keeps you up-to-date with the latest supported Kubernetes versions, as outlined in the [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle) policy.
+
+For supported Kubernetes versions and key component versions, see [Platform support and component versions](#platform-versions).
+
+<Tip>
+Looking to upgrade?
+
+Check out the [Fusion 5 Upgrades topic](/how-to/upgrade-fusion-5/3svmoc/fusion-5-upgrades) for details.
+</Tip>
+
+## Key highlights
+
+### Commerce Studio support
+
+Fusion 5.9.8 is fully compatible with Commerce Studio, Lucidworks' solution for enhancing e-commerce experiences.
+
+Commerce Studio will be generally available at the end of January, 2025. Accompanying that release will be documentation and training materials.
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **What is Commerce Studio?** focuses on how to tailor your user’s search and browse experiences through powerful rule building, merchandising, audience segmentation, and more:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/what-is-commerce-studio" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/what-is-commerce-studio.png" alt="What is Commerce Studio?" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+### ConfigSync
+
+Automatically keep your Fusion configuration settings consistent and up-to-date across different environments with the new [ConfigSync](/fusion/5.9/j47yes/config-sync) feature. By leveraging Git’s version control capabilities, ConfigSync eliminates manual synchronization, provides a historical record of your environments, and enables seamless rollbacks and forward changes. Highly customizable, it simplifies environment management while saving time and ensuring consistency.
+
+ConfigSync supports:
+
+* Polling or event-driven synchronization
+* Multiple synchronization modes:
+
+  + **Publisher mode:** Monitors Fusion for changes and pushes them to a Git repository.
+  + **Subscriber mode:** Polls a Git repository for changes and applies them to Fusion.
+  + **Pub/Sub mode:** Combines the features of both Publisher and Subscriber modes.
+* Locking the configuration to a specific commit
+* Rolling back configurations to a previous state
+* Storing and synchronizing Fusion secrets securely in your Git repository
+* Metrics for monitoring, such as `resource_update_errors_total`, `out_of_sync`, `sync_seconds`, and `sync_seconds_max`
+
+ConfigSync is turned off by default and requires preparation of a GitHub repository. Learn how to turn on ConfigSync in your Fusion 5.9.8 cluster with the [ConfigSync deployment guide](/fusion/5.9/5gj79e/config-sync-deployment).
+
+<Note>
+**LucidAcademy**
+
+Lucidworks offers free training to help you get started.
+
+The **Course** for **ConfigSync** focuses on how to set up ConfigSync, choose a synchronization mode, and apply filters:
+
+<Frame>
+  <a href="https://academy.lucidworks.com/configsync-course" target="_blank">
+    <div class="note-image-wrapper">
+      <img noZoom src="/assets/images/training-covers/configsync.jpg" alt="ConfigSync" class="note-image" />
+      <img noZoom src="/images/play-btn.svg" alt="Play Button" class="note-image-overlay" />
+    </div>
+  </a>
+</Frame>
+
+
+Visit the [LucidAcademy](https://academy.lucidworks.com) to see the full training catalog.
+</Note>
+
+## Bug fixes
+
+* Fixed an issue with Predictive Merchandiser that prevented saving new fields in templates.
+
+* Fixed an issue that prevented the data model field dropdown from displaying in the Data Model Mapping index pipeline stage.
+
+* Fixed an issue that caused the Fusion Helm chart with TLS enabled to throw an error during installation.
+
+## Known issues
+
+* An issue prevents segment-based rule filtering from working correctly in Commerce Studio. This issue is fixed in Fusion 5.9.12.
+
+## Deprecations
+
+For full details on deprecations, see [Deprecations and Removals](/fusion/5.9/8855/deprecations-and-removals#deprecations).
+
+As part of our ongoing commitment to providing a modern, efficient, and secure product, Lucidworks is officially deprecating support for the Nashorn JavaScript engine in Fusion 5.9.8. Users are advised to use the OpenJDK Nashorn engine, a robust and actively maintained alternative, for all JavaScript pipeline stages.
+
+The deprecation aligns with industry trends and ensures compatibility with modern tools and frameworks. OpenJDK Nashorn provides enhanced performance, improved support, and ongoing updates, making it the ideal replacement.
+
+<Danger>
+**FAQ**
+
+How long will Lucidworks continue to support Nashorn?
+
+Nashorn will remain available for at least 6 months from the release of Fusion 5.9.8. All Nashorn-related features and integrations will be removed in a release after this 6-month period.
+</Danger>
+
+To prepare for the eventual removal of Nashorn in a future release, Lucidworks strongly recommends beginning the migration of your pipelines to OpenJDK Nashorn:
+
+* **Audit your code.** Identify all areas where Nashorn is used in your applications.
+* **Plan your migration.** Transition your JavaScript pipelines from Nashorn to OpenJDK Nashorn. Be sure to thoroughly test compatibility with your configurations to ensure a smooth transition.
+* **Seek support.** Lucidworks is available to assist with any migration questions or challenges. Please contact your Client Excellence team if you have any questions.
+
+We appreciate your understanding and cooperation in this transition. Thank you for ensuring the continued evolution and efficiency of your workflows.
+
+<Tip>
+You can select the OpenJDK Nashorn engine in the pipeline views or in the workbenches:
+
+<Frame>![JavaScript engine selector](/assets/images/5.9/5.9.6/js-engine-selector.png)</Frame>
+</Tip>
+
+
+
+## Platform support and component versions
+
+### Kubernetes platform support
+
+Lucidworks has tested and validated support for the following Kubernetes platforms and versions:
+
+* **Google Kubernetes Engine (GKE):** 1.28, 1.29, 1.30
+* **Microsoft Azure Kubernetes Service (AKS):** 1.28, 1.29, 1.30
+* **Amazon Elastic Kubernetes Service (EKS):** 1.28, 1.29, 1.30
+
+Support is also offered for Rancher Kubernetes Engine (RKE) and OpenShift 4 versions that are based on Kubernetes 1.28, 1.29, 1.30. OpenStack and customized Kubernetes installations are *not* supported.
+
+For more information on Kubernetes version support, see the [Kubernetes support policy](/policies/7shln5/lucidworks-version-support-lifecycle#kubernetes-support).
+
+### Component versions
+
+The following table details the versions of key components that may be critical to deployments and upgrades.
+
+| Component | Version |
+| --- | --- |
+| **Solr** | fusion-solr 5.9.8  *(based on Solr 9.6.1)* |
+| **ZooKeeper** | 3.9.1 |
+| **Spark** | 3.2.2 |
+| **Ingress Controllers** | Nginx, Ambassador (Envoy), GKE Ingress Controller  Istio not supported. |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).

@@ -1,0 +1,29 @@
+---
+title: "Job REST Server APIs"
+permalink: "472sk5"
+---
+
+Managed Fusion’s Job REST Server saves your job configurations and communicates with other services to compute recommendations, index signals, and launch jobs.
+You can use it to generate customized lists of recommended items based on a set of signals, index your signals directly instead of through datasources and index pipelines, or control your Spark jobs.
+
+For more information, [view the API specification.](?open-api=true)
+
+Job REST Server APIs include the following:
+
+* [Recommendations API](/managed-fusion/5.9/i8l7no/recommendations-api)
+
+  Fetch recommended documents based on raw or aggregated signals.
+  Managed Fusion can generate recommendations based on what users have searched for, clicked, saved, purchased, or any other type of user-generated event signal.
+  You can get recommendations based on signals from one user or from many.
+  For complete details, see [Recommendations](/managed-fusion/5.9/k90ww9/recommendations).
+* [Signals API](/managed-fusion/5.9/qkr054/signals-api)
+
+  Generally, you use this API to index signals directly into a signals collection.
+  Alternatively, you can index signals through the [Indexing APIs](/managed-fusion/5.9/25joat/indexing-ap-is).
+  To aggregate your signals, see the Spark Jobs API (below).
+  For additional details, see [Signals](/managed-fusion/5.9/t154hp/signals).
+* [Spark Jobs API](/managed-fusion/5.9/bwbw71/spark-jobs-api)
+
+  Create, configure, and run Spark jobs in Managed Fusion, including SQL aggregation jobs, Python jobs, and Scala script jobs.
+  You can also fetch job logs from Managed Fusion’s Spark pods for monitoring and troubleshooting.
+  See [Spark Jobs](/managed-fusion/5.9/2ma2g9/spark-jobs) for additional details about different types of Spark jobs and how to configure them.

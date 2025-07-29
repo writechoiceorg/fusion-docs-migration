@@ -1,0 +1,196 @@
+export const schema = {
+  "type": "object",
+  "title": "Text",
+  "description": "Parses plain text content with optional trimming and splitting. Character encoding can be specified or automatically detected",
+  "required": [
+    "charset",
+    "ignoreBOM",
+    "type"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "title": "Parser ID",
+      "default": "2a677e17-0c34-420f-a570-ed3ea070c412"
+    },
+    "label": {
+      "type": "string",
+      "title": "Label",
+      "description": "A label for this Parser Stage",
+      "maxLength": 255
+    },
+    "enabled": {
+      "type": "boolean",
+      "title": "Enable this Parser Stage",
+      "default": true
+    },
+    "mediaTypes": {
+      "type": "array",
+      "title": "Media Types to match",
+      "description": "Documents with a media type on this list will be matched by this parser stage. See inheritMediaTypes / use default media types for more.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "inheritMediaTypes": {
+      "type": "boolean",
+      "title": "Match default media types in this Parser Stage",
+      "description": "Each parser stage has a built-in list of media types it handles by default. If this setting is true, that list will be used along with any optional additional types provided in the mediaTypes list. If this setting is false, this stage will only be selected for media types in the mediaTypes list, and the mediaTypes list becomes a mandatory property which must have at least one valid media type.",
+      "default": true
+    },
+    "ignoredMediaTypes": {
+      "type": "array",
+      "title": "Media Types to ignore",
+      "description": "Documents with a media type on this list will be not be processed by this parser stage.",
+      "items": {
+        "type": "string",
+        "pattern": "^[^\\/]+\\/[^\\/]+$",
+        "format": "rfc2646"
+      }
+    },
+    "pathPatterns": {
+      "type": "array",
+      "title": "File names to parse",
+      "description": "Specify a file name or pattern that must be matched for this parser stage to run. Forward slashes (\"/\") are used to join names of files inside archives with the archive name.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "syntax": {
+            "type": "string",
+            "title": "Pattern type",
+            "description": "glob uses bash shell-style wildcards; regex uses Java (PCRE-style) regex",
+            "enum": [
+              "glob",
+              "regex"
+            ],
+            "default": "glob"
+          },
+          "pattern": {
+            "type": "string",
+            "title": "File name or pattern",
+            "description": "e.g.: \"z.txt\" or \"*.md\" or \"/a/*/b/f.txt\" for glob; \"z.txt$\" or \".*\\.txt$\" or \"^/a/[^\\/]*/b/f.txt$\" for regex"
+          }
+        }
+      }
+    },
+    "errorHandling": {
+      "type": "string",
+      "title": "Error Handling",
+      "enum": [
+        "ignore",
+        "log",
+        "fail",
+        "mark"
+      ],
+      "default": "mark"
+    },
+    "outputFieldPrefix": {
+      "type": "string",
+      "title": "Prefix parsed fields with",
+      "description": "Fields extracted by this parser will be prefixed with this string. The remainder of the field name will be as detected in the stream",
+      "maxLength": 20,
+      "pattern": "^$|^[A-Za-z_][A-Za-z0-9_\\-\\.]+$"
+    },
+    "charset": {
+      "type": "string",
+      "title": "Character Set",
+      "description": "Example: \"UTF-8\"",
+      "default": "detect"
+    },
+    "ignoreBOM": {
+      "type": "boolean",
+      "title": "Ignore BOM",
+      "description": "Ignore Byte-Order Mark (BOM) if present and always use the configured character set. When set to false a valid BOM character set overrides the configured default character set.",
+      "default": false
+    },
+    "splitLines": {
+      "type": "boolean",
+      "title": "Split lines",
+      "description": "Split text into lines to create multiple records, default false",
+      "default": false
+    },
+    "skipHeaderLines": {
+      "type": "integer",
+      "title": "Skip header lines",
+      "description": "Skip a number of header lines, default 0",
+      "default": 0
+    },
+    "trimWhitespace": {
+      "type": "boolean",
+      "title": "Trim whitespace",
+      "description": "Trim off leading and trailing whitespace from lines, default false",
+      "default": false
+    },
+    "skipEmptyLines": {
+      "type": "boolean",
+      "title": "Skip empty lines",
+      "description": "Skip any empty lines encountered, default false",
+      "default": false
+    },
+    "outputField": {
+      "type": "string",
+      "title": "Output field",
+      "description": "Name of the output field where text is stored, default 'body'",
+      "default": "body",
+      "minLength": 1
+    },
+    "maxLength": {
+      "type": "integer",
+      "title": "Maximum length",
+      "description": "Maximum number of characters to allow for the body, -1 for unlimited, default 1MB",
+      "default": 1048576,
+      "maximum": 2147483647,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "maxLineLength": {
+      "type": "integer",
+      "title": "Maximum line length",
+      "description": "Maximum number of characters to allow for any single line, default 1MB",
+      "default": 1048576,
+      "maximum": 2147483647,
+      "exclusiveMaximum": false,
+      "minimum": 0,
+      "exclusiveMinimum": false
+    },
+    "commentField": {
+      "type": "string",
+      "title": "Comment field",
+      "description": "Name of the output field where comment is stored, default 'comment'",
+      "default": "comment",
+      "minLength": 1
+    },
+    "comment": {
+      "type": "string",
+      "title": "Comment character",
+      "description": "Characters at start of line to indicate a comment, default # (hash)",
+      "default": "#",
+      "minLength": 1
+    },
+    "commentHandling": {
+      "type": "string",
+      "title": "Comment Handling",
+      "description": "How to handle comments: include as-is, ignore (and remove from text), add as field (and remove from text), default include",
+      "enum": [
+        "ignore",
+        "include",
+        "as_field"
+      ],
+      "default": "include"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "text"
+      ],
+      "default": "text"
+    }
+  },
+  "additionalProperties": false,
+  "category": "Other",
+  "categoryPriority": 1,
+  "unsafe": false
+}

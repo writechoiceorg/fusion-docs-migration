@@ -1,0 +1,79 @@
+---
+title: "Index Profiles API"
+description: "Managed Fusion Indexing APIs"
+permalink: "5kec6y"
+---
+
+These endpoints are used to manage [index profiles](/managed-fusion/5.9/y7byej/index-profiles). To send a document to an index profile, see the [Indexing APIs](/managed-fusion/5.9/25joat/indexing-service-ap-is).
+
+For more information, [view the API specification.](?open-api=true)
+
+## Index Profiles API
+
+The Index Profiles API is primarily used for gathering status information, such as checking if the indexing service is healthy or debugging the indexing process. To perform a simple service check, send an HTTP `GET` request to `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index/status`:
+
+```bash
+curl --request GET \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index/status \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic YWRtaW46cGFzc3dvcmQxMjM='
+```
+
+You can also use it to send documents directly to an index profile for indexing.
+
+## Index Profiles CRUD API
+
+As the name suggests, the Index Profiles CRUD API is used for create, read, update, and delete operations. You can use this API to see what index profiles exist, create new index profiles, fetch the configuration details of an existing index profile, or update or delete an existing index profile.
+
+To see what index profiles exist, send an HTTP `GET` request to `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-profiles` to get the full list:
+
+```bash
+curl --request GET \
+  --url https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-profiles \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic YWRtaW46cGFzc3dvcmQxMjM='
+```
+
+The response body includes basic details of each index profile:
+
+```json
+[{
+  "id" : "EnterpriseSearch",
+  "indexPipeline" : "EnterpriseSearch",
+  "collection" : "EnterpriseSearch",
+  "parser" : "EnterpriseSearch",
+  "params" : [ ]
+}, {
+  "id" : "quickstart",
+  "indexPipeline" : "quickstart",
+  "collection" : "quickstart",
+  "parser" : "quickstart",
+  "params" : [ ]
+}, {
+  "id" : "Documentation",
+  "indexPipeline" : "Documentation",
+  "collection" : "Documentation",
+  "parser" : "Documentation",
+  "params" : [ ]
+}]
+```
+
+To create a new index profile, use this format in the body of an HTTP `POST` request to `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-profiles?context=app:APP_NAME`:
+
+```bash
+curl --request POST \
+  --url 'https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/index-profiles?context=app:SiteSearch' \
+  --header 'Accept: application/json' \
+  --header 'Authorization: Basic YWRtaW46cGFzc3dvcmQxMjM=' \
+  --header 'Content-Type: application/json' \
+  --data '{
+  "id": "SiteSearch",
+  "indexPipeline": "newSiteSearchProfile",
+  "collection": "SiteSearch",
+  "parser": "SiteSearch"
+}'
+```
+
+<Tip>
+Remember to specify which app you’re creating the index profile for by adding the parameter `context=app:APP_NAME` to your request. Alternatively, you can send HTTP requests to a specific Managed Fusion app by using `https://EXAMPLE_COMPANY.b.lucidworks.cloud/api/apps/APP_NAME`.
+</Tip>

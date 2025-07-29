@@ -1,0 +1,34 @@
+---
+title: "scrollAndResizeListener"
+permalink: "1225"
+---
+
+## Description
+
+A Twigkit service that will fire an event when the window is scrolled or resized.
+
+## Methods
+
+### bindListener(listener)
+
+A method for binding functions to a listener.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| listener | function | The function to run when the event occurs |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| function | Runs the function when the event occurs. |
+
+#### Example
+
+```js
+scrollAndResizeListener.bindListener(function(){
+console.log('Window Scrolled or Resized');
+});
+```

@@ -1,0 +1,27 @@
+---
+title: "Milvus Response Update"
+description: "Query pipeline stage configuration specifications"
+permalink: "w9kztn"
+---
+
+The Milvus Response Update stage updates response documents with vectors similarity and ensemble scores (see [Milvus documentation](/fusion/5.9/8821/milvus)). It should be used after the [Milvus Ensemble Query stage](/managed-fusion/5.9/w4qysk/milvus-ensemble-query-stage) and after the [Solr Query stage](/managed-fusion/5.9/y1y2ol/solr-query-stage).
+
+<Note>
+
+**Deprecated**
+
+This stage is deprecated in Managed Fusion 5.9.5 and later. It will be removed in a future release.
+
+Replace the Milvus Response Update Query Stage with [Seldon](/managed-fusion/5.9/4engao/seldon-vectorize-query-stagee) or [Lucidworks AI vector query stages](/managed-fusion/5.9/uxpzzw/lwai-vectorize-query). These alternatives improve vector search integration and support within Fusion’s evolving AI and machine learning capabilities.
+</Note>
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/query-stages/milvus-response-update.mdx";
+
+<SchemaParamFields schema={schema}/>

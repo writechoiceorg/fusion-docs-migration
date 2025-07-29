@@ -1,0 +1,78 @@
+---
+title: "Fusion 4.2.6 SP1 Release Notes"
+permalink: "i0ukdp"
+---
+
+**Release date:** 8 February 2022
+
+**Component versions:**
+
+|  |  |  |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+| Solr 7.7.3 | ZooKeeper 3.4.13 | Spark 2.3.2 | Jetty 9.4.35.v20201120 | Ignite 2.6.0 | Log4j 2.17.1 |
+
+More information about support dates can be found at [Lucidworks Fusion Product Lifecycle](/policies/7shln5/lucidworks-version-support-lifecycle).
+
+## New features
+
+* [Tika asynchronous parsing](/fusion-server/4.2/1wdwkx/enable-tika-async-parsing) is now available as a parsing option.
+* The Classic Connector now supports chooosing which node a datasource job runs on.
+
+## Improvements
+
+### SharePoint Optimized and SharePoint Online Optimized connectors
+
+* The SharePoint Online Optimized connector now supports proxy configuration for oAuth authentication.
+* The SharePoint Online Optimized connector now adds List object identity to the Universally Unique Identifier (UUID) when the UUID is not unique.
+* The Sharepoint Optimized connector now supports external Solr-based Access Control List collections.
+* The Sharepoint Optimized connector now supports configurable ZooKeeper timeout values.
+* The Sharepoint Optimized connector now supports Spengo authentication with Kerberos.
+* The Sharepoint Optimized connector now includes support for the "All Users" Windows group.
+* The Sharepoint Optimized connector now adds titles and descriptions to list items to help with aggregations at query time.
+* Various SharePoint Optimized connector improvements to site collection deletions from the index.
+* Various diagnostic logging improvements for the SharePoint Optimized connector.
+
+### Other connectors
+
+* The LDAP connector now supports `sid` and `dn` attributes for indexed documents.
+* The LDAP connector now adds a timestamp to the indexed documents when the corresponding LDAP records are changed.
+* The Web connector now supports wildcards in web fetcher’s authentication schemes.
+* The Web connector Javascript Smart Form evaluation now adds screenshots for diagnostic mode.
+* The Jive connector now supports circular redirects.
+* The S3 connector now supports proxy authentication.
+* The ServiceNow connector now supports field level filtering.
+* The Azure connector now includes API proxy support.
+
+## Bug fixes
+
+### SharePoint Optimized and SharePoint Online Optimized connectors
+
+* Fixed a bug that prevented the Sharepoint Optimized connector from properly updating the index when moving list items during incremental crawls.
+* Fixed a bug in the Sharepoint Online Optimized connector to properly list site collections when using oAuth authentication.
+* Fixed a bug with the Sharepoint Online Optimized that prevented proper handling of quotes in private key passwords.
+* Fixed a bug with the Sharepoint Online Optimized connector that prevented the connector from using the specified proxy when performing STS authentication.
+* Fixed a regression in the Sharepoint Optimized connector to properly fetch Sharepoint 2010 groups.
+* Fixed a bug where the SharePoint Optimized connector ignored SSL validation.
+
+### LDAP connector
+
+* The LDAP connector now includes additional attributes during incremental crawls.
+* Fixed a bug in the LDAP connector that caused Active Directory global catalog crawls to fail when dynamically looking up the NetBIOS domain.
+* Fixed a bug in the LDAP connector that caused ranged LDAP queries to remove members during incremental crawls.
+* Fixed a bug where the LDAP connector incorrectly propagated errors to the Fusion job status.
+
+### Other connectors
+
+* Fixed an issue with the web connector not obeying the robots.txt’s follow directive.
+* Fixed a bug in the web connector to correctly clean up temporary Chromium files created during Javascript-enabled crawling.
+* Fixed an issue to correctly detect the character set when the `obey` character setting is false.
+* Fixed a formatting issue when indexing a file’s creation date with the SMB2 connector.
+* Various SMB2 connector incremental crawl bug fixes.
+
+### Other fixes
+
+* Fixed an error where the shaded plugins Log4j2Plugins.dat files were not properly shaded.
+* The datasource GET API request now returns the selected datasource without listing all available datasources.
+* Fixed a broken Windows Java Native Access (JNA) dependency for Windows Server 2016 and 2019 deployments.
+* Fixed a Confluence connector bug for API requests with pagination.
+* Fixed a bug with the proxy service when using JSON Web Tokens (JWT) and Kerberos realms.

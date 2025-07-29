@@ -1,0 +1,70 @@
+---
+title: "Custom rule actions"
+permalink: "j1xtp7"
+---
+
+Custom rule actions allow you to define a unique action to take when certain conditions are met. They involve three primary components: a query pipeline, a custom rule type, and a rule that is triggered by conditions defined by the user.
+
+To learn use custom rule actions with the API, see [Create Custom Rule Actions with the API](/how-to/vjau3o/create-custom-rule-actions-with-the-api).
+
+## Configuration options
+
+<table>
+  <thead>
+    <tr>
+      <th>Required</th>
+      <th>Parameter</th>
+      <th>Description</th>
+      <th>Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>✅</td>
+      <td><code>id</code></td>
+      <td>A unique ID for the custom rule type. The <code>id</code> value must be unique across all apps in Managed Fusion (global namespace).</td>
+      <td><code>custom-rule-type</code></td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>pipeline_id</code></td>
+      <td>The ID of the pipeline that is invoked during rule processing.</td>
+      <td><code>custom-rule-pipeline</code></td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>display_type</code></td>
+      <td>A user-friendly name for the custom rule type.</td>
+      <td><code>My Custom Rule</code></td>
+    </tr>
+    <tr>
+      <td colspan="4">
+        <strong>Rule properties</strong>, included as part of the <code>schema</code>, define the values required from the user to create a rule that uses the custom rule type.
+      </td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>custom_param1</code></td>
+      <td>The ID of the rule’s parameter. This field is used in the API but is not visible in the Rules Editor.</td>
+      <td><code>1st-rule-parameter</code></td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>type</code></td>
+      <td>The type of user-input.</td>
+      <td><code>string</code></td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>title</code></td>
+      <td>A user-friendly name for the parameter.</td>
+      <td><code>Manufacturer</code></td>
+    </tr>
+    <tr>
+      <td>✅</td>
+      <td><code>description</code></td>
+      <td>A user-friendly description of what the field is used for. The <code>description</code> value is shown in the field’s tooltip in the Rules Editor.</td>
+      <td><code>The manufacturer of the product this rule action applies to.</code></td>
+    </tr>
+  </tbody>
+</table>

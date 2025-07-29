@@ -1,0 +1,115 @@
+---
+title: "Spark Jobs API"
+permalink: "312"
+---
+
+
+This is a set of endpoints for configuring and running Spark jobs.
+
+## Spark job subtypes
+
+For the Spark [job type](/fusion-server/4.2/184/jobs-overview#job-types), the available subtypes are listed below.
+
+* [Aggregation](/fusion-server/4.2/388/aggregation-jobs)
+
+  Define an aggregation job.
+* [Custom Spark job](/fusion-server/4.2/383/custom-spark-jobs)
+
+  Run a custom Spark job.
+* [Script](/fusion-server/4.2/386/script-jobs)
+
+  Run a custom Scala script as a Fusion job.
+
+<Note>
+[Additional Spark jobs](/fusion-ai/4.2/572/jobs-configuration) are available with a [Fusion AI](/fusion-ai/4.2/428/fusion-ai) license.
+</Note>
+
+## Spark Configuration Properties
+
+Fusion passes all configuration properties with prefix "spark." to the Spark master, Spark worker and each Spark application,
+both for aggregation jobs and custom-scripted processing.
+
+These properties are stored in Fusion’s ZooKeeper and can be updated via requests to Fusion endpoint `api/configurations`
+which will update the stored value without restarting the service, therefore existing jobs and SparkContexts will not be affected.
+The Fusion endpoint `api/configurations` returns all configured properties for that installation.
+You can examine spark default configurations in a Unix shell using the utilities `curl` and `grep`.
+Here is an example that checks a local Fusion installation running on port 8764:
+
+```bash
+curl -u username:password https://FUSION_HOST:8764/api/configurations | grep '"spark.'
+
+  "spark.executor.memory" : "2g",
+  "spark.task.maxFailures" : "10",
+  "spark.worker.cleanup.appDataTtl" : "7200",
+  "spark.worker.cleanup.enabled" : "true",
+  "spark.worker.memory" : "2g",
+```
+
+The default SparkContext that Fusion uses for aggregation jobs can be assigned
+a fraction of cluster resources (executor memory and/or available CPU cores).
+This allows other applications (such as scripted jobs, or shell sessions) to use
+the remaining cluster resources even when some aggregation jobs are running.
+Fusion also supports dynamic allocation for all applications.
+This can be overridden per application.
+In practice, this means that even when there is an already running SparkContext
+with a relatively long idle time (eg. 10 minutes) but there are no active jobs that use it,
+its resources (CPU cores and executor memory) will be released for use by other applications.
+
+For scripted Spark jobs, users can specify per-job configuration overrides as a set of key / value pairs in a "sparkConfig" property
+element of a script job configuration, which takes precedence over values stored in ZooKeeper.
+The following is an example of a scripted job with a "sparkConfig" section:
+
+```json
+{
+  "id": "scripted_job_example",
+  "script": "val rdd = sc.textFile(\"/foo.txt\")\nrdd.count\n",
+  "sparkConfig": {
+    "spark.cores.max": 2,
+    "spark.executor.memory": "1g"
+  }
+}
+```
+
+The following table lists those Spark configuration properties that Fusion overrides or uses in order to determine applications' resource allocations.
+
+| Property | Description |
+| --- | --- |
+| `spark.master.url` | By default, left unset. This property is only specified when using an external Spark cluster; when Fusion is using its own standalone Spark cluster, this property is not set. |
+| `spark.cores.max` | The maximum number of cores across the cluster assigned to the application. If not specified, there is no limit. The default is unset, i.e., an unlimited number of cores. |
+| `spark.executor.memory` | Amount of memory assigned to each application’s executor. The default is 2G. |
+| `spark.scheduler.mode` | Controls how tasks are assigned to available resources. Can be either 'FIFO' or 'FAIR'. Default value is 'FAIR'. |
+| `spark.dynamicAllocation.enabled` | Boolean - whether or not to enable dynamic allocation of executors. Default value is 'TRUE'. |
+| `spark.shuffle.service.enabled` | Boolean - whether or not to enable internal shuffle service for standalone Spark cluster. Default value is 'TRUE'. |
+| `spark.dynamicAllocation.executorIdleTimeout` | Number of seconds after which idle executors are removed. Default value is '60s'. |
+| `spark.dynamicAllocation.minExecutors` | Number of executors to leave running even when idle. Default value is 0. |
+| `spark.eventLog.enabled` | Boolean - whether or not event log is enabled. Event log stores job details and can be accessed after application finishes. Default value is 'TRUE'. |
+| `spark.eventLog.dir` | Directory that stores event logs. Default location is `$FUSION_HOME/var/spark-eventlog`. |
+| `spark.eventLog.compress` | Boolean - whether or not to compress event log data. Default value is 'TRUE'. |
+| `spark.logConf` | Boolean - whether or not to log effective SparkConf of new SparkContext-s. Default value is 'TRUE'. |
+| `spark.deploy.recoveryMode` | Default value is 'ZOOKEEPER' |
+| `spark.deploy.zookeeper.url` | ZooKeeper connect string. Default value is `$FUSION_ZK` |
+| `spark.deploy.zookeeper.dir` | ZooKeeper path, default value is `/lucid/spark` |
+| `spark.worker.cleanup.enabled` | Boolean - whether or not to periodically cleanup worker data. Default value is 'TRUE'. |
+| `spark.worker.cleanup.appDataTtl` | Time-to-live in seconds. Default value is 86400 (24h). |
+| `spark.deploy.retainedApplications` | The maximum number of applications to show in the UI. Default value is 50. |
+| `spark.deploy.retainedDrivers` | The maximum number of drivers. Default value is 50. |
+| `spark.worker.timeout` | The maximum timeout in seconds allowed before a worker is considered lost. The default value is 30. |
+| `spark.worker.memory` | The maximum total heap allocated to all executors running on this worker. Defaults to value of the executor memory heap. |
+
+## Fusion Configuration Properties
+
+| Property | Description |
+| --- | --- |
+| `fusion.spark.master.port` | Spark master job submission port. Default value is 8766. |
+| `fusion.spark.master.ui.port` | Spark master web UI port. Default value is 8767. |
+| `fusion.spark.idleTime` | Maximum idle time in seconds, after which the application (ie. SparkContext) is shut down. Default value is 300. |
+| `fusion.spark.executor.memory.min` | Minimum executor memory in MB. Default value 450Mb, which is sufficient to let Fusion components in application task’s to initialize themselves |
+| `fusion.spark.executor.memory.fraction` | A float number in range `(0.0, 1.0]` indicating what portion of `spark.executor.memory` to allocate to this application. Default value is 1.0. |
+| `fusion.spark.cores.fraction` | A float number in range `(0.0, 1.0]` indicating what portion of `spark.cores.max` to allocate to this application. Default value is 1.0. |
+
+<Warning>
+**Caution**
+
+To avoid losing your running history, Lucidworks recommends that you start jobs with the [Fusion Jobs API](/fusion-server/4.2/327/jobs-api) rather than the **Job-Config-Controller** or **Job-Controller**.
+</Warning>
+

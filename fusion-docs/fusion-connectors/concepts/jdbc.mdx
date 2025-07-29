@@ -1,0 +1,56 @@
+---
+title: "JDBC Connector"
+permalink: "34"
+---
+
+<Note>
+
+This article describes features or functionality that are only compatible with Fusion 4.x through Fusion 5.3.5.
+
+</Note>
+
+
+
+The JDBC connector is configured with the SQL statement used to retrieve a resultset from the database.
+Each row in the result set is treated as a Solr document.
+This statement is specified as the value of the required property `sql_select_statement`.
+
+The column names will be used as Solr document field names; use the SQL "AS" keyword to rename column names as needed.
+Column and table names should be treated as if they are case-insensitive, even though some databases allow use of mixed case names.
+All Solr documents must have a unique key, which is the Fusion "id" field. Therefore, the results set must contain a column "id" which can be used as a unique key for the resulting document.
+
+```sql
+SELECT customer_id AS id, * from customers
+```
+
+## Delta queries
+
+Delta queries provide incremental updates to the contents of a collection by indexing only those records in the database which have been changed
+since the database was last indexed by this connector.
+The SQL statement is specified as the value of the property `delta_sql_query`.
+
+Delta queries select only primary key values, therefore, the query must use the primary key
+and it must also have a "WHERE" clause which specifies a "last_modified" condition as follows:
+
+```sql
+SELECT customer_id AS id from customers WHERE last_modified > $
+```
+
+The dollar-sign character '$' is required; it holds the last successful import time from the database.
+
+## Nested queries
+
+Nested queries are used to index information which is stored in the database across a series of tables
+where the is a one-to-many or many-to-many relationship between them.
+This statement is specified as the value of the property `nested_queries`.
+
+A nested query is used in conjunction with the SQL query specified by the `sql_select_statement` statement.
+The dollar-sign character '$' specifies the primary key in the resultset retrieved
+by the `sql_select_statement` statement.
+
+The following example shows the pair of query, nested query statements used to index list of tags assigned to documents:
+
+```sql
+SELECT id FROM document
+SELECT tag FROM tag INNER JOIN document_tag ON document_tag.tag_id=tag.id WHERE document_tag.doc_id=$
+```

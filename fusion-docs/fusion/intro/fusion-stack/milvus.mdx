@@ -1,0 +1,63 @@
+---
+title: "Milvus"
+permalink: "8821"
+---
+
+[Milvus](https://milvus.io/) is an open source vector similarity search engine, integrated into Fusion to streamline its deep learning capabilities and reduce the workload on Solr. See [Milvus v0.10.2 documentation](https://www.milvus.io/docs/v0.10.2/overview.md).
+
+## Milvus collections
+
+Milvus stores the vectors produced by machine learning models in one or more Milvus collections.
+
+For each collection, the following parameters need to be set:
+
+* `Collection Name`. A name for the Milvus collection you are creating. Milvus requires that collection names only include alphanumeric characters and the underscore `_`.
+* `Dimension`. The dimension size of the vectors to store in this Milvus collection. The Dimension should match the size of the vectors returned by the encoding model. For example, the `Smart Answers Pre-trained Coldstart` models output vectors of 512 dimension size. Dimensionality of encoders trained by `Smart Answers Supervised Training` job depends on the provided parameters and printed in the training job logs. See [Smart Answers Supervised model training](/how-to/652/train-a-smart-answers-supervised-model) for more details.
+* `Index file size`. Vectors are added to the raw data files and then indexed. Files larger than this will trigger index building for raw data files.
+* `Metric`. The type of metric used to determine how close the search vector is to the vectors in the collection. It is used to calculate the vector similarity scores. In most cases we suggest to use Cosine Similarity which can be obtained by using the `Inner Product` metric over normalized vectors. It produces values between -1 and 1, where a higher value means higher similarity.
+
+The Metric options for Milvus collections are: Euclidean, Inner Product, Hamming, Jaccard, Tanimoto, Substructure, and Superstructure. The following metrics all require that the Dimension is a multiple of 8: Hamming, Jaccard, Tanimoto, Substructure, and Superstructure. Otherwise the Create Milvus Collection job will fail. See [Milvus metrics documentation](https://www.milvus.io/docs/v0.10.2/metric.md#floating) for more details.
+
+Milvus can be configured to pre-load one or more collections via the Milvus parameter `preload_collection`. Fusion does not currently ship with a method to manage this parameter, but the Milvus API can be used directly (after first setting up port forwarding via `kubectl port-forward milvus-writeable-<hash>-<random> 19121:19121`).
+
+For an example of how to create and utilize a Milvus collection, see [Configure The Smart Answers Pipelines](/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later).
+
+## Milvus indexes
+
+When a Milvus collection is large, creating an index can speed up the similarities search. If you do not create an index on a collection then a FLAT index is used. See [Milvus index documentation](https://www.milvus.io/docs/v0.10.2/index.md) for more details.
+
+When you create an index on a collection, in addition to the `collection name` you will need to specify:
+
+* `Index Type`. The index type must be one of [`ANNOY`, `FLAT`, `HNSW`, `IVF_PQ`, `IVF_SQ8`, `IVF_SQ8H`, `IVFLAT`, `RNSG`]. We recommend you use the Fusion job default value of `HNSW`.
+* `Index Parameters`. Parameters used to create an index in Milvus. These required parameters are specific to the chosen `Index Type`. For example, `nlist=4096` for IVF indexes or `M=36` and `efConstruction=500` for HNSW indexes.
+
+<Note>
+If you create an index for the collection different from FLAT, index specific query parameters have to be added as Search Parameters in the Milvus Query stage. Refer to the [Milvus supported indexes](https://www.milvus.io/docs/v0.10.2/index.md#Indexes-that-Milvus-supports) for query parameters for each index type.
+</Note>
+
+## Milvus management jobs
+
+Fusion ships with several jobs for managing collections and indexes in Milvus:
+
+* [Create Collections in Milvus](/fusion/5.9/10914/create-collections-in-milvus-jobs)
+* [Recreate a Milvus Collection](/fusion/5.9/uykrih/recreate-a-milvus-collection)
+* [Delete Collections in Milvus](/fusion/5.9/10913/delete-collections-in-milvus-jobs)
+* [Create Indexes in Milvus](/fusion/5.9/10916/create-indexes-in-milvus-jobs)
+* [Delete Indexes in Milvus](/fusion/5.9/10915/delete-indexes-in-milvus-jobs)
+
+## Pipeline stages
+
+For more information about using these stages see [Configure the Smart Answers Pipeline (5.3 and later)](/how-to/918/configure-the-smart-answers-pipelines-5-3-and-later).
+
+* The [Encode into Milvus](/fusion/5.9/8839/encode-into-milvus-index-stage) index pipeline stage invokes a machine learning model to encode a field and store it into Milvus.
+* Query pipeline stages:
+
+  + [Milvus Query](/fusion/5.9/8842/milvus-query-stage) performs vectors similarity search in Milvus.
+  + [Milvus Ensemble Query](/fusion/5.9/8844/milvus-ensemble-query-stage) performs ensemble of different search results to retrieve metadata from Solr.
+  + [Milvus Response Update](/fusion/5.9/8843/milvus-response-update-stage) updates response documents with vectors similarity and ensemble scores.
+
+## Troubleshooting
+
+### Update a Milvus collection
+
+Update and delete semantics are not supported on individual items in a Milvus collection. We recommend that you use a blue/green set of collections: reindex to apply updates to an empty Milvus collection, then swap between collections to apply the updates.

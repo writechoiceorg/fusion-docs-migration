@@ -1,0 +1,434 @@
+---
+title: "$twigkit"
+permalink: "1208"
+---
+
+## Description
+
+Twigkit factory with methods for accessing the Twigkit API.
+
+## Methods
+
+### cancelAllResponses()
+
+Fires an event to cancel the current response being requested from the backend.
+
+#### Example
+
+```js
+$twigkit.cancelAllResponses();
+```
+### deleteBookmark(id)
+
+Sends a request to delete a bookmark to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id | string | The id of the bookmark to delete. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.deleteBookmark(id);
+```
+### deleteComment(platform, id)
+
+Sends a request to delete a comment to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| id | string | The id of the comment to delete. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.deleteComment(platform, id);
+```
+### deleteLike(platform, id)
+
+Sends a request to delete a like to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| id | string | The id of the bookmark to delete. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.deleteLike(platform,id);
+```
+### deleteSavedQuery(id)
+
+Sends a request to delete a saved query to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id | string | The id of the saved query to delete. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.deleteSavedQuery(id);
+```
+### deleteTopic(id)
+
+Sends a request to delete a topic to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| id | string | The id of the topic to delete. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.deleteTopic(id);
+```
+### getComments(platform, target, collection, topic)
+
+Sends a request to get comments from the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| target *(optional)* | string | Returns all comments that apply to the specified target document. |
+| collection *(optional)* | string |  |
+| topic *(optional)* | string |  |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.getComments(platform, target);
+```
+### getConstant(defaultValue)
+
+Gets a constant declared to the lightning module.
+
+A constant can be added to your application like so
+
+```
+angular
+.module('lightning').constant('contextPath', 'My Constant Value');
+
+
+```
+
+You can then get this value in your controller and apply it to the scope or rootScope (if applied to the rootScope you can use `{{$root.myConstant}}`
+in your views.
+
+```
+angular.module('twigkitLightApp')
+.controller('MainCtrl', ['$scope', '$stateParams','$twigkit', function ($scope, $stateParams,$twigkit) {
+  $scope.params = $stateParams;
+  $scope.test123 = $twigkit.getConstant('test','No 123 Found Here');
+  $rootScope.test = $twigkit.getConstant('test','');
+  }]);
+
+
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| defaultValue | string | Value to be returned if context path does not exist. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns the constant value. |
+
+#### Example
+
+```js
+$twigkit.getConstant(defaultValue);
+```
+### getContextPath(defaultValue)
+
+Gets the context path if it is available.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| defaultValue *(optional)* | string | Value to be returned if context path does not exist. Defaults to '/' |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| string | Returns a string of the context path or the default value. |
+
+#### Example
+
+```js
+$twigkit.getContextPath(defaultValue);
+```
+### getGraphFacet(query, platform, source-field, target-field, measure, measure-field)
+
+Gets graph data for a facet
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | string | The query to use against the platform. |
+| platform | string | The name of the platform to use. |
+| source-field | string | Name of a primary field to facet on (for example "Country"). The values of this facet will define the set of graph nodes with outgoing edges. |
+| target-field | string | Name of a secondary field to facet on (for example "City"), for every facet value of the primary field. The values of this facet will define the set of graph nodes with incoming edges. For example, say the primary facet (source-field) has values for Country=Germany and Country=France and the secondary facet (target-field) has values for City=Berlin, City=Munich and City=Paris. Then we add graph edges Germany-->Berlin, Germany-->Munich and France-->Paris. |
+| measure *(optional)* | string | Name of a numerical measure that defines the weight of each graph edge. When omitted, this defaults to the counts of the facets defined by the target-field. Some possible measures include "sum", "mean" and "min". (Only applicable if not using `data` attribute). |
+| measure-field *(optional)* | string | Field to measure, when the "measure" option is specified. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.getGraphFacet('query', 'platform', 'facet');
+```
+### getLikes(options)
+
+Sends a request to get a likes from the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| options | Object | Object containing options to be sent in the get request. Like target, collection, topic etc. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.getLikes(options);
+```
+### getUser()
+
+Calls the Twigkit API to return the current user
+
+To enable this you need to make sure that your security.conf file contains the line `webservice-enabled: true`
+
+Your security.conf file can be found in 'resources/conf/security/security.conf'.
+
+For spring security you will need the following rule to allow access to the user api, if parts of the site are public.
+
+`<intercept-url pattern="/twigkit/api/user" access="isAnonymous() or isAuthenticated()"/>`
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.getUser();
+```
+### onCancelAllResponses(callback, scope)
+
+When the cancel response event is fired the callback function will be called.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| callback | Function | The function to be called when the cancel event is fired. |
+| scope | Object | The `$scope` object for unsubscribing to the event when the scope is destroyed. |
+
+#### Example
+
+```
+$twigkit.onCancelAllResponses(function () {
+  console.log('Responses have been cancelled');
+}, $scope);
+$twigkit.cancelAllResponses();
+
+
+```
+### postLike(platform, id, target, topic, collection)
+
+Sends a request to create a like to the API.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| id | string | The id of the bookmark to delete. |
+| target | string | A unique identifier for a document that is being bookmarked. Example values: document123 Maximum length: 2083 characters |
+| topic *(optional)* | number | A topic to which the new bookmark should belong. |
+| collection *(optional)* | string | The collection to which the target document belongs. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.postLike(platform, id, target, topic, collection);
+```
+### search(searchQuery, platform, params, ignore-loading-bar, canceller)
+
+Search method sends a query to a Twigkit Platform endpoint and gets a result.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| searchQuery | string | The search term to search against the results. |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| params *(optional)* | Object | Other parameters to pass to the API. |
+| ignore-loading-bar *(optional)* | boolean | Whether the loading bar across the top of the page should be included for this http request. Default:true |
+| canceller *(optional)* | Promise | A promise object (`$q.defer()`) used to cancel the request by using `canceller.promise()` |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.search(query, platform, params);
+```
+### searchFacet(facet, platform, query, rpp, facetQuery, removeFilters, facetField, wildcard, canceller)
+
+Calls the Twigkit API to return filters from a specific facet based on the searchQuery.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| facet | string | The name of the facet to search. |
+| platform | Objectstring | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)) or the name of the platform. |
+| query | Object | The query object. |
+| rpp | Number | The number of filters to be returned by the API. |
+| facetQuery | string | The facet query to use against the API end point. |
+| removeFilters *(optional)* | boolean | Whether to remove the current filters for the facet when performing the search. |
+| facetField *(optional)* | string | If provided this field may be used to create a filter on the facet which may not be the same as the facet name itself. |
+| wildcard *(optional)* | string | Pass the wildcard settings for the request, either left, right, both or none. |
+| canceller *(optional)* | Promise | A promise object (`$q.defer()`) used to cancel the request by using `canceller.promise()` |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.searchFacet(facet,platform,query,facetQuery);
+```
+### searchSeriesFacet(query, platform, facet, measure, rpp)
+
+Gets series data for a facet.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | string | The query to use against the platform. |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| facet | Object | The facet to search upon. |
+| measure | string | What fact to use as an alternative to count as quantitative value for a filter. |
+| rpp | Number | The number of results to fetch. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.searchSeriesFacet(query, platform, facet);
+```
+### searchSeriesFields(query, platform, fields, rpp)
+
+Gets series data for a result list.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| query | string | The query to use against the platform. |
+| platform | Object | The platform object (retrievable from [Platform Service](#/api/lightning.PlatformService)). |
+| fields | Object | The facet to fields upon. |
+| rpp | Number | The number of results to fetch. |
+
+#### Returns
+
+|  |  |
+| --- | --- |
+| HttpPromise | Returns a promise which will resolve depending on the response from the API. |
+
+#### Example
+
+```js
+$twigkit.searchSeriesFacet(query, platform, fields);```

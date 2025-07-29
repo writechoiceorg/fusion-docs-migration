@@ -1,0 +1,75 @@
+---
+title: "search:offcanvas-toggle"
+permalink: "1199"
+---
+
+## Description
+
+Creates a toggle button to show/hide the side panel. Adds class to
+target element when directive is clicked.
+
+## Usage
+
+as element:
+
+```xml
+<search:offcanvas-toggle
+       target="{string}"
+       [active-class="{string}"]>
+</search:offcanvas-toggle>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| target | **string** | The element to add the active class to |
+| active-class  *(optional)* | **string** | The active class, defaults to 'active' |
+
+## Example
+
+#### Source
+
+```xml
+<layout:grid>
+    <layout:block tiny="1-4">
+        <layout:box>
+            <search:offcanvas-toggle target="#left-sidebar"></search:offcanvas-toggle>
+        </layout:box>
+    </layout:block>
+    <layout:block tiny="1-2">
+        <!-- this toggle will not be shown as no element with the ID no-sidebar exists -->
+        <search:offcanvas-toggle target="#no-sidebar"></search:offcanvas-toggle>
+    </layout:block>
+    <layout:block tiny="1-4">
+        <layout:box>
+            <search:offcanvas-toggle target="#right-sidebar" class="right"></search:offcanvas-toggle>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+<layout:grid styling="row-offcanvas">
+    <layout:block medium="1-4" drawer="left" id="left-sidebar">
+        <layout:box class="tk-stl-bg-red">
+            <layout:sidebar>
+                <h4 id="example_left-sidebar-content">Left Sidebar Content</h4>
+            </layout:sidebar>
+        </layout:box>
+    </layout:block>
+    <layout:block medium="1-2">
+        <layout:box>
+            <p styling="text-align:center;">Shrink your browser window to toggle sidebars</p>
+        </layout:box>
+    </layout:block>
+    <layout:block medium="1-4" drawer="right" id="right-sidebar">
+        <layout:box class="tk-stl-bg-blue">
+            <layout:sidebar>
+                <h4 id="example_right-sidebar-content">Right Sidebar Content</h4>
+            </layout:sidebar>
+        </layout:box>
+    </layout:block>
+</layout:grid>
+```
+
+#### Result
+
+<Frame>![Result](/assets/images/app-studio/as-examples/tags/searchOffcanvasToggle.png)</Frame>

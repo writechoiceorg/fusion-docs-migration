@@ -1,0 +1,38 @@
+---
+title: "facet:dropdown"
+permalink: "1146"
+---
+
+## Description
+
+Display a facet as a select dropdown, allowing the user to apply one or
+more filters by selection options from the dropdown. To specify the
+facet that should be rendered, either pass in a facet object directly or
+specify a facet-name and a response from where to retrieve that named
+facet.
+
+## Usage
+
+as element:
+
+```xml
+<facet:dropdown
+       facet="{string}"
+       response="{string}"
+       facet-name="{string}"
+       [select="{string}"]
+       display-label="{string}"
+       [search-enabled="{boolean}"]>
+</facet:dropdown>
+```
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| facet | **string** | A facet object to display |
+| response | **string** | The name of the response to use. |
+| facet-name | **string** | Facet name to use from the response object |
+| select  *(optional)* | **string** | How to render each facet filter  ```  + Valid values:- ```  * **multiselect**  Supports selecting multiple filters that get combined with an 'OR'. * **toggle**  Only allows one filter to be selected at a time but shows unselected filters and counts * **multiselect-instant**  Supports selecting multiple filters that get combined with an 'OR', filters will be applied automatically. |
+| display-label | **string** | Initial display value for dropdown |
+| search-enabled  *(optional)* | **boolean** | Whether to enable search on the facet. If no query or platform is defined on the facet or facet-list it will enable the user to search through the filters that have been returned in the response. If a platform and query is defined on the facet or facet-list then it will search for filters in the search index. (Requires a tokenized field, if not using a tokenized field, if not using a tokenized field please see facet-field). |

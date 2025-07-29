@@ -1,0 +1,381 @@
+---
+title: 'Signals Beacon'
+description: ''
+icon: ''
+---
+
+The signals features in Analytics Studio include the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon), a lightweight script tag that gathers query, click, cart-add, purchase, and facet usage signals from customer interactions on your website and the [signals store](/lw-platform/analytics/88pjp2/signals-store) for the designated workspace where signals are stored.
+
+Instead of using the signals beacon, you can manually configure and maintain code in your backend codebase by using the [Signals API](/lw-platform/analytics/uist05/signals-api) to send signals to Analytics Studio. This method is useful if you need to send signals from your backend, rather than a website or frontend application, or if your website does not support Javascript.
+
+<Warning>Lucidworks adheres to strict data privacy and security policies, including General Data Protection Regulation (GDPR) compliance, when collecting and storing signals. Security features include user IP address anonymization, exclusion of personally-identifiable information, and secure storage. The policies also provide guidelines and best practices to help clients implement compliant configurations. To review the detailed policies, see [Lucidworks Signals Beacon Privacy and Security policies](/policies/76qvrv/lucidworks-signals-beacon-privacy-and-security-policies) and [GDPR Compliance policy](/policies/2cddpz/gdpr-compliance-policy).</Warning>
+
+The following signals are collected:
+
+* **Query signals.** When a user performs a search, a signal is recorded. 
+* **Click signals.** When a user clicks on a product, a signal is recorded. One example of a click signal is when a user clicks a search result, which is a strong indicator the result is relevant.
+* **Cart-add signals.** When a user clicks to add an item to the cart, a signal is recorded.
+* **Purchase signals.** When a user clicks to purchase the items in the cart, a signal is recorded.
+* **Facet usage signals.** When a user interacts with the facets associated with the results, a signal is recorded.
+
+If present in the signal, the information collected by the signals beacon and housed in the signals store for each signal is:
+
+* Product ID
+* Title
+* Image URI
+* Price
+
+## Overview of signals process
+
+This section provides an overview of how to implement the use of signals in Analytics Studio. More information is detailed in additional topics.
+
+1. Analyze the queries, clicks, cart-adds, and purchases on your site to determine areas that could be strengthened to enhance your company’s goals. 
+2. Create the [signals store](/lw-platform/analytics/88pjp2/signals-store) for the designated workspace. For example, you may have a testing workspace and a production workspace. The signals store for the testing workspace may contain data that would not be available in your production site.
+3. Add the [signals beacon](/lw-platform/analytics/k649vy/signals-beacon) is to the `<HEAD>` section of your site. This includes not only header information, but specific field identifiers for the signals based on your site analysis.
+
+When the signals beacon is added, signals are:
+   * Gathered by the signals beacon
+   * Stored in the signals store
+   * Sent to [Analytics Studio metrics](/lw-platform/analytics/xcd2n5/metrics) that provide valuable customer behavior insights and can be used to improve your business 
+
+The signals beacon is an embeddable tracker that captures signals corresponding to user actions, like searches and purchases.
+With no coding and minimal configuration, you can quickly start sending signals to Lucidworks Platform, including all of the data needed to power your signals analytics.
+
+At a high level, the tracking flow begins when a user visits the site and performs one or more searches. These searches generate query identifiers that associate user actions with specific queries. As the user interacts with search results and shows interest in a product, additional signals such as clicks and cart events are captured. If the user completes a purchase, the flow concludes with a purchase signal that links the transaction back to the original query. This process enables end-to-end tracking of user behavior from search to purchase.
+
+In this scenario, the signals beacon uses several primary tracking mechanisms:
+
+* **Visitor ID**: A randomly generated identifier stored in local browser storage. It is unique to both the visitor and the device. It persists across sessions.
+* **Session ID**: A randomly generated identifier stored in session storage. It expires after 40 minutes of inactivity or when the browser session ends. When the user returns, a new session ID is generated, but the visitor ID remains the same.
+* **Query ID**: A randomly generated identifier created when a search query is submitted. It is temporarily stored in memory and is included with signal events related to that query, such as clicks or purchases.
+* **Cart ID**: A unique identifier created when a product is added to the cart. It links cart interactions and purchases to the originating query. After a purchase, a new cart ID is generated to track subsequent transactions independently.
+
+The signal event flow below outlines a simplified sequence of common events. Additional signal types and behaviors are not included in this summary:
+
+1. When a user visits the site, a visitor ID and session ID are generated.
+2. When a query is submitted, a query ID is generated and a query signal is sent. This signal includes the visitor ID and session ID.
+3. For each new query, a new query ID is generated and another query signal is sent.
+4. When the user clicks on a product, a click signal is sent. This signal includes the associated query ID.
+5. When the user adds a product to their cart, a cart ID is generated and a cart-add signal is sent.
+6. When the user purchases a product, a purchase signal is sent. This signal includes the current cart ID, which allows the purchase to be traced back to the original query. After the signal is sent, the cart ID is replaced with a new one to track future transactions independently.
+
+See the following image for a visual representation of this flow: 
+
+<Frame caption="Simplified signals beacon flow">
+  ![Simplified signals beacon flow](/images/lw-platform/analytics/signalsbeaconflow.png)
+</Frame>
+
+## Configure the signals beacon
+
+To see your signals analytics in Lucidworks Platform, you must configure the signals beacon as explained in this topic.
+
+The beacon sends signals to the:
+
+* [Signals store](/lw-platform/analytics/88pjp2/signals-store) for storage and aggregation
+* [Analytics Studio service](/lw-platform/analytics/10aut8/index), which provides insights about actions taken by users on your site
+
+For information about how the signals beacon is related to other signals and analytics functions, see the [Overview of signals process](/lw-platform/analytics/0le96f/signals).
+
+### Prerequisites
+
+You must be a workspace owner to configure the signals beacon.
+Before you begin, complete the following tasks:
+
+* Analyze your site to confirm compatibility with the signals beacon. 
+The signals beacon is compatible with most websites, but you may need to adjust the configuration to ensure it works as needed.
+  * Your site should use URL query parameters (`?q=foo`), not other methods of sending the query parameters.
+  * These fields should be surfaced in the page source, either as attributes or text nodes:
+    * Product ID
+    * Product title
+    * Product image URL
+    * Product price
+    * Product URL
+* Identify any other fields that you want the signals beacon to capture.
+You’ll need their CSS paths to configure the beacon.
+Again, these can be either attributes or text nodes, as in these examples:
+
+  ```html
+  <div class="product" data-product-id="12345"></div>
+  <div class="product">12345</div>
+  ```
+
+  <Tip>A field’s path might be different on different pages of your site.
+  The signals beacon supports multiple paths per field to accommodate this.</Tip>
+* Create the [signals store](/lw-platform/analytics/88pjp2/signals-store) where the signals will be stored.
+
+### Install the beacon
+
+1. Click the signal store where you want to configure the signals beacon, then click **Integrations**.
+2. If the beacon has never been configured for this app, you’ll see "No embed token found" on the Signals Using Beacon screen.
+In that case, click the **Generate** button.
+It can take a few moments to generate the token.
+3. In the **Allowed Origins** field, enter the domains where you want to use the signals beacon. The format is `<scheme>://<hostname>[:<port>]`. For example, `https://domain.your_company_name.com`.
+4. Set the **Signals Beacon** toggle to **On**.
+5. Click **Copy** to copy the script and insert that script into the `<head>` tag of your website’s HTML file.
+
+   <Tip>   This also enables the `window.logBeaconInfo()` function which you can use with your browser’s developer tools to inspect the fields captured by the beacon so that you can validate and refine your configuration.</Tip>
+   See [Development and troubleshooting](#development-and-troubleshooting) below.
+6. Edit the JSON configuration to process the signals you need for analytics. 
+For more details, see:
+
+   * [Example JSON configuration](#example-json-configuration)
+   * [Example signals script](#example-signals-script)
+   * [Field path configuration](#field-path-configuration)
+   * [Beacon Configuration Interface](/lw-platform/analytics/k6vyeq/beacon-configuration-interface) for detailed configuration property information
+7. Click **Apply**. The configuration is applied to your website and it begins to send signals instantly based on that configuration. 
+
+   <Note>   You can edit the configuration at any time. When you edit the JSON configuration and click **Apply**, the changes are applied in real time and signals are sent and processed using that configuration until it is modified.</Note>
+
+After the script is implemented and the signals are sent, you can access consolidated metrics. The [Analytics Studio metrics](/lw-platform/analytics/xcd2n5/metrics) provide valuable customer behavior insights, which can be used to improve your business.
+
+#### Example JSON configuration
+
+Use the following structure as an example to configure the beacon.
+
+```json
+
+{
+    "attributes": {
+      "productPath": ".lw-product-item",
+      "cartId": "lwRetailCartId",
+      "idQueryParam": "pid",
+      "numberTypeFields": [price, quantity, revenue],
+    },
+    "fields": {
+      "productId": ":scope @id",
+      "imageuri": ":scope img @src",
+      "price": ":scope .search-entity-price span @text",
+      "title": ":scope .search-entity-title @text, :scope .search-generic-title @text", ①
+      "uri": ".config-url @href"
+    },
+    ②
+    "query": {
+      "queryParam": "q",
+      "delayForTrackQueryUpdate": 1000,
+    },
+    
+    "click": {}, ③
+    
+    "cartAdd": {
+      "trigger": ".lw-cart-add-trigger",
+    },
+    
+    "purchase": {
+      "trigger": ".lw-purchase-trigger",
+    }
+}
+```
+1. You can use multiple comma-separated paths in cases where a field has different paths on different pages of your site.
+See the [Field path configuration](#field-path-configuration) section for details and examples.
+2. Everything below this line is your signal configuration, where you list the signals you want to track and the fields you want to extract from them.
+3. By default, these attributes inherit from the top-level attributes `[productPath|fields]`.
+
+For information about:
+
+* Attributes and fields used to extract product details from page elements, see the [Field path configuration](#field-path-configuration) section.
+* The BeaconConfig interface, which includes detailed information about configuration properties, types, and default values, see [Beacon configuration interface](/lw-platform/analytics/k6vyeq/beacon-configuration-interface).
+
+#### Example signals script
+
+The following example contains possible fields and default values, as well as comments to help you determine other options and values.
+
+```json
+ {
+   "attributes": { ①
+     "data": "data-lw-product-data", ②
+     "productPath": ".lw-product-item", ③
+     "cartId": "lwRetailCartId", ④
+     "numberTypeFields": [price, quantity, revenue]
+   }, ⑤
+   "fields": {
+     "productId": ":scope @id", ⑥
+     "title": ".title @text",
+     "imageuri": ".config-image @src",
+     "uri": ".url-wrapper a @href"
+   },
+   "query": { ⑦
+     "queryParam": "query", ⑧
+     "delayForTrackQueryUpdate": 1000,
+     "productPath": ".lw-product-item", ⑨
+     "fields": {
+       "productId": ":scope @id",
+       "title": ".title @text",
+       "imageuri": ".config-image @src",
+       "uri": ".url-wrapper a @href"
+     }
+   },
+   "click": {
+     "productPath": ".lw-product-item",
+     "fields": {
+       "productId": ":scope @id",
+       "title": ".title @text",
+       "imageuri": ".config-image @src",
+       "uri": ".url-wrapper a @href"
+     }
+   },
+   "cartAdd": { ⑩
+     "trigger": ".lw-cart-add-trigger",
+     "productPath": ".lw-product-item",
+     "fields": {
+       "productId": ":scope @id",
+       "title": ".title @text",
+       "imageuri": ".config-image @src",
+       "uri": ".url-wrapper a @href"
+     }
+   },
+   "purchase": { ⑪
+     "trigger": ".lw-purchase-trigger",
+     "productPath": ".lw-cart-item",
+     "fields": {
+       "productId": ":scope @cart-item-id",
+       "title": ".title @text",
+       "imageuri": ".config-image @src",
+       "uri": ".url-wrapper a @href"
+     }
+   }
+ }
+```
+1. Attributes provide a more advanced way to obtain product details using serialized JSON in an element attribute.
+2. The CSS selector to target product elements. This is the global path inherited by each signal action if no custom path is provided at `[query/click/cartAdd/purchase].productPath`. The default is `.lw-product-item`.
+3. The local storage key for the consumer page storing the cart UUID. The `cartId` value defaults to `lwRetailCartId`. The beacon obtains the value from `localStorage.lwRetailCartId` when attaching cart info to `/retail/signals/cartadd ` and `/retail/signals/purchase`.
+4. This list specifies the fields treated as number type fields. The defaults can be `[price, quantity, revenue]`.
+5. This is the main section to extract product field value from your site. For more information, see the Beacon element path section in this topic, which provides detailed configuration about extracting product information to ensure accurate and consistent data collection.
+6. The `productId` field with a value of `scope@id` is the only required field to use the Lucidworks Retail Beacon API. 
+7. Specifies the URL parameter the beacon uses to monitor query updates. For example, with the default param `query`, if the current product page is filtered with the keyword `hat`, the URL parameter is <span>http://</span>example.com?query=hat. The default value is `query`.
+8. Specifies the delay, in milliseconds, for tracking element updates in the query. The default value is `1000`.
+9. Custom overwrite of the fields configuration at the root level.
+10. The CSS selector that targets page elements for triggering add-to-cart actions. This has full CSS support for targeting multiple elements with comma-separated selectors. For example, `button.add-to-bag, #AddToBagWithPrice`.
+11. The CSS selector that targets page elements for triggering purchase or checkout actions. This has full CSS support for targeting multiple elements with comma-separated selectors. For example, `button.add-to-bag, #AddToBagWithPrice`.
+
+#### Field path configuration
+
+The signals beacon extracts product details from page elements using CSS selectors and attributes.
+You can capture any field that’s surfaced in the page’s DOM by adding it to your JSON configuration, under `"fields"`.
+This section shows you how to configure your field paths, with examples.
+
+The format is: `[Element CSS Selector]@[Value Attribute]`
+
+These special selectors and attributes are available:
+
+* The `@text` pseudo-attribute captures the inner text node.
+* The `:scope` CSS class targets product details defined on the root product element.
+
+Below is a simple example configuration and corresponding HTML structure:
+
+
+**Example configuration**
+
+```json
+{
+  "attributes": {
+    "productPath": ".main-page-product",
+  },
+
+  "fields": {
+    "productId": ":scope @sku",
+    "title": ".title @text",
+    "price": ".details .price @text",
+    "url": ".details .url @href"
+  }
+}
+```
+
+**Example HTML structure**
+
+```html
+<div class="main-page-product" sku="prd-123">
+  <h2 class="title">Fancy Hat</h2>
+
+  <div class="details">
+    <div class="price" value="100" />
+  </div>
+
+  <a class="url" href="http://foo.com/prd-123" />
+</div>
+```
+
+The following tabs break down the beacon configuration for the preceding example:
+
+<Tabs>
+  <Tab title="Product ID">
+    **Path configuration**
+
+    ```json
+    "productId": ":scope @sku"
+    ```
+
+    **HTML structure**
+
+    ```html
+    <div class="main-page-product" sku="prd-123">
+    ```
+
+    **Data extracted**
+
+    `prd-123`
+  </Tab>
+  <Tab title="Product name">
+    **Path configuration**
+
+    ```json
+    "title": ".title @text"
+    ```
+
+    **HTML structure**
+
+    ```html
+    <h2 class="title">Fancy Hat</h2>
+    ```
+
+    **Data extracted**
+
+    `Fancy Hat`
+  </Tab>
+  <Tab title="Price">
+    **Path configuration**
+
+    ```json
+    "price": ".details .price @text"
+    ```
+
+    **HTML structure**
+
+    ```html
+    <div class="details">
+        <div class="price" value="100" />
+        ...
+    </div>
+    ```
+
+    **Data extracted**
+
+    `100`
+  </Tab>
+  <Tab title="URL">
+    **Path configuration**
+
+    ```json
+    "url": ".details .url @href"
+    ```
+
+    **HTML structure**
+
+    ```html
+    <div class="details">
+        ...
+        <a class="url" href="http://foo.com/prd-123" />
+    </div>
+    ```
+
+    **Data extracted**
+
+    `http://foo.com/prd-123`
+  </Tab>
+</Tabs>
+
+
+## Development and troubleshooting
+
+The signals beacon includes the built-in `window.logBeaconInfo()` debugging utility that logs verbose information if the debug flag is enabled.
+
+To enable the debug flag in your local storage, set `localStorage.enableBeaconDev = true`.

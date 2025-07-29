@@ -1,0 +1,21 @@
+---
+title: "Solr Indexer Stage"
+permalink: "227"
+---
+
+A Solr Indexer stage transforms a Fusion PipelineDocument into a Solr document and sends it to Solr for indexing into a collection.
+
+A PipelineDocument object contains fields which take as their values either a string or list of strings. Solr fields have a rich variety of types. The Solr Indexer stage transforms PipelineDocument field values into Solr document fields. The Solr Indexer stage can be configured so that it will try to ensure that all document fields are valid Solr fields.
+
+This feature is convenient, but offers very little control over how fields and field values are transformed, especially with respect to dates. A [Date Parsing Index stage](/fusion/5.9/241/date-parsing-index-stage) offers greater control over date values. In a similar vein, Lucidworks recommends that you only use safe characters (a-z, _ ) in field names when using a Solr Indexer stage. Special characters will be automatically converted to an underscore.
+
+## Configuration
+
+<Tip>
+When entering configuration values in the UI, use *unescaped* characters, such as `\t` for the tab character. When entering configuration values in the API, use *escaped* characters, such as `\\t` for the tab character.
+</Tip>
+
+import {SchemaParamFields} from "/snippets/SchemaParamFields.mdx";
+import {schema} from "/snippets/configuration-schema/5_9/index-stages/solr-indexer.mdx";
+
+<SchemaParamFields schema={schema}/>

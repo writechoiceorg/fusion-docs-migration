@@ -1,0 +1,61 @@
+---
+title: "search:keyword"
+permalink: "1082"
+---
+
+## Description
+
+Search keyword tag allows you to add the ability for a user to filter
+the search based on the keyword they enter and the value they select.
+
+## Usage
+
+as element:
+
+```xml
+<search:keyword
+       keyword="{string}"
+       facet="{string}"
+       [facet-field="{string}"]
+       [description="{string}"]
+       [date="{string}"]
+       [date-format="{string}"]
+       [date-display-format="{string}"]>
+</search:keyword>
+```
+
+### Directive info
+
+* This directive creates new scope.
+
+#### Parameters
+
+| Param | Type | Details |
+| --- | --- | --- |
+| keyword | **string** | The keyword the user types |
+| facet | **string** | The facet the keyword is associated with |
+| facet-field  *(optional)* | **string** | The facet the keyword is associated with |
+| description  *(optional)* | **string** | The description to display next to the keyword |
+| date  *(optional)* | **string** | Type of date (on, before, after. Default: on) |
+| date-format  *(optional)* | **string** | Date format to use for the datapicker. Default yyyy-MM-ddTHH:mm:ss |
+| date-display-format  *(optional)* | **string** | Date format to use for the datapicker display values. Default yyyy-MM-ddTHH:mm:ss |
+
+## Example
+
+#### Source
+
+```xml
+<search:advanced keywords="keywords" response="response" platform="platform">
+        <search:keyword keyword="from" facet="Start_Date" date="after" description="Creation date"></search:keyword>
+        <search:keyword keyword="type" facet="Study_Types" description="Type of study"></search:keyword>
+        <search:keyword keyword="gender" facet="Gender" description="Patient gender"></search:keyword>
+        <search:keyword keyword="Conditions"></search:keyword>
+        <search:keyword keyword="Recruitment"></search:keyword>
+        <search:keyword keyword="Sponsors" facet="Sponsor_Collaborators"></search:keyword>
+        <instant:result-list platform="platform">
+            <search:result>
+                <a ng-href="/#/result/{{ result.fields.id.val | actualValue }}">{{ result.fields.Title.val | displayValue }}</a>
+            </search:result>
+        </instant:result-list>
+    </search:advanced>
+```
